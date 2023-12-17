@@ -3,5 +3,5 @@
 # Enhancement
 
 # Authors
-1. [Joshuakme](https://github.com/Joshuakme)
+1. [Joshua Koh](https://github.com/Joshuakme)
 2. [Shia Chai Fen]()
