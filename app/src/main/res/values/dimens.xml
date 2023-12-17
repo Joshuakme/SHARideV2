@@ -1,8 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--  SPACE SIZE (ss)  -->
+    <!--  General  -->
+    <dimen name="ss_screen_width_margin">24dp</dimen>
+    <dimen name="ss_screen_top_margin">24dp</dimen>
+    <dimen name="ss_section_bottom_margin">32dp</dimen>
+
+    <!--  Profile Fragment  -->
+    <dimen name="ss_profile_pic_size">75dp</dimen>
+    <dimen name="ss_profile_section_title_bottom_margin">14dp</dimen>
+
     <!--  FONT SIZE (fs)  -->
     <!--  Bottom Navigation  -->
     <dimen name="fs_bottom_nav">10sp</dimen>
+
+    <!--  Profile Fragment  -->
+    <dimen name="fs_profile_section_title">18sp</dimen>
 
 
     <!--    -->
