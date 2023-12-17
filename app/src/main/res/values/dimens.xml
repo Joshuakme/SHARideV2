@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--  FONT SIZE (fs)  -->
+    <!--  Bottom Navigation  -->
+    <dimen name="fs_bottom_nav">10sp</dimen>
+
+
+    <!--    -->
+</resources>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/item_title_home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/selector_home"
+        android:title="@string/screen_title_home" />
+
+    <item
+        android:id="@+id/item_title_booking"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/selector_sticky_note_2"
+        android:title="@string/screen_title_booking" />
+
+    <item
+        android:id="@+id/item_title_messages"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/selector_message"
+        android:title="@string/screen_title_messages" />
+
+    <item
+        android:id="@+id/item_title_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/selector_account_circle"
+        android:title="@string/screen_title_profile" />
+</menu>

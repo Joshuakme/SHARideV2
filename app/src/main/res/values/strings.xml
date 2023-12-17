@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">SHARideV2</string>
+
+    <!--  *******  -->
+    <!--  GENERAL  -->
+    <!--  *******  -->
+    <!--  Screen Title  -->
+    <string name="screen_title_home">Home</string>
+    <string name="screen_title_booking">Booking</string>
+    <string name="screen_title_messages">Messages</string>
+    <string name="screen_title_profile">Profile</string>
+
+
+
 </resources>
