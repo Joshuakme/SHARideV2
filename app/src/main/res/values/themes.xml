@@ -29,9 +29,15 @@
         <item name="colorSurfaceVariant">@color/md_theme_light_surfaceVariant</item>
         <item name="colorOnSurfaceVariant">@color/md_theme_light_onSurfaceVariant</item>
         <item name="colorPrimaryInverse">@color/md_theme_light_inversePrimary</item>
+
+        <!-- Set the default font family -->
+        <item name="android:fontFamily">@font/poppins</item>
     </style>
 
     <style name="Theme.SHARideV2" parent="Base.Theme.SHARideV2" />
+
+
+
 
     <!--  Bottom Navigation Styles  -->
     <style name="BottomNavigationViewActiveTextStyle">
