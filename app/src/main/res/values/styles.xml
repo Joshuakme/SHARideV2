@@ -4,8 +4,17 @@
     <style name="text_section_title">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
         <item name="android:textSize">@dimen/fs_profile_section_title</item>
         <item name="android:layout_marginBottom">@dimen/ss_profile_section_title_bottom_margin</item>
+    </style>
+
+    <style name="text_fragment_title">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/ss_screen_top_margin</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="android:textSize">@dimen/fs_fragment_title</item>
     </style>
 </resources>

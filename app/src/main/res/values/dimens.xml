@@ -6,16 +6,25 @@
     <dimen name="ss_screen_top_margin">24dp</dimen>
     <dimen name="ss_section_bottom_margin">32dp</dimen>
 
+
     <!--  Profile Fragment  -->
     <dimen name="ss_profile_pic_size">75dp</dimen>
-    <dimen name="ss_profile_section_title_bottom_margin">14dp</dimen>
+    <dimen name="ss_profile_section_title_bottom_margin">16dp</dimen>
+    <dimen name="ss_profile_section_item_bottom_margin">16dp</dimen>
+
 
     <!--  FONT SIZE (fs)  -->
+    <!--  General  -->
+    <dimen name="fs_fragment_title">20sp</dimen>
+    <dimen name="fs_fragment_loading_error_text">20sp</dimen>
+
     <!--  Bottom Navigation  -->
     <dimen name="fs_bottom_nav">10sp</dimen>
 
     <!--  Profile Fragment  -->
     <dimen name="fs_profile_section_title">18sp</dimen>
+
+
 
 
     <!--    -->

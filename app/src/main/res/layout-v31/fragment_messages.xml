@@ -2,23 +2,25 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-    <androidx.core.widget.NestedScrollView
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".screen.navigation.MessagesFragment">
+        android:paddingLeft="@dimen/ss_screen_width_margin"
+        android:paddingRight="@dimen/ss_screen_width_margin">
 
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:layout_marginLeft="@dimen/ss_screen_width_margin"
             android:layout_marginRight="@dimen/ss_screen_width_margin"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/text_fragment_title_messages"
-                android:text="@string/messages_fragment_title_messages"
-                style="@style/text_fragment_title" />
+                style="@style/text_fragment_title"
+                android:text="@string/messages_fragment_title_messages" />
 
             <TextView
                 android:id="@+id/text_messages_section_title_notification"
@@ -29,29 +31,35 @@
 
             <!--  Notification  -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/card_notification"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/ss_section_bottom_margin"
                 app:cardBackgroundColor="#00FFFFFF"
                 app:cardElevation="0dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="16dp">
+                    android:layout_height="match_parent">
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/notification_icon"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        app:cardCornerRadius="10000dp">
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        app:cardBackgroundColor="@color/md_theme_dark_secondary"
+                        app:cardCornerRadius="10000dp"
+                        app:cardElevation="0dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
 
-                        <ImageView
-                            android:id="@+id/imageView"
+                        <ImageButton
+                            android:id="@+id/image_button_notification"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:scaleX="0.8"
-                            android:scaleY="0.8"
-                            app:srcCompat="@drawable/baseline_message_24" />
+                            android:background="#00FFFFFF"
+                            android:scaleX="1.1"
+                            android:scaleY="1.1"
+                            android:src="@drawable/baseline_message_24" />
                     </androidx.cardview.widget.CardView>
 
                     <TextView
@@ -61,7 +69,7 @@
                         android:layout_marginStart="16dp"
                         android:fontFamily="@font/poppins_semibold"
                         android:text="Notification Title"
-                        android:textSize="13sp"
+                        android:textSize="16sp"
                         app:layout_constraintBottom_toTopOf="@+id/text_notification_desc"
                         app:layout_constraintEnd_toStartOf="@+id/text_notification_day"
                         app:layout_constraintStart_toEndOf="@+id/notification_icon"
@@ -75,7 +83,8 @@
                         android:layout_marginEnd="32dp"
                         android:layout_marginBottom="16dp"
                         android:text="Notification Description"
-                        android:textSize="12sp"
+                        android:textColor="@android:color/system_neutral1_500"
+                        android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="@+id/notification_icon"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/notification_icon"
@@ -86,83 +95,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Mon"
-                        app:layout_constraintEnd_toEndOf="parent" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <TextView
-                android:id="@+id/text_messages_section_title_chat"
-                style="@style/text_section_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/messages_section_title_chat" />
-
-            <!--  Chat  -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/card_chat"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/ss_profile_section_item_bottom_margin"
-                app:cardBackgroundColor="#00FFFFFF"
-                app:cardElevation="0dp">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <androidx.cardview.widget.CardView
-                        android:id="@+id/chat_icon"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        app:cardCornerRadius="10000dp"
-                        app:cardElevation="0dp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <ImageButton
-                            android:id="@+id/image_button_chat"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="#00FFFFFF"
-                            android:clickable="false"
-                            android:scaleX="2.4"
-                            android:scaleY="2.4"
-                            android:src="@drawable/baseline_account_circle_24" />
-
-                    </androidx.cardview.widget.CardView>
-
-                    <TextView
-                        android:id="@+id/text_chat_title"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:fontFamily="@font/poppins_semibold"
-                        android:text="Ali"
-                        android:textSize="16sp"
-                        app:layout_constraintBottom_toTopOf="@+id/text_chat_desc"
-                        app:layout_constraintEnd_toStartOf="@+id/text_chat_day"
-                        app:layout_constraintStart_toEndOf="@+id/chat_icon"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/text_chat_desc"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="32dp"
-                        android:text="Hi, I'm Ali. Nice to meet you."
-                        android:textSize="14sp"
-                        app:layout_constraintBottom_toBottomOf="@+id/chat_icon"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/chat_icon"
-                        app:layout_constraintTop_toBottomOf="@+id/text_chat_title" />
-
-                    <TextView
-                        android:id="@+id/text_chat_day"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="17 Dec"
                         android:textSize="12sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -170,10 +102,67 @@
 
             </androidx.cardview.widget.CardView>
 
+            <!--  Chat  -->
+            <TextView
+                android:id="@+id/text_messages_section_title_chat"
+                style="@style/text_section_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="0dp"
+                android:text="@string/messages_section_title_chat" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_chat"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:listitem="@layout/recycler_item_messages_chat"
+                tools:visibility="gone" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_error_load_chat"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:cardBackgroundColor="#00FFFFFF"
+                app:cardCornerRadius="0dp"
+                app:cardForegroundColor="#00FFFFFF"
+                app:layout_constraintHeight_default="percent"
+                app:layout_constraintHeight_percent="0.5"
+                app:strokeColor="#00FFFFFF">
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/messages_chat_error_loading"
+                    android:textColor="@android:color/system_neutral1_500"
+                    android:textSize="@dimen/fs_fragment_loading_error_text" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+                <!--  Progress Bar  -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_chat_loading_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="470dp"
+                    android:visibility="gone"
+                    tools:visibility="gone">
+
+                    <ProgressBar
+                        android:id="@+id/progressBar"
+                        style="@android:style/Widget.Holo.Light.ProgressBar.Inverse"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.5" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </layout>
