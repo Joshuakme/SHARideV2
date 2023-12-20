@@ -114,18 +114,23 @@
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tabLayout"
+                    style="@style/CustomTabLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
-                    android:background="?attr/colorPrimary"
                     android:elevation="6dp"
                     android:minHeight="?attr/actionBarSize"
                     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:tabIndicatorColor="?attr/colorPrimaryDark"
-                    app:tabTextColor="?attr/colorOnPrimary" />
+                    app:tabIndicator="@drawable/left_tab_background"
+                    app:tabIndicatorAnimationMode="elastic"
+                    app:tabIndicatorColor="?attr/colorTertiary"
+                    app:tabIndicatorGravity="center"
+                    app:tabIndicatorHeight="3dp"
+                    app:tabSelectedTextColor="?attr/colorOnTertiary"
+                    app:tabTextAppearance="@style/TabTextStyle" />
 
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/viewPager"
