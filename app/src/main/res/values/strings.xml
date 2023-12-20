@@ -10,11 +10,16 @@
     <string name="screen_title_messages">Messages</string>
     <string name="screen_title_profile">Profile</string>
 
+    <!--  Home Fragment  -->
+    <string name="home_fragment_welcome_user">Welcome {Username}</string>
+    <string name="home_fragment_welcome_user_area">Setapak</string>
+    <string name="home_fragment_pick_up_location">Pick up location</string>
+    <string name="home_fragment_destination_location">Destination location</string>
 
     <!--  Booking Fragment  -->
     <string name="booking_fragment_title_booking">Booking</string>
     <string name="booking_section_title_recent">Recent</string>
-    <string name="messages_booking_error_loading">Sorry, no booking found!</string>
+    <string name="booking_error_loading">Sorry, no booking found!</string>
 
     <!--  Messages Fragment  -->
     <string name="messages_fragment_title_messages">Messages</string>
@@ -38,8 +43,6 @@
     <string name="profile_subsection_title_delete_my_account">Delete My Account</string>
 
     <string name="profile_log_out">Log out</string>
-
-
 
 
     <!--  Placeholder  -->
