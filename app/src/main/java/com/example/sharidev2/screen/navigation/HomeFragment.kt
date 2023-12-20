@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.databinding.DataBindingUtil
 import androidx.viewpager2.widget.ViewPager2
 import com.example.sharidev2.R
@@ -22,10 +23,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var mGoogleMap: GoogleMap
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,10 +43,53 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             when (position) {
-                0 -> tab.text = "Find Ride"
-                1 -> tab.text = "Offer Ride"
+                0 -> {
+                    tab.text = "Find Ride"
+                    tab.customView = null  // Reset custom view
+                    tab.view?.setBackgroundResource(R.drawable.left_tab_background)
+                    tab.view?.minimumWidth = 0  // Reset minimum width
+                    tab.view?.layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT
+                    )
+                }
+                1 -> {
+                    tab.text = "Offer Ride"
+                    tab.customView = null  // Reset custom view
+                    tab.view?.setBackgroundResource(R.drawable.right_tab_background)
+                    tab.view?.minimumWidth = 0  // Reset minimum width
+                    tab.view?.layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT
+                    )
+                }
             }
         }.attach()
+
+        // Handle tab selection events
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                // Customize appearance for the selected tab
+                tab?.let {
+                    it.view.setBackgroundResource(R.drawable.selected_tab_background)
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+                // Customize appearance for unselected tabs
+                tab?.let {
+                    it.view.setBackgroundResource(R.drawable.unselected_tab_background)
+                }
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+                // Do nothing when a tab is reselected
+            }
+        })
+
+        // Select the default tab (e.g., the first tab)
+        tabLayout.getTabAt(0)?.select()
+
 
 
         return binding.root
