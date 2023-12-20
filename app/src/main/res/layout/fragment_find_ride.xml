@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/colorBackground"
+    android:elevation="8dp"
+    android:paddingBottom="@dimen/ss_screen_top_margin"
+    tools:context=".screen.home.FindRideFragment">
+
+    <!--  Input: Pick Up Location  -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/materialCardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/ss_screen_width_margin"
+        android:layout_marginTop="@dimen/ss_screen_top_margin"
+        android:layout_marginEnd="@dimen/ss_screen_width_margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:strokeWidth="2dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/img_btn_find_ride_destination"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/ss_home_input_field_width_margin"
+                android:background="#00FFFFFF"
+                android:src="@drawable/baseline_trip_origin_24"
+                app:tint="@color/md_theme_light_error" />
+
+            <TextView
+                android:id="@+id/text_find_ride_pick_up_location"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/poppins_medium"
+                android:paddingStart="@dimen/ss_home_input_field_horizontal_padding"
+                android:paddingTop="@dimen/ss_home_input_field_vertical_padding"
+                android:paddingEnd="@dimen/ss_home_input_field_horizontal_padding"
+                android:paddingBottom="@dimen/ss_home_input_field_vertical_padding"
+                android:text="@string/home_fragment_pick_up_location"
+                android:textColor="?attr/colorOutline"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <!--  Input: Drop Off Location  -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/ss_screen_width_margin"
+        android:layout_marginTop="@dimen/ss_home_input_field_bottom_margin"
+        android:layout_marginEnd="@dimen/ss_screen_width_margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/materialCardView"
+        app:strokeWidth="2dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center|center_vertical"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/img_btn_find_ride_destination"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/ss_home_input_field_width_margin"
+                android:background="#00FFFFFF"
+                android:src="@drawable/baseline_trip_origin_24"
+                app:tint="@color/md_theme_dark_inversePrimary" />
+
+            <TextView
+                android:id="@+id/text_find_ride_destination_location"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/poppins_medium"
+                android:paddingStart="@dimen/ss_home_input_field_horizontal_padding"
+                android:paddingTop="@dimen/ss_home_input_field_vertical_padding"
+                android:paddingEnd="@dimen/ss_home_input_field_horizontal_padding"
+                android:paddingBottom="@dimen/ss_home_input_field_vertical_padding"
+                android:text="@string/home_fragment_destination_location"
+                android:textColor="?attr/colorOutline"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

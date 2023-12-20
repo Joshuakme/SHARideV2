@@ -7,6 +7,13 @@
     <dimen name="ss_section_bottom_margin">32dp</dimen>
 
 
+    <!--  Home Fragment  -->
+    <dimen name="ss_home_pic_size">55dp</dimen>
+    <dimen name="ss_home_input_field_width_margin">12dp</dimen>
+    <dimen name="ss_home_input_field_bottom_margin">12dp</dimen>
+    <dimen name="ss_home_input_field_vertical_padding">17dp</dimen>
+    <dimen name="ss_home_input_field_horizontal_padding">16dp</dimen>
+
     <!--  Profile Fragment  -->
     <dimen name="ss_profile_pic_size">75dp</dimen>
     <dimen name="ss_profile_section_title_bottom_margin">16dp</dimen>
