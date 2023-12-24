@@ -99,7 +99,7 @@
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_home_main_menu"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginStart="32dp"
             android:layout_marginEnd="32dp"
             app:cardCornerRadius="8dp"
@@ -107,7 +107,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.5">
+            app:layout_constraintVertical_bias="0.5"
+            app:layout_constraintHeight_percent="0.6" >
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -143,8 +144,8 @@
                         app:tabIndicatorFullWidth="true"
                         app:tabIndicatorGravity="stretch"
                         app:tabMode="fixed"
-                        app:tabPaddingBottom="@dimen/ss_home_find_ride_tab_vertical_padding"
-                        app:tabPaddingTop="@dimen/ss_home_find_ride_tab_vertical_padding"
+                        app:tabPaddingBottom="@dimen/ss_home_tab_vertical_padding"
+                        app:tabPaddingTop="@dimen/ss_home_tab_vertical_padding"
                         app:tabSelectedTextColor="?attr/colorOnSecondary"
                         app:tabTextAppearance="@style/TabTextStyle"
                         app:tabTextColor="?attr/colorOnSurfaceVariant" />
@@ -154,12 +155,13 @@
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/viewPager_home_main_menu"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
                     android:layout_below="@id/card_home_main_menu_tab_container"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/card_home_main_menu_tab_container" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.google.android.material.card.MaterialCardView>

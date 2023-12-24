@@ -18,6 +18,9 @@
     <string name="home_fragment_date_time">Date &amp; Time</string>
     <string name="home_fragment_select_more">More</string>
     <string name="home_fragment_find_ride_cta">Find Ride</string>
+    <string name="home_fragment_offer_ride_cta">Offer Ride</string>
+    <string name="home_fragment_offer_ride_continue_cta">Continue</string>
+    <string name="home_fragment_offer_ride_vehicle">Vehicle</string>
 
     <!--  Booking Fragment  -->
     <string name="booking_fragment_title_booking">Booking</string>
