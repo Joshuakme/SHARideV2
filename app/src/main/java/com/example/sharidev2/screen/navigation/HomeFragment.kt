@@ -35,8 +35,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         val mapFragment = childFragmentManager.findFragmentById(R.id.map_home_container) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        val tabLayout: TabLayout = binding.tabLayout
-        val viewPager: ViewPager2 = binding.viewPager
+        val tabLayout: TabLayout = binding.tabHomeMainMenu
+        val viewPager: ViewPager2 = binding.viewPagerHomeMainMenu
 
         val pagerAdapter = RidePagerAdapter(this)
         viewPager.adapter = pagerAdapter
@@ -46,7 +46,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                 0 -> {
                     tab.text = "Find Ride"
                     tab.customView = null  // Reset custom view
-                    tab.view?.setBackgroundResource(R.drawable.left_tab_background)
                     tab.view?.minimumWidth = 0  // Reset minimum width
                     tab.view?.layoutParams = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -56,7 +55,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                 1 -> {
                     tab.text = "Offer Ride"
                     tab.customView = null  // Reset custom view
-                    tab.view?.setBackgroundResource(R.drawable.right_tab_background)
                     tab.view?.minimumWidth = 0  // Reset minimum width
                     tab.view?.layoutParams = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -66,26 +64,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             }
         }.attach()
 
-        // Handle tab selection events
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                // Customize appearance for the selected tab
-                tab?.let {
-                    it.view.setBackgroundResource(R.drawable.selected_tab_background)
-                }
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-                // Customize appearance for unselected tabs
-                tab?.let {
-                    it.view.setBackgroundResource(R.drawable.unselected_tab_background)
-                }
-            }
-
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-                // Do nothing when a tab is reselected
-            }
-        })
 
         // Select the default tab (e.g., the first tab)
         tabLayout.getTabAt(0)?.select()
