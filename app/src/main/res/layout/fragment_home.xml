@@ -14,7 +14,7 @@
             android:id="@+id/cl_home_user_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
+            android:background="?attr/colorPrimaryVariant"
             android:paddingTop="@dimen/ss_screen_top_margin"
             android:visibility="visible"
             app:layout_constraintTop_toTopOf="parent"
@@ -97,6 +97,7 @@
 
         <!--  Ride Offer Section  -->
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_home_main_menu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
@@ -112,35 +113,53 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <com.google.android.material.tabs.TabLayout
-                    android:id="@+id/tabLayout"
-                    style="@style/CustomTabLayout"
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_home_main_menu_tab_container"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:elevation="6dp"
-                    android:minHeight="?attr/actionBarSize"
-                    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                    android:layout_marginStart="@dimen/ss_screen_width_margin"
+                    android:layout_marginTop="@dimen/ss_screen_top_margin"
+                    android:layout_marginEnd="@dimen/ss_screen_width_margin"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tabIndicator="@drawable/left_tab_background"
-                    app:tabIndicatorAnimationMode="elastic"
-                    app:tabIndicatorColor="?attr/colorTertiary"
-                    app:tabIndicatorGravity="center"
-                    app:tabIndicatorHeight="3dp"
-                    app:tabSelectedTextColor="?attr/colorOnTertiary"
-                    app:tabTextAppearance="@style/TabTextStyle" />
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.tabs.TabLayout
+                        android:id="@+id/tab_home_main_menu"
+                        style="@style/CustomTabLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentTop="true"
+                        android:background="?attr/colorSurfaceVariant"
+                        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:tabIndicator="?attr/colorSurfaceDim"
+                        app:tabIndicatorAnimationMode="elastic"
+                        app:tabIndicatorFullWidth="true"
+                        app:tabIndicatorGravity="stretch"
+                        app:tabMode="fixed"
+                        app:tabPaddingBottom="@dimen/ss_home_find_ride_tab_vertical_padding"
+                        app:tabPaddingTop="@dimen/ss_home_find_ride_tab_vertical_padding"
+                        app:tabSelectedTextColor="?attr/colorOnSecondary"
+                        app:tabTextAppearance="@style/TabTextStyle"
+                        app:tabTextColor="?attr/colorOnSurfaceVariant" />
+
+                </com.google.android.material.card.MaterialCardView>
 
                 <androidx.viewpager2.widget.ViewPager2
-                    android:id="@+id/viewPager"
+                    android:id="@+id/viewPager_home_main_menu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/tabLayout"
+                    android:layout_below="@id/card_home_main_menu_tab_container"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
+                    app:layout_constraintTop_toBottomOf="@+id/card_home_main_menu_tab_container" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.google.android.material.card.MaterialCardView>
