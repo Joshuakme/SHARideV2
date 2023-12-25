@@ -1,20 +1,18 @@
 package com.example.sharidev2.screen.chatroom
 
 import android.os.Bundle
-import android.provider.ContactsContract.Data
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentChatBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlin.properties.Delegates
+
 
 class ChatFragment : Fragment() {
     private lateinit var binding: FragmentChatBinding
@@ -31,7 +29,6 @@ class ChatFragment : Fragment() {
         val chatMessagesRecyclerView = binding.recyclerViewChatMessages
         val chatTextInput = binding.editTextMessagesChatInput
         val chatTextInputContainer = binding.llChatBottomNav
-        val testText = binding.textView3
 
 
         // LAYOUT SETTINGS
@@ -50,21 +47,20 @@ class ChatFragment : Fragment() {
                 // Get the number of lines in the EditText
                 val lineCount = chatTextInput.lineCount
 
-                testText.text = lineCount.toString()
-
                 // Set a maximum of 3 lines
                 val maxLines = 3
                 val minHeight = resources.getDimension(R.dimen.ss_messages_chat_bottom_nav_height).toInt()
 
                 // Calculate the height based on line count
-                val lineHeight = chatTextInput.lineHeight
-                var newHeight = 0
+                val lineHeight = chatTextInput.lineHeight   // 53dp
 
-                newHeight = when (lineCount) {
-                    1,2 -> minHeight
-                    else -> lineHeight * 4 + 20     // 4 lineHeight to display 3 lines of text, add 20dp to display complete 3 lines of text
+                val newHeight = if(lineCount in 1..3) {
+                    minHeight + (lineCount - 1) * lineHeight
+                } else if(lineCount > maxLines) {
+                    minHeight + maxLines * lineHeight
+                } else {
+                    minHeight
                 }
-
 
                 // Set the new height to the container
                 chatTextInputContainer.layoutParams.height = newHeight
