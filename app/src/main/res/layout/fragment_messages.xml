@@ -41,17 +41,22 @@
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/notification_icon"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        app:cardCornerRadius="10000dp">
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        app:cardBackgroundColor="@color/md_theme_dark_secondary"
+                        app:cardCornerRadius="10000dp"
+                        app:cardElevation="0dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
 
-                        <ImageView
-                            android:id="@+id/imageView"
+                        <ImageButton
+                            android:id="@+id/image_button_notification"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:scaleX="0.8"
-                            android:scaleY="0.8"
-                            app:srcCompat="@drawable/baseline_message_24" />
+                            android:background="#00FFFFFF"
+                            android:scaleX="1.1"
+                            android:scaleY="1.1"
+                            android:src="@drawable/baseline_message_24" />
                     </androidx.cardview.widget.CardView>
 
                     <TextView
@@ -86,7 +91,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Mon"
-                        app:layout_constraintEnd_toEndOf="parent" />
+                        android:textSize="12sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.cardview.widget.CardView>
@@ -128,7 +135,8 @@
                             android:clickable="false"
                             android:scaleX="2.4"
                             android:scaleY="2.4"
-                            android:src="@drawable/baseline_account_circle_24" />
+                            android:src="@drawable/baseline_account_circle_24"
+                            app:tint="?attr/colorTertiary" />
 
                     </androidx.cardview.widget.CardView>
 
