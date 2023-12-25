@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/ll_chat_nav"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:gravity="start|center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/ss_screen_width_margin"
+            android:paddingTop="@dimen/ss_screen_top_margin"
+            android:paddingEnd="@dimen/ss_screen_width_margin"
+            android:paddingBottom="@dimen/ss_screen_title_bottom_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageButton
+                android:id="@+id/img_btn_chat_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/ss_messages_chat_nav_back_right_padding"
+                android:background="#00FFFFFF"
+                android:scaleX="@dimen/ss_messages_chat_nav_icon_scale"
+                android:scaleY="@dimen/ss_messages_chat_nav_icon_scale"
+                android:src="@drawable/baseline_keyboard_backspace_24"
+                app:tint="?attr/colorOnPrimary" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_chat_nav_user_profile_container"
+                android:layout_width="@dimen/ss_messages_chat_nav_user_pic"
+                android:layout_height="@dimen/ss_messages_chat_nav_user_pic"
+                android:layout_marginEnd="@dimen/ss_messages_chat_nav_user_pic_right_padding"
+                app:cardBackgroundColor="#00FFFFFF"
+                app:strokeWidth="0dp">
+
+                <ImageView
+                    android:id="@+id/img_chat_nav_user_profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/baseline_account_circle_24"
+                    app:tint="?attr/colorTertiaryContainer" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:id="@+id/text_chat_nav_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_medium"
+                android:text="@string/placeholder_messages_chat_username"
+                android:textColor="?attr/colorOnPrimary"
+                android:textSize="@dimen/fs_messages_chat_nav_username" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_chat_messages"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/ll_chat_bottom_nav"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_chat_nav" />
+
+        <LinearLayout
+            android:id="@+id/ll_chat_bottom_nav"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorSurfaceContainerLowest"
+            android:gravity="center_vertical"
+            android:minHeight="@dimen/ss_messages_chat_bottom_nav_height"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/ss_messages_chat_bottom_nav_horizontal_padding"
+            android:paddingTop="@dimen/ss_messages_chat_bottom_nav_height_padding"
+            android:paddingEnd="@dimen/ss_messages_chat_bottom_nav_horizontal_padding"
+            android:paddingBottom="@dimen/ss_messages_chat_bottom_nav_height_padding"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageButton
+                android:id="@+id/img_btn_messages_chat_more_option"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/ss_messages_chat_bottom_nav_item_width_margin"
+                android:background="#00FFFFFF"
+                android:scaleX="@dimen/ss_messages_chat_nav_icon_scale"
+                android:scaleY="@dimen/ss_messages_chat_nav_icon_scale"
+                android:src="@drawable/baseline_add_24"
+                app:tint="?attr/colorOnSurface" />
+
+
+            <EditText
+                android:id="@+id/edit_text_messages_chat_input"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:autofillHints="@string/messages_messages_chat_input_hint"
+                android:background="@drawable/background_rounded"
+                android:backgroundTint="?attr/colorSurfaceContainerLow"
+                android:hint="@string/messages_messages_chat_input_hint"
+                android:inputType="textMultiLine"
+                android:paddingStart="@dimen/ss_messages_chat_bottom_nav_input_width_padding"
+                android:paddingEnd="@dimen/ss_messages_chat_bottom_nav_input_width_padding"
+                android:textSize="15sp" />
+
+            <ImageButton
+                android:id="@+id/img_btn_messages_chat_send"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/ss_messages_chat_bottom_nav_item_width_margin"
+                android:background="@drawable/background_rounded"
+                android:backgroundTint="?attr/colorPrimary"
+                android:padding="7dp"
+                android:src="@drawable/baseline_send_24"
+                app:tint="?attr/colorOnSurfaceInverse" />
+        </LinearLayout>
+
+        <TableLayout
+            android:id="@+id/table_layout_messages_chat_attachment_container"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="parent"
+            tools:visibility="gone">
+
+        </TableLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
