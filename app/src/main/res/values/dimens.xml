@@ -10,13 +10,17 @@
 
 
     <!--  Home Fragment  -->
-    <dimen name="ss_home_pic_size">55dp</dimen>
+    <dimen name="ss_home_nav_top_padding">48dp</dimen>
+    <dimen name="ss_home_pic_size">65dp</dimen>
     <dimen name="ss_home_input_field_width_margin">12dp</dimen>
     <dimen name="ss_home_input_field_bottom_margin">12dp</dimen>
     <dimen name="ss_home_input_field_vertical_padding">13dp</dimen>
     <dimen name="ss_home_input_field_horizontal_padding">16dp</dimen>
     <dimen name="ss_home_tab_vertical_padding">10dp</dimen>
     <dimen name="ss_home_cta_vertical_padding">10dp</dimen>
+    <dimen name="ss_home_nearby_rides_card_height">288dp</dimen>
+    <dimen name="ss_home_nearby_rides_card_width">240dp</dimen>
+    <dimen name="ss_home_nearby_rides_card_image_height">144dp</dimen>
 
 
     <!--  Messages Fragment  -->

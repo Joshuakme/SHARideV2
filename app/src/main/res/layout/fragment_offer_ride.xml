@@ -52,7 +52,7 @@
                             android:layout_marginStart="@dimen/ss_home_input_field_width_margin"
                             android:background="#00FFFFFF"
                             android:src="@drawable/baseline_trip_origin_24"
-                            app:tint="@color/md_theme_light_error" />
+                            app:tint="?attr/colorError" />
 
                         <TextView
                             android:id="@+id/text_offer_ride_pick_up_location"
@@ -99,7 +99,7 @@
                             android:layout_marginStart="@dimen/ss_home_input_field_width_margin"
                             android:background="#00FFFFFF"
                             android:src="@drawable/baseline_trip_origin_24"
-                            app:tint="@color/md_theme_dark_inversePrimary" />
+                            app:tint="?attr/colorPrimaryDark" />
 
                         <TextView
                             android:id="@+id/text_offer_ride_destination_location"

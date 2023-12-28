@@ -13,8 +13,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-242" />
-                            <option name="y" value="-318" />
+                            <option name="x" value="-244" />
+                            <option name="y" value="-358" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -29,6 +29,15 @@
                             <option name="y" value="88" />
                           </Point>
                         </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_chatFragment_to_messagesFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
                       </LayoutPositions>
                     </value>
                   </entry>
@@ -38,7 +47,7 @@
                         <option name="myPosition">
                           <Point>
                             <option name="x" value="-249" />
-                            <option name="y" value="-722" />
+                            <option name="y" value="-791" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -50,8 +59,17 @@
                         <option name="myPosition">
                           <Point>
                             <option name="x" value="-239" />
-                            <option name="y" value="82" />
+                            <option name="y" value="124" />
                           </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_messagesFragment_to_chatFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
                         </option>
                       </LayoutPositions>
                     </value>
@@ -61,8 +79,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-240" />
-                            <option name="y" value="460" />
+                            <option name="x" value="-237" />
+                            <option name="y" value="561" />
                           </Point>
                         </option>
                       </LayoutPositions>
