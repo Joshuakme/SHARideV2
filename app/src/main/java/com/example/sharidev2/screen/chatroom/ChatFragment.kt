@@ -3,12 +3,12 @@ package com.example.sharidev2.screen.chatroom
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentChatBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -26,6 +26,7 @@ class ChatFragment : Fragment() {
 
         // ELEMENTS
         val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        val navBackButton = binding.imgBtnChatBack
         val chatMessagesRecyclerView = binding.recyclerViewChatMessages
         val chatTextInput = binding.editTextMessagesChatInput
         val chatTextInputContainer = binding.llChatBottomNav
@@ -34,9 +35,16 @@ class ChatFragment : Fragment() {
         // LAYOUT SETTINGS
         bottomNav?.visibility = View.GONE
 
+        // Set Up RecyclerView
+        chatMessagesRecyclerView
 
 
         // EVENT LISTENERS
+        // Navigate back to Messages Fragment
+        navBackButton.setOnClickListener {
+            findNavController().navigate(R.id.action_chatFragment_to_messagesFragment)
+        }
+
         // Chat Text Input Height Adjust
         chatTextInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -52,12 +60,12 @@ class ChatFragment : Fragment() {
                 val minHeight = resources.getDimension(R.dimen.ss_messages_chat_bottom_nav_height).toInt()
 
                 // Calculate the height based on line count
-                val lineHeight = chatTextInput.lineHeight   // 53dp
+                val lineHeight = chatTextInput.lineHeight   // 53px
 
-                val newHeight = if(lineCount in 1..3) {
+                val newHeight = if(lineCount in 1..maxLines) {
                     minHeight + (lineCount - 1) * lineHeight
                 } else if(lineCount > maxLines) {
-                    minHeight + maxLines * lineHeight
+                    minHeight + (maxLines - 1) * lineHeight
                 } else {
                     minHeight
                 }

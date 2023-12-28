@@ -15,10 +15,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimaryVariant"
-            android:paddingTop="@dimen/ss_screen_top_margin"
+            android:paddingTop="@dimen/ss_home_nav_top_padding"
+            android:paddingBottom="64dp"
             android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteX="24dp"
             tools:visibility="visible">
 
             <!--  Profile Picture  -->
@@ -27,13 +29,10 @@
                 android:layout_width="@dimen/ss_home_pic_size"
                 android:layout_height="@dimen/ss_home_pic_size"
                 android:layout_marginStart="@dimen/ss_screen_width_margin"
-                android:layout_marginBottom="8dp"
                 app:cardBackgroundColor="#00FFFFFF"
                 app:cardCornerRadius="1000dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.5"
                 app:strokeColor="#00FFFFFF">
 
                 <ImageView
@@ -49,8 +48,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:fontFamily="@font/poppins_bold"
                 android:text="@string/home_fragment_welcome_user"
                 android:textColor="?attr/colorOnPrimary"
+                android:textSize="20sp"
                 app:layout_constraintBottom_toTopOf="@+id/img_home_welcome_user_location"
                 app:layout_constraintStart_toEndOf="@+id/card_home_user_profile_pic"
                 app:layout_constraintTop_toTopOf="@+id/card_home_user_profile_pic" />
@@ -60,10 +61,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:scaleX="0.8"
-                android:scaleY="0.8"
+                android:scaleX="0.9"
+                android:scaleY="0.9"
                 android:src="@drawable/outline_location_on_24"
-                android:translationY="-5dp"
+                android:translationY="-2dp"
                 app:layout_constraintBottom_toBottomOf="@+id/card_home_user_profile_pic"
                 app:layout_constraintStart_toEndOf="@+id/card_home_user_profile_pic"
                 app:layout_constraintTop_toBottomOf="@+id/text_home_welcome_user"
@@ -75,6 +76,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/home_fragment_welcome_user_area"
                 android:textColor="?attr/colorOnPrimary"
+                android:textSize="16sp"
                 app:layout_constraintStart_toEndOf="@+id/img_home_welcome_user_location"
                 app:layout_constraintTop_toBottomOf="@+id/text_home_welcome_user" />
 
@@ -87,84 +89,335 @@
             class="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cl_home_user_info"
-            tools:visibility="visible" />
+            tools:visibility="gone" />
+
+        <!--  Ride Search Bar  -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_home_search_bar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/ss_screen_width_margin"
+            android:layout_marginEnd="@dimen/ss_screen_width_margin"
+            android:translationY="-27dp"
+            app:cardBackgroundColor="?attr/colorOnPrimarySurface"
+            app:cardCornerRadius="100000dp"
+            app:cardElevation="3dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cl_home_user_info"
+            app:strokeWidth="0dp">
+
+            <LinearLayout
+                android:id="@+id/ll_home_search_bar_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="14dp">
+
+                <EditText
+                    android:id="@+id/edit_text_home_search_bar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:hint="@string/home_fragment_search_hint"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:padding="0dp"
+                    android:textSize="14sp" />
+
+                <ImageButton
+                    android:id="@+id/img_btn_home_seearch_bar_foward"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#00FFFFFF"
+                    android:cropToPadding="false"
+                    android:src="@drawable/baseline_arrow_forward_24" />
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/text_home_nearby_rides_section"
+            style="@style/text_section_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/ss_screen_width_margin"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="@dimen/ss_screen_width_margin"
+            android:text="@string/home_section_nearby_rides_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/card_home_search_bar" />
+
+        <HorizontalScrollView
+            android:id="@+id/horizontalScrollView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:scrollIndicators="none"
+            android:scrollbarSize="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_home_nearby_rides_section">
+
+            <LinearLayout
+                android:id="@+id/ll_home_nearby_rides_container"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                android:padding="2dp"
+                android:paddingStart="@dimen/ss_screen_width_margin">
+
+                <!--  Card 1  -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="@dimen/ss_home_nearby_rides_card_width"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="3dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingBottom="8dp">
+
+                        <androidx.cardview.widget.CardView
+                            style="@style/ImageCardViewStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/ss_home_nearby_rides_card_image_height"
+                            android:layout_marginBottom="8dp">
+
+                            <ImageView
+                                android:id="@+id/imageView"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:scaleType="fitXY"
+                                app:srcCompat="@drawable/ride_to_downtown" />
+                        </androidx.cardview.widget.CardView>
+
+
+                        <TextView
+                            android:id="@+id/textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:fontFamily="@font/poppins_semibold"
+                            android:text="Ride to Downtown" />
+
+                        <TextView
+                            android:id="@+id/textView2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:text="2 km away"
+                            android:textColor="@android:color/system_neutral2_500"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!--  Card 2  -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="@dimen/ss_home_nearby_rides_card_width"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="3dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingBottom="8dp">
+
+                        <androidx.cardview.widget.CardView
+                            style="@style/ImageCardViewStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/ss_home_nearby_rides_card_image_height"
+                            android:layout_marginBottom="8dp">
+
+                            <ImageView
+                                android:id="@+id/imageView2"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:scaleType="fitXY"
+                                app:srcCompat="@drawable/ride_to_downtown" />
+                        </androidx.cardview.widget.CardView>
+
+
+                        <TextView
+                            android:id="@+id/textView3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:fontFamily="@font/poppins_semibold"
+                            android:text="Ride to Downtown" />
+
+                        <TextView
+                            android:id="@+id/textView4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:text="2 km away"
+                            android:textColor="@android:color/system_neutral2_500"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!--  Card 3  -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="@dimen/ss_home_nearby_rides_card_width"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="3dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingBottom="8dp">
+
+                        <androidx.cardview.widget.CardView
+                            style="@style/ImageCardViewStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/ss_home_nearby_rides_card_image_height"
+                            android:layout_marginBottom="8dp">
+
+                            <ImageView
+                                android:id="@+id/imageView3"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:scaleType="fitXY"
+                                app:srcCompat="@drawable/ride_to_downtown" />
+                        </androidx.cardview.widget.CardView>
+
+
+                        <TextView
+                            android:id="@+id/textView5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:fontFamily="@font/poppins_semibold"
+                            android:text="Ride to Downtown" />
+
+                        <TextView
+                            android:id="@+id/textView6"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:text="2 km away"
+                            android:textColor="@android:color/system_neutral2_500"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <TextView
+            android:id="@+id/text_home_recent_rides_section"
+            style="@style/text_section_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/ss_screen_width_margin"
+            android:layout_marginTop="43dp"
+            android:layout_marginEnd="@dimen/ss_screen_width_margin"
+            android:text="@string/home_section_recent_rides_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView" />
 
 
         <!--  Ride Offer Section  -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_home_main_menu"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
-            app:cardCornerRadius="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.5"
-            app:layout_constraintHeight_percent="0.6" >
+<!--        <com.google.android.material.card.MaterialCardView-->
+<!--            android:id="@+id/card_home_main_menu"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:layout_marginStart="32dp"-->
+<!--            android:layout_marginEnd="32dp"-->
+<!--            app:cardCornerRadius="8dp"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintVertical_bias="0.5"-->
+<!--            app:layout_constraintHeight_percent="0.6" >-->
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent">-->
 
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_home_main_menu_tab_container"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/ss_screen_width_margin"
-                    android:layout_marginTop="@dimen/ss_screen_top_margin"
-                    android:layout_marginEnd="@dimen/ss_screen_width_margin"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="4dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+<!--                <com.google.android.material.card.MaterialCardView-->
+<!--                    android:id="@+id/card_home_main_menu_tab_container"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginStart="@dimen/ss_screen_width_margin"-->
+<!--                    android:layout_marginTop="@dimen/ss_screen_top_margin"-->
+<!--                    android:layout_marginEnd="@dimen/ss_screen_width_margin"-->
+<!--                    app:cardCornerRadius="8dp"-->
+<!--                    app:cardElevation="4dp"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent">-->
 
-                    <com.google.android.material.tabs.TabLayout
-                        android:id="@+id/tab_home_main_menu"
-                        style="@style/CustomTabLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentTop="true"
-                        android:background="?attr/colorSurfaceVariant"
-                        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:tabIndicator="?attr/colorSurfaceDim"
-                        app:tabIndicatorAnimationMode="elastic"
-                        app:tabIndicatorFullWidth="true"
-                        app:tabIndicatorGravity="stretch"
-                        app:tabMode="fixed"
-                        app:tabPaddingBottom="@dimen/ss_home_tab_vertical_padding"
-                        app:tabPaddingTop="@dimen/ss_home_tab_vertical_padding"
-                        app:tabSelectedTextColor="?attr/colorOnSecondary"
-                        app:tabTextAppearance="@style/TabTextStyle"
-                        app:tabTextColor="?attr/colorOnSurfaceVariant" />
+<!--                    <com.google.android.material.tabs.TabLayout-->
+<!--                        android:id="@+id/tab_home_main_menu"-->
+<!--                        style="@style/CustomTabLayout"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:layout_alignParentTop="true"-->
+<!--                        android:background="?attr/colorSurfaceVariant"-->
+<!--                        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"-->
+<!--                        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                        app:layout_constraintEnd_toEndOf="parent"-->
+<!--                        app:layout_constraintStart_toStartOf="parent"-->
+<!--                        app:layout_constraintTop_toTopOf="parent"-->
+<!--                        app:tabIndicator="?attr/colorSurfaceDim"-->
+<!--                        app:tabIndicatorAnimationMode="elastic"-->
+<!--                        app:tabIndicatorFullWidth="true"-->
+<!--                        app:tabIndicatorGravity="stretch"-->
+<!--                        app:tabMode="fixed"-->
+<!--                        app:tabPaddingBottom="@dimen/ss_home_tab_vertical_padding"-->
+<!--                        app:tabPaddingTop="@dimen/ss_home_tab_vertical_padding"-->
+<!--                        app:tabSelectedTextColor="?attr/colorOnSecondary"-->
+<!--                        app:tabTextAppearance="@style/TabTextStyle"-->
+<!--                        app:tabTextColor="?attr/colorOnSurfaceVariant" />-->
 
-                </com.google.android.material.card.MaterialCardView>
+<!--                </com.google.android.material.card.MaterialCardView>-->
 
-                <androidx.viewpager2.widget.ViewPager2
-                    android:id="@+id/viewPager_home_main_menu"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_below="@id/card_home_main_menu_tab_container"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/card_home_main_menu_tab_container" />
+<!--                <androidx.viewpager2.widget.ViewPager2-->
+<!--                    android:id="@+id/viewPager_home_main_menu"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="0dp"-->
+<!--                    android:layout_below="@id/card_home_main_menu_tab_container"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toBottomOf="@+id/card_home_main_menu_tab_container" />-->
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
 
-        </com.google.android.material.card.MaterialCardView>
+<!--        </com.google.android.material.card.MaterialCardView>-->
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
