@@ -21,6 +21,10 @@
     <string name="home_fragment_offer_ride_cta">Offer Ride</string>
     <string name="home_fragment_offer_ride_continue_cta">Continue</string>
     <string name="home_fragment_offer_ride_vehicle">Vehicle</string>
+    <string name="home_fragment_search_hint">Enter destination or starting point</string>
+    <string name="home_section_nearby_rides_title">Nearby rides</string>
+    <string name="home_section_recent_rides_title">Recent rides</string>
+
 
     <!--  Booking Fragment  -->
     <string name="booking_fragment_title_booking">Booking</string>

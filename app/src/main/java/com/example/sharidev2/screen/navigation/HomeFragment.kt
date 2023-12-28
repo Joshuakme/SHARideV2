@@ -35,38 +35,41 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         val mapFragment = childFragmentManager.findFragmentById(R.id.map_home_container) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        val tabLayout: TabLayout = binding.tabHomeMainMenu
-        val viewPager: ViewPager2 = binding.viewPagerHomeMainMenu
+        // ELEMENT VARIABLES
+//        val tabLayout: TabLayout = binding.tabHomeMainMenu
+//        val viewPager: ViewPager2 = binding.viewPagerHomeMainMenu
 
+        // Set up adapter
         val pagerAdapter = RidePagerAdapter(this)
-        viewPager.adapter = pagerAdapter
-
-        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            when (position) {
-                0 -> {
-                    tab.text = "Find Ride"
-                    tab.customView = null  // Reset custom view
-                    tab.view?.minimumWidth = 0  // Reset minimum width
-                    tab.view?.layoutParams = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT
-                    )
-                }
-                1 -> {
-                    tab.text = "Offer Ride"
-                    tab.customView = null  // Reset custom view
-                    tab.view?.minimumWidth = 0  // Reset minimum width
-                    tab.view?.layoutParams = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT
-                    )
-                }
-            }
-        }.attach()
-
-
-        // Select the default tab (e.g., the first tab)
-        tabLayout.getTabAt(0)?.select()
+//        viewPager.adapter = pagerAdapter
+//
+//        // Set up mediator
+//        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+//            when (position) {
+//                0 -> {
+//                    tab.text = "Find Ride"
+//                    tab.customView = null  // Reset custom view
+//                    tab.view?.minimumWidth = 0  // Reset minimum width
+//                    tab.view?.layoutParams = LinearLayout.LayoutParams(
+//                        LinearLayout.LayoutParams.WRAP_CONTENT,
+//                        LinearLayout.LayoutParams.MATCH_PARENT
+//                    )
+//                }
+//                1 -> {
+//                    tab.text = "Offer Ride"
+//                    tab.customView = null  // Reset custom view
+//                    tab.view?.minimumWidth = 0  // Reset minimum width
+//                    tab.view?.layoutParams = LinearLayout.LayoutParams(
+//                        LinearLayout.LayoutParams.WRAP_CONTENT,
+//                        LinearLayout.LayoutParams.MATCH_PARENT
+//                    )
+//                }
+//            }
+//        }.attach()
+//
+//
+//        // Select the default tab (e.g., the first tab)
+//        tabLayout.getTabAt(0)?.select()
 
 
 
