@@ -256,7 +256,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
                                 android:scaleType="fitXY"
-                                app:srcCompat="@drawable/ride_to_downtown" />
+                                app:srcCompat="@drawable/ride_to_airport" />
                         </androidx.cardview.widget.CardView>
 
 
@@ -267,7 +267,7 @@
                             android:layout_marginStart="16dp"
                             android:layout_marginEnd="16dp"
                             android:fontFamily="@font/poppins_semibold"
-                            android:text="Ride to Downtown" />
+                            android:text="Ride to Airport" />
 
                         <TextView
                             android:id="@+id/textView4"
