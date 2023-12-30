@@ -1,10 +1,13 @@
 package com.example.sharidev2.screen.home
 
+import android.graphics.Color
 import android.os.Bundle
+import android.util.TypedValue
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
 import com.example.sharidev2.R
@@ -23,6 +26,43 @@ class SearchFragment : Fragment() {
 
         // ELEMENT VARIABLES
         val backBtn = binding.imgBtnSearchBack
+        val pickUpLocationEditText = binding.editTextOfferRidePickUpLocation
+        val pickUpLocationEditTextCard = binding.cardOfferRidePickUpLocation
+        val destinationLocationEditText = binding.editTextOfferRideDestinationLocation
+        val destinationLocationEditTextCard = binding.cardOfferRideDestinationLocation
+
+
+        // BEHAVIOUR EVENT LISTENERS
+        // Get the color value programmatically
+        // Create a TypedValue object to hold the resolved attribute value
+        val typedValue = TypedValue()
+
+        // Resolve the attribute to get the color value programmatically
+        context?.theme?.resolveAttribute(com.google.android.material.R.attr.colorSurfaceContainer, typedValue, true)
+        val colorSurfaceContainer = typedValue.data
+
+        pickUpLocationEditText.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                // Change background color when focused
+                pickUpLocationEditTextCard.setCardBackgroundColor(colorSurfaceContainer)
+                destinationLocationEditTextCard.setCardBackgroundColor(Color.TRANSPARENT)
+            } else {
+                // Change background color when not focused
+                pickUpLocationEditTextCard.setCardBackgroundColor(Color.TRANSPARENT)
+            }
+        }
+
+        destinationLocationEditText.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                // Change background color when focused
+                destinationLocationEditTextCard.setCardBackgroundColor(colorSurfaceContainer)
+                pickUpLocationEditTextCard.setCardBackgroundColor(Color.TRANSPARENT)
+            } else {
+                // Change background color when not focused
+                destinationLocationEditTextCard.setCardBackgroundColor(Color.TRANSPARENT)
+            }
+        }
+
 
         // NAVIGATION EVENT LISTENERS
         // Search Fragment -> Home Fragment
