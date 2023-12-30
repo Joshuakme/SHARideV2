@@ -2,23 +2,25 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-    <androidx.core.widget.NestedScrollView
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".screen.navigation.MessagesFragment">
+        android:paddingLeft="@dimen/ss_screen_width_margin"
+        android:paddingRight="@dimen/ss_screen_width_margin">
 
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:layout_marginLeft="@dimen/ss_screen_width_margin"
             android:layout_marginRight="@dimen/ss_screen_width_margin"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/text_fragment_title_messages"
-                android:text="@string/messages_fragment_title_messages"
-                style="@style/text_fragment_title" />
+                style="@style/text_fragment_title"
+                android:text="@string/messages_fragment_title_messages" />
 
             <TextView
                 android:id="@+id/text_messages_section_title_notification"
@@ -29,15 +31,16 @@
 
             <!--  Notification  -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/card_notification"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/ss_section_bottom_margin"
                 app:cardBackgroundColor="#00FFFFFF"
                 app:cardElevation="0dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="16dp">
+                    android:layout_height="match_parent">
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/notification_icon"
@@ -66,7 +69,7 @@
                         android:layout_marginStart="16dp"
                         android:fontFamily="@font/poppins_semibold"
                         android:text="Notification Title"
-                        android:textSize="13sp"
+                        android:textSize="16sp"
                         app:layout_constraintBottom_toTopOf="@+id/text_notification_desc"
                         app:layout_constraintEnd_toStartOf="@+id/text_notification_day"
                         app:layout_constraintStart_toEndOf="@+id/notification_icon"
@@ -80,7 +83,8 @@
                         android:layout_marginEnd="32dp"
                         android:layout_marginBottom="16dp"
                         android:text="Notification Description"
-                        android:textSize="12sp"
+                        android:textColor="@color/system_neutral2_500"
+                        android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="@+id/notification_icon"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/notification_icon"
@@ -98,6 +102,7 @@
 
             </androidx.cardview.widget.CardView>
 
+            <!--  Chat  -->
             <TextView
                 android:id="@+id/text_messages_section_title_chat"
                 style="@style/text_section_title"
@@ -160,6 +165,7 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginEnd="32dp"
                         android:text="Hi, I'm Ali. Nice to meet you."
+                        android:textColor="@color/system_neutral2_500"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="@+id/chat_icon"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -181,7 +187,55 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_chat"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:listitem="@layout/recycler_item_messages_chat"
+                tools:visibility="gone" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_error_load_chat"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:cardBackgroundColor="#00FFFFFF"
+                app:cardCornerRadius="0dp"
+                app:cardForegroundColor="#00FFFFFF"
+                app:layout_constraintHeight_default="percent"
+                app:layout_constraintHeight_percent="0.5"
+                app:strokeColor="#00FFFFFF">
+
+                <TextView
+                    android:id="@+id/text_error_load_chat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/messages_messages_error_loading"
+                    android:textColor="@android:color/system_neutral1_500"
+                    android:textSize="@dimen/fs_fragment_loading_error_text" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!--  Progress Bar  -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_chat_loading_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="470dp"
+                android:visibility="gone"
+                tools:visibility="gone">
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="@android:style/Widget.Holo.Light.ProgressBar.Inverse"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.5" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </layout>
