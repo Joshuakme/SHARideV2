@@ -26,6 +26,54 @@
             android:layout_height="wrap_content"
             android:text="@string/booking_section_title_recent" />
 
+        <!--  Example Placeholder  -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:id="@+id/text_booking_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_medium"
+                android:text="@string/placeholder_booking_recycler_item_title"
+                android:textColor="?attr/colorOnBackground"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/text_booking_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/placeholder_booking_recycler_item_date"
+                android:textColor="@color/system_neutral2_500"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_booking_title" />
+
+            <TextView
+                android:id="@+id/text_booking_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins"
+                android:text="@string/placeholder_booking_recycler_item_price"
+                android:textColor="?attr/colorError"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/divider_booking_item"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_booking_date" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_booking"
             android:layout_width="match_parent"
@@ -36,7 +84,7 @@
 
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_error_load_chat"
+            android:id="@+id/card_error_load_booking_history"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:cardBackgroundColor="#00FFFFFF"
@@ -47,11 +95,12 @@
             app:strokeColor="#00FFFFFF">
 
             <TextView
-                android:id="@+id/text_error_load_chat"
+                android:id="@+id/text_error_load_booking"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="@string/booking_error_loading"
+                android:textColor="@color/system_neutral2_600"
                 android:textSize="@dimen/fs_fragment_loading_error_text" />
 
         </com.google.android.material.card.MaterialCardView>
