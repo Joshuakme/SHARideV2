@@ -230,7 +230,7 @@
                             android:layout_marginStart="16dp"
                             android:layout_marginEnd="16dp"
                             android:text="2 km away"
-                            android:textColor="@android:color/system_neutral2_500"
+                            android:textColor="@color/system_neutral2_600"
                             android:textSize="12sp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -282,7 +282,7 @@
                             android:layout_marginStart="16dp"
                             android:layout_marginEnd="16dp"
                             android:text="2 km away"
-                            android:textColor="@android:color/system_neutral2_500"
+                            android:textColor="@color/system_neutral2_600"
                             android:textSize="12sp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -334,7 +334,7 @@
                             android:layout_marginStart="16dp"
                             android:layout_marginEnd="16dp"
                             android:text="2 km away"
-                            android:textColor="@android:color/system_neutral2_500"
+                            android:textColor="@color/system_neutral2_600"
                             android:textSize="12sp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
