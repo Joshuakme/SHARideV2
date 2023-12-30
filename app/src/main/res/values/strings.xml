@@ -79,7 +79,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="placeholder_booking_recycler_item_title">Ride to The Exchange TRX</string>
-    <string name="placeholder_booking_recycler_item_date">30, Nov, 11:30</string>
+    <string name="placeholder_booking_recycler_item_date">30 Nov, 11:30</string>
     <string name="placeholder_booking_recycler_item_price">RM 7.00</string>
 
     <string name="placeholder_messages_chat_username">Ali</string>
