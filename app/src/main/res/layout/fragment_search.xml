@@ -110,7 +110,8 @@
                         android:paddingEnd="8dp"
                         android:paddingRight="8dp"
                         android:paddingBottom="2dp"
-                        android:src="@drawable/baseline_steering_24" />
+                        android:src="@drawable/baseline_steering_24"
+                        app:tint="?attr/colorOnBackground" />
 
                     <TextView
                         android:id="@+id/text_search_change_role"
