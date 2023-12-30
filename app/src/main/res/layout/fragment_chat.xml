@@ -30,7 +30,7 @@
                 android:background="#00FFFFFF"
                 android:scaleX="@dimen/ss_messages_chat_nav_icon_scale"
                 android:scaleY="@dimen/ss_messages_chat_nav_icon_scale"
-                android:src="@drawable/baseline_keyboard_backspace_24"
+                android:src="@drawable/baseline_arrow_back_24"
                 app:tint="?attr/colorOnPrimary" />
 
             <com.google.android.material.card.MaterialCardView

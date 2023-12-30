@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.example.sharidev2.R
 import com.example.sharidev2.adapter.RidePagerAdapter
@@ -38,6 +39,16 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         // ELEMENT VARIABLES
 //        val tabLayout: TabLayout = binding.tabHomeMainMenu
 //        val viewPager: ViewPager2 = binding.viewPagerHomeMainMenu
+        val searchBarBtn = binding.cardHomeSearchBar
+
+
+        // NAVIGATION EVENT LISTENERS
+        // Home Fragment -> Search Fragment
+        searchBarBtn.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_searchFragment)
+        }
+
+
 
         // Set up adapter
         val pagerAdapter = RidePagerAdapter(this)

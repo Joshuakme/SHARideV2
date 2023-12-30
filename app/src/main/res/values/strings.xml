@@ -25,6 +25,25 @@
     <string name="home_section_recent_rides_title">Recent rides</string>
     <string name="home_section_categories_rides_title">Categories</string>
 
+    <!--  Home: Search Fragment  -->
+    <string name="search_fragment_change_role_to_driver">Driver</string>
+    <string name="search_fragment_change_role_to_passenger">Passenger</string>
+    <string-array name="malaysia_state_array">
+        <item>Johor</item>
+        <item>Kedah</item>
+        <item>Kelantan</item>
+        <item>Kuala Lumpur</item>
+        <item>Negeri Sembilan</item>
+        <item>Pahang</item>
+        <item>Penang</item>
+        <item>Perak</item>
+        <item>Perlis</item>
+        <item>Sabah</item>
+        <item>Sarawak</item>
+        <item>Selangor</item>
+        <item>Terengganu</item>
+    </string-array>
+
 
     <!--  Booking Fragment  -->
     <string name="booking_fragment_title_booking">Booking</string>
