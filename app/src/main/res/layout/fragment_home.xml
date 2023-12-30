@@ -184,12 +184,13 @@
                 android:paddingStart="@dimen/ss_screen_width_margin">
 
                 <!--  Card 1  -->
-                <androidx.cardview.widget.CardView
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="@dimen/ss_home_recent_rides_card_width"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
                     app:cardCornerRadius="16dp"
-                    app:cardElevation="3dp">
+                    app:cardElevation="3dp"
+                    app:strokeWidth="0dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -232,15 +233,16 @@
                             android:textColor="@android:color/system_neutral2_500"
                             android:textSize="12sp" />
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
+                </com.google.android.material.card.MaterialCardView>
 
                 <!--  Card 2  -->
-                <androidx.cardview.widget.CardView
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="@dimen/ss_home_recent_rides_card_width"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
                     app:cardCornerRadius="16dp"
-                    app:cardElevation="3dp">
+                    app:cardElevation="3dp"
+                    app:strokeWidth="0dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -283,15 +285,16 @@
                             android:textColor="@android:color/system_neutral2_500"
                             android:textSize="12sp" />
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
+                </com.google.android.material.card.MaterialCardView>
 
                 <!--  Card 3  -->
-                <androidx.cardview.widget.CardView
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="@dimen/ss_home_recent_rides_card_width"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
                     app:cardCornerRadius="16dp"
-                    app:cardElevation="3dp">
+                    app:cardElevation="3dp"
+                    app:strokeWidth="0dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -334,7 +337,7 @@
                             android:textColor="@android:color/system_neutral2_500"
                             android:textSize="12sp" />
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
+                </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
         </HorizontalScrollView>
 
@@ -367,11 +370,12 @@
             app:layout_constraintTop_toBottomOf="@+id/text_home_recent_rides_section">
 
             <!--  Card 1: Shopping Mall  -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="#00FFFFFF"
-                app:cardElevation="0dp">
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -402,7 +406,7 @@
                         android:text="Mall" />
                 </LinearLayout>
 
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <Space
                 android:layout_width="0dp"
@@ -410,11 +414,12 @@
                 android:layout_weight="1" />
 
             <!--  Card 2: Airport  -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="#00FFFFFF"
-                app:cardElevation="0dp">
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -445,7 +450,7 @@
                         android:text="Airport" />
                 </LinearLayout>
 
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <Space
                 android:layout_width="0dp"
@@ -453,11 +458,12 @@
                 android:layout_weight="1" />
 
             <!--  Card 3: Station  -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="#00FFFFFF"
-                app:cardElevation="0dp">
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -488,7 +494,7 @@
                         android:text="Station" />
                 </LinearLayout>
 
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <Space
                 android:layout_width="0dp"
@@ -497,11 +503,12 @@
 
 
             <!--  Card 4: Unknown  -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="#00FFFFFF"
-                app:cardElevation="0dp">
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -532,7 +539,7 @@
                         android:text="Unknown" />
                 </LinearLayout>
 
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
 
