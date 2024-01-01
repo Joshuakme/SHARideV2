@@ -9,12 +9,14 @@ import android.widget.LinearLayout
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
+import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.adapter.RidePagerAdapter
 import com.example.sharidev2.databinding.FragmentHomeBinding
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -40,6 +42,12 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 //        val tabLayout: TabLayout = binding.tabHomeMainMenu
 //        val viewPager: ViewPager2 = binding.viewPagerHomeMainMenu
         val searchBarBtn = binding.cardHomeSearchBar
+        val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)
+
+
+        // LAYOUT SETTINGS
+        bottomNav?.visibility = View.VISIBLE
+
 
 
         // NAVIGATION EVENT LISTENERS

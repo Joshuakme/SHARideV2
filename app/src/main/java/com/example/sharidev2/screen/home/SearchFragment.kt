@@ -3,19 +3,22 @@ package com.example.sharidev2.screen.home
 import android.graphics.Color
 import android.os.Bundle
 import android.util.TypedValue
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentSearchBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
+
 
 class SearchFragment : Fragment() {
     // Variables Init
     private lateinit var binding: FragmentSearchBinding
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,11 +28,17 @@ class SearchFragment : Fragment() {
 
 
         // ELEMENT VARIABLES
+        val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)
         val backBtn = binding.imgBtnSearchBack
         val pickUpLocationEditText = binding.editTextOfferRidePickUpLocation
         val pickUpLocationEditTextCard = binding.cardOfferRidePickUpLocation
         val destinationLocationEditText = binding.editTextOfferRideDestinationLocation
         val destinationLocationEditTextCard = binding.cardOfferRideDestinationLocation
+
+
+        // LAYOUT SETTINGS
+        bottomNav?.visibility = View.GONE
+
 
 
         // BEHAVIOUR EVENT LISTENERS
@@ -72,6 +81,7 @@ class SearchFragment : Fragment() {
 
         return binding.root
     }
+
 
 
 }
