@@ -18,6 +18,14 @@
         <item name="android:textSize">@dimen/fs_fragment_title</item>
     </style>
 
+    <style name="text_fragment_title_profile">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:textSize">@dimen/fs_profile_subfragment_title</item>
+    </style>
+
     <!--  Home: TabLayout Style  -->
     <!-- Style for the text appearance of the tabs -->
     <style name="TabTextStyle" parent="TextAppearance.Design.Tab">
