@@ -16,7 +16,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class SearchFragment : Fragment() {
-    // Variables Init
+    // Global Variables Init
     private lateinit var binding: FragmentSearchBinding
 
 
