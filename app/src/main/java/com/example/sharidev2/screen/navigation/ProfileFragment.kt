@@ -48,8 +48,7 @@ class ProfileFragment : Fragment() {
 
         // Profile Fragment -> Payment Method Fragment
         paymentMethodBtn.setOnClickListener {
-            // TODO: Set up nav graph (payment method)
-            // findNavController().navigate(R.id.action_profileFragment_to_personalInformationFragment)
+             findNavController().navigate(R.id.action_profileFragment_to_paymentMethodFragment)
         }
 
         // Profile Fragment -> Addresses Fragment

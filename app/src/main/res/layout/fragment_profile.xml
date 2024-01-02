@@ -18,7 +18,7 @@
                 android:id="@+id/card_profile_background"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="24dp"
                 app:cardBackgroundColor="?attr/colorPrimary"
                 app:cardElevation="0dp"
                 app:layout_constraintBottom_toTopOf="@+id/ll_my_account"
@@ -59,26 +59,26 @@
                 app:layout_constraintTop_toTopOf="@+id/cardView">
 
                 <TextView
-                    android:id="@+id/profile_name"
+                    android:id="@+id/text_profile_display_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:contentDescription="User Name"
                     android:fontFamily="@font/poppins_semibold"
                     android:includeFontPadding="false"
-                    android:text="Jason Yip"
+                    android:text="@string/placeholder_profile_user_display_name"
                     android:textColor="?attr/colorOnPrimary"
                     android:textSize="24sp" />
 
                 <TextView
-                    android:id="@+id/profile_email"
+                    android:id="@+id/text_profile_user_id"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:contentDescription="User ID"
                     android:fontFamily="@font/poppins"
                     android:includeFontPadding="false"
-                    android:text="\@jasonyip06"
+                    android:text="@string/placeholder_profile_user_userid"
                     android:textColor="?android:attr/textColorSecondaryInverse"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -89,7 +89,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/ss_screen_width_margin"
-                android:layout_marginTop="@dimen/ss_section_bottom_margin"
+                android:layout_marginTop="40dp"
                 android:layout_marginEnd="@dimen/ss_screen_width_margin"
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -291,7 +291,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/ss_screen_width_margin"
-                android:layout_marginTop="@dimen/ss_section_bottom_margin"
+                android:layout_marginTop="24dp"
                 android:layout_marginEnd="@dimen/ss_screen_width_margin"
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
