@@ -73,11 +73,11 @@
                         android:background="#00FFFFFF"
                         android:fontFamily="@font/poppins_medium"
                         android:hint="@string/home_fragment_pick_up_location"
+                        android:maxLines="1"
                         android:paddingStart="@dimen/ss_home_input_field_horizontal_padding"
                         android:paddingTop="@dimen/ss_home_input_field_vertical_padding"
                         android:paddingEnd="@dimen/ss_home_input_field_horizontal_padding"
                         android:paddingBottom="@dimen/ss_home_input_field_vertical_padding"
-                        android:textColor="@color/system_neutral2_600"
                         android:textSize="14sp" />
 
                 </LinearLayout>
@@ -181,11 +181,12 @@
                         android:background="#00FFFFFF"
                         android:fontFamily="@font/poppins_medium"
                         android:hint="@string/home_fragment_destination_location"
+                        android:maxLines="1"
                         android:paddingStart="@dimen/ss_home_input_field_horizontal_padding"
                         android:paddingTop="@dimen/ss_home_input_field_vertical_padding"
                         android:paddingEnd="@dimen/ss_home_input_field_horizontal_padding"
                         android:paddingBottom="@dimen/ss_home_input_field_vertical_padding"
-                        android:textColor="@color/system_neutral2_600"
+                        android:textColorHint="?android:attr/textColorHint"
                         android:textSize="14sp" />
                 </LinearLayout>
 
