@@ -15,6 +15,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class ChatFragment : Fragment() {
+    // Global Variables Init
     private lateinit var binding: FragmentChatBinding
     override fun onCreateView(
         inflater: LayoutInflater,

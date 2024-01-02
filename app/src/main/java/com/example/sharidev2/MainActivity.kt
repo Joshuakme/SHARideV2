@@ -45,7 +45,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
     // UTILITIES METHODS
     private fun setWindowFlag(bits: Int, on: Boolean) {
         val win = window
@@ -56,14 +55,5 @@ class MainActivity : AppCompatActivity() {
             winParams.flags = winParams.flags and bits.inv()
         }
         win.attributes = winParams
-    }
-
-    fun getStatusBarHeight(context: Context): Int {
-        var result = 0
-        val resourceId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
-        if (resourceId > 0) {
-            result = context.resources.getDimensionPixelSize(resourceId)
-        }
-        return result
     }
 }

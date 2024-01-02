@@ -150,7 +150,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:fontFamily="@font/poppins_semibold"
+                        android:fontFamily="@font/poppins_medium"
                         android:text="Ali"
                         android:textSize="16sp"
                         app:layout_constraintBottom_toTopOf="@+id/text_chat_desc"
@@ -176,7 +176,8 @@
                         android:id="@+id/text_chat_day"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="17 Dec"
+                        android:text="2023-12-07"
+                        android:textColor="@color/system_neutral2_500"
                         android:textSize="12sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
