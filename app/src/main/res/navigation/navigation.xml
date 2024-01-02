@@ -31,6 +31,9 @@
         <action
             android:id="@+id/action_profileFragment_to_personalInformationFragment"
             app:destination="@id/personalInformationFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_paymentMethodFragment"
+            app:destination="@id/paymentMethodFragment" />
     </fragment>
     <fragment
         android:id="@+id/bookingFragment"
@@ -62,6 +65,14 @@
         android:label="PersonalInformationFragment" >
         <action
             android:id="@+id/action_personalInformationFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/paymentMethodFragment"
+        android:name="com.example.sharidev2.screen.profile.PaymentMethodFragment"
+        android:label="PaymentMethodFragment" >
+        <action
+            android:id="@+id/action_paymentMethodFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
     </fragment>
 </navigation>
