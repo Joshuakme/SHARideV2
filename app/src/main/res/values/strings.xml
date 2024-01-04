@@ -93,7 +93,7 @@
     <string name="login_fragment_btn_login_with_mobile_number">Continue With Mobile Number</string>
     <string name="login_fragment_input_mobile_number_hint">Enter phone number</string>
     <string name="login_fragment_input_verify_code_hint">Enter verification code</string>
-    <string name="login_fragment_btn_verify_code_resend_countdown">Resend(30s)</string>
+    <string name="login_fragment_btn_verify_code_resend_countdown">Resend(%1$d)</string>
     <string name="login_fragment_btn_verify_code_resend">Resend</string>
     <string name="login_fragment_divider_or">OR</string>
     <string name="login_fragment_btn_login">Log in</string>
