@@ -62,6 +62,18 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="loginFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="243" />
+                            <option name="y" value="541" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="messagesFragment">
                     <value>
                       <LayoutPositions>
@@ -91,6 +103,15 @@
                             <option name="x" value="229" />
                             <option name="y" value="1224" />
                           </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_paymentMethodFragment_to_profileFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
                         </option>
                       </LayoutPositions>
                     </value>
@@ -127,6 +148,11 @@
                         </option>
                         <option name="myPositions">
                           <map>
+                            <entry key="action_profileFragment_to_paymentMethodFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="action_profileFragment_to_personalInformationFragment">
                               <value>
                                 <LayoutPositions />
