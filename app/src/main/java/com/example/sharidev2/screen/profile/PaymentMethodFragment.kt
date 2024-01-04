@@ -9,7 +9,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentPaymentMethodBinding
-import com.example.sharidev2.databinding.FragmentPersonalInformationBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class PaymentMethodFragment : Fragment() {

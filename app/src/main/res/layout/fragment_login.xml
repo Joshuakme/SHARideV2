@@ -39,13 +39,15 @@
 
         <!--  Input for Phone Number  -->
         <LinearLayout
-            android:id="@+id/linearLayout"
+            android:id="@+id/ll_login_input_mobile_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/ss_screen_width_margin"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="@dimen/ss_screen_width_margin"
             android:orientation="horizontal"
-            android:paddingStart="@dimen/ss_screen_width_margin"
-            android:paddingEnd="@dimen/ss_screen_width_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_login_title">
 
             <Spinner
@@ -61,14 +63,14 @@
                 android:layout_weight="1"
                 android:background="#00FFFFFF"
                 android:fontFamily="@font/poppins_medium"
-                android:hint="@string/login_fragment_input_mobile_number"
+                android:hint="@string/login_fragment_input_mobile_number_hint"
                 android:inputType="number"
                 android:maxLines="1"
                 android:paddingStart="@dimen/ss_home_input_field_horizontal_padding"
                 android:paddingTop="@dimen/ss_home_input_field_vertical_padding"
                 android:paddingEnd="@dimen/ss_home_input_field_horizontal_padding"
                 android:paddingBottom="@dimen/ss_home_input_field_vertical_padding"
-                android:textColorHint="?android:attr/textColorHint"
+                android:textColorHint="?attr/colorOutlineVariant"
                 android:textSize="17sp" />
         </LinearLayout>
 
@@ -82,9 +84,84 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+            app:layout_constraintTop_toBottomOf="@+id/ll_login_input_mobile_number" />
 
         <!--  Login Button  -->
+
+        <LinearLayout
+            android:id="@+id/ll_login_input_verify_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/ss_screen_width_margin"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="@dimen/ss_screen_width_margin"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_login_input_mobile_number"
+            tools:visibility="gone">
+
+            <EditText
+                android:id="@+id/edit_text_login_verification_code"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#00FFFFFF"
+                android:fontFamily="@font/poppins_medium"
+                android:hint="@string/login_fragment_input_verify_code_hint"
+                android:inputType="number"
+                android:maxLines="1"
+                android:paddingStart="@dimen/ss_home_input_field_horizontal_padding"
+                android:paddingTop="@dimen/ss_home_input_field_vertical_padding"
+                android:paddingEnd="@dimen/ss_home_input_field_horizontal_padding"
+                android:paddingBottom="@dimen/ss_home_input_field_vertical_padding"
+                android:textColorHint="?attr/colorOutlineVariant"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/text_login_resend_verify_code_countdown"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/poppins_medium"
+                android:gravity="center"
+                android:text="@string/login_fragment_btn_verify_code_resend_countdown"
+                android:textColor="?attr/colorOutlineVariant" />
+
+            <TextView
+                android:id="@+id/text_login_resend_verification_code"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/poppins_medium"
+                android:gravity="center"
+                android:text="@string/login_fragment_btn_verify_code_resend"
+                android:textColor="?attr/colorSecondary"
+                android:visibility="gone"
+                tools:visibility="gone" />
+
+            <ProgressBar
+                android:id="@+id/progress_bar_login_resend_verification_code"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleX="0.7"
+                android:scaleY="0.7"
+                android:visibility="gone"
+                tools:visibility="gone" />
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/view_login_verify_code_divider"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/ss_screen_width_margin"
+            android:layout_marginEnd="@dimen/ss_screen_width_margin"
+            android:background="?attr/dividerHorizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_login_input_verify_code" />
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/btn_login_cta_login"
             android:layout_width="0dp"
@@ -96,7 +173,7 @@
             app:cornerRadius="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view_login_mobile_number_divider"
+            app:layout_constraintTop_toBottomOf="@+id/view_login_verify_code_divider"
             app:strokeWidth="0dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -228,8 +305,49 @@
         </com.google.android.material.card.MaterialCardView>
 
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/ss_screen_width_margin"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="@dimen/ss_screen_width_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_login_continue_with_google">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.5">
+
+                <TextView
+                    android:id="@+id/text_login_cta_to_register"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:text="@string/login_fragment_no_account"
+                    android:textColor="?android:attr/textColorHint" />
+
+                <TextView
+                    android:id="@+id/text_login_cta_to_signup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:text="@string/login_fragment_btn_sign_up"
+                    android:textColor="?attr/colorPrimary" />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <ProgressBar
-            android:id="@+id/loading"
+            android:id="@+id/loading_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

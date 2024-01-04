@@ -11,6 +11,7 @@ import android.widget.Spinner
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
 import com.example.sharidev2.R
+import com.example.sharidev2.adapter.LoginSpinnerAdapter
 import com.example.sharidev2.databinding.FragmentLoginBinding
 import com.example.sharidev2.model.Country
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -43,7 +44,7 @@ class LoginFragment : Fragment() {
 
 
         // ADAPTER
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, countryList.map { it.countryCode })
+        val adapter = LoginSpinnerAdapter(requireContext(), countryList)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerCountry.adapter = adapter
 
@@ -77,8 +78,8 @@ class LoginFragment : Fragment() {
     }
 
 
-    private fun getLoginCountryList(): Array<Country> {
-        return arrayOf(
+    private fun getLoginCountryList(): List<Country> {
+        return listOf(
             Country("Malaysia", "+60"),
             Country("Singapore", "+65"),
             Country("Indonesia", "+62")
