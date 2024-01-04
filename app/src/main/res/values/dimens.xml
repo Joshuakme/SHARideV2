@@ -3,7 +3,8 @@
     <!--  SPACE SIZE (ss)  -->
     <!--  General  -->
     <dimen name="ss_screen_width_margin">24dp</dimen>
-    <dimen name="ss_screen_top_margin">24dp</dimen>     <!-- 24dp is ori margin, 25dp is the status bar height -->
+    <dimen name="ss_screen_top_margin">24dp
+    </dimen>     <!-- 24dp is ori margin, 25dp is the status bar height -->
     <dimen name="ss_section_bottom_margin">32dp</dimen>
     <dimen name="ss_screen_title_bottom_margin">8dp</dimen>
     <dimen name="ss_rounded_background_corner_radius">10dp</dimen>
@@ -22,7 +23,7 @@
     <dimen name="ss_home_recent_rides_card_height">288dp</dimen>
     <dimen name="ss_home_recent_rides_card_width">240dp</dimen>
     <dimen name="ss_home_recent_rides_card_image_height">144dp</dimen>
-    <dimen name="ss_home_categories_card_image_width_height">60dp</dimen>
+    <dimen name="ss_home_categories_card_image_width_height">37dp</dimen>
 
 
     <!--  Messages Fragment  -->
@@ -50,6 +51,11 @@
     <dimen name="ss_profile_personal_info_pic_size">110dp</dimen>
 
 
+    <!--  Profile Fragment  -->
+    <dimen name="ss_login_logo_size">130dp</dimen>
+
+
+
     <!--  FONT SIZE (fs)  -->
     <!--  General  -->
     <dimen name="fs_fragment_title">20sp</dimen>
@@ -70,6 +76,7 @@
     <dimen name="text_margin">16dp</dimen>
 
     <dimen name="ss_profile_personal_info_item_text_size">15sp</dimen>
+
 
     <!--    -->
 </resources>
