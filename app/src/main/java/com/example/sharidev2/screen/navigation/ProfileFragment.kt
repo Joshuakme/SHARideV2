@@ -43,7 +43,8 @@ class ProfileFragment : Fragment() {
         // NAVIGATION EVENT LISTENERS
         // Profile Fragment -> Personal Information Fragment
         personalInfoBtn.setOnClickListener {
-            findNavController().navigate(R.id.action_profileFragment_to_personalInformationFragment)
+            //findNavController().navigate(R.id.action_profileFragment_to_personalInformationFragment)
+            findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
         }
 
         // Profile Fragment -> Payment Method Fragment
