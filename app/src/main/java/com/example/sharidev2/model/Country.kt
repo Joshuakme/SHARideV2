@@ -4,6 +4,5 @@ import android.graphics.Bitmap
 
 data class Country(
     val name: String ?= null,
-    val countryCode: String ?= null,
-    val flag: Bitmap ?= null
+    val countryCode: Int ?= null,
 )

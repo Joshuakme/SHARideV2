@@ -3,6 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.sharidev2.viewmodel.LoginViewModel" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -50,11 +56,41 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_login_title">
 
-            <Spinner
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/spinner_login_mobile_country_code"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:dropDownWidth="match_parent" />
+                app:cardCornerRadius="0dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/text_login_spinner_mobile_country_code"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:fontFamily="@font/poppins_medium"
+                        android:text='@{viewModel.countryCode != null ? @string/login_fragment_input_country_code(viewModel.countryCode) : "+60"}'
+                        android:textColor="?android:attr/textColorHint"
+                        android:textSize="17sp" />
+
+                    <ImageButton
+                        android:id="@+id/img_btn_login_spinner_choose_country"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="#00FFFFFF"
+                        android:clickable="false"
+                        android:src="@drawable/baseline_arrow_drop_down_24"
+                        app:tint="?android:attr/textColorHint" />
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
 
             <EditText
                 android:id="@+id/edit_text_login_enter_phone_number"
@@ -350,10 +386,14 @@
 
         <ProgressBar
             android:id="@+id/loading_login"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_gravity="center"
             android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
