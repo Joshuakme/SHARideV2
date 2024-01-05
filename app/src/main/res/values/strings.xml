@@ -1,3 +1,130 @@
 <resources>
     <string name="app_name">SHARideV2</string>
+
+    <!--  *******  -->
+    <!--  GENERAL  -->
+    <!--  *******  -->
+    <!--  Screen Title  -->
+    <string name="screen_title_home">Home</string>
+    <string name="screen_title_booking">Booking</string>
+    <string name="screen_title_messages">Messages</string>
+    <string name="screen_title_profile">Profile</string>
+
+    <!--  Home Fragment  -->
+    <string name="home_fragment_welcome_user">Welcome {Username}</string>
+    <string name="home_fragment_welcome_user_area">Setapak</string>
+    <string name="home_fragment_pick_up_location">Pick up location</string>
+    <string name="home_fragment_destination_location">Destination location</string>
+    <string name="home_fragment_date_time">Date &amp; Time</string>
+    <string name="home_fragment_select_more">More</string>
+    <string name="home_fragment_find_ride_cta">Find Ride</string>
+    <string name="home_fragment_offer_ride_cta">Offer Ride</string>
+    <string name="home_fragment_offer_ride_continue_cta">Continue</string>
+    <string name="home_fragment_offer_ride_vehicle">Vehicle</string>
+    <string name="home_fragment_search_hint">Enter destination or starting point</string>
+    <string name="home_section_recent_rides_title">Recent rides</string>
+    <string name="home_section_categories_rides_title">Categories</string>
+
+    <!--  Home: Search Fragment  -->
+    <string name="search_fragment_change_role_to_driver">Driver</string>
+    <string name="search_fragment_change_role_to_passenger">Passenger</string>
+    <string-array name="malaysia_state_array">
+        <item>Johor</item>
+        <item>Kedah</item>
+        <item>Kelantan</item>
+        <item>Kuala Lumpur</item>
+        <item>Negeri Sembilan</item>
+        <item>Pahang</item>
+        <item>Penang</item>
+        <item>Perak</item>
+        <item>Perlis</item>
+        <item>Sabah</item>
+        <item>Sarawak</item>
+        <item>Selangor</item>
+        <item>Terengganu</item>
+    </string-array>
+
+
+    <!--  Booking Fragment  -->
+    <string name="booking_fragment_title_booking">Booking</string>
+    <string name="booking_section_title_recent">Recent</string>
+    <string name="booking_error_loading">Sorry, no booking found!</string>
+
+    <!--  Messages Fragment  -->
+    <string name="messages_fragment_title_messages">Messages</string>
+    <string name="messages_section_title_notification">Notification</string>
+    <string name="messages_section_title_chat">Chat</string>
+    <string name="messages_messages_error_loading">Sorry, no chat found!</string>
+    <string name="messages_messages_chat_input_hint">Type a message...</string>
+
+
+    <!--  Profile Fragment  -->
+    <string name="profile_section_title_my_account">My Account</string>
+    <string name="profile_subsection_title_personal_info">Personal Information</string>
+    <string name="profile_subsection_title_payment_method">Payment Method</string>
+    <string name="profile_subsection_title_addresses">Addresses</string>
+    <string name="profile_subsection_title_emergency_contact">Emergency Contact</string>
+
+    <string name="profile_section_title_general">General</string>
+    <string name="profile_subsection_title_help_center">Help Center</string>
+    <string name="profile_subsection_title_settings">Settings</string>
+    <string name="profile_subsection_title_feedback">Feedback</string>
+    <string name="profile_subsection_title_about">About</string>
+    <string name="profile_subsection_title_delete_my_account">Delete My Account</string>
+
+    <string name="profile_log_out">Log out</string>
+
+
+    <!--  Profile Fragment: Personal Information Fragment  -->
+    <string name="personal_information_title_user_profile">User Profile</string>
+    <string name="personal_information_item_title_display_name">Display Name</string>
+    <string name="personal_information_item_title_user_id">User ID</string>
+    <string name="personal_information_item_title_gender">Gender</string>
+    <string name="personal_information_item_title_mobile_number">Mobile Number</string>
+
+
+    <!--  Profile Fragment: Payment Method Fragment  -->
+    <string name="personal_information_title_payment_method">Payment Method</string>
+
+
+    <!--  Profile Fragment: Login Fragment  -->
+    <string name="login_fragment_title_login_in_to_sharide">Log in to SHARide</string>
+    <string name="login_fragment_btn_login_with_google">Continue With Google</string>
+    <string name="login_fragment_btn_login_with_mobile_number">Continue With Mobile Number</string>
+    <string name="login_fragment_input_mobile_number_hint">Enter phone number</string>
+    <string name="login_fragment_input_verify_code_hint">Enter verification code</string>
+    <string name="login_fragment_btn_verify_code_resend_countdown">Resend(%1$d)</string>
+    <string name="login_fragment_btn_verify_code_resend">Resend</string>
+    <string name="login_fragment_divider_or">OR</string>
+    <string name="login_fragment_btn_login">Log in</string>
+    <string name="login_fragment_no_account">Not yet have an account? </string>
+    <string name="login_fragment_btn_sign_up">Sign up</string>
+
+
+
+    <!--  Placeholder  -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="placeholder_booking_recycler_item_title">Ride to The Exchange TRX</string>
+    <string name="placeholder_booking_recycler_item_date">30 Nov, 11:30</string>
+    <string name="placeholder_booking_recycler_item_price">RM 7.00</string>
+
+    <string name="placeholder_messages_chat_username">Ali</string>
+
+
+    <string name="placeholder_profile_user_display_name">Jason Yip</string>
+    <string name="placeholder_profile_user_userid">\@jasonyip06</string>
+    <string name="placeholder_profile_user_gender">Male</string>
+    <string name="placeholder_profile_user_mobile_number">+601234567891</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome!"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+
+
 </resources>

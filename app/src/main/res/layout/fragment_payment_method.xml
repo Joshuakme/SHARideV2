@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".screen.profile.PaymentMethodFragment">
+
+        <!--  Fragment Title  -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_profile_payment_method_upper_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/ss_section_bottom_margin"
+            android:paddingStart="@dimen/ss_screen_width_margin"
+            android:paddingTop="@dimen/ss_screen_top_margin"
+            android:paddingEnd="@dimen/ss_screen_width_margin"
+            android:paddingBottom="16dp"
+            tools:context=".screen.profile.PersonalInformationFragment">
+
+            <!--  Fragment Nav Title  -->
+            <ImageButton
+                android:id="@+id/img_btn_profile_payment_method_nav_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#00FFFFFF"
+                android:scaleX="@dimen/ss_profile_subfragment_nav_icon_scale"
+                android:scaleY="@dimen/ss_profile_subfragment_nav_icon_scale"
+                android:src="@drawable/baseline_arrow_back_24"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="?attr/colorOnBackground" />
+
+            <TextView
+                android:id="@+id/text_fragment_title_payment_method"
+                style="@style/text_fragment_title_profile"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/personal_information_title_payment_method"
+                android:textColor="?attr/colorOnBackground"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!--  Fragment Nav Profile Pic  -->
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--  Section: Currently linked  -->
+
+    </LinearLayout>
+</layout>

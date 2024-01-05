@@ -1,0 +1,546 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".screen.navigation.ProfileFragment">
+
+        <!--  Already Login  .-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:isScrollContainer="false">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_profile_background"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginBottom="24dp"
+                app:cardBackgroundColor="?attr/colorPrimary"
+                app:cardElevation="0dp"
+                app:layout_constraintBottom_toTopOf="@+id/ll_my_account"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView"
+                android:layout_width="@dimen/ss_profile_pic_size"
+                android:layout_height="@dimen/ss_profile_pic_size"
+                android:layout_marginStart="@dimen/ss_screen_width_margin"
+                android:layout_marginTop="@dimen/ss_screen_top_margin"
+                app:cardCornerRadius="500dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/image_profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="Default Profile Image"
+                    android:src="@drawable/baseline_account_circle_24" />
+            </androidx.cardview.widget.CardView>
+
+            <!--  Profile Picture  -->
+            <LinearLayout
+                android:id="@+id/ll_user_detail"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="@dimen/ss_screen_width_margin"
+                android:layoutDirection="ltr"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="@+id/cardView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/cardView"
+                app:layout_constraintTop_toTopOf="@+id/cardView">
+
+                <TextView
+                    android:id="@+id/text_profile_display_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:contentDescription="User Name"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:includeFontPadding="false"
+                    android:text="@string/placeholder_profile_user_display_name"
+                    android:textColor="?attr/colorOnPrimary"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/text_profile_user_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:contentDescription="User ID"
+                    android:fontFamily="@font/poppins"
+                    android:includeFontPadding="false"
+                    android:text="@string/placeholder_profile_user_userid"
+                    android:textColor="?android:attr/textColorSecondaryInverse"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <!--  My Account  -->
+            <LinearLayout
+                android:id="@+id/ll_my_account"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/ss_screen_width_margin"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="@dimen/ss_screen_width_margin"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView">
+
+                <TextView
+                    android:id="@+id/text_profile_section_title_my_account"
+                    style="@style/text_section_title"
+                    android:layout_marginBottom="16dp"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:text="@string/profile_section_title_my_account"
+                    android:textColor="?android:attr/textColorPrimary" />
+                <!--  List of menu  -->
+                <!--  Personal Information  -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/card_personal_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/ss_profile_section_item_bottom_margin"
+                    app:cardBackgroundColor="#00FFFFFF"
+                    app:cardElevation="0dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/text_profile_subsection_title_personal_info"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/profile_subsection_title_personal_info"
+                            android:textColor="?android:attr/textColorSecondary"
+                            app:layout_constraintEnd_toStartOf="@+id/img_btn_personal_information_next"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageButton
+                            android:id="@+id/img_btn_personal_information_next"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="#00FFFFFF"
+                            android:src="@drawable/baseline_keyboard_arrow_right_24"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:tint="?android:attr/colorForeground" />
+
+                        <View
+                            android:id="@+id/divider_personal_information"
+                            android:layout_width="0dp"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="16dp"
+                            android:background="?android:attr/listDivider"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/text_profile_subsection_title_personal_info" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+                <!--  Payment Method  -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/card_payment_method"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/ss_profile_section_item_bottom_margin"
+                    app:cardBackgroundColor="#00FFFFFF"
+                    app:cardElevation="0dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/text_profile_subsection_title_payment_method"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/profile_subsection_title_payment_method"
+                            android:textColor="?android:attr/textColorSecondary"
+                            app:layout_constraintEnd_toStartOf="@+id/img_btn_payment_method_next"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageButton
+                            android:id="@+id/img_btn_payment_method_next"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="#00FFFFFF"
+                            android:src="@drawable/baseline_keyboard_arrow_right_24"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:tint="?android:attr/colorForeground" />
+
+                        <View
+                            android:id="@+id/divider_payment_method"
+                            android:layout_width="0dp"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="16dp"
+                            android:background="?android:attr/listDivider"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/text_profile_subsection_title_payment_method" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+                <!--  Addresses  -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/card_addresses"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/ss_profile_section_item_bottom_margin"
+                    app:cardBackgroundColor="#00FFFFFF"
+                    app:cardElevation="0dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/text_profile_subsection_title_addresses"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/profile_subsection_title_addresses"
+                            app:layout_constraintEnd_toStartOf="@+id/img_btn_addresses_next"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageButton
+                            android:id="@+id/img_btn_addresses_next"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="#00FFFFFF"
+                            android:src="@drawable/baseline_keyboard_arrow_right_24"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:tint="?android:attr/colorForeground" />
+
+                        <View
+                            android:id="@+id/divider_addresses"
+                            android:layout_width="0dp"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="16dp"
+                            android:background="?android:attr/listDivider"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/text_profile_subsection_title_addresses" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+                <!--  Emergency Contact  -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/card_emergency_contact"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/ss_profile_section_item_bottom_margin"
+                    app:cardBackgroundColor="#00FFFFFF"
+                    app:cardElevation="0dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/text_profile_subsection_title_emergency_contact"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/profile_subsection_title_emergency_contact"
+                            app:layout_constraintEnd_toStartOf="@+id/img_btn_emergency_contact_next"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageButton
+                            android:id="@+id/img_btn_emergency_contact_next"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="#00FFFFFF"
+                            android:src="@drawable/baseline_keyboard_arrow_right_24"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:tint="?android:attr/colorForeground" />
+
+                        <View
+                            android:id="@+id/divider_emergency_contact"
+                            android:layout_width="0dp"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="16dp"
+                            android:background="?android:attr/listDivider"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/text_profile_subsection_title_emergency_contact" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+            <!--  General  -->
+            <LinearLayout
+                android:id="@+id/ll_general"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/ss_screen_width_margin"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="@dimen/ss_screen_width_margin"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ll_my_account">
+
+                <TextView
+                    android:id="@+id/text_profile_section_title_general"
+                    style="@style/text_section_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/profile_section_title_general" />
+                <!--  List of menu  -->
+                <!--  Help Center  -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/card_help_center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/ss_profile_section_item_bottom_margin"
+                    app:cardBackgroundColor="#00FFFFFF"
+                    app:cardElevation="0dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/text_profile_subsection_title_help_center"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/profile_subsection_title_help_center"
+                            app:layout_constraintEnd_toStartOf="@+id/img_btn_help_center_next"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageButton
+                            android:id="@+id/img_btn_help_center_next"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="#00FFFFFF"
+                            android:src="@drawable/baseline_keyboard_arrow_right_24"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:tint="?android:attr/colorForeground" />
+
+                        <View
+                            android:id="@+id/divider_default"
+                            android:layout_width="0dp"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="16dp"
+                            android:background="?android:attr/listDivider"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/text_profile_subsection_title_help_center" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+                <!--  Settings  -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/card_settings"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/ss_profile_section_item_bottom_margin"
+                    app:cardBackgroundColor="#00FFFFFF"
+                    app:cardElevation="0dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/text_profile_subsection_title_settings"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/profile_subsection_title_settings"
+                            app:layout_constraintEnd_toStartOf="@+id/img_btn_settings_next"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageButton
+                            android:id="@+id/img_btn_settings_next"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="#00FFFFFF"
+                            android:src="@drawable/baseline_keyboard_arrow_right_24"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:tint="?android:attr/colorForeground" />
+
+                        <View
+                            android:id="@+id/divider_settings"
+                            android:layout_width="0dp"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="16dp"
+                            android:background="?android:attr/listDivider"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/text_profile_subsection_title_settings" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+                <!--  Feedback  -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/card_feedback"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/ss_profile_section_item_bottom_margin"
+                    app:cardBackgroundColor="#00FFFFFF"
+                    app:cardElevation="0dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/text_profile_subsection_title_feedback"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/profile_subsection_title_feedback"
+                            app:layout_constraintEnd_toStartOf="@+id/img_btn_feedback_next"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageButton
+                            android:id="@+id/img_btn_feedback_next"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="#00FFFFFF"
+                            android:src="@drawable/baseline_keyboard_arrow_right_24"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:tint="?android:attr/colorForeground" />
+
+                        <View
+                            android:id="@+id/divider_feedback"
+                            android:layout_width="0dp"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="16dp"
+                            android:background="?android:attr/listDivider"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/text_profile_subsection_title_feedback" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+                <!--  About  -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/card_about"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/ss_profile_section_item_bottom_margin"
+                    app:cardBackgroundColor="#00FFFFFF"
+                    app:cardElevation="0dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/text_profile_subsection_title_about"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/profile_subsection_title_about"
+                            app:layout_constraintEnd_toStartOf="@+id/img_btn_about_next"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageButton
+                            android:id="@+id/img_btn_about_next"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="#00FFFFFF"
+                            android:src="@drawable/baseline_keyboard_arrow_right_24"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:tint="?android:attr/colorForeground" />
+
+                        <View
+                            android:id="@+id/divider_about"
+                            android:layout_width="0dp"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="16dp"
+                            android:background="?android:attr/listDivider"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/text_profile_subsection_title_about" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+                <!--  Delete My Account  -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/card_delete_my_account"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="#00FFFFFF"
+                    app:cardElevation="0dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/text_profile_subsection_title_delete_my_account"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/profile_subsection_title_delete_my_account"
+                            app:layout_constraintEnd_toStartOf="@+id/img_btn_delete_my_account_next"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageButton
+                            android:id="@+id/img_btn_delete_my_account_next"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="#00FFFFFF"
+                            android:src="@drawable/baseline_keyboard_arrow_right_24"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:tint="?android:attr/colorForeground" />
+
+                        <View
+                            android:id="@+id/divider_delete_my_account"
+                            android:layout_width="0dp"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="16dp"
+                            android:background="?android:attr/listDivider"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/text_profile_subsection_title_delete_my_account" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/text_log_out"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/ss_screen_width_margin"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/poppins_semibold"
+                android:paddingBottom="@dimen/ss_profile_section_item_bottom_margin"
+                android:text="@string/profile_log_out"
+                android:textColor="?attr/colorError"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ll_general" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>
