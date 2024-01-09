@@ -105,7 +105,7 @@
             android:layout_marginEnd="@dimen/ss_screen_width_margin"
             android:translationY="-27dp"
             app:cardBackgroundColor="?attr/colorOnPrimarySurface"
-            app:cardCornerRadius="12dp"
+            app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
             app:cardElevation="3dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -187,7 +187,7 @@
                     android:layout_width="@dimen/ss_home_recent_rides_card_width"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="12dp"
-                    app:cardCornerRadius="12dp"
+                    app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
                     app:cardElevation="3dp"
                     app:strokeWidth="0dp">
 
@@ -241,7 +241,7 @@
                     android:layout_width="@dimen/ss_home_recent_rides_card_width"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
-                    app:cardCornerRadius="16dp"
+                    app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
                     app:cardElevation="3dp"
                     app:strokeWidth="0dp">
 
@@ -295,7 +295,7 @@
                     android:layout_width="@dimen/ss_home_recent_rides_card_width"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
-                    app:cardCornerRadius="16dp"
+                    app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
                     app:cardElevation="3dp"
                     app:strokeWidth="0dp">
 

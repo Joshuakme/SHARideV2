@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 app:cardBackgroundColor="#00FFFFFF"
-                app:cardCornerRadius="8dp"
+                app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
                 app:strokeWidth="0dp">
 
                 <LinearLayout
@@ -77,6 +77,7 @@
                         android:paddingTop="@dimen/ss_home_input_field_vertical_padding"
                         android:paddingEnd="@dimen/ss_home_input_field_horizontal_padding"
                         android:paddingBottom="@dimen/ss_home_input_field_vertical_padding"
+                        android:text="Current location"
                         android:textSize="14sp" />
 
                 </LinearLayout>
@@ -149,7 +150,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 app:cardBackgroundColor="?attr/colorSurfaceContainer"
-                app:cardCornerRadius="8dp"
+                app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
                 app:cardElevation="0dp"
                 app:layout_constraintTop_toBottomOf="@+id/card_offer_ride_pick_up_location"
                 app:strokeWidth="0dp">
@@ -239,10 +240,14 @@
 
         <!--  Search Result  -->
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_search_place_result"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="@dimen/ss_screen_width_margin"
             android:layout_weight="1"
-            android:paddingBottom="8dp" />
+            android:paddingBottom="8dp"
+            tools:listitem="@layout/recycler_item_search_place_result" />
     </LinearLayout>
 
 </layout>

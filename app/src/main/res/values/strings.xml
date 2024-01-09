@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">SHARideV2</string>
+    <string name="web_client_id">178112270595-mbkueg137033n1edkrmd2ocepfk6b2ig.apps.googleusercontent.com</string>
 
     <!--  *******  -->
     <!--  GENERAL  -->
@@ -123,6 +124,7 @@
     <string name="placeholder_login_country_name">Malaysia</string>
     <string name="placeholder_login_country_code">+60</string>
 
-
+    <string name="placeholder_search_result_place_name">Zepp Kuala Lumpur</string>
+    <string name="placeholder_search_result_place_distance_address">8.85km * Jalan Pudu, Bandar Kuala Lumpur, 55100, Wp Kuala Lumpur, Wp Kuala Lumpur</string>
 
 </resources>
