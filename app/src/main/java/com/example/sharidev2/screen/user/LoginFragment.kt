@@ -53,10 +53,12 @@ class LoginFragment : Fragment() {
         val countryCodeText = binding.textLoginSpinnerMobileCountryCode
         val mobileNumberEditText = binding.editTextLoginEnterPhoneNumber
         val verifyCodeContainer = binding.llLoginInputVerifyCode
+        val otpCodeEditText = binding.editTextLoginVerificationCode
         val loginBtn = binding.btnLoginCtaLogin
         val loadingSpinner = binding.progressBarLoginResendVerificationCode
         val countdownText = binding.textLoginResendVerifyCodeCountdown
         val resendText = binding.textLoginResendVerificationCode
+        val loginWithGoogleBtn = binding.btnLoginContinueWithGoogle
 
 
 
@@ -67,16 +69,17 @@ class LoginFragment : Fragment() {
         // LAYOUT SETTINGS
         bottomNav?.visibility = View.GONE
         // Set a maximum length for the EditText (e.g., 13 characters)
-        val maxLength = 12
-        val filters = arrayOf<InputFilter>(InputFilter.LengthFilter(maxLength))
-        mobileNumberEditText.filters = filters
-
+        val mobileNumMaxLength = 12
+        val otpCodeMaxLength = 6
+        val mobileNumberFilters = arrayOf<InputFilter>(InputFilter.LengthFilter(mobileNumMaxLength))
+        val otpCodeFilters = arrayOf<InputFilter>(InputFilter.LengthFilter(otpCodeMaxLength))
+        mobileNumberEditText.filters = mobileNumberFilters
+        otpCodeEditText.filters = otpCodeFilters
 
         // VIEW MODEL
         loginViewModel.countryCode.observe(viewLifecycleOwner, Observer { newCountryCode ->
             countryCodeText.text = getString(R.string.login_fragment_input_country_code, newCountryCode)
         })
-        countryCodeText.text = "+60"
 
         // EVENT LISTENERS
         spinnerCountry.setOnClickListener {
@@ -133,6 +136,10 @@ class LoginFragment : Fragment() {
             startCountdownTimer()
         }
 
+        loginWithGoogleBtn.setOnClickListener {
+
+        }
+
         resendText.setOnClickListener {
             // TODO: Send OTP code to user
             Toast.makeText(requireContext(), "OTP Resent!", Toast.LENGTH_SHORT).show()
@@ -164,7 +171,7 @@ class LoginFragment : Fragment() {
         val formattedText = StringBuilder()
 
         for (i in originalText.indices) {
-            if (originalText.length == 9) {
+            if(originalText.length in 1..9) {
                 if (i > 0 && i == 2 || i > 0 && i == 5) {
                     formattedText.append(" ") // Add a space after every 4 characters
                 }
