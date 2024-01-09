@@ -6,9 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentProfileBinding
+import com.example.sharidev2.viewmodel.LoginViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
@@ -38,6 +40,12 @@ class ProfileFragment : Fragment() {
 
         // LAYOUT SETTINGS
         bottomNav?.visibility = View.VISIBLE
+
+
+        // Check if user is logged in and navigate to respective screen
+        val viewModel = ViewModelProvider(this)[LoginViewModel::class.java]
+
+
 
 
         // NAVIGATION EVENT LISTENERS
