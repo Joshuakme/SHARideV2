@@ -2,6 +2,8 @@ package com.example.sharidev2.screen.home
 
 import android.graphics.Color
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +14,8 @@ import androidx.navigation.fragment.findNavController
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentSearchBinding
+import com.google.android.gms.location.places.Places
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
@@ -73,6 +77,28 @@ class SearchFragment : Fragment() {
         }
 
 
+        // DATA FETCHING
+        destinationLocationEditText.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {
+                // Unused
+            }
+
+            override fun onTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {
+                // Trigger search on text change
+                charSequence?.toString()?.let { query ->
+                    // val currentLocation = getCurrentLocation()
+                    // searchPlaces(currentLocation, query)
+                }
+            }
+
+            override fun afterTextChanged(editable: Editable?) {
+                // Unused
+            }
+
+        })
+
+
+
         // NAVIGATION EVENT LISTENERS
         // Search Fragment -> Home Fragment
         backBtn.setOnClickListener {
@@ -81,7 +107,6 @@ class SearchFragment : Fragment() {
 
         return binding.root
     }
-
 
 
 }
