@@ -1,17 +1,19 @@
 package com.example.sharidev2.model
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.google.firebase.database.IgnoreExtraProperties
 import java.time.LocalDateTime
 
 @IgnoreExtraProperties
-data class User(
+data class User @RequiresApi(Build.VERSION_CODES.O) constructor(
     val uid: String? = null,
     val username: String? = null,
     val email: String? = null,
     val specialAttribute: String? = null,
-    // Add other properties as needed
-    val rating: Float,
-    val savedAddresses: MutableList<Address>,
-    val gender: String,         // Enum of gender
-    val joinedDate: LocalDateTime
+    val profilePictureUrl: String? = null,
+    val rating: Float ?= null,
+    val savedAddresses: MutableList<Address> ?= null,
+    val gender: String ?= null,         // Enum of gender
+    val joinedDate: LocalDateTime = LocalDateTime.now()
 )

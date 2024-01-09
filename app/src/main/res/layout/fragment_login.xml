@@ -153,7 +153,7 @@
                 android:paddingEnd="@dimen/ss_home_input_field_horizontal_padding"
                 android:paddingBottom="@dimen/ss_home_input_field_vertical_padding"
                 android:textColorHint="?attr/colorOutlineVariant"
-                android:textSize="16sp" />
+                android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/text_login_resend_verify_code_countdown"
