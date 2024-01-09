@@ -3,12 +3,12 @@
     <!--  SPACE SIZE (ss)  -->
     <!--  General  -->
     <dimen name="ss_screen_width_margin">24dp</dimen>
-    <dimen name="ss_screen_top_margin">24dp
-    </dimen>     <!-- 24dp is ori margin, 25dp is the status bar height -->
+    <dimen name="ss_screen_top_margin">24dp</dimen>     <!-- 24dp is ori margin, 25dp is the status bar height -->
     <dimen name="ss_section_bottom_margin">32dp</dimen>
     <dimen name="ss_screen_title_bottom_margin">8dp</dimen>
-    <dimen name="ss_rounded_background_corner_radius">10dp</dimen>
+    <dimen name="ss_rounded_background_corner_radius">12dp</dimen>
     <dimen name="ss_fragment_nav_icon_scale">1.3</dimen>
+
 
 
     <!--  Home Fragment  -->
