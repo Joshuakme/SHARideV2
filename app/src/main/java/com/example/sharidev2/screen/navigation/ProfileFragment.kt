@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentProfileBinding
 import com.example.sharidev2.viewmodel.LoginViewModel
@@ -31,7 +32,6 @@ class ProfileFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false)
 
         // ELEMENT VARIABLES
-        val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)
         val personalInfoBtn = binding.cardPersonalInfo
         val paymentMethodBtn = binding.cardPaymentMethod
         val addressesdBtn = binding.cardAddresses
@@ -39,7 +39,7 @@ class ProfileFragment : Fragment() {
 
 
         // LAYOUT SETTINGS
-        bottomNav?.visibility = View.VISIBLE
+        (activity as MainActivity).setBottomNavVisible(true)
 
 
         // Check if user is logged in and navigate to respective screen

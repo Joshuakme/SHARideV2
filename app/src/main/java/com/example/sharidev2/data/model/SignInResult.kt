@@ -1,4 +1,4 @@
-package com.example.sharidev2.model
+package com.example.sharidev2.data.model
 
 data class SignInResult(
     val data: User?,

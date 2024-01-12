@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sharidev2.R
-import com.example.sharidev2.model.Message
+import com.example.sharidev2.data.model.Message
 import com.google.firebase.auth.FirebaseAuth
 
 class ChatAdapter(

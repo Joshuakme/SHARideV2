@@ -15,9 +15,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.sharidev2.databinding.ActivityMainBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private lateinit var bottomNav: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         // Variables
         val navHostFragment = supportFragmentManager.findFragmentById(binding.fragmentContainerMain.id) as NavHostFragment
         val navController = navHostFragment.navController
-        val bottomNav = binding.bottomNavigation
+        bottomNav = binding.bottomNavigation
 
 
         bottomNav.setupWithNavController(navController)
@@ -55,5 +57,9 @@ class MainActivity : AppCompatActivity() {
             winParams.flags = winParams.flags and bits.inv()
         }
         win.attributes = winParams
+    }
+
+    public fun setBottomNavVisible(visible: Boolean) {
+        bottomNav.visibility = if(visible) View.VISIBLE else View.GONE
     }
 }

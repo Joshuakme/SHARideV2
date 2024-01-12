@@ -10,11 +10,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.adapter.ChatAdapter
 import com.example.sharidev2.databinding.FragmentChatBinding
-import com.example.sharidev2.model.Message
-import com.example.sharidev2.model.MessageType
+import com.example.sharidev2.data.model.Message
+import com.example.sharidev2.data.model.MessageType
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
@@ -33,7 +34,6 @@ class ChatFragment : Fragment() {
 
 
         // ELEMENTS
-        val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)
         val navBackButton = binding.imgBtnChatBack
         val chatMessagesRecyclerView = binding.recyclerViewChatMessages
         val chatTextInput = binding.editTextMessagesChatInput
@@ -42,7 +42,7 @@ class ChatFragment : Fragment() {
 
 
         // LAYOUT SETTINGS
-        bottomNav?.visibility = View.GONE
+        (activity as MainActivity).setBottomNavVisible(false)
 
         // Set Up RecyclerView
         val chatAdapter = ChatAdapter(chatMessageList)

@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
-import com.example.sharidev2.model.OtpSentState
-import com.example.sharidev2.model.SignInResult
-import com.example.sharidev2.model.SignInState
+import com.example.sharidev2.data.model.OtpSentState
+import com.example.sharidev2.data.model.SignInResult
+import com.example.sharidev2.data.model.SignInState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

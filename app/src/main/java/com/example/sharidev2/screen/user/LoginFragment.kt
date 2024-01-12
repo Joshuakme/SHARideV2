@@ -16,9 +16,10 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentLoginBinding
-import com.example.sharidev2.model.Country
+import com.example.sharidev2.data.model.Country
 import com.example.sharidev2.viewmodel.LoginViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.card.MaterialCardView
@@ -47,7 +48,6 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // ELEMENT VARIABLES
-        val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)
         val backBtn = binding.imgBtnLoginNavBack
         val spinnerCountry: MaterialCardView = binding.spinnerLoginMobileCountryCode
         val countryCodeText = binding.textLoginSpinnerMobileCountryCode
@@ -67,7 +67,7 @@ class LoginFragment : Fragment() {
 
 
         // LAYOUT SETTINGS
-        bottomNav?.visibility = View.GONE
+        (activity as MainActivity).setBottomNavVisible(false)
         // Set a maximum length for the EditText (e.g., 13 characters)
         val mobileNumMaxLength = 12
         val otpCodeMaxLength = 6

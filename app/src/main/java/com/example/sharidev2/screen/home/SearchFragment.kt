@@ -32,7 +32,6 @@ class SearchFragment : Fragment() {
 
 
         // ELEMENT VARIABLES
-        val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)
         val backBtn = binding.imgBtnSearchBack
         val pickUpLocationEditText = binding.editTextOfferRidePickUpLocation
         val pickUpLocationEditTextCard = binding.cardOfferRidePickUpLocation
@@ -41,7 +40,7 @@ class SearchFragment : Fragment() {
 
 
         // LAYOUT SETTINGS
-        bottomNav?.visibility = View.GONE
+        (activity as MainActivity).setBottomNavVisible(false)
 
 
 

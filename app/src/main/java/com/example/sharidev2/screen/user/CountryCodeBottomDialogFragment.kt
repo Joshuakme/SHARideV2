@@ -16,7 +16,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import com.example.sharidev2.model.Country
+import com.example.sharidev2.data.model.Country
 import com.example.sharidev2.viewmodel.LoginViewModel
 
 class CountryCodeBottomDialogFragment :

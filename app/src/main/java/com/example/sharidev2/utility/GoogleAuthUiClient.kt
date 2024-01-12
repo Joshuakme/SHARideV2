@@ -6,8 +6,8 @@ import android.content.IntentSender
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.sharidev2.R
-import com.example.sharidev2.model.SignInResult
-import com.example.sharidev2.model.User
+import com.example.sharidev2.data.model.SignInResult
+import com.example.sharidev2.data.model.User
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.BeginSignInRequest.GoogleIdTokenRequestOptions
 import com.google.android.gms.auth.api.identity.SignInClient
