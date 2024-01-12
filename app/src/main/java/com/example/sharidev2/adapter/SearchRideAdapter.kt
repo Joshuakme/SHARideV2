@@ -1,5 +1,6 @@
 package com.example.sharidev2.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,9 +9,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.sharidev2.R
 import com.example.sharidev2.data.model.Country
 import com.example.sharidev2.data.model.SearchLocation
+import com.example.sharidev2.utility.Converters
 
 class SearchRideAdapter(
     private var searchPlaceList: List<SearchLocation>,
+    private val context: Context
     ) : RecyclerView.Adapter<SearchRideAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -40,7 +43,7 @@ class SearchRideAdapter(
 
         // Bind data into UI
         holder.placeName.text = searchPlace.name
-        holder.placeDetailedAddress.text = searchPlace.detailAddress
+        holder.placeDetailedAddress.text = context.getString(R.string.search_fragment_search_result_place_distance_address, Converters.metersToKiloMeters(searchPlace.distanceMeters), searchPlace.detailAddress)
     }
 
 }

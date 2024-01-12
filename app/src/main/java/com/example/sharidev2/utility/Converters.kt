@@ -17,6 +17,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
 import java.lang.reflect.Type
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -25,6 +27,11 @@ import java.time.format.DateTimeFormatter
 class Converters {
     private val gson = Gson()
 
+    companion object {
+            fun metersToKiloMeters(value: Int): Double {
+                return value.toDouble() / 1000
+            }
+    }
 
     // DATE & TIME Converters
     @RequiresApi(Build.VERSION_CODES.O)
@@ -234,5 +241,4 @@ class Converters {
         val type: Type = object : TypeToken<List<Review>?>() {}.type
         return gson.fromJson(reviewListString, type)
     }
-
 }
