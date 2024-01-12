@@ -42,11 +42,10 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 //        val tabLayout: TabLayout = binding.tabHomeMainMenu
 //        val viewPager: ViewPager2 = binding.viewPagerHomeMainMenu
         val searchBarBtn = binding.cardHomeSearchBar
-        val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)
 
 
         // LAYOUT SETTINGS
-        bottomNav?.visibility = View.VISIBLE
+        (activity as MainActivity).setBottomNavVisible(true)
 
 
 

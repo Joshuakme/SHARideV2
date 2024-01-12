@@ -1,4 +1,4 @@
-package com.example.sharidev2.model
+package com.example.sharidev2.data.model
 
 enum class UserStatus {
     REQUESTED,      // The initial status when a user requests a ride. The system is looking for an available driver / passenger.

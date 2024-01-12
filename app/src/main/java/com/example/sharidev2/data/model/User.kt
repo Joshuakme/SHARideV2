@@ -1,4 +1,4 @@
-package com.example.sharidev2.model
+package com.example.sharidev2.data.model
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -14,6 +14,6 @@ data class User @RequiresApi(Build.VERSION_CODES.O) constructor(
     val profilePictureUrl: String? = null,
     val rating: Float ?= null,
     val savedAddresses: MutableList<Address> ?= null,
-    val gender: String ?= null,         // Enum of gender
+    val gender: Gender ?= null,
     val joinedDate: LocalDateTime = LocalDateTime.now()
 )
