@@ -6,6 +6,8 @@ plugins {
     // Add the Google services Gradle plugin
     id("com.google.gms.google-services")
 
+    kotlin("kapt")
+
 }
 
 android {
@@ -85,4 +87,16 @@ dependencies {
 
     // Date Time Picker
     implementation("com.wdullaer:materialdatetimepicker:4.2.3")
+
+    // Room Database
+    val room_version = "2.6.1"
+
+    implementation("androidx.room:room-runtime:$room_version")
+    annotationProcessor("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
+    kapt("androidx.room:room-compiler:$room_version")
+
+    // Gson
+    implementation("com.google.code.gson:gson:2.8.8")
+
 }
