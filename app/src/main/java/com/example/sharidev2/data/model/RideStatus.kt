@@ -1,4 +1,4 @@
-package com.example.sharidev2.model
+package com.example.sharidev2.data.model
 
 enum class RideStatus {
     CREATED,        // The initial status when a driver creates a ride.
