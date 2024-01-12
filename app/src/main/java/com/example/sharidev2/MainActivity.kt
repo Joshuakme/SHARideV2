@@ -2,28 +2,33 @@ package com.example.sharidev2
 
 
 import android.Manifest
-import android.content.ContentValues.TAG
 import android.content.pm.PackageManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.sharidev2.databinding.ActivityMainBinding
-import com.google.android.gms.common.api.ApiException
+import com.example.sharidev2.viewmodel.CurrentLocationViewModel
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.model.PlaceLikelihood
-import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest
-import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var bottomNav: BottomNavigationView
+    private val currentLocationViewModel: CurrentLocationViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +45,12 @@ class MainActivity : AppCompatActivity() {
 
         Places.initialize(applicationContext, "AIzaSyBTPyaUpFhz9GMIpFq40zi9cZlCeZZZtQc")
 
+        getCurrentLocation()
+
+        currentLocationViewModel.currentLocation.observe(this) { newLocation ->
+            // Handle location changes
+            Log.d("Fragment", "Location observed: $newLocation")
+        }
 
 
 //        if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
@@ -67,43 +78,80 @@ class MainActivity : AppCompatActivity() {
         win.attributes = winParams
     }
 
-    public fun setBottomNavVisible(visible: Boolean) {
+    fun setBottomNavVisible(visible: Boolean) {
         bottomNav.visibility = if(visible) View.VISIBLE else View.GONE
     }
 
-    fun getCurrentLocation(){
-        // Use fields to define the data types to return.
-        val placeFields: List<Place.Field> = listOf(Place.Field.NAME)
+    private fun getCurrentLocation() {
 
-        // Use the builder to create a FindCurrentPlaceRequest.
-        val request: FindCurrentPlaceRequest = FindCurrentPlaceRequest.newInstance(placeFields)
-
-        // Call findCurrentPlace and handle the response (first check that the user has granted permission).
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
-            PackageManager.PERMISSION_GRANTED) {
-
-            val placeClient: PlacesClient = Places.createClient(applicationContext)
-            val placeResponse = placeClient.findCurrentPlace(request)
-            placeResponse.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val response = task.result
-                    for (placeLikelihood: PlaceLikelihood in response?.placeLikelihoods ?: emptyList()) {
-                        Log.e(
-                            TAG,
-                            "Place '${placeLikelihood.place.name}' has likelihood: ${placeLikelihood.likelihood}"
-                        )
-                    }
+        val requestLocationPermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+                if (isGranted) {
+                    // Permission is granted. Proceed with location updates.
+                    requestLocationUpdates()
                 } else {
-                    val exception = task.exception
-                    if (exception is ApiException) {
-                        Log.e(TAG, "Place not found: ${exception.statusCode}")
-                    }
+                    // Permission is denied. Handle accordingly.
                 }
             }
+
+        // Check and request location permission
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            // Permission is already granted. Proceed with location updates.
+            requestLocationUpdates()
         } else {
-            // A local method to request required permissions;
-            // See https://developer.android.com/training/permissions/requesting
-            //getLocationPermission()
+            // Request location permission
+            requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
+    }
+
+    private fun requestLocationUpdates() {
+        // Initialize FusedLocationProviderClient
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        val locationRequest = LocationRequest.create().apply {
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            interval = 10000 // Update location every 10 seconds (adjust as needed)
+        }
+
+        val locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                super.onLocationResult(locationResult)
+
+                // Get the latest location from the result
+                val latestLocation = locationResult.lastLocation
+
+                // Now you have the latest current location (latitude and longitude)
+                // You can use it in your autocomplete request or any other use case
+                val currentLocation = LatLng(latestLocation.latitude, latestLocation.longitude)
+                currentLocationViewModel.setLocation(currentLocation)
+
+                // If you only need one location update, you can remove the callback after obtaining the location.
+                fusedLocationClient.removeLocationUpdates(this)
+            }
+        }
+
+        // Request location updates
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
     }
 }

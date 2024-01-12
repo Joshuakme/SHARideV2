@@ -44,6 +44,7 @@
         <item>Selangor</item>
         <item>Terengganu</item>
     </string-array>
+    <string name="search_fragment_search_result_place_distance_address">%.2fkm  \u2022  %s</string>
 
 
     <!--  Booking Fragment  -->
