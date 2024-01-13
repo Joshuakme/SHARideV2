@@ -1,6 +1,7 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">SHARideV2</string>
     <string name="web_client_id">178112270595-mbkueg137033n1edkrmd2ocepfk6b2ig.apps.googleusercontent.com</string>
+    <string name="map_id" translatable="false">ed88a81f472d4f02</string>
 
     <!--  *******  -->
     <!--  GENERAL  -->
@@ -44,7 +45,9 @@
         <item>Selangor</item>
         <item>Terengganu</item>
     </string-array>
-    <string name="search_fragment_search_result_place_distance_address">%.2fkm  \u2022  %s</string>
+    <string name="search_fragment_search_result_place_distance_address">%.2fkm \u200B \u2022 \u200B %s</string>
+    <string name="search_fragment_search_result_place_distance_address_0km">%dkm \u200B \u2022 \u200B %s</string>
+    <string name="search_fragment_choose_origin_location">Choose This Origin</string>
 
 
     <!--  Booking Fragment  -->
@@ -105,7 +108,6 @@
     <string name="login_fragment_bottom_dialog_title">Select Country</string>
 
 
-
     <!--  Placeholder  -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
@@ -126,6 +128,7 @@
     <string name="placeholder_login_country_code">+60</string>
 
     <string name="placeholder_search_result_place_name">Zepp Kuala Lumpur</string>
-    <string name="placeholder_search_result_place_distance_address">8.85km * Jalan Pudu, Bandar Kuala Lumpur, 55100, Wp Kuala Lumpur, Wp Kuala Lumpur</string>
+    <string name="placeholder_search_result_place_distance_address">8.85km \u200B \u2022 \u200B Jalan Pudu, Bandar Kuala Lumpur, 55100, Wp Kuala Lumpur, Wp Kuala Lumpur</string>
+
 
 </resources>

@@ -62,7 +62,7 @@
                         android:scaleX="0.6"
                         android:scaleY="0.6"
                         android:src="@drawable/baseline_trip_origin_24"
-                        app:tint="?attr/colorError" />
+                        app:tint="?attr/colorPrimaryDark" />
 
                     <EditText
                         android:id="@+id/edit_text_offer_ride_pick_up_location"
@@ -171,7 +171,7 @@
                         android:scaleX="0.6"
                         android:scaleY="0.6"
                         android:src="@drawable/baseline_trip_origin_24"
-                        app:tint="?attr/colorPrimaryDark" />
+                        app:tint="?attr/colorError" />
 
                     <EditText
                         android:id="@+id/edit_text_offer_ride_destination_location"

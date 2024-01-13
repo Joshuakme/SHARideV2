@@ -7,8 +7,8 @@ import java.time.LocalTime
 
 @Entity(tableName = "ride_table")
 data class Ride (
-    val origin: Location,         // Maybe a Location class
-    val destination: Location,    // Maybe a Location class
+    val origin: SearchLocation,         // Maybe a Location class
+    val destination: SearchLocation,    // Maybe a Location class
     val date: LocalDate,
     val time: LocalTime,
     val driver: User,           // Will be "User" class / "Driver" class

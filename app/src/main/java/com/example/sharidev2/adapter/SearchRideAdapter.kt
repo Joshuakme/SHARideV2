@@ -12,8 +12,9 @@ import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.utility.Converters
 
 class SearchRideAdapter(
+    private val context: Context,
     private var searchPlaceList: List<SearchLocation>,
-    private val context: Context
+    private val onLocationClickListener: (SearchLocation) -> Unit
     ) : RecyclerView.Adapter<SearchRideAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -43,7 +44,26 @@ class SearchRideAdapter(
 
         // Bind data into UI
         holder.placeName.text = searchPlace.name
-        holder.placeDetailedAddress.text = context.getString(R.string.search_fragment_search_result_place_distance_address, Converters.metersToKiloMeters(searchPlace.distanceMeters), searchPlace.detailAddress)
+
+        holder.placeDetailedAddress.text = searchPlace.getDistanceAddressText(context)
+//        if(Converters.metersToKiloMeters(searchPlace.distanceMetersFromOrigin).toInt() == 0) {
+//            holder.placeDetailedAddress.text = context.getString(
+//                R.string.search_fragment_search_result_place_distance_address_0km,
+//                Converters.metersToKiloMeters(searchPlace.distanceMetersFromOrigin).toInt(),
+//                searchPlace.detailAddress
+//            )
+//        } else {
+//            holder.placeDetailedAddress.text = context.getString(
+//                R.string.search_fragment_search_result_place_distance_address,
+//                Converters.metersToKiloMeters(searchPlace.distanceMetersFromOrigin),
+//                searchPlace.detailAddress
+//            )
+//        }
+
+
+        holder.itemView.setOnClickListener {
+            onLocationClickListener.invoke(searchPlace)
+        }
     }
 
 }

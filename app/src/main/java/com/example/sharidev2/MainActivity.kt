@@ -2,6 +2,7 @@ package com.example.sharidev2
 
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Looper
@@ -16,6 +17,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.sharidev2.databinding.ActivityMainBinding
+import com.example.sharidev2.service.ConnectivityService
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -51,6 +53,9 @@ class MainActivity : AppCompatActivity() {
             // Handle location changes
             Log.d("Fragment", "Location observed: $newLocation")
         }
+
+        // Check Network Connection
+        startService(Intent(this, ConnectivityService::class.java))
 
 
 //        if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
@@ -154,4 +159,5 @@ class MainActivity : AppCompatActivity() {
         }
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
     }
+
 }
