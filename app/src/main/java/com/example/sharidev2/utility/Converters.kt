@@ -11,6 +11,7 @@ import com.example.sharidev2.data.model.Location
 import com.example.sharidev2.data.model.Message
 import com.example.sharidev2.data.model.PassengerStatus
 import com.example.sharidev2.data.model.Review
+import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.data.model.User
 import com.example.sharidev2.data.model.UserStatus
 import com.google.android.gms.maps.model.LatLng
@@ -66,43 +67,26 @@ class Converters {
 
     // LOCATION converters
     @TypeConverter
-    fun fromLocation(location: Location?): String? {
-        return location?.let {
-            "${it.latitude},${it.longitude},${it.address}"
-        }
+    fun fromSearchLocation(searchLocation: SearchLocation?): String? {
+        return searchLocation?.let { Gson().toJson(it) }
     }
 
     @TypeConverter
-    fun toLocation(locationString: String?): Location? {
-        return locationString?.let {
-            val parts = it.split(",")
-            if (parts.size == 3) {
-                Location(parts[0].toDouble(), parts[1].toDouble(), parts[2])
-            } else {
-                null
-            }
-        }
+    fun toSearchLocation(value: String?): SearchLocation? {
+        val type = object : TypeToken<SearchLocation>() {}.type
+        return value?.let { Gson().fromJson(it, type) }
     }
 
-    // LatLng converters
     @TypeConverter
     fun fromLatLng(latLng: LatLng?): String? {
-        return latLng?.let {
-            "${it.latitude},${it.longitude}"
-        }
+        return latLng?.let { Gson().toJson(it) }
     }
 
     @TypeConverter
-    fun toLatLng(latLngString: String?): LatLng? {
-        return latLngString?.let {
-            val parts = it.split(",")
-            if (parts.size == 2) {
-                LatLng(parts[0].toDouble(), parts[1].toDouble())
-            } else {
-                null
-            }
-        }
+    fun toLatLng(value: String?): LatLng? {
+        return value?.let { Gson().fromJson(it, LatLng::class.java) }
     }
+
 
     // User converters
     @TypeConverter
