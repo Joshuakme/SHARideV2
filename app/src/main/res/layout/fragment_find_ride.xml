@@ -8,7 +8,7 @@
         android:layout_height="match_parent"
         android:background="?android:attr/colorBackground"
         android:elevation="8dp"
-        tools:context=".screen.home.FindRideFragment">
+        tools:context=".screen.ride.FindRideFragment">
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/nsv_home_find_ride"

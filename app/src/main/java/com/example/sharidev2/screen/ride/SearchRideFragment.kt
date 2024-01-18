@@ -1,4 +1,4 @@
-package com.example.sharidev2.screen.home
+package com.example.sharidev2.screen.ride
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -39,7 +39,6 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest
 import com.google.android.libraries.places.api.net.PlacesClient
 import kotlin.math.cos
-
 
 class SearchRideFragment : Fragment() {
     // Global Variables Init
@@ -165,24 +164,33 @@ class SearchRideFragment : Fragment() {
                 .addOnSuccessListener { response ->
                     val predictions: List<AutocompletePrediction> = response.autocompletePredictions
 
-                    Toast.makeText(requireContext(), predictions.isEmpty().toString(), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        predictions.isEmpty().toString(),
+                        Toast.LENGTH_SHORT
+                    ).show()
 
                     if (predictions.isNotEmpty()) {
                         val nearestPlace = predictions[0] // Assuming the first prediction is the nearest
                         val placeId = nearestPlace.placeId
 
-                        Toast.makeText(requireContext(), nearestPlace.getPrimaryText(null), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireContext(),
+                            nearestPlace.getPrimaryText(null),
+                            Toast.LENGTH_SHORT
+                        ).show()
 
                         // Now, you can use placeId to fetch the details of the place, including latitude and longitude
                         getLatLngFromPlaceId(placeId) { latLng ->
                             // Now you have the latitude and longitude of the nearest place
                             // Update your ViewModel here
-                            searchRideViewModel.setOrigin(SearchLocation(
-                                placeId = nearestPlace.placeId,
-                                name = nearestPlace.getPrimaryText(null).toString(),
-                                distanceMetersFromOrigin = nearestPlace.distanceMeters ?: 0,
-                                detailAddress = nearestPlace.getFullText(null).toString(),
-                            ).apply {
+                            searchRideViewModel.setOrigin(
+                                SearchLocation(
+                                    placeId = nearestPlace.placeId,
+                                    name = nearestPlace.getPrimaryText(null).toString(),
+                                    distanceMetersFromOrigin = nearestPlace.distanceMeters ?: 0,
+                                    detailAddress = nearestPlace.getFullText(null).toString(),
+                                ).apply {
                                 geolocation = latLng
                             }
                             )
@@ -191,7 +199,11 @@ class SearchRideFragment : Fragment() {
                 }
                 .addOnFailureListener { exception ->
                     // Handle failure
-                    Toast.makeText(requireContext(), exception.message.toString(), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        exception.message.toString(),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
         } else {
 //            val request = buildOriginCurrentPlaceRequest()
@@ -204,24 +216,33 @@ class SearchRideFragment : Fragment() {
                 .addOnSuccessListener { response ->
                     val predictions: List<AutocompletePrediction> = response.autocompletePredictions
 
-                    Toast.makeText(requireContext(), predictions.isEmpty().toString(), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        predictions.isEmpty().toString(),
+                        Toast.LENGTH_SHORT
+                    ).show()
 
                     if (predictions.isNotEmpty()) {
                         val nearestPlace = predictions[0] // Assuming the first prediction is the nearest
                         val placeId = nearestPlace.placeId
 
-                        Toast.makeText(requireContext(), nearestPlace.getPrimaryText(null), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireContext(),
+                            nearestPlace.getPrimaryText(null),
+                            Toast.LENGTH_SHORT
+                        ).show()
 
                         // Now, you can use placeId to fetch the details of the place, including latitude and longitude
                         getLatLngFromPlaceId(placeId) { latLng ->
                             // Now you have the latitude and longitude of the nearest place
                             // Update your ViewModel here
-                            searchRideViewModel.setOrigin(SearchLocation(
-                                placeId = nearestPlace.placeId,
-                                name = nearestPlace.getPrimaryText(null).toString(),
-                                distanceMetersFromOrigin = nearestPlace.distanceMeters ?: 0,
-                                detailAddress = nearestPlace.getFullText(null).toString(),
-                            ).apply {
+                            searchRideViewModel.setOrigin(
+                                SearchLocation(
+                                    placeId = nearestPlace.placeId,
+                                    name = nearestPlace.getPrimaryText(null).toString(),
+                                    distanceMetersFromOrigin = nearestPlace.distanceMeters ?: 0,
+                                    detailAddress = nearestPlace.getFullText(null).toString(),
+                                ).apply {
                                 geolocation = latLng
                             }
                             )
@@ -230,7 +251,11 @@ class SearchRideFragment : Fragment() {
                 }
                 .addOnFailureListener { exception ->
                     // Handle failure
-                    Toast.makeText(requireContext(), exception.message.toString(), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        exception.message.toString(),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
         }
 
@@ -287,7 +312,11 @@ class SearchRideFragment : Fragment() {
                                 searchRideViewModel.setOrigin(nearestSearchLocation)
                             }
                         } else {
-                            Toast.makeText(requireContext(), "No places found!!!", Toast.LENGTH_SHORT)
+                            Toast.makeText(
+                                requireContext(),
+                                "No places found!!!",
+                                Toast.LENGTH_SHORT
+                            )
                                 .show()
                         }
                     } else {
@@ -315,8 +344,18 @@ class SearchRideFragment : Fragment() {
         radiusMeters: Int = 1000
     ): FindAutocompletePredictionsRequest {
         val bounds = RectangularBounds.newInstance(
-            LatLng(currentLocation.latitude - radiusMeters / 111000.0, currentLocation.longitude - radiusMeters / (111000.0 * cos(Math.toRadians(currentLocation.latitude)))),
-            LatLng(currentLocation.latitude + radiusMeters / 111000.0, currentLocation.longitude + radiusMeters / (111000.0 * cos(Math.toRadians(currentLocation.latitude))))
+            LatLng(
+                currentLocation.latitude - radiusMeters / 111000.0,
+                currentLocation.longitude - radiusMeters / (111000.0 * cos(
+                    Math.toRadians(currentLocation.latitude)
+                ))
+            ),
+            LatLng(
+                currentLocation.latitude + radiusMeters / 111000.0,
+                currentLocation.longitude + radiusMeters / (111000.0 * cos(
+                    Math.toRadians(currentLocation.latitude)
+                ))
+            )
         )
 
         return FindAutocompletePredictionsRequest.builder()
@@ -384,20 +423,22 @@ class SearchRideFragment : Fragment() {
                 }
 
                 // Pass list of data to adapter
-                searchResultAdapter = SearchRideAdapter(requireContext(), locationList) { selectedLocation ->
-                    // Determine if the user is focusing on origin or destination
-                    if (isOriginFocused) {
-                        searchRideViewModel.setOrigin(selectedLocation)
-                    } else if(isDestinationFocused) {
-                        searchRideViewModel.setDestination(selectedLocation)
-                    } else {
-                        Toast.makeText(requireContext(), "focus lost", Toast.LENGTH_SHORT).show()
+                searchResultAdapter =
+                    SearchRideAdapter(requireContext(), locationList) { selectedLocation ->
+                        // Determine if the user is focusing on origin or destination
+                        if (isOriginFocused) {
+                            searchRideViewModel.setOrigin(selectedLocation)
+                        } else if (isDestinationFocused) {
+                            searchRideViewModel.setDestination(selectedLocation)
+                        } else {
+                            Toast.makeText(requireContext(), "focus lost", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+
+                        performOriginAutocompleteRequest(currentLocation = currentLocation)
+
+                        findNavController().navigate(R.id.action_searchFragment_to_searchSelectOriginFragment)
                     }
-
-                    performOriginAutocompleteRequest(currentLocation = currentLocation)
-
-                    findNavController().navigate(R.id.action_searchFragment_to_searchSelectOriginFragment)
-                }
                 searchResultRecyclerView.layoutManager = LinearLayoutManager(context)
                 searchResultRecyclerView.adapter = searchResultAdapter
             }

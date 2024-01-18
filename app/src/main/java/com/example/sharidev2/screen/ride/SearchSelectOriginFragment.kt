@@ -1,33 +1,27 @@
-package com.example.sharidev2.screen.home
+package com.example.sharidev2.screen.ride
 
 import android.annotation.SuppressLint
-import android.content.ContentValues.TAG
+import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.Paint
 import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.VectorDrawable
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentSearchSelectOriginBinding
-import com.example.sharidev2.utility.Converters
 import com.example.sharidev2.viewmodel.SearchRideViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -38,7 +32,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.card.MaterialCardView
-
 
 class SearchSelectOriginFragment : Fragment() {
     private lateinit var binding: FragmentSearchSelectOriginBinding
@@ -60,14 +53,21 @@ class SearchSelectOriginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search_select_origin, container, false)
+        binding = DataBindingUtil.inflate(
+            inflater,
+            R.layout.fragment_search_select_origin,
+            container,
+            false
+        )
 
         // ELEMENT VARIABLES
         val backBtn = binding.cardSearchSelectOriginBackContainer
-        val mapFragment = childFragmentManager.findFragmentById(R.id.map_search_origin_container) as SupportMapFragment
+        myLocationBtn = binding.cardSearchSelectOriginMyLocationContainer
+        val mapFragment =
+            childFragmentManager.findFragmentById(R.id.map_search_origin_container) as SupportMapFragment
         val originNameText = binding.textSearchSelectOriginLocationName
         val originDistanceAddress = binding.textSearchSelectOriginLocationDistanceAddress
-        myLocationBtn = binding.cardSearchSelectOriginMyLocationContainer
+        val chooseOriginBtn = binding.btnSearchSelectOriginCta
 
 
 
@@ -77,7 +77,7 @@ class SearchSelectOriginFragment : Fragment() {
 
         //Toast.makeText(requireContext(), searchRideViewModel.origin.value?.name.toString(), Toast.LENGTH_SHORT).show()
         // GOOGLE MAP
-        searchRideViewModel.origin.observe(viewLifecycleOwner) {searchLocation ->
+        searchRideViewModel.origin.observe(viewLifecycleOwner) { searchLocation ->
 
             mapFragment.getMapAsync { googleMap ->
                 // Handle the GoogleMap instance
@@ -94,7 +94,12 @@ class SearchSelectOriginFragment : Fragment() {
                                 .icon(getOriginMarkerBitmap(requireContext()))
 
                             googleMap.addMarker(originMarker)
-                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, ZOOM_INDEX))
+                            googleMap.moveCamera(
+                                CameraUpdateFactory.newLatLngZoom(
+                                    currentLocation,
+                                    ZOOM_INDEX
+                                )
+                            )
                         }
 
                     },
@@ -112,13 +117,15 @@ class SearchSelectOriginFragment : Fragment() {
         }
 
 
-
-
-
         // NAVIGATION EVENT LISTENERS
-        // Search Fragment -> Home Fragment
+        // Search Select Origin Fragment -> Search Fragment
         backBtn.setOnClickListener {
             findNavController().navigate(R.id.action_searchSelectOriginFragment_to_searchFragment)
+        }
+
+        // Search Select Origin Fragment -> Ride Detail Config Fragment
+        chooseOriginBtn.setOnClickListener {
+            findNavController().navigate(R.id.action_searchSelectOriginFragment_to_rideDetailConfigurationFragment)
         }
 
         return binding.root
@@ -149,7 +156,7 @@ class SearchSelectOriginFragment : Fragment() {
                 } else {
                     // Handle the case where the task is not successful
                     onLocationError.invoke()
-                    Log.d(TAG, "Current location is null. Using defaults.")
+                    Log.d(ContentValues.TAG, "Current location is null. Using defaults.")
                 }
             }
         } catch (e: SecurityException) {
@@ -159,7 +166,10 @@ class SearchSelectOriginFragment : Fragment() {
         }
     }
 
-    private fun setupMapListeners(googleMap: GoogleMap, fusedLocationProviderClient: FusedLocationProviderClient) {
+    private fun setupMapListeners(
+        googleMap: GoogleMap,
+        fusedLocationProviderClient: FusedLocationProviderClient
+    ) {
         googleMap.setOnCameraMoveListener {
             handleCameraMove(googleMap, fusedLocationProviderClient)
             true
@@ -171,7 +181,10 @@ class SearchSelectOriginFragment : Fragment() {
         }
     }
 
-    private fun handleCameraMove(googleMap: GoogleMap, fusedLocationProviderClient: FusedLocationProviderClient) {
+    private fun handleCameraMove(
+        googleMap: GoogleMap,
+        fusedLocationProviderClient: FusedLocationProviderClient
+    ) {
         getDeviceLocation(
             fusedLocationProviderClient,
             onLocationResult = { currentLocation ->
@@ -189,11 +202,19 @@ class SearchSelectOriginFragment : Fragment() {
         )
     }
 
-    private fun handleMyLocationButtonClick(googleMap: GoogleMap, fusedLocationProviderClient: FusedLocationProviderClient) {
+    private fun handleMyLocationButtonClick(
+        googleMap: GoogleMap,
+        fusedLocationProviderClient: FusedLocationProviderClient
+    ) {
         getDeviceLocation(
             fusedLocationProviderClient,
             onLocationResult = { currentLocation ->
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, ZOOM_INDEX))
+                googleMap.animateCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                        currentLocation,
+                        ZOOM_INDEX
+                    )
+                )
             },
             onLocationError = {
                 // Toast.makeText(requireContext(), "Error getting device location", Toast.LENGTH_SHORT).show()
@@ -201,7 +222,10 @@ class SearchSelectOriginFragment : Fragment() {
         )
     }
 
-    private fun isMapOnCurrentLocation(currentCameraPosition: LatLng, currentLocation: LatLng): Boolean {
+    private fun isMapOnCurrentLocation(
+        currentCameraPosition: LatLng,
+        currentLocation: LatLng
+    ): Boolean {
         locationCamera.latitude = currentCameraPosition.latitude
         locationCamera.longitude = currentCameraPosition.longitude
 
@@ -221,7 +245,8 @@ class SearchSelectOriginFragment : Fragment() {
         val SCALE_FACTOR = 2.0f
 
         // Create a VectorDrawable from the default marker resource
-        val vectorDrawable = ContextCompat.getDrawable(context, R.drawable.location) as VectorDrawable
+        val vectorDrawable =
+            ContextCompat.getDrawable(context, R.drawable.location) as VectorDrawable
 
         val colorPrimary = Color.parseColor("#246489")
         vectorDrawable.setColorFilter(colorPrimary, PorterDuff.Mode.SRC_IN)
@@ -242,5 +267,3 @@ class SearchSelectOriginFragment : Fragment() {
         return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
 }
-
-
