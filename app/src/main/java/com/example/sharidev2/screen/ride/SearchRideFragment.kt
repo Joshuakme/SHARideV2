@@ -378,16 +378,11 @@ class SearchRideFragment : Fragment() {
 
         return FindAutocompletePredictionsRequest.builder()
             .setSessionToken(autocompleteRequest)
-            .setQuery("PV9")
+            .setQuery("TRX")
             .setCountries("MY")
             .setOrigin(currentLocation)
             .setLocationRestriction(bounds)
             .build()
-    }
-
-    private fun buildOriginCurrentPlaceRequest(): FindCurrentPlaceRequest {
-
-        return FindCurrentPlaceRequest.newInstance(listOf(Place.Field.LAT_LNG))
     }
 
 

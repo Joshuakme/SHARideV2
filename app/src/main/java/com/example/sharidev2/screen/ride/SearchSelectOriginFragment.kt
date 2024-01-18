@@ -67,6 +67,7 @@ class SearchSelectOriginFragment : Fragment() {
             childFragmentManager.findFragmentById(R.id.map_search_origin_container) as SupportMapFragment
         val originNameText = binding.textSearchSelectOriginLocationName
         val originDistanceAddress = binding.textSearchSelectOriginLocationDistanceAddress
+        val originDetailCard = binding.cardSearchSelectOriginOriginContainer
         val chooseOriginBtn = binding.btnSearchSelectOriginCta
 
 
@@ -121,6 +122,12 @@ class SearchSelectOriginFragment : Fragment() {
         // Search Select Origin Fragment -> Search Fragment
         backBtn.setOnClickListener {
             findNavController().navigate(R.id.action_searchSelectOriginFragment_to_searchFragment)
+        }
+
+        // Search Select Origin Fragment -> Search Fragment
+        originDetailCard.setOnClickListener {
+            findNavController().navigate(R.id.action_searchSelectOriginFragment_to_searchFragment)
+            // TODO: Focus origin edit text field
         }
 
         // Search Select Origin Fragment -> Ride Detail Config Fragment

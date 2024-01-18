@@ -89,6 +89,7 @@
             app:layout_constraintStart_toStartOf="parent">
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_search_select_origin_origin_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
@@ -99,6 +100,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:clickable="false"
                     android:padding="16dp">
 
                     <ImageButton
