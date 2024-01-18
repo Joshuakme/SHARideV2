@@ -1,5 +1,8 @@
 package com.example.sharidev2.utility
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.room.TypeConverter
@@ -29,9 +32,21 @@ class Converters {
     private val gson = Gson()
 
     companion object {
-            fun metersToKiloMeters(value: Int): Double {
-                return value.toDouble() / 1000
-            }
+        fun metersToKiloMeters(value: Int): Double {
+            return value.toDouble() / 1000
+        }
+
+        fun getBitmapFromVectorDrawable(vectorDrawable: Drawable): Bitmap {
+            val bitmap = Bitmap.createBitmap(
+                vectorDrawable.intrinsicWidth,
+                vectorDrawable.intrinsicHeight,
+                Bitmap.Config.ARGB_8888
+            )
+            val canvas = Canvas(bitmap)
+            vectorDrawable.setBounds(0, 0, canvas.width, canvas.height)
+            vectorDrawable.draw(canvas)
+            return bitmap
+        }
     }
 
     // DATE & TIME Converters
@@ -225,4 +240,6 @@ class Converters {
         val type: Type = object : TypeToken<List<Review>?>() {}.type
         return gson.fromJson(reviewListString, type)
     }
+
+
 }
