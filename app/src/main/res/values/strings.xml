@@ -126,5 +126,15 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
 
+    <!--  Vehicle Fragment: Vehicle Type  -->
+    <string-array name="name">
+        <item>SUV</item>
+        <item>Hatchback</item>
+        <item>Crossover</item>
+        <item>Sedan</item>
+        <item>Coupe</item>
+        <item>Minivan</item>
+        <item>Pickup Truck</item>
+    </string-array>
 
 </resources>

@@ -3,12 +3,13 @@
     <!--  SPACE SIZE (ss)  -->
     <!--  General  -->
     <dimen name="ss_screen_width_margin">24dp</dimen>
-    <dimen name="ss_screen_top_margin">24dp
-    </dimen>     <!-- 24dp is ori margin, 25dp is the status bar height -->
+    <dimen name="ss_screen_top_margin">24dp</dimen>          <!-- 24dp is ori margin, 25dp is the status bar height -->
     <dimen name="ss_section_bottom_margin">32dp</dimen>
     <dimen name="ss_screen_title_bottom_margin">8dp</dimen>
     <dimen name="ss_rounded_background_corner_radius">10dp</dimen>
     <dimen name="ss_fragment_nav_icon_scale">1.3</dimen>
+    <dimen name="ss_input_field_vertical_padding">11dp</dimen>
+    <dimen name="ss_input_field_horizontal_padding">14dp</dimen>
 
 
     <!--  Home Fragment  -->
@@ -16,8 +17,6 @@
     <dimen name="ss_home_pic_size">65dp</dimen>
     <dimen name="ss_home_input_field_width_margin">12dp</dimen>
     <dimen name="ss_home_input_field_bottom_margin">12dp</dimen>
-    <dimen name="ss_home_input_field_vertical_padding">11dp</dimen>
-    <dimen name="ss_home_input_field_horizontal_padding">14dp</dimen>
     <dimen name="ss_home_tab_vertical_padding">10dp</dimen>
     <dimen name="ss_home_cta_vertical_padding">10dp</dimen>
     <dimen name="ss_home_recent_rides_card_height">288dp</dimen>

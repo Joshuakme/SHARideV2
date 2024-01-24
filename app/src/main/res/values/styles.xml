@@ -54,4 +54,15 @@
         <item name="cornerSizeBottomRight">0dp</item>
         <item name="cornerSizeBottomLeft">0dp</item>
     </style>
+
+    <!--  Vehicle Fragment: Spinner Style  -->
+    <style name="spinner_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@drawable/background_spinner</item>
+        <item name="android:layout_margin">10dp</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:popupBackground">#DFFFFFFF</item>
+    </style>
 </resources>

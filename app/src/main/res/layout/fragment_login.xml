@@ -66,10 +66,10 @@
                 android:hint="@string/login_fragment_input_mobile_number_hint"
                 android:inputType="number"
                 android:maxLines="1"
-                android:paddingStart="@dimen/ss_home_input_field_horizontal_padding"
-                android:paddingTop="@dimen/ss_home_input_field_vertical_padding"
-                android:paddingEnd="@dimen/ss_home_input_field_horizontal_padding"
-                android:paddingBottom="@dimen/ss_home_input_field_vertical_padding"
+                android:paddingStart="@dimen/ss_input_field_horizontal_padding"
+                android:paddingTop="@dimen/ss_input_field_vertical_padding"
+                android:paddingEnd="@dimen/ss_input_field_horizontal_padding"
+                android:paddingBottom="@dimen/ss_input_field_vertical_padding"
                 android:textColorHint="?attr/colorOutlineVariant"
                 android:textSize="17sp" />
         </LinearLayout>
@@ -112,10 +112,10 @@
                 android:hint="@string/login_fragment_input_verify_code_hint"
                 android:inputType="number"
                 android:maxLines="1"
-                android:paddingStart="@dimen/ss_home_input_field_horizontal_padding"
-                android:paddingTop="@dimen/ss_home_input_field_vertical_padding"
-                android:paddingEnd="@dimen/ss_home_input_field_horizontal_padding"
-                android:paddingBottom="@dimen/ss_home_input_field_vertical_padding"
+                android:paddingStart="@dimen/ss_input_field_horizontal_padding"
+                android:paddingTop="@dimen/ss_input_field_vertical_padding"
+                android:paddingEnd="@dimen/ss_input_field_horizontal_padding"
+                android:paddingBottom="@dimen/ss_input_field_vertical_padding"
                 android:textColorHint="?attr/colorOutlineVariant"
                 android:textSize="16sp" />
 
