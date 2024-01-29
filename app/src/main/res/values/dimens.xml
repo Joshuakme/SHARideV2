@@ -60,6 +60,7 @@
     <dimen name="fs_fragment_title">20sp</dimen>
     <dimen name="fs_fragment_loading_error_text">20sp</dimen>
 
+
     <!--  Bottom Navigation  -->
     <dimen name="fs_bottom_nav">10sp</dimen>
 

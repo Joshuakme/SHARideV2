@@ -35,7 +35,7 @@
                 android:fontFamily="@font/robotomedium"
                 android:text="Vehicle Documentations"
                 android:textAlignment="center"
-                android:textSize="24sp"
+                android:textSize="@dimen/fs_fragment_title"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -67,14 +67,6 @@
                     app:cardBackgroundColor="#00FFFFFF"
                     app:contentPaddingTop="@dimen/ss_input_field_vertical_padding">
 
-                    <TextView
-                        android:id="@+id/tv_personal_information"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Personal Information"
-                        android:textSize="@dimen/ss_profile_personal_info_item_text_size"
-                        android:textStyle="bold" />
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -84,7 +76,6 @@
                             android:id="@+id/layout_vehicle_first_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/ss_profile_title_top_margin"
                             android:layout_marginBottom="@dimen/ss_profile_title_top_margin"
                             android:paddingTop="@dimen/ss_input_field_vertical_padding">
 
@@ -120,14 +111,6 @@
                     android:layout_height="wrap_content"
                     app:contentPaddingTop="@dimen/ss_input_field_vertical_padding">
 
-                    <TextView
-                        android:id="@+id/tv_vehicle_information"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Vehicle Information"
-                        android:textSize="@dimen/ss_profile_personal_info_item_text_size"
-                        android:textStyle="bold" />
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -160,34 +143,159 @@
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/layout_vehicle_model"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="match_parent"
+                            android:paddingTop="@dimen/ss_input_field_vertical_padding"
+                            android:paddingBottom="@dimen/ss_input_field_vertical_padding">
 
                             <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/input_vehicle_model"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="hint" />
+                                android:hint="Vehicle Model" />
                         </com.google.android.material.textfield.TextInputLayout>
 
-                        <com.google.android.material.textfield.TextInputLayout
+                        <EditText
+                            android:id="@+id/date_manufacture"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:inputType="number"
+                            android:minHeight="48dp"
+                            android:hint="Manufacture Date"
+                            android:paddingTop="@dimen/ss_input_field_vertical_padding"
+                            android:paddingBottom="@dimen/ss_input_field_vertical_padding"/>
+
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="40dp">
 
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:layout_width="match_parent"
+                            <TextView
+                                android:id="@+id/tv_vehicle_reg_cert"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:hint="hint" />
-                        </com.google.android.material.textfield.TextInputLayout>
+                                android:layout_weight="1"
+                                android:paddingTop="@dimen/ss_input_field_vertical_padding"
+                                android:paddingBottom="@dimen/ss_input_field_vertical_padding"
+                                android:text="Vehicle Registration  Certification"
+                                android:textSize="@dimen/text_margin"
+                                android:textStyle="bold" />
+                        </LinearLayout>
 
-                        <com.google.android.material.textfield.TextInputLayout
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            tools:ignore="MissingConstraints">
 
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:layout_width="match_parent"
+                            <ImageView
+                                android:id="@+id/vehicle_reg_cert"
+                                android:layout_width="140dp"
+                                android:layout_height="140dp"
+                                android:scaleType="fitCenter"
+                                android:src="@mipmap/ic_launcher" />
+
+
+                            <Button
+                                android:id="@+id/btn_upload_cert"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:hint="hint" />
-                        </com.google.android.material.textfield.TextInputLayout>
+                                android:layout_marginLeft="40dp"
+                                android:text="Upload File" />
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="40dp">
+                            <TextView
+                                android:id="@+id/tv_roadtax"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Vehicle Road Tax"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/text_margin"
+                                android:paddingTop="@dimen/ss_input_field_vertical_padding"
+                                android:paddingBottom="@dimen/ss_input_field_vertical_padding"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            tools:ignore="MissingConstraints">
+
+                            <ImageView
+                                android:id="@+id/vehicle_roadtax"
+                                android:layout_width="140dp"
+                                android:layout_height="140dp"
+                                android:scaleType="fitCenter"
+                                android:src="@mipmap/ic_launcher" />
+
+                            <Button
+                                android:id="@+id/btn_upload_roadtax"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="40dp"
+                                android:text="Upload File" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="40dp">
+                            <TextView
+                                android:id="@+id/tv_vehicle_insurance"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Vehicle Insurance"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/text_margin"
+                                android:paddingTop="@dimen/ss_input_field_vertical_padding"
+                                android:paddingBottom="@dimen/ss_input_field_vertical_padding"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            tools:ignore="MissingConstraints">
+
+                            <ImageView
+                                android:id="@+id/vehicle_insurance"
+                                android:layout_width="140dp"
+                                android:layout_height="140dp"
+                                android:scaleType="fitCenter"
+                                android:src="@mipmap/ic_launcher" />
+
+                            <Button
+                                android:id="@+id/btn_upload_insurance"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="40dp"
+                                android:text="Upload File" />
+                        </LinearLayout>
+
+                        <Button
+                            android:id="@+id/save_vehicle_record"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="50dp"
+                            android:text="Save Record" />
+
+
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
