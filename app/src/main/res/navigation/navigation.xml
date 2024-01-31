@@ -63,7 +63,20 @@
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_searchFragment_to_searchSelectOriginFragment"
-            app:destination="@id/searchSelectOriginFragment" />
+            app:destination="@id/searchSelectOriginFragment">
+            <argument
+                android:name="originName"
+                app:argType="string"
+                android:defaultValue="No place selected" />
+            <argument
+                android:name="originDetailedAddress"
+                app:argType="string"
+                android:defaultValue="No place selected" />
+            <argument
+                android:name="location"
+                app:argType="string"
+                android:defaultValue="No place selected" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/personalInformationFragment"

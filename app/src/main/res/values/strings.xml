@@ -49,6 +49,15 @@
     <string name="search_fragment_search_result_place_distance_address_0km">%dkm \u200B \u2022 \u200B %s</string>
     <string name="search_fragment_choose_origin_location">Choose This Origin</string>
 
+    <!--  Ride Detail Configuration Fragment  -->
+    <string name="ride_detail_config_fragment_title_ride_detail">Ride Details</string>
+    <string name="ride_detail_config_fragment_section_title_driver_gender">Driver\'s Gender</string>
+    <string name="ride_detail_config_fragment_section_title_vehicle_type">Vehicle Type</string>
+    <string name="ride_detail_config_fragment_section_title_schedule_date">Ride Date</string>
+    <string name="ride_detail_config_fragment_section_title_schedule_time">Ride Time</string>
+    <string name="ride_detail_config_fragment_section_title_schedule_date_time_reminder">*Current date time will be selected if leave blank</string>
+    <string name="ride_detail_config_fragment_cta_button_find_ride">Find Ride</string>
+
 
     <!--  Booking Fragment  -->
     <string name="booking_fragment_title_booking">Booking</string>
@@ -130,5 +139,5 @@
     <string name="placeholder_search_result_place_name">Zepp Kuala Lumpur</string>
     <string name="placeholder_search_result_place_distance_address">8.85km \u200B \u2022 \u200B Jalan Pudu, Bandar Kuala Lumpur, 55100, Wp Kuala Lumpur, Wp Kuala Lumpur</string>
 
-
+    <string name="placeholder_user_gender">Male</string>
 </resources>

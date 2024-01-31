@@ -19,6 +19,14 @@ class SearchRideViewModel: ViewModel() {
     private val _country = MutableLiveData<String>()
     val country: MutableLiveData<String> get() = _country
 
+    // Driver's Gender
+    private val _driverGender = MutableLiveData<String>()
+    val driverGender: MutableLiveData<String> get() = _driverGender
+
+    // Vehicle Type
+    private val _vehicleType = MutableLiveData<String>()
+    val vehicleType: MutableLiveData<String> get() = _vehicleType
+
 
     // SETTER
     fun setOrigin(newOrigin: SearchLocation) {
@@ -31,5 +39,13 @@ class SearchRideViewModel: ViewModel() {
 
     fun setRideCountry(newRideCountry: String) {
         _country.value = newRideCountry
+    }
+
+    fun setDriverGender(newDriverGender: String) {
+        _driverGender.value = newDriverGender
+    }
+
+    fun setVehicleType(newVehicleType: String) {
+        _vehicleType.value = newVehicleType
     }
 }
