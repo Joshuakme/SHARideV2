@@ -41,6 +41,10 @@
     <dimen name="ss_messages_chat_bottom_nav_input_height_padding">8dp</dimen>
 
 
+    <!--  Ride Detail Configuration Fragment  -->
+    <dimen name="ss_ride_detail_config_item_margin_bottom">8dp</dimen>
+
+
     <!--  Profile Fragment  -->
     <dimen name="ss_profile_pic_size">75dp</dimen>
     <dimen name="ss_profile_section_title_bottom_margin">16dp</dimen>
@@ -66,6 +70,9 @@
 
     <!--  Home Fragment  -->
     <dimen name="fs_home_cta_btn">20sp</dimen>
+
+    <!--  Ride Detail Configuration Fragment  -->
+    <dimen name="fs_ride_detail_config_item_text_size">15sp</dimen>
 
     <!--  Messages Fragment  -->
     <dimen name="fs_messages_chat_nav_username">18sp</dimen>

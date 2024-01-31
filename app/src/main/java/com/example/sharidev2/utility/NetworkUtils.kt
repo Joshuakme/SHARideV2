@@ -5,6 +5,9 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.widget.Toast
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.net.URL
 
 class NetworkUtils(private val context: Context) {
     private val connectivityManager =
@@ -29,5 +32,19 @@ class NetworkUtils(private val context: Context) {
         } else {
             // Do nothing
         }
+    }
+
+    fun getJsonDataFromUrl(url: String): String {
+        val connection = URL(url).openConnection()
+        val reader = BufferedReader(InputStreamReader(connection.getInputStream()))
+        val jsonData = StringBuilder()
+
+        var line: String?
+        while (reader.readLine().also { line = it } != null) {
+            jsonData.append(line)
+        }
+        reader.close()
+
+        return jsonData.toString()
     }
 }

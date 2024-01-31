@@ -1,6 +1,7 @@
 package com.example.sharidev2.screen.ride
 
 import android.Manifest
+import android.content.ContentValues.TAG
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
@@ -14,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -28,11 +30,13 @@ import com.example.sharidev2.databinding.FragmentSearchBinding
 import com.example.sharidev2.utility.NetworkUtils
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
 import com.example.sharidev2.viewmodel.SearchRideViewModel
+import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.model.PlaceLikelihood
 import com.google.android.libraries.places.api.model.RectangularBounds
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
@@ -386,6 +390,52 @@ class SearchRideFragment : Fragment() {
     }
 
 
+    private fun performOriginCurrentPlaceRequest() {
+        // Use fields to define the data types to return.
+        val placeFields: List<Place.Field> = listOf(
+            Place.Field.NAME,
+            Place.Field.ADDRESS,
+            Place.Field.LAT_LNG,
+            Place.Field.ID)
+
+        // Use the builder to create a FindCurrentPlaceRequest.
+        val request: FindCurrentPlaceRequest = FindCurrentPlaceRequest.newInstance(placeFields)
+
+        // Call findCurrentPlace and handle the response (first check that the user has granted permission).
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) ==
+            PackageManager.PERMISSION_GRANTED) {
+
+            val placeResponse = placesClient.findCurrentPlace(request)
+            placeResponse.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val response = task.result
+                    val highestLikelihoodPlace = response?.placeLikelihoods?.maxByOrNull { it.likelihood }
+
+                    highestLikelihoodPlace?.let {placeLikelihood ->
+                        val originPlace = SearchLocation(
+                                placeId = placeLikelihood.place.id ?: "",
+                                name = placeLikelihood.place.name ?: "Name Not Found",
+                                detailAddress = placeLikelihood.place.address ?: "Address Not Found",
+                                geolocation = placeLikelihood.place.latLng
+                            )
+
+                        searchRideViewModel.setOrigin(originPlace)
+                    }
+                } else {
+                    val exception = task.exception
+                    if (exception is ApiException) {
+                        Log.e(TAG, "Place not found: ${exception.statusCode}")
+                    }
+                }
+            }
+        } else {
+            // A local method to request required permissions;
+            // See https://developer.android.com/training/permissions/requesting
+            //getLocationPermission()
+        }
+    }
+
+
     private fun performDestinationAutocompleteRequest(query: String, currentLocation: LatLng?) {
 
         // Perform autocomplete predictions
@@ -430,7 +480,8 @@ class SearchRideFragment : Fragment() {
                                 .show()
                         }
 
-                        performOriginAutocompleteRequest(currentLocation = currentLocation)
+                        //performOriginAutocompleteRequest(currentLocation = currentLocation)
+                        performOriginCurrentPlaceRequest()
 
                         findNavController().navigate(R.id.action_searchFragment_to_searchSelectOriginFragment)
                     }

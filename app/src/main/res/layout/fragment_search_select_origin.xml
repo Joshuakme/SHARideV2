@@ -132,8 +132,7 @@
                             android:id="@+id/text_search_select_origin_location_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/poppins_semibold"
-                            android:text="@string/placeholder_search_result_place_name" />
+                            android:fontFamily="@font/poppins_semibold" />
 
                         <TextView
                             android:id="@+id/text_search_select_origin_location_distance_address"
@@ -141,7 +140,6 @@
                             android:layout_height="wrap_content"
                             android:ellipsize="marquee"
                             android:maxLines="2"
-                            android:text="@string/placeholder_search_result_place_distance_address"
                             android:textColor="?android:attr/textColorHint"
                             android:textSize="12sp" />
                     </LinearLayout>

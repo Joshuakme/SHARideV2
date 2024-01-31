@@ -8,7 +8,7 @@ import com.google.android.gms.maps.model.LatLng
 data class SearchLocation(
     val placeId: String,
     val name: String,
-    val distanceMetersFromOrigin: Int,
+    val distanceMetersFromOrigin: Int = 0,
     val detailAddress: String,
     var geolocation: LatLng? = null
 ) {

@@ -33,7 +33,7 @@ class CountryCodeAdapter (
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView: View =
-            LayoutInflater.from(parent.context).inflate(R.layout.recycler_item_bottom_dialog, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.recycler_item_bottom_dialog_country_code, parent, false)
         return ViewHolder(itemView)
     }
 
