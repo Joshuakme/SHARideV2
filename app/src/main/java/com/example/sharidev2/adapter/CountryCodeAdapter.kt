@@ -25,8 +25,8 @@ class CountryCodeAdapter (
         var countryCode: TextView
 
         init {
-            countryName = itemView.findViewById(R.id.text_bottom_dialog_country_name)
-            countryCode = itemView.findViewById(R.id.text_bottom_dialog_country_code)
+            countryName = itemView.findViewById(R.id.text_bottom_dialog_country_item_name)
+            countryCode = itemView.findViewById(R.id.text_bottom_dialog_item_country_code)
         }
 
     }

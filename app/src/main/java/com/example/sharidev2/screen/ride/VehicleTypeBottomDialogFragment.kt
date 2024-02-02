@@ -8,17 +8,17 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sharidev2.R
-import com.example.sharidev2.adapter.GenderAdapter
+import com.example.sharidev2.adapter.VehicleTypeAdapter
+import com.example.sharidev2.data.model.VehicleType
 import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-
-class GenderBottomDialogFragment :
+class VehicleTypeBottomDialogFragment :
     BottomSheetDialogFragment(),
-    GenderAdapter.OnGenderClickListener {
+    VehicleTypeAdapter.OnVehicleTypeClickListener {
 
-    private var initGenderList: List<String> = getInitGenderList()
-    private lateinit var adapter: GenderAdapter
+    private var initVehicleTypeList: List<String> = getInitVehicleTypeList()
+    private lateinit var adapter: VehicleTypeAdapter
     private var recyclerView: RecyclerView?= null
     private val searchRideViewModel: SharedSearchRideViewModel by activityViewModels()
 
@@ -27,19 +27,19 @@ class GenderBottomDialogFragment :
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_bottom_dialog_gender, container, false)
+        return inflater.inflate(R.layout.fragment_bottom_dialog_vehicle_type, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         // Initialize the recyclerView here
-        recyclerView = view.findViewById(R.id.recycler_bottom_dialog_gender)
+        recyclerView = view.findViewById(R.id.recycler_bottom_dialog_vehicle_type)
 
         // ELEMENT VARIABLES
 
         // Initialize adapter
-        setupRecyclerView(initGenderList)
+        setupRecyclerView(initVehicleTypeList)
 
         // LAYOUT
 
@@ -48,22 +48,26 @@ class GenderBottomDialogFragment :
 
     }
 
-    private fun setupRecyclerView(genderList: List<String>) {
-        adapter = GenderAdapter(genderList, this)
+    private fun setupRecyclerView(vehicleTypeList: List<String>) {
+        adapter = VehicleTypeAdapter(vehicleTypeList, this)
         recyclerView?.layoutManager = LinearLayoutManager(activity)
         recyclerView?.adapter = adapter
     }
 
-    override fun onGenderClick(gender: String) {
-        // Update the text in the spinner when a recycler item is pressed
+    override fun onVehicleTypeClick(vehicleType: String) {
+        try {
+            val selectedVehicleType: VehicleType = enumValueOf(vehicleType)
 
-        searchRideViewModel.setDriverGender(gender)
+            searchRideViewModel.setVehicleType(selectedVehicleType)
+        } catch (e: IllegalArgumentException) {
+
+        }
 
         // Hide the bottom dialog after click
         dismiss()
     }
 
-    private fun getInitGenderList(): List<String> {
-        return listOf("Male","Female")
+    private fun getInitVehicleTypeList(): List<String> {
+        return enumValues<VehicleType>().map { it.name }
     }
 }

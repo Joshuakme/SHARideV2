@@ -17,14 +17,14 @@
         app:cardCornerRadius="100000dp">
 
         <View
-            android:id="@+id/view_bottom_dialog_top_indicator"
+            android:id="@+id/view_bottom_dialog_gender_top_indicator"
             android:layout_width="35dp"
             android:layout_height="5dp"
             android:background="@color/system_neutral2_500" />
     </androidx.cardview.widget.CardView>
 
     <TextView
-        android:id="@+id/text_bottom_dialog_title"
+        android:id="@+id/text_bottom_dialog_gender_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
@@ -38,7 +38,7 @@
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_bottom_dialog"
+        android:id="@+id/recycler_bottom_dialog_gender"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

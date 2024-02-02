@@ -29,14 +29,13 @@ import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.databinding.FragmentSearchBinding
 import com.example.sharidev2.utility.NetworkUtils
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
-import com.example.sharidev2.viewmodel.SearchRideViewModel
+import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.model.PlaceLikelihood
 import com.google.android.libraries.places.api.model.RectangularBounds
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
@@ -49,7 +48,7 @@ class SearchRideFragment : Fragment() {
     private val REQUEST_LOCATION_PERMISSION = 123 // You can use any unique integer value
     private lateinit var binding: FragmentSearchBinding
     private val currentLocationViewModel: CurrentLocationViewModel by activityViewModels()
-    private val searchRideViewModel: SearchRideViewModel by activityViewModels()
+    private val searchRideViewModel: SharedSearchRideViewModel by activityViewModels()
     private lateinit var placesClient: PlacesClient
     private lateinit var searchResultAdapter: SearchRideAdapter
     private lateinit var searchResultRecyclerView: RecyclerView

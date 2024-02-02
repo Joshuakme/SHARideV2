@@ -7,48 +7,49 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sharidev2.R
 
-class GenderAdapter (
-    private var genderList: List<String>,
-    private val clickListener: GenderAdapter.OnGenderClickListener
-): RecyclerView.Adapter<GenderAdapter.ViewHolder>() {
+class VehicleTypeAdapter(
+    private var vehicleTypeList: List<String>,
+    private val clickListener: VehicleTypeAdapter.OnVehicleTypeClickListener
+): RecyclerView.Adapter<VehicleTypeAdapter.ViewHolder>() {
 
-    interface OnGenderClickListener {
-        fun onGenderClick(gender: String)
+    interface OnVehicleTypeClickListener {
+        fun onVehicleTypeClick(gender: String)
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var genderName: TextView
+        var vehicleTypeName: TextView
 
         init {
-            genderName = itemView.findViewById(R.id.text_bottom_dialog_gender_item_name)
+            vehicleTypeName = itemView.findViewById(R.id.text_bottom_dialog_vehicle_type_item_name)
         }
 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView: View =
-            LayoutInflater.from(parent.context).inflate(R.layout.recycler_item_bottom_dialog_gender, parent, false)
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.recycler_item_bottom_dialog_vehicle_type, parent, false)
         return ViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val gender: String = genderList[position]
+        val gender: String = vehicleTypeList[position]
 
         // Bind data into UI
-        holder.genderName.text = gender
+        holder.vehicleTypeName.text = gender
 
         holder.itemView.setOnClickListener {
-            clickListener.onGenderClick(gender)
+            clickListener.onVehicleTypeClick(gender)
         }
     }
 
     override fun getItemCount(): Int {
-        return genderList!!.size
+        return vehicleTypeList!!.size
     }
 
     // Method to update data
     fun updateData(newData: List<String>) {
-        genderList = newData
+        vehicleTypeList = newData
         notifyDataSetChanged()
     }
 }
