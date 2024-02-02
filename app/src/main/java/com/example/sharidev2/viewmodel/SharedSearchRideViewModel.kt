@@ -4,7 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.example.sharidev2.data.model.Gender
+import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.data.model.SearchLocation
+import com.example.sharidev2.data.model.SearchRide
 import com.example.sharidev2.data.model.VehicleType
 import com.example.sharidev2.data.state.SearchRideDetailConfigurationState
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
@@ -27,6 +30,7 @@ class SharedSearchRideViewModel(
     private val VEHICLE_TYPE_KEY = "vehicle_type"
     private val RIDE_DATE_KEY = "ride_date"
     private val RIDE_TIME_KEY = "ride_time"
+    private val SEARCH_RIDE_KEY = "search_ride"
 
 
 
@@ -38,7 +42,7 @@ class SharedSearchRideViewModel(
     val destination: LiveData<SearchLocation> = savedStateHandle.getLiveData(DESTINATION_KEY)
 
     // Driver's Gender
-    val driverGender: LiveData<String> = savedStateHandle.getLiveData(DRIVER_GENDER_KEY)
+    val driverGender: LiveData<Gender> = savedStateHandle.getLiveData(DRIVER_GENDER_KEY)
 
     // Vehicle Type
     val vehicleType: LiveData<VehicleType> = savedStateHandle.getLiveData(VEHICLE_TYPE_KEY)
@@ -48,6 +52,11 @@ class SharedSearchRideViewModel(
 
     // Ride Time
     val rideTime: LiveData<LocalTime> = savedStateHandle.getLiveData(RIDE_TIME_KEY)
+
+    // Seat Needed
+
+    // Search Ride
+    val searchRide: LiveData<SearchRide> = savedStateHandle.getLiveData(SEARCH_RIDE_KEY)
 
 
     // CONSTRUCTOR
@@ -75,7 +84,7 @@ class SharedSearchRideViewModel(
     }
 
     // Driver's Gender
-    fun setDriverGender(newDriverGender: String) {
+    fun setDriverGender(newDriverGender: Gender) {
         savedStateHandle[DRIVER_GENDER_KEY] = newDriverGender
     }
 
@@ -92,6 +101,20 @@ class SharedSearchRideViewModel(
     // Ride Time
     fun setRideTime(newRideTime: LocalTime) {
         savedStateHandle[RIDE_TIME_KEY] = newRideTime
+    }
+
+    // Search Ride
+    fun setSearchRide() {
+        val newSearchRide = SearchRide(
+                                origin.value!!,
+                                destination.value!!,
+                                rideDate.value!!,
+                                rideTime.value!!,
+                                driverGender.value,
+                                vehicleType.value
+                            )
+
+        savedStateHandle[SEARCH_RIDE_KEY] = newSearchRide
     }
 
 

@@ -18,6 +18,7 @@ data class Ride (
     val passengersStatus: MutableList<PassengerStatus>,
     val startTime: LocalTime,
     val completeTime: LocalTime,
+    val vehicle: Vehicle,
     val availableSeats: Int,
     val price: Double,
     val reviews: List<Review>,    // Will update to "Review" class

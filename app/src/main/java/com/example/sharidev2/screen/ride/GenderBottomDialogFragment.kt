@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sharidev2.R
 import com.example.sharidev2.adapter.GenderAdapter
+import com.example.sharidev2.data.model.Gender
+import com.example.sharidev2.data.model.VehicleType
 import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
@@ -56,8 +58,13 @@ class GenderBottomDialogFragment :
 
     override fun onGenderClick(gender: String) {
         // Update the text in the spinner when a recycler item is pressed
+        try {
+            val selectedGender: Gender = enumValueOf(gender)
 
-        searchRideViewModel.setDriverGender(gender)
+            searchRideViewModel.setDriverGender(selectedGender)
+        } catch (e: IllegalArgumentException) {
+
+        }
 
         // Hide the bottom dialog after click
         dismiss()
