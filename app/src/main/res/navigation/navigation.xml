@@ -121,5 +121,17 @@
         <action
             android:id="@+id/action_rideDetailConfigurationFragment_to_searchSelectOriginFragment"
             app:destination="@id/searchSelectOriginFragment" />
+        <action
+            android:id="@+id/action_rideDetailConfigurationFragment_to_matchedRideFragment"
+            app:destination="@id/matchedRideFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/matchedRideFragment"
+        android:name="com.example.sharidev2.screen.ride.MatchedRideFragment"
+        android:label="fragment_matched_ride"
+        tools:layout="@layout/fragment_matched_ride" >
+        <action
+            android:id="@+id/action_matchedRideFragment_to_rideDetailConfigurationFragment"
+            app:destination="@id/rideDetailConfigurationFragment" />
     </fragment>
 </navigation>

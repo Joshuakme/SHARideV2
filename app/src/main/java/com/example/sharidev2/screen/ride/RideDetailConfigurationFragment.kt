@@ -12,6 +12,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
+import com.example.sharidev2.data.model.SearchRide
 import com.example.sharidev2.databinding.FragmentRideDetailConfigurationBinding
 import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
@@ -57,6 +58,7 @@ class RideDetailConfigurationFragment :
         val vehicleTypeSpinner = binding.spinnerRideDetailConfigVehicleType
         val rideDateSpinner = binding.spinnerRideDetailConfigScheduleDate
         val rideTimeSpinner = binding.spinnerRideDetailConfigScheduleTime
+        val findRideButton = binding.btnRideDetailConfigurationCtaFindRide
 
 
         // LAYOUT SETTINGS
@@ -75,7 +77,7 @@ class RideDetailConfigurationFragment :
 
         // Search Ride Driver's Gender
         searchRideViewModel.driverGender.observe(viewLifecycleOwner) { driverGender ->
-            driverGenderSelectText.text = driverGender
+            driverGenderSelectText.text = driverGender.toString()
         }
 
         // Search Ride Vehicle Type
@@ -116,6 +118,12 @@ class RideDetailConfigurationFragment :
         // Ride Detail Configuration Fragment -> Search Select Origin Fragment
         backBtn.setOnClickListener {
             findNavController().navigate(R.id.action_rideDetailConfigurationFragment_to_searchSelectOriginFragment)
+        }
+
+        // Ride Detail Configuration Fragment -> Matched Ride Fragment
+        findRideButton.setOnClickListener {
+            searchRideViewModel.setSearchRide()
+            findNavController().navigate(R.id.action_rideDetailConfigurationFragment_to_matchedRideFragment)
         }
 
 

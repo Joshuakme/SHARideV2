@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 data class Vehicle(
     val vehicleID: String,
     val model: String,
+    val type: VehicleType,
     val plateNumber: String,
     val color: String,  // Enum of vehicle color
     val photos: MutableList<Bitmap>,

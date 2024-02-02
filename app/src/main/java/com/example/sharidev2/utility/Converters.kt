@@ -1,6 +1,7 @@
 package com.example.sharidev2.utility
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -17,9 +18,12 @@ import com.example.sharidev2.data.model.Review
 import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.data.model.User
 import com.example.sharidev2.data.model.UserStatus
+import com.example.sharidev2.data.model.Vehicle
+import com.example.sharidev2.data.model.VehicleType
 import com.google.android.gms.maps.model.LatLng
 import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
+import java.io.ByteArrayOutputStream
 import java.lang.reflect.Type
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -241,5 +245,51 @@ class Converters {
         return gson.fromJson(reviewListString, type)
     }
 
+    @TypeConverter
+    fun fromVehicle(vehicle: Vehicle): String {
+        val gson = Gson()
+        return gson.toJson(vehicle)
+    }
 
+    @TypeConverter
+    fun toVehicle(value: String): Vehicle {
+        val gson = Gson()
+        val type: Type = object : TypeToken<Vehicle>() {}.type
+        return gson.fromJson(value, type)
+    }
+
+    @TypeConverter
+    fun fromVehicleType(vehicleType: VehicleType): String {
+        return vehicleType.name
+    }
+
+    @TypeConverter
+    fun toVehicleType(value: String): VehicleType {
+        return enumValueOf(value)
+    }
+
+    @TypeConverter
+    fun fromBitmapList(bitmapList: List<Bitmap>?): String {
+        val gson = Gson()
+        return gson.toJson(bitmapList)
+    }
+
+    @TypeConverter
+    fun toBitmapList(value: String): List<Bitmap> {
+        val gson = Gson()
+        val type: Type = object : TypeToken<List<Bitmap>>() {}.type
+        return gson.fromJson(value, type)
+    }
+
+    @TypeConverter
+    fun fromBitmap(bitmap: Bitmap): ByteArray {
+        val outputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+        return outputStream.toByteArray()
+    }
+
+    @TypeConverter
+    fun toBitmap(byteArray: ByteArray): Bitmap {
+        return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+    }
 }
