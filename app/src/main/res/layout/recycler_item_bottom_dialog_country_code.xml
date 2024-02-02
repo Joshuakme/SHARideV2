@@ -8,7 +8,7 @@
 
 
     <TextView
-        android:id="@+id/text_bottom_dialog_country_name"
+        android:id="@+id/text_bottom_dialog_country_item_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -18,7 +18,7 @@
         android:textSize="16sp" />
 
     <TextView
-        android:id="@+id/text_bottom_dialog_country_code"
+        android:id="@+id/text_bottom_dialog_item_country_code"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/poppins_medium"

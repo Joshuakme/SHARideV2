@@ -22,7 +22,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentSearchSelectOriginBinding
-import com.example.sharidev2.viewmodel.SearchRideViewModel
+import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -35,7 +35,7 @@ import com.google.android.material.card.MaterialCardView
 
 class SearchSelectOriginFragment : Fragment() {
     private lateinit var binding: FragmentSearchSelectOriginBinding
-    private val searchRideViewModel: SearchRideViewModel by activityViewModels()
+    private val searchRideViewModel: SharedSearchRideViewModel by activityViewModels()
     private lateinit var myLocationBtn: MaterialCardView
 
     private val locationCamera = Location("Camera")

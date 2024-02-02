@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.sharidev2.viewmodel.LoginViewModel" />
+            type="com.example.sharidev2.viewmodel.SharedSearchRideViewModel" />
     </data>
 
     <LinearLayout
@@ -207,7 +207,7 @@
                                     android:layout_height="wrap_content"
                                     android:clickable="false"
                                     android:fontFamily="@font/poppins"
-                                    android:text='@{viewModel.countryCode != null ? @string/login_fragment_input_country_code(viewModel.countryCode) : "+60"}'
+                                    android:text='@{viewModel.driverGender != null ? viewModel.driverGender : " - "}'
                                     android:textSize="15sp" />
 
                                 <ImageButton
@@ -273,7 +273,7 @@
                                     android:layout_height="wrap_content"
                                     android:clickable="false"
                                     android:fontFamily="@font/poppins"
-                                    android:text='@{viewModel.countryCode != null ? @string/login_fragment_input_country_code(viewModel.countryCode) : "+60"}'
+                                    android:text='@{viewModel.vehicleType != null ? viewModel.vehicleType : " - "}'
                                     android:textSize="15sp" />
 
                                 <ImageButton
@@ -339,7 +339,6 @@
                                     android:layout_height="wrap_content"
                                     android:clickable="false"
                                     android:fontFamily="@font/poppins"
-                                    android:text='@{viewModel.countryCode != null ? @string/login_fragment_input_country_code(viewModel.countryCode) : "+60"}'
                                     android:textSize="15sp" />
 
                                 <ImageButton
@@ -404,7 +403,6 @@
                                     android:layout_height="wrap_content"
                                     android:clickable="false"
                                     android:fontFamily="@font/poppins"
-                                    android:text='@{viewModel.countryCode != null ? @string/login_fragment_input_country_code(viewModel.countryCode) : "+60"}'
                                     android:textSize="15sp" />
 
                                 <ImageButton

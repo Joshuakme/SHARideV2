@@ -1,13 +1,9 @@
 package com.example.sharidev2.screen.user
 
-import android.graphics.PorterDuff
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sharidev2.R
@@ -15,7 +11,6 @@ import com.example.sharidev2.adapter.CountryCodeAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import com.example.sharidev2.data.model.Country
 import com.example.sharidev2.viewmodel.LoginViewModel
 
@@ -33,7 +28,7 @@ class CountryCodeBottomDialogFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_country_code_bottom_dialog, container, false)
+        return inflater.inflate(R.layout.fragment_bottom_dialog_country_code, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
