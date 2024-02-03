@@ -34,7 +34,7 @@ class AddContactFragment : Fragment() {
         binding.btnSaveContactDetail.setOnClickListener(){
             addData()
 
-            val fragment =EmergencyContactFragment()
+            val fragment =AddContactFragment()
             val fragmentManager =activity?.supportFragmentManager
             val fragmentTransaction = fragmentManager!!.beginTransaction()
             fragmentTransaction.replace(R.id.frameLayout,fragment)
