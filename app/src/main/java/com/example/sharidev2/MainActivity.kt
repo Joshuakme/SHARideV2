@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.sharidev2.databinding.ActivityMainBinding
+import com.example.sharidev2.screen.emergency.AddContactFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -29,6 +30,10 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(binding.fragmentContainerMain.id) as NavHostFragment
         val navController = navHostFragment.navController
         val bottomNav = binding.bottomNavigation
+        val fragment =AddContactFragment()
+        val fragmentManager =supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.ll_add_emergency_contact,fragment).commit()
 
 
 
@@ -46,6 +51,8 @@ class MainActivity : AppCompatActivity() {
 //            window.statusBarColor = Color.TRANSPARENT
 //        }
     }
+
+
 
 
     // UTILITIES METHODS

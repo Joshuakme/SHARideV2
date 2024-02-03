@@ -81,6 +81,8 @@
     <string name="personal_information_item_title_user_id">User ID</string>
     <string name="personal_information_item_title_gender">Gender</string>
     <string name="personal_information_item_title_mobile_number">Mobile Number</string>
+    <string name="personal_information_item_title_vehicle_doc">Vehicle Documentation</string>
+    <string name="personal_information_item_title_driving_license">Driving License</string>
 
 
     <!--  Profile Fragment: Payment Method Fragment  -->
@@ -99,7 +101,6 @@
     <string name="login_fragment_btn_login">Log in</string>
     <string name="login_fragment_no_account">Not yet have an account? </string>
     <string name="login_fragment_btn_sign_up">Sign up</string>
-
 
 
     <!--  Placeholder  -->
