@@ -601,7 +601,7 @@
 
             <!--  Button: Log Out  -->
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_profile_login_btn"
+                android:id="@+id/card_profile_logout_btn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/ss_screen_width_margin"

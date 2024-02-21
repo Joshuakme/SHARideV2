@@ -12,12 +12,13 @@ import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentProfileBinding
 import com.example.sharidev2.viewmodel.LoginViewModel
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
 
 
 class ProfileFragment : Fragment() {
     // Variables Init
     private lateinit var binding : FragmentProfileBinding
+    private val auth = FirebaseAuth.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,18 +33,27 @@ class ProfileFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false)
 
         // ELEMENT VARIABLES
+        val profileNameText = binding.textProfileDisplayName
+        val profileUserIdText = binding.textProfileUserId
         val personalInfoBtn = binding.cardPersonalInfo
         val paymentMethodBtn = binding.cardPaymentMethod
-        val addressesdBtn = binding.cardAddresses
+        val addressesBtn = binding.cardAddresses
         val emergencyContactBtn = binding.cardEmergencyContact
+        val logoutBtn = binding.cardProfileLogoutBtn
 
+        // AUTH VARIABLES
+        val user = auth.currentUser
 
         // LAYOUT SETTINGS
         (activity as MainActivity).setBottomNavVisible(true)
+        profileNameText.text = user?.displayName ?: "Login"
+        profileUserIdText.text = "@${user?.displayName}" ?: ""
 
 
         // Check if user is logged in and navigate to respective screen
         val viewModel = ViewModelProvider(this)[LoginViewModel::class.java]
+
+
 
 
 
@@ -61,7 +71,7 @@ class ProfileFragment : Fragment() {
         }
 
         // Profile Fragment -> Addresses Fragment
-        addressesdBtn.setOnClickListener {
+        addressesBtn.setOnClickListener {
             // TODO: Set up nav graph (addresses)
             // findNavController().navigate(R.id.action_profileFragment_to_personalInformationFragment)
         }
@@ -73,7 +83,11 @@ class ProfileFragment : Fragment() {
         }
 
 
-
+        // Log out
+        logoutBtn.setOnClickListener {
+            // TODO: Dialog to confirm user to logout
+            auth.signOut()
+        }
 
         return binding.root
     }

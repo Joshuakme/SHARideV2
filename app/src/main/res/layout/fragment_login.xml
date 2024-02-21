@@ -207,6 +207,9 @@
             android:layout_marginStart="@dimen/ss_screen_width_margin"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="@dimen/ss_screen_width_margin"
+            android:clickable="false"
+            android:contextClickable="false"
+            android:longClickable="false"
             app:cardBackgroundColor="?attr/colorSurfaceInverse"
             app:cornerRadius="8dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -216,17 +219,44 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:contextClickable="false"
+                android:longClickable="false">
 
                 <TextView
                     android:id="@+id/text_login_cta_btn_login"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:contextClickable="false"
+                    android:enabled="false"
                     android:fontFamily="@font/poppins_semibold"
                     android:gravity="center"
+                    android:linksClickable="false"
+                    android:longClickable="false"
                     android:padding="14dp"
                     android:text="@string/login_fragment_btn_login"
                     android:textColor="?attr/colorOnPrimary"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.5"
+                    tools:visibility="invisible" />
+
+                <ProgressBar
+                    android:id="@+id/progress_bar_login_cta_btn"
+                    style="@android:style/Widget.Holo.Light.ProgressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:indeterminateTint="?attr/colorOnPrimary"
+                    android:maxWidth="40dip"
+                    android:maxHeight="40dip"
+                    android:minWidth="40dip"
+                    android:minHeight="40dip"
+                    android:progressTint="?attr/colorOnPrimary"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
@@ -238,20 +268,20 @@
         </com.google.android.material.card.MaterialCardView>
 
         <!--        <com.google.android.material.button.MaterialButton-->
-<!--            android:id="@+id/btn_login_cta_login"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginStart="@dimen/ss_screen_width_margin"-->
-<!--            android:layout_marginTop="24dp"-->
-<!--            android:layout_marginEnd="@dimen/ss_screen_width_margin"-->
-<!--            android:background="@null"-->
-<!--            android:fontFamily="@font/poppins_medium"-->
-<!--            android:text="@string/login_fragment_btn_login"-->
-<!--            android:textSize="16sp"-->
-<!--            app:cornerRadius="8dp"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/view_login_mobile_number_divider" />-->
+        <!--            android:id="@+id/btn_login_cta_login"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginStart="@dimen/ss_screen_width_margin"-->
+        <!--            android:layout_marginTop="24dp"-->
+        <!--            android:layout_marginEnd="@dimen/ss_screen_width_margin"-->
+        <!--            android:background="@null"-->
+        <!--            android:fontFamily="@font/poppins_medium"-->
+        <!--            android:text="@string/login_fragment_btn_login"-->
+        <!--            android:textSize="16sp"-->
+        <!--            app:cornerRadius="8dp"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toBottomOf="@+id/view_login_mobile_number_divider" />-->
 
 
         <!--  Divider: Third party O-Auth  -->

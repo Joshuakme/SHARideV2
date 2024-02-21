@@ -13,7 +13,7 @@
     <string name="screen_title_profile">Profile</string>
 
     <!--  Home Fragment  -->
-    <string name="home_fragment_welcome_user">Welcome {Username}</string>
+    <string name="home_fragment_welcome_user">Welcome %s</string>
     <string name="home_fragment_welcome_user_area">Setapak</string>
     <string name="home_fragment_pick_up_location">Pick up location</string>
     <string name="home_fragment_destination_location">Destination location</string>

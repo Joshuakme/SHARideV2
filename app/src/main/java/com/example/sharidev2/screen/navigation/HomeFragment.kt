@@ -19,12 +19,14 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.firebase.auth.FirebaseAuth
 
 
 class HomeFragment : Fragment(), OnMapReadyCallback {
     // Variables Init
     private lateinit var binding: FragmentHomeBinding
     private lateinit var mGoogleMap: GoogleMap
+    private val auth = FirebaseAuth.getInstance()
 
 
     override fun onCreateView(
@@ -41,12 +43,16 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         // ELEMENT VARIABLES
 //        val tabLayout: TabLayout = binding.tabHomeMainMenu
 //        val viewPager: ViewPager2 = binding.viewPagerHomeMainMenu
+        val welcomeHomeText = binding.textHomeWelcomeUser
         val searchBarBtn = binding.cardHomeSearchBar
+
+        // AUTH VARIABLES
+        val user = auth.currentUser
 
 
         // LAYOUT SETTINGS
         (activity as MainActivity).setBottomNavVisible(true)
-
+        welcomeHomeText.text = getString(R.string.home_fragment_welcome_user, user?.displayName ?: "back")
 
 
         // NAVIGATION EVENT LISTENERS
