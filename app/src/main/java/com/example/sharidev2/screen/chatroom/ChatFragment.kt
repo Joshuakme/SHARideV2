@@ -94,6 +94,8 @@ class ChatFragment : Fragment() {
             val newMessage = Message("m3", "s3", message, readBy = emptyList(), messageType = MessageType.TEXT)
 
             chatMessageList.add(newMessage)
+
+            chatTextInput.text.clear()
         }
 
 
