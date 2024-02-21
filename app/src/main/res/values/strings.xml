@@ -112,6 +112,7 @@
     <string name="login_fragment_btn_verify_code_resend">Resend</string>
     <string name="login_fragment_divider_or">OR</string>
     <string name="login_fragment_btn_login">Log in</string>
+    <string name="login_fragment_btn_get_otp">Get OTP</string>
     <string name="login_fragment_no_account">Not yet have an account? </string>
     <string name="login_fragment_btn_sign_up">Sign up</string>
     <string name="login_fragment_bottom_dialog_title">Select Country</string>

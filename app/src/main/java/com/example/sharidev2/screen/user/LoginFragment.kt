@@ -6,6 +6,7 @@ import android.os.CountDownTimer
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,11 +21,8 @@ import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentLoginBinding
 import com.example.sharidev2.utility.FirebaseUtils
 import com.example.sharidev2.viewmodel.LoginViewModel
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
 import com.google.android.material.card.MaterialCardView
 import com.google.firebase.FirebaseException
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
@@ -32,6 +30,8 @@ import com.google.firebase.auth.PhoneAuthProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.Timer
+import java.util.TimerTask
 import java.util.concurrent.TimeUnit
 
 
@@ -39,7 +39,7 @@ class LoginFragment : Fragment() {
 
     private lateinit var binding: FragmentLoginBinding
     private val loginViewModel: LoginViewModel by activityViewModels()
-    private var countdownTimer: CountDownTimer? = null
+
     private var timeoutSeconds: Long = 60 // Initial countdown time in seconds
 
     private val auth = FirebaseAuth.getInstance()
@@ -67,8 +67,8 @@ class LoginFragment : Fragment() {
         val mobileNumberEditText = binding.editTextLoginEnterPhoneNumber
         val verifyCodeContainer = binding.llLoginInputVerifyCode
         val otpCodeEditText = binding.editTextLoginVerificationCode
+        val getOtpBtn = binding.btnLoginCtaGetOtp
         val loginBtn = binding.btnLoginCtaLogin
-        val loadingSpinner = binding.progressBarLoginResendVerificationCode
         val countdownText = binding.textLoginResendVerifyCodeCountdown
         val resendText = binding.textLoginResendVerificationCode
         val loginWithGoogleBtn = binding.btnLoginContinueWithGoogle
@@ -77,17 +77,19 @@ class LoginFragment : Fragment() {
 
         // DATA VARIABLES
         var isValidNumber: Boolean = false
+        var isValidOTP: Boolean = false
+        val mobileNumMaxLength = 12
+        val otpCodeMaxLength = 6
 
 
         // LAYOUT SETTINGS
         (activity as MainActivity).setBottomNavVisible(false)
         // Set a maximum length for the EditText (e.g., 13 characters)
-        val mobileNumMaxLength = 12
-        val otpCodeMaxLength = 6
         val mobileNumberFilters = arrayOf<InputFilter>(InputFilter.LengthFilter(mobileNumMaxLength))
         val otpCodeFilters = arrayOf<InputFilter>(InputFilter.LengthFilter(otpCodeMaxLength))
         mobileNumberEditText.filters = mobileNumberFilters
         otpCodeEditText.filters = otpCodeFilters
+        getOtpBtn.isEnabled = false
         loginBtn.isEnabled = false
 
 
@@ -127,59 +129,67 @@ class LoginFragment : Fragment() {
                     mobileNumberEditText.setSelection(formattedText.length)
                 }
 
-                loginBtn.isEnabled = isValidNumber
+                getOtpBtn.isEnabled = isValidNumber
 
                 verifyCodeContainer.visibility = View.GONE
+                showLoginBtn(false)
             }
 
         })
 
+        otpCodeEditText.addTextChangedListener((object: TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                // Not needed in this case
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                // Not needed in this case
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                // Check if the input is a valid number
+                val input = s.toString().replace(" ", "")
+                isValidOTP = input.isNotEmpty() && input.toDoubleOrNull() != null && input.length == 6
+
+                loginBtn.isEnabled = isValidOTP
+            }
+
+        }))
+
         // Check if the input mobile number is valid, then display the verification code input
-        loginBtn.setOnClickListener {
-            // Display the verification code input
-            verifyCodeContainer.visibility = if (isValidNumber) View.VISIBLE else View.GONE
+        getOtpBtn.setOnClickListener {
+            val countryCode = countryCodeText.text.toString()
+            val unformatedPhoneNumber = mobileNumberEditText.text.toString().replace(" ", "")
+            val completePhoneNumber = countryCode + unformatedPhoneNumber
 
-            // TODO: Send OTP code to user
-            if(otpCodeEditText.text.toString().isNullOrEmpty()) {
-                sendOTP(countryCodeText.text.toString() + mobileNumberEditText.text.toString(), false)
+            if(unformatedPhoneNumber.length == 9 || unformatedPhoneNumber.length == 10) {
+                // Display the verification code input
+                verifyCodeContainer.visibility = if (isValidNumber) View.VISIBLE else View.GONE
 
-                // TODO: Display loading spinner when still loading
+                sendOTP(completePhoneNumber, false)
 
-                // TODO: Hide loading spinner after OPT code is sent to the user
 
-                loadingSpinner.visibility = View.GONE
                 countdownText.visibility = View.VISIBLE
                 resendText.visibility = View.GONE
-
-                // Start countdown the resend code timer
-                startCountdownTimer()
             }
             else {
-                val credential: PhoneAuthCredential = PhoneAuthProvider.getCredential(verificationCode, otpCodeEditText.text.toString())
-                signInWithPhone(credential)
+                Toast.makeText(requireContext(), "Invalid Phone Number", Toast.LENGTH_SHORT).show()
             }
+        }
 
+        // Login Button
+        loginBtn.setOnClickListener {
+            val credential: PhoneAuthCredential = PhoneAuthProvider.getCredential(verificationCode, otpCodeEditText.text.toString())
+            signInWithPhone(credential)
         }
 
         loginWithGoogleBtn.setOnClickListener {
-
+            // TODO: Google Auth Implementation
         }
 
         resendText.setOnClickListener {
-            // TODO: Send OTP code to user
             sendOTP(countryCodeText.text.toString() + mobileNumberEditText.text.toString(), true)
 
-            // TODO: Display loading spinner when still loading
-
-            // TODO: Hide loading spinner after OPT code is sent to the user
-            loadingSpinner.visibility = View.GONE
-
-            // Show the countdown text and hide the "Resend" text
-            countdownText.visibility = View.VISIBLE
-            resendText.visibility = View.GONE
-
-            // Start countdown the resend code timer
-            startCountdownTimer()
         }
 
 
@@ -191,6 +201,31 @@ class LoginFragment : Fragment() {
         }
     }
 
+
+    private fun showLoginBtn(show: Boolean) {
+        val getOtpBtn = binding.btnLoginCtaGetOtp
+        val loginBtn = binding.btnLoginCtaLogin
+
+
+        getOtpBtn.visibility = if(show) View.GONE else View.VISIBLE
+        loginBtn.visibility = if(show) View.VISIBLE else View.INVISIBLE
+    }
+
+    private fun getOtpLoading(loading: Boolean) {
+        val loginBtnGetOtpText = binding.textLoginCtaBtnGetOtp
+        val getOtpLoadingSpinner = binding.progressBarGetOtpCtaBtn
+
+        loginBtnGetOtpText.visibility = if(loading) View.INVISIBLE else View.VISIBLE
+        getOtpLoadingSpinner.visibility = if(loading) View.VISIBLE else View.GONE
+    }
+
+    private fun loginLoading(loading: Boolean) {
+        val loginBtnLoginText = binding.textLoginCtaBtnLogin
+        val loginBtnLoadingSpinner = binding.progressBarLoginCtaBtn
+
+        loginBtnLoginText.visibility = if(loading) View.INVISIBLE else View.VISIBLE
+        loginBtnLoadingSpinner.visibility = if(loading) View.VISIBLE else View.GONE
+    }
 
     private fun formatMobileNumber(originalText: String): String {
         val formattedText = StringBuilder()
@@ -211,42 +246,37 @@ class LoginFragment : Fragment() {
         return formattedText.toString()
     }
 
-    private fun startCountdownTimer() {
-        // Cancel the previous timer if it exists
-        countdownTimer?.cancel()
+    private fun startResendTimer() {
+        var resendTimer = Timer()
+
+        val countdownTimerText = binding.textLoginResendVerifyCodeCountdown
+        val resendText = binding.textLoginResendVerificationCode
+
+        // Show the countdown text and hide the "Resend" text
+        countdownTimerText?.visibility = View.VISIBLE
+        resendText?.visibility = View.GONE
+
 
         // Start a new countdown timer
-        countdownTimer = object : CountDownTimer((timeoutSeconds - 1) * 1000, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-                // Update the seconds left and the timer text
-                timeoutSeconds = millisUntilFinished / 1000
-                updateTimerText()
-            }
+        resendTimer.scheduleAtFixedRate(object: TimerTask() {
+            override fun run() {
+                timeoutSeconds--
 
-            override fun onFinish() {
-                val countdownTimerText =
-                    view?.findViewById<TextView>(R.id.text_login_resend_verify_code_countdown)
-                val resendText =
-                    view?.findViewById<TextView>(R.id.text_login_resend_verification_code)
+                requireActivity().runOnUiThread {
+                    countdownTimerText?.text =
+                        getString(R.string.login_fragment_btn_verify_code_resend_countdown, timeoutSeconds)
 
-                if (countdownTimerText != null && resendText != null) {
-                    countdownTimerText.visibility = View.GONE
-                    resendText.visibility = View.VISIBLE
-                    // Reset timer
-                    timeoutSeconds = 60  // Initial countdown time in seconds
+                    if(timeoutSeconds <= 0) {
+                        timeoutSeconds = 60L
+                        resendTimer.cancel()
+
+                        countdownTimerText?.visibility = View.GONE
+                        resendText?.visibility = View.VISIBLE
+                    }
                 }
-
             }
 
-        }.start()
-    }
-
-    private fun updateTimerText() {
-        val countdownTimerText =
-            view?.findViewById<TextView>(R.id.text_login_resend_verify_code_countdown)
-        // Update the timer text in the format "Resend(*secondsLeft*)"
-        countdownTimerText?.text =
-            getString(R.string.login_fragment_btn_verify_code_resend_countdown, timeoutSeconds)
+        }, 0, 1000)
     }
 
     // Method to show the CountryCodeBottomDialogFragment
@@ -256,60 +286,68 @@ class LoginFragment : Fragment() {
     }
 
     private fun sendOTP(phoneNumber: String, isResend: Boolean) {
-        val builder: PhoneAuthOptions.Builder = PhoneAuthOptions.newBuilder(auth)
-            .setPhoneNumber(phoneNumber)
-            .setTimeout(timeoutSeconds, TimeUnit.SECONDS)
-            .setActivity(requireActivity())
-            .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-                override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-                    // This callback will be invoked in two situations:
-                    // 1. Instant verification. In some cases the phone number can be instantly
-                    //    verified without needing to send or enter a verification code.
-                    // 2. Auto-retrieval. On some devices Google Play services can automatically
-                    //    detect the incoming verification SMS and perform verification without
-                    //    user action.
-                    // Here, you can handle the verification completion logic.
+            startResendTimer()
+            getOtpLoading(true)
 
-                    signInWithPhone(credential)
-                }
+            val builder: PhoneAuthOptions.Builder = PhoneAuthOptions.newBuilder(auth)
+                .setPhoneNumber(phoneNumber)
+                .setTimeout(timeoutSeconds, TimeUnit.SECONDS)
+                .setActivity(requireActivity())
+                .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                    override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                        // This callback will be invoked in two situations:
+                        // 1. Instant verification. In some cases the phone number can be instantly
+                        //    verified without needing to send or enter a verification code.
+                        // 2. Auto-retrieval. On some devices Google Play services can automatically
+                        //    detect the incoming verification SMS and perform verification without
+                        //    user action.
+                        // Here, you can handle the verification completion logic.
+                        getOtpLoading(false)
+                        signInWithPhone(credential)
+                    }
 
-                override fun onVerificationFailed(e: FirebaseException) {
+                    override fun onVerificationFailed(e: FirebaseException) {
+                        getOtpLoading(false)
+                        Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
+                    }
 
-                    Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
-                }
+                    override fun onCodeSent(
+                        verificationId: String,
+                        token: PhoneAuthProvider.ForceResendingToken
+                    ) {
+                        // This callback is invoked when the verification code is successfully sent.
+                        // `verificationId` is the verification code sent to the user's phone number.
+                        // You can save this code and use it to verify the user later.
+                        // `token` can be used to resend the verification code, if needed.
+                        // Here, you can handle the code sent logic.
+                        getOtpLoading(false)
 
-                override fun onCodeSent(
-                    verificationId: String,
-                    token: PhoneAuthProvider.ForceResendingToken
-                ) {
-                    // This callback is invoked when the verification code is successfully sent.
-                    // `verificationId` is the verification code sent to the user's phone number.
-                    // You can save this code and use it to verify the user later.
-                    // `token` can be used to resend the verification code, if needed.
-                    // Here, you can handle the code sent logic.
+                        verificationCode = verificationId
+                        forceResendingToken = token
 
-                    verificationCode = verificationId
-                    forceResendingToken = token
+                        Toast.makeText(requireContext(), "OTP sent successfully!", Toast.LENGTH_SHORT).show()
+                    }
+                })
 
-                    Toast.makeText(requireContext(), "OTP sent successfully!", Toast.LENGTH_SHORT).show()
-                }
-            })
+            if(isResend) {
+                PhoneAuthProvider.verifyPhoneNumber(builder.setForceResendingToken(forceResendingToken).build())
+            } else {
+                // Start the phone number verification process
+                PhoneAuthProvider.verifyPhoneNumber(builder.build())
+            }
 
-        if(isResend) {
-            PhoneAuthProvider.verifyPhoneNumber(builder.setForceResendingToken(forceResendingToken).build())
-        } else {
-            // Start the phone number verification process
-            PhoneAuthProvider.verifyPhoneNumber(builder.build())
-        }
-
-
+            showLoginBtn(true)
     }
 
     private fun signInWithPhone(credential: PhoneAuthCredential) {
+        loginLoading(true)
+
         // login and navigate to next screen
         auth.signInWithCredential(credential)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
+                    loginLoading(false)
+
                     // TODO: save the phone number to firebase database
                     CoroutineScope(Dispatchers.Main).launch {
                         // Call assignUserDefaultInfo from within the coroutine
@@ -319,6 +357,8 @@ class LoginFragment : Fragment() {
                         .show()
                     findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
                 } else {
+                    loginLoading(false)
+
                     Toast.makeText(requireContext(), "OTP verification failed", Toast.LENGTH_SHORT)
                         .show()
                 }
