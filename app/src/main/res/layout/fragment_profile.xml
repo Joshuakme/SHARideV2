@@ -11,7 +11,7 @@
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="743dp"
         android:background="?attr/colorSurfaceContainer"
         tools:context=".screen.navigation.ProfileFragment">
 
@@ -109,6 +109,8 @@
                 android:background="?attr/colorPrimary"
                 android:translationY="-4dp"
                 app:layout_constraintBottom_toTopOf="@+id/card_profile_section_my_account"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/card_profile_user_basic_info" />
 
             <View
@@ -638,6 +640,12 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </com.google.android.material.card.MaterialCardView>
+
+            <!-- semi-transparent grey color -->
+
+            <!--  Text: Encourage User to Login  -->
+
+            <!--  Button: Log In  -->
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

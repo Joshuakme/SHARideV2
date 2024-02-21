@@ -1,10 +1,12 @@
 package com.example.sharidev2.screen.navigation
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -46,8 +48,9 @@ class ProfileFragment : Fragment() {
 
         // LAYOUT SETTINGS
         (activity as MainActivity).setBottomNavVisible(true)
-        profileNameText.text = user?.displayName ?: "Login"
-        profileUserIdText.text = "@${user?.displayName}" ?: ""
+        profileNameText.text = user?.displayName ?: getString(R.string.profile_log_in)
+        profileUserIdText.visibility = if(user == null) View.GONE else View.VISIBLE
+        profileUserIdText.text = "@${user?.displayName}"
 
 
         // Check if user is logged in and navigate to respective screen
@@ -57,12 +60,23 @@ class ProfileFragment : Fragment() {
 
 
 
-
         // NAVIGATION EVENT LISTENERS
+        if(auth.currentUser == null) {
+            findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
+        }
+
+        // Profile Fragment -> Login Fragment
+        profileNameText.setOnClickListener {
+            if(auth.currentUser != null) {}
+            else {
+                findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
+            }
+        }
+
         // Profile Fragment -> Personal Information Fragment
         personalInfoBtn.setOnClickListener {
             //findNavController().navigate(R.id.action_profileFragment_to_personalInformationFragment)
-            findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
+            findNavController().navigate(R.id.action_profileFragment_to_personalInformationFragment)
         }
 
         // Profile Fragment -> Payment Method Fragment
@@ -87,10 +101,15 @@ class ProfileFragment : Fragment() {
         logoutBtn.setOnClickListener {
             // TODO: Dialog to confirm user to logout
             auth.signOut()
+
+            Toast.makeText(requireContext(), "Logged out!", Toast.LENGTH_SHORT).show()
+            findNavController().navigate(R.id.action_profileFragment_to_homeFragment)
         }
 
         return binding.root
     }
 
+    private fun displayGuestMenu() {
 
+    }
 }
