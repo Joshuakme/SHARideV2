@@ -6,6 +6,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:orientation="vertical"
@@ -16,14 +18,11 @@
             android:id="@+id/ll_search_top_section_row_1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:layout_marginBottom="8dp"
+            android:clipChildren="false"
             android:clipToPadding="false"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingEnd="@dimen/ss_screen_width_margin">
+            android:orientation="horizontal">
 
-            <!--  Button: Back  -->
             <ImageButton
                 android:id="@+id/img_btn_search_back"
                 android:layout_width="wrap_content"
@@ -36,6 +35,93 @@
                 android:translationX="-11dp"
                 app:tint="?attr/colorOnBackground"
                 tools:layout_editor_absoluteX="24dp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="64dp"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="?attr/colorSurfaceContainer"
+                    app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
+                    app:contentPadding="4dp"
+                    app:strokeWidth="0dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal">
+
+                        <!--  Now  -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/card_search_now"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            app:cardBackgroundColor="?attr/colorPrimary"
+                            app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
+                            app:contentPaddingBottom="4dp"
+                            app:contentPaddingLeft="16dp"
+                            app:contentPaddingRight="16dp"
+                            app:contentPaddingTop="4dp"
+                            app:strokeWidth="0dp">
+
+
+                            <TextView
+                                android:id="@+id/text_search_now"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/search_fragment_now"
+                                android:textColor="?attr/colorOnPrimary" />
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <!--  Schedule  -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/card_search_schedule"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:cardBackgroundColor="?android:attr/windowSplashScreenBackground"
+                            app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
+                            app:contentPaddingBottom="4dp"
+                            app:contentPaddingLeft="8dp"
+                            app:contentPaddingRight="8dp"
+                            app:contentPaddingTop="4dp"
+                            app:strokeWidth="0dp">
+
+
+                            <TextView
+                                android:id="@+id/text_search_schedule"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/search_fragment_schedule"
+                                android:textColor="?attr/colorOutline" />
+                        </com.google.android.material.card.MaterialCardView>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!--  Row 2  -->
+        <LinearLayout
+            android:id="@+id/ll_search_top_section_row_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:clipToPadding="false"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingEnd="@dimen/ss_screen_width_margin">
+
+            <!--  Space  -->
+            <Space
+                android:layout_width="42dp"
+                android:layout_height="match_parent" />
+
 
             <!--  Input: Pick Up Location  -->
             <com.google.android.material.card.MaterialCardView
@@ -127,9 +213,9 @@
 
         </LinearLayout>
 
-        <!--  Row 2  -->
+        <!--  Row 3  -->
         <LinearLayout
-            android:id="@+id/ll_search_top_section_row_2"
+            android:id="@+id/ll_search_top_section_row_3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"

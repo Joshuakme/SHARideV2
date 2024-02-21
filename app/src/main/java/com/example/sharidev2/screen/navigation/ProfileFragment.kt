@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentProfileBinding
+import com.example.sharidev2.utility.LoadingDialogFragment
 import com.example.sharidev2.viewmodel.LoginViewModel
 import com.google.firebase.auth.FirebaseAuth
 
@@ -100,6 +101,7 @@ class ProfileFragment : Fragment() {
         // Log out
         logoutBtn.setOnClickListener {
             // TODO: Dialog to confirm user to logout
+
             auth.signOut()
 
             Toast.makeText(requireContext(), "Logged out!", Toast.LENGTH_SHORT).show()
@@ -109,7 +111,4 @@ class ProfileFragment : Fragment() {
         return binding.root
     }
 
-    private fun displayGuestMenu() {
-
-    }
 }

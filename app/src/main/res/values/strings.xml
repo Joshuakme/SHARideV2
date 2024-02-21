@@ -28,6 +28,8 @@
     <string name="home_section_categories_rides_title">Categories</string>
 
     <!--  Home: Search Fragment  -->
+    <string name="search_fragment_now">Now</string>
+    <string name="search_fragment_schedule">Schedule</string>
     <string name="search_fragment_change_role_to_driver">Driver</string>
     <string name="search_fragment_change_role_to_passenger">Passenger</string>
     <string-array name="malaysia_state_array">

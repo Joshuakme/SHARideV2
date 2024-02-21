@@ -26,7 +26,7 @@ import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.adapter.SearchRideAdapter
 import com.example.sharidev2.data.model.SearchLocation
-import com.example.sharidev2.databinding.FragmentSearchBinding
+import com.example.sharidev2.databinding.FragmentSearchRideBinding
 import com.example.sharidev2.utility.NetworkUtils
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
 import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
@@ -46,7 +46,7 @@ import kotlin.math.cos
 class SearchRideFragment : Fragment() {
     // Global Variables Init
     private val REQUEST_LOCATION_PERMISSION = 123 // You can use any unique integer value
-    private lateinit var binding: FragmentSearchBinding
+    private lateinit var binding: FragmentSearchRideBinding
     private val currentLocationViewModel: CurrentLocationViewModel by activityViewModels()
     private val searchRideViewModel: SharedSearchRideViewModel by activityViewModels()
     private lateinit var placesClient: PlacesClient
@@ -61,15 +61,15 @@ class SearchRideFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search_ride, container, false)
 
 
         // ELEMENT VARIABLES
         val backBtn = binding.imgBtnSearchBack
+        val nowBtn = binding.cardSearchNow
+        val scheduleBtn = binding.cardSearchSchedule
         val pickUpLocationEditText = binding.editTextOfferRidePickUpLocation
-        val pickUpLocationEditTextCard = binding.cardOfferRidePickUpLocation
         val destinationLocationEditText = binding.editTextOfferRideDestinationLocation
-        val destinationLocationEditTextCard = binding.cardOfferRideDestinationLocation
         searchResultRecyclerView = binding.recyclerSearchPlaceResult
         placesClient = Places.createClient(requireContext())
 
@@ -79,38 +79,22 @@ class SearchRideFragment : Fragment() {
 
 
         // BEHAVIOUR EVENT LISTENERS
-        // Get the color value programmatically
-        // Create a TypedValue object to hold the resolved attribute value
-        val typedValue = TypedValue()
+        nowBtn.setOnClickListener {
+            selectSearchNow(true)
+        }
 
-        // Resolve the attribute to get the color value programmatically
-        context?.theme?.resolveAttribute(com.google.android.material.R.attr.colorSurfaceContainer, typedValue, true)
-        val colorSurfaceContainer = typedValue.data
+        scheduleBtn.setOnClickListener {
+            selectSearchNow(false)
+            // TODO: show bottom dialog to choose date and time
+        }
+
 
         pickUpLocationEditText.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-            isOriginFocused = hasFocus
-
-            if (hasFocus) {
-                // Change background color when focused
-                pickUpLocationEditTextCard.setCardBackgroundColor(colorSurfaceContainer)
-                destinationLocationEditTextCard.setCardBackgroundColor(Color.TRANSPARENT)
-            } else {
-                // Change background color when not focused
-                pickUpLocationEditTextCard.setCardBackgroundColor(Color.TRANSPARENT)
-            }
+            focusOriginEditText(hasFocus)
         }
 
         destinationLocationEditText.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-            isDestinationFocused = hasFocus
-
-            if (hasFocus) {
-                // Change background color when focused
-                destinationLocationEditTextCard.setCardBackgroundColor(colorSurfaceContainer)
-                pickUpLocationEditTextCard.setCardBackgroundColor(Color.TRANSPARENT)
-            } else {
-                // Change background color when not focused
-                destinationLocationEditTextCard.setCardBackgroundColor(Color.TRANSPARENT)
-            }
+            focusDestinationEditText(hasFocus)
         }
 
 
@@ -142,7 +126,6 @@ class SearchRideFragment : Fragment() {
         })
 
 
-
         // NAVIGATION EVENT LISTENERS
         // Search Fragment -> Home Fragment
         backBtn.setOnClickListener {
@@ -152,6 +135,76 @@ class SearchRideFragment : Fragment() {
         return binding.root
     }
 
+
+    // CUSTOM METHODS
+    private fun selectSearchNow(selectNow: Boolean) {
+        val nowBtn = binding.cardSearchNow
+        val nowBtnText = binding.textSearchNow
+        val scheduleBtn = binding.cardSearchSchedule
+        val scheduleBtnText = binding.textSearchSchedule
+
+        val typedValue = TypedValue()
+        // Resolve the attribute to get the color value programmatically
+        context?.theme?.resolveAttribute(com.google.android.material.R.attr.colorPrimary, typedValue, true)
+        val colorPrimary = typedValue.data
+        context?.theme?.resolveAttribute(com.google.android.material.R.attr.colorOnPrimary, typedValue, true)
+        val colorOnPrimary = typedValue.data
+        context?.theme?.resolveAttribute(com.google.android.material.R.attr.colorOutline, typedValue, true)
+        val colorOutline = typedValue.data
+
+
+        if(selectNow) {
+            nowBtn.setCardBackgroundColor(colorPrimary)
+            nowBtnText.setTextColor(colorOnPrimary)
+            scheduleBtn.setCardBackgroundColor(Color.TRANSPARENT)
+            scheduleBtnText.setTextColor(colorOutline)
+        } else {
+            nowBtn.setCardBackgroundColor(Color.TRANSPARENT)
+            nowBtnText.setTextColor(colorOutline)
+            scheduleBtn.setCardBackgroundColor(colorPrimary)
+            scheduleBtnText.setTextColor(colorOnPrimary)
+        }
+
+    }
+
+    private fun focusOriginEditText(focus: Boolean) {
+        val pickUpLocationEditTextCard = binding.cardOfferRidePickUpLocation
+        val destinationLocationEditTextCard = binding.cardOfferRideDestinationLocation
+
+        val typedValue = TypedValue()
+
+        // Resolve the attribute to get the color value programmatically
+        context?.theme?.resolveAttribute(com.google.android.material.R.attr.colorSurfaceContainer, typedValue, true)
+        val colorSurfaceContainer = typedValue.data
+
+        if(focus) {
+            pickUpLocationEditTextCard.setCardBackgroundColor(colorSurfaceContainer)
+            destinationLocationEditTextCard.setCardBackgroundColor(Color.TRANSPARENT)
+        } else {
+            pickUpLocationEditTextCard.setCardBackgroundColor(Color.TRANSPARENT)
+        }
+
+    }
+
+    private fun focusDestinationEditText(focus: Boolean) {
+        val pickUpLocationEditTextCard = binding.cardOfferRidePickUpLocation
+        val destinationLocationEditTextCard = binding.cardOfferRideDestinationLocation
+
+        val typedValue = TypedValue()
+
+        // Resolve the attribute to get the color value programmatically
+        context?.theme?.resolveAttribute(com.google.android.material.R.attr.colorSurfaceContainer, typedValue, true)
+        val colorSurfaceContainer = typedValue.data
+
+        if (focus) {
+            // Change background color when focused
+            destinationLocationEditTextCard.setCardBackgroundColor(colorSurfaceContainer)
+            pickUpLocationEditTextCard.setCardBackgroundColor(Color.TRANSPARENT)
+        } else {
+            // Change background color when not focused
+            destinationLocationEditTextCard.setCardBackgroundColor(Color.TRANSPARENT)
+        }
+    }
 
     private fun performOriginAutocompleteRequest(query: String? = null, currentLocation: LatLng?) {
         // Perform autocomplete predictions
