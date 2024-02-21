@@ -196,8 +196,7 @@ class LoginFragment : Fragment() {
         // NAVIGATION EVENT LISTENERS
         // Profile Fragment -> Personal Information Fragment
         backBtn.setOnClickListener {
-            //findNavController().navigate(R.id.action_profileFragment_to_personalInformationFragment)
-            findNavController().navigate(R.id.action_loginFragment_to_profileFragment)
+            findNavController().popBackStack(R.id.action_profileFragment_to_loginFragment, true)
         }
     }
 
