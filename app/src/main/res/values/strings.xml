@@ -14,7 +14,7 @@
 
     <!--  Home Fragment  -->
     <string name="home_fragment_welcome_user">Welcome %s</string>
-    <string name="home_fragment_welcome_user_area">Setapak</string>
+    <string name="home_fragment_welcome_user_area">Unknown location</string>
     <string name="home_fragment_pick_up_location">Pick up location</string>
     <string name="home_fragment_destination_location">Destination location</string>
     <string name="home_fragment_date_time">Date &amp; Time</string>
@@ -25,7 +25,7 @@
     <string name="home_fragment_offer_ride_vehicle">Vehicle</string>
     <string name="home_fragment_search_hint">Enter destination or starting point</string>
     <string name="home_section_recent_rides_title">Recent rides</string>
-    <string name="home_section_categories_rides_title">Categories</string>
+    <string name="home_section_nearby_rides_rides_title">Nearby Rides</string>
 
     <!--  Home: Search Fragment  -->
     <string name="search_fragment_now">Now</string>
@@ -50,6 +50,10 @@
     <string name="search_fragment_search_result_place_distance_address">%.2fkm \u200B \u2022 \u200B %s</string>
     <string name="search_fragment_search_result_place_distance_address_0km">%dkm \u200B \u2022 \u200B %s</string>
     <string name="search_fragment_choose_origin_location">Choose This Origin</string>
+    <string name="search_fragment_choose_timing_title">Select your preferred date and time</string>
+    <string name="search_fragment_choose_timing_cta_confirm">Confirm</string>
+    <string name="search_fragment_choose_timing_cta_cancel">Cancel</string>
+
 
     <!--  Ride Detail Configuration Fragment  -->
     <string name="ride_detail_config_fragment_title_ride_detail">Ride Details</string>
@@ -59,6 +63,11 @@
     <string name="ride_detail_config_fragment_section_title_schedule_time">Ride Time</string>
     <string name="ride_detail_config_fragment_section_title_schedule_date_time_reminder">*Current date time will be selected if leave blank</string>
     <string name="ride_detail_config_fragment_cta_button_find_ride">Find Ride</string>
+
+    <!--  Driver Create Ride Fragment  -->
+    <string name="driver_create_ride_fragment_title_create_new_ride">Create New Ride</string>
+    <string name="driver_create_ride_fragment_cta_next">Next</string>
+    <string name="driver_create_ride_fragment_cta_create_ride">Create Ride</string>
 
 
     <!--  Booking Fragment  -->

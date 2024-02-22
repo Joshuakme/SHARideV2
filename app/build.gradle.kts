@@ -66,6 +66,7 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
+
     // Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
 
@@ -95,6 +96,7 @@ dependencies {
 
     // Date Time Picker
     implementation("com.wdullaer:materialdatetimepicker:4.2.3")
+    implementation("com.github.swnishan:materialdatetimepicker:1.0.0")
 
     // Room Database
     val room_version = "2.6.1"

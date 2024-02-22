@@ -82,6 +82,9 @@
                 app:argType="string"
                 android:defaultValue="No place selected" />
         </action>
+        <action
+            android:id="@+id/action_searchFragment_to_driverCreateRideFragment"
+            app:destination="@id/driverCreateRideFragment" />
     </fragment>
     <fragment
         android:id="@+id/personalInformationFragment"
@@ -141,5 +144,13 @@
         <action
             android:id="@+id/action_matchedRideFragment_to_rideDetailConfigurationFragment"
             app:destination="@id/rideDetailConfigurationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/driverCreateRideFragment"
+        android:name="com.example.sharidev2.screen.ride.DriverCreateRideFragment"
+        android:label="DriverCreateRideFragment" >
+        <action
+            android:id="@+id/action_driverCreateRideFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
     </fragment>
 </navigation>

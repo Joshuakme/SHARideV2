@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
@@ -104,5 +105,4 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         mGoogleMap = googleMap
 
     }
-
 }
