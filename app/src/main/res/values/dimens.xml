@@ -8,6 +8,7 @@
     <dimen name="ss_screen_title_bottom_margin">8dp</dimen>
     <dimen name="ss_rounded_background_corner_radius">12dp</dimen>
     <dimen name="ss_fragment_nav_icon_scale">1.3</dimen>
+    <dimen name="ss_bottom_dialog_top_indicator_height">3dp</dimen>
 
 
 

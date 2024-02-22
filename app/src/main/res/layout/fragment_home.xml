@@ -72,11 +72,15 @@
 
             <TextView
                 android:id="@+id/text_home_welcome_user_area"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/ss_screen_width_margin"
+                android:ellipsize="end"
+                android:singleLine="true"
                 android:text="@string/home_fragment_welcome_user_area"
                 android:textColor="?attr/colorOnPrimary"
                 android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/img_home_welcome_user_location"
                 app:layout_constraintTop_toBottomOf="@+id/text_home_welcome_user" />
 
@@ -354,10 +358,25 @@
             android:layout_marginStart="@dimen/ss_screen_width_margin"
             android:layout_marginTop="27dp"
             android:layout_marginEnd="@dimen/ss_screen_width_margin"
-            android:text="@string/home_section_categories_rides_title"
+            android:text="@string/home_section_nearby_rides_rides_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView" />
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="@dimen/ss_screen_width_margin"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="@dimen/ss_screen_width_margin"
+            app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_home_recent_rides_section">
+
+
+        </com.google.android.material.card.MaterialCardView>
 
         <!--  Categories Section  -->
         <LinearLayout
@@ -371,9 +390,11 @@
             android:padding="4dp"
             android:paddingStart="@dimen/ss_screen_width_margin"
             android:paddingEnd="@dimen/ss_screen_width_margin"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_home_recent_rides_section">
+            app:layout_constraintTop_toBottomOf="@+id/text_home_recent_rides_section"
+            tools:visibility="gone">
 
             <!--  Card 1: Shopping Mall  -->
             <com.google.android.material.card.MaterialCardView
@@ -397,7 +418,7 @@
                         android:layout_marginStart="3dp"
                         android:layout_marginEnd="3dp"
                         android:layout_marginBottom="4dp"
-                        app:srcCompat="@drawable/baseline_local_mall_24"
+                        app:srcCompat="@drawable/outline_shopping_bag_24"
                         app:tint="?attr/colorOnSurface" />
 
                     <TextView
@@ -477,7 +498,7 @@
                         android:layout_marginStart="3dp"
                         android:layout_marginEnd="3dp"
                         android:layout_marginBottom="4dp"
-                        app:srcCompat="@drawable/baseline_directions_bus_24"
+                        app:srcCompat="@drawable/outline_directions_bus_24"
                         app:tint="?attr/colorOnSurface" />
 
                     <TextView
@@ -518,7 +539,7 @@
                         android:layout_marginStart="3dp"
                         android:layout_marginEnd="3dp"
                         android:layout_marginBottom="4dp"
-                        app:srcCompat="@drawable/baseline_stars_24"
+                        app:srcCompat="@drawable/outline_more_horiz_24"
                         app:tint="?attr/colorOnSurface" />
 
                     <TextView
@@ -526,7 +547,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/poppins"
-                        android:text="Unknown" />
+                        android:text="Other" />
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>

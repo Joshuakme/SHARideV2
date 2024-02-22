@@ -19,7 +19,7 @@
         <View
             android:id="@+id/view_bottom_dialog_country_code_top_indicator"
             android:layout_width="35dp"
-            android:layout_height="5dp"
+            android:layout_height="@dimen/ss_bottom_dialog_top_indicator_height"
             android:background="@color/system_neutral2_500" />
     </androidx.cardview.widget.CardView>
 

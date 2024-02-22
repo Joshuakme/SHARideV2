@@ -5,14 +5,14 @@ import androidx.room.PrimaryKey
 import java.time.LocalDate
 import java.time.LocalTime
 
-@Entity(tableName = "ride_table")
 data class Ride (
-    val origin: SearchLocation,         // Maybe a Location class
-    val destination: SearchLocation,    // Maybe a Location class
+    val id: Int? = null,
+    val origin: SearchLocation,
+    val destination: SearchLocation,
     val date: LocalDate,
     val time: LocalTime,
     val driver: User,           // Will be "User" class / "Driver" class
-    val passengers: MutableList<User>,       // Will be "User" class / "Passenger" class
+    val passengers: MutableList<Passenger>,
     val rideStatus: RideStatus,
     val driverStatus: DriverStatus,
     val passengersStatus: MutableList<PassengerStatus>,
@@ -21,10 +21,6 @@ data class Ride (
     val vehicle: Vehicle,
     val availableSeats: Int,
     val price: Double,
-    val reviews: List<Review>,    // Will update to "Review" class
-    val chat: Chat,       // Wil update to "Chat" class
-    ) {
-
-    @PrimaryKey(autoGenerate = true)
-    var id: Int? = null
-}
+    val reviews: List<Review>,
+    val chat: Chat,
+)

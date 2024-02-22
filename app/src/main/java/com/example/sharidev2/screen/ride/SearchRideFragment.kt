@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.ContentValues.TAG
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.Typeface
 import android.location.Location
 import android.os.Bundle
 import android.text.Editable
@@ -16,6 +17,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -27,6 +29,7 @@ import com.example.sharidev2.R
 import com.example.sharidev2.adapter.SearchRideAdapter
 import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.databinding.FragmentSearchRideBinding
+import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.NetworkUtils
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
 import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
@@ -70,6 +73,7 @@ class SearchRideFragment : Fragment() {
         val scheduleBtn = binding.cardSearchSchedule
         val pickUpLocationEditText = binding.editTextOfferRidePickUpLocation
         val destinationLocationEditText = binding.editTextOfferRideDestinationLocation
+        val changeRoleButton = binding.cardSearchChangeRoleContainer
         searchResultRecyclerView = binding.recyclerSearchPlaceResult
         placesClient = Places.createClient(requireContext())
 
@@ -86,7 +90,10 @@ class SearchRideFragment : Fragment() {
         scheduleBtn.setOnClickListener {
             selectSearchNow(false)
             // TODO: show bottom dialog to choose date and time
+            showRideTimingDialog()
         }
+
+
 
 
         pickUpLocationEditText.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
@@ -132,6 +139,11 @@ class SearchRideFragment : Fragment() {
             findNavController().navigate(R.id.action_searchFragment_to_homeFragment)
         }
 
+        // Search Fragment -> Driver Ride Fragment
+        changeRoleButton.setOnClickListener {
+            findNavController().navigate(R.id.action_searchFragment_to_driverCreateRideFragment)
+        }
+
         return binding.root
     }
 
@@ -152,17 +164,26 @@ class SearchRideFragment : Fragment() {
         context?.theme?.resolveAttribute(com.google.android.material.R.attr.colorOutline, typedValue, true)
         val colorOutline = typedValue.data
 
+        val poppinsMediumTypeface = ResourcesCompat.getFont(requireContext(), R.font.poppins_medium)
+        val poppinsTypeface = resources.getFont(R.font.poppins)
+
 
         if(selectNow) {
             nowBtn.setCardBackgroundColor(colorPrimary)
             nowBtnText.setTextColor(colorOnPrimary)
+            nowBtnText.typeface = poppinsMediumTypeface
+
             scheduleBtn.setCardBackgroundColor(Color.TRANSPARENT)
             scheduleBtnText.setTextColor(colorOutline)
+            scheduleBtnText.typeface = poppinsTypeface
         } else {
             nowBtn.setCardBackgroundColor(Color.TRANSPARENT)
             nowBtnText.setTextColor(colorOutline)
+            nowBtnText.typeface = poppinsTypeface
+
             scheduleBtn.setCardBackgroundColor(colorPrimary)
             scheduleBtnText.setTextColor(colorOnPrimary)
+            scheduleBtnText.typeface = poppinsMediumTypeface
         }
 
     }
@@ -180,8 +201,12 @@ class SearchRideFragment : Fragment() {
         if(focus) {
             pickUpLocationEditTextCard.setCardBackgroundColor(colorSurfaceContainer)
             destinationLocationEditTextCard.setCardBackgroundColor(Color.TRANSPARENT)
+            isOriginFocused = true
+            isDestinationFocused = false
         } else {
             pickUpLocationEditTextCard.setCardBackgroundColor(Color.TRANSPARENT)
+
+            isOriginFocused = false
         }
 
     }
@@ -200,10 +225,22 @@ class SearchRideFragment : Fragment() {
             // Change background color when focused
             destinationLocationEditTextCard.setCardBackgroundColor(colorSurfaceContainer)
             pickUpLocationEditTextCard.setCardBackgroundColor(Color.TRANSPARENT)
+
+            isOriginFocused = false
+            isDestinationFocused = true
         } else {
             // Change background color when not focused
             destinationLocationEditTextCard.setCardBackgroundColor(Color.TRANSPARENT)
+
+            isDestinationFocused = false
         }
+    }
+
+
+    private fun showRideTimingDialog() {
+        val dialogFragment = TimingBottomDialogFragment()
+        dialogFragment.show(childFragmentManager, dialogFragment.tag)
+        dialogFragment.isCancelable = false
     }
 
     private fun performOriginAutocompleteRequest(query: String? = null, currentLocation: LatLng?) {
@@ -343,7 +380,7 @@ class SearchRideFragment : Fragment() {
                         val nearestPlace = placeLikelihoods[0].place
                         val placeId = nearestPlace.id
 
-                        val distanceMeters = calculateDistance(
+                        val distanceMeters = CommonUtils().calculateDistance(
                             currentLocation.latitude,
                             currentLocation.longitude,
                             nearestPlace.latLng?.latitude ?: 0.0,
@@ -602,14 +639,5 @@ class SearchRideFragment : Fragment() {
     }
 
     // Function to calculate distance in meters between two locations
-    private fun calculateDistance(
-        lat1: Double,
-        lon1: Double,
-        lat2: Double,
-        lon2: Double
-    ): Float {
-        val result = FloatArray(1)
-        Location.distanceBetween(lat1, lon1, lat2, lon2, result)
-        return result[0]
-    }
+
 }
