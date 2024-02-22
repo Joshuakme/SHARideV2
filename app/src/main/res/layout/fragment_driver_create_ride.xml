@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_profile_personal_info_upper_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/ss_screen_width_margin"
+            android:paddingTop="@dimen/ss_screen_top_margin"
+            android:paddingEnd="@dimen/ss_screen_width_margin"
+            android:paddingBottom="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:context=".screen.profile.PersonalInformationFragment">
+
+            <!--  Fragment Nav Title  -->
+            <ImageButton
+                android:id="@+id/img_btn_driver_create_ride_nav_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#00FFFFFF"
+                android:scaleX="@dimen/ss_profile_subfragment_nav_icon_scale"
+                android:scaleY="@dimen/ss_profile_subfragment_nav_icon_scale"
+                android:src="@drawable/baseline_arrow_back_24"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="?attr/colorOnBackground" />
+
+            <TextView
+                android:id="@+id/text_fragment_title_driver_create_ride"
+                style="@style/text_fragment_title_profile"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins"
+                android:gravity="center"
+                android:text="@string/driver_create_ride_fragment_title_create_new_ride"
+                android:textColor="?attr/colorOnBackground"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--  Google Map Section  -->
+        <fragment
+            android:id="@+id/map_driver_create_ride_container"
+            class="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cl_profile_personal_info_upper_bar"
+            app:mapId="@string/map_id" />
+
+        <!--  "My Location" Button  -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_driver_create_ride_my_location_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone"
+            app:cardBackgroundColor="?attr/colorSurface"
+            app:cardCornerRadius="10000dp"
+            app:cardElevation="1dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:strokeWidth="0dp"
+            tools:visibility="gone">
+
+            <ImageButton
+                android:id="@+id/img_btn_search_select_origin_my_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#00FFFFFF"
+                android:clickable="false"
+                android:padding="6dp"
+                android:src="@drawable/baseline_my_location_24"
+                app:tint="?attr/colorOnSurface" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_driver_create_ride_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/ss_screen_width_margin"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="@dimen/ss_screen_width_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cl_profile_personal_info_upper_bar"
+            app:strokeWidth="0dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraint_driver_create_ride_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="12dp">
+
+
+
+                <!--  Input: Pick Up Location  -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_create_ride_pick_up_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="#00FFFFFF"
+                    app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:strokeColor="?attr/colorOnBackground"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true">
+
+                        <ImageButton
+                            android:id="@+id/img_btn_create_ride_pick_up"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/ss_home_input_field_width_margin"
+                            android:background="#00FFFFFF"
+                            android:scaleX="0.6"
+                            android:scaleY="0.6"
+                            android:src="@drawable/baseline_trip_origin_24"
+                            app:tint="?attr/colorPrimaryDark" />
+
+                        <EditText
+                            android:id="@+id/edit_text_create_ride_origin_location"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="#00FFFFFF"
+                            android:fontFamily="@font/poppins_medium"
+                            android:hint="@string/home_fragment_pick_up_location"
+                            android:inputType="text"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/ss_home_input_field_horizontal_padding"
+                            android:paddingTop="@dimen/ss_home_input_field_vertical_padding"
+                            android:paddingEnd="@dimen/ss_home_input_field_horizontal_padding"
+                            android:paddingBottom="@dimen/ss_home_input_field_vertical_padding"
+                            android:text="Current location"
+                            android:textColorHint="?android:attr/textColorHint"
+                            android:textSize="14sp" />
+
+                        <ImageButton
+                            android:id="@+id/img_btn_driver_create_ride_origin_cancel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:background="#00FFFFFF"
+                            android:src="@drawable/baseline_close_24"
+                            app:tint="?android:attr/textColorHint" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <!--  Input: Destination Location  -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_create_ride_destination_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:cardBackgroundColor="#00FFFFFF"
+                    app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/card_create_ride_pick_up_location"
+                    app:strokeColor="?attr/colorOutlineVariant"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageButton
+                            android:id="@+id/img_btn_create_ride_destination"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/ss_home_input_field_width_margin"
+                            android:background="#00FFFFFF"
+                            android:scaleX="0.6"
+                            android:scaleY="0.6"
+                            android:src="@drawable/baseline_trip_origin_24"
+                            app:tint="?attr/colorError" />
+
+                        <EditText
+                            android:id="@+id/edit_text_create_ride_destination_location"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="#00FFFFFF"
+                            android:fontFamily="@font/poppins_medium"
+                            android:hint="@string/home_fragment_destination_location"
+                            android:inputType="text"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/ss_home_input_field_horizontal_padding"
+                            android:paddingTop="@dimen/ss_home_input_field_vertical_padding"
+                            android:paddingEnd="@dimen/ss_home_input_field_horizontal_padding"
+                            android:paddingBottom="@dimen/ss_home_input_field_vertical_padding"
+                            android:textColorHint="?android:attr/textColorHint"
+                            android:textSize="14sp" />
+
+                        <ImageButton
+                            android:id="@+id/img_btn_driver_create_ride_destination_cancel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:background="#00FFFFFF"
+                            android:src="@drawable/baseline_close_24"
+                            app:tint="?android:attr/textColorHint" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <Button
+                    android:id="@+id/btn_search_select_origin_cta"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:text="@string/driver_create_ride_fragment_cta_next"
+                    app:cornerRadius="8dp"
+                    app:layout_constraintTop_toBottomOf="@+id/card_create_ride_destination_location"
+                    tools:layout_editor_absoluteX="12dp" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_driver_create_ride_search_result_recycler_view"
+                    android:layout_width="0dp"
+                    android:layout_height="350dp"
+                    android:visibility="gone"
+                    app:cardCornerRadius="0dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/card_create_ride_pick_up_location"
+                    tools:visibility="gone">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_view_driver_create_ride"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="4dp"
+                        tools:listitem="@layout/recycler_item_search_place_result" />
+                </com.google.android.material.card.MaterialCardView>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
