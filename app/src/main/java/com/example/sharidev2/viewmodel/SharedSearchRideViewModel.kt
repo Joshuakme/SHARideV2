@@ -130,6 +130,19 @@ class SharedSearchRideViewModel(
     private fun roundUpToNearestInterval(currentTime: LocalTime, intervalMinutes: Int): LocalTime {
         val minuteOfHour = currentTime.minute
         val roundedMinute = ((minuteOfHour + intervalMinutes - 1) / intervalMinutes) * intervalMinutes
-        return currentTime.withMinute(roundedMinute).withSecond(0).withNano(0)
+        val hourAdjustment = roundedMinute / 60
+        val finalMinute = roundedMinute % 60
+        val finalHour = (currentTime.hour + hourAdjustment) % 24
+        return currentTime.withHour(finalHour).withMinute(finalMinute).withSecond(0).withNano(0)
+    }
+
+    fun resetData() {
+        savedStateHandle.remove<SearchLocation>(ORIGIN_KEY)
+        savedStateHandle.remove<SearchLocation>(DESTINATION_KEY)
+        savedStateHandle.remove<Gender>(DRIVER_GENDER_KEY)
+        savedStateHandle.remove<VehicleType>(VEHICLE_TYPE_KEY)
+        savedStateHandle.remove<LocalDate>(RIDE_DATE_KEY)
+        savedStateHandle.remove<LocalTime>(RIDE_TIME_KEY)
+        savedStateHandle.remove<SearchRide>(SEARCH_RIDE_KEY)
     }
 }

@@ -7,10 +7,8 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.VectorDrawable
-import android.location.Location
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -31,6 +29,8 @@ import com.example.sharidev2.R
 import com.example.sharidev2.adapter.SearchRideAdapter
 import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.databinding.FragmentDriverCreateRideBinding
+import com.example.sharidev2.utility.CommonUtils
+import com.example.sharidev2.utility.GoogleMapUtils
 import com.example.sharidev2.utility.NetworkUtils
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
 import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
@@ -66,12 +66,9 @@ class DriverCreateRideFragment : Fragment() {
     // Flags
     private var isOriginFocused = false
     private var isDestinationFocused = false
-    private val locationCamera = Location("Camera")
-    private val locationUser = Location("User")
     private val ZOOM_INDEX = 17.8f
 
 
-    @SuppressLint("MissingPermission")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -88,76 +85,50 @@ class DriverCreateRideFragment : Fragment() {
         val backBtn = binding.imgBtnDriverCreateRideNavBack
         val originLocationEditText = binding.editTextCreateRideOriginLocation
         val destinationLocationEditText = binding.editTextCreateRideDestinationLocation
-        val mapFragment = childFragmentManager.findFragmentById(R.id.map_driver_create_ride_container) as SupportMapFragment
-        val originEditTextCancelButton = binding.imgBtnDriverCreateRideOriginCancel
-        val destinationEditTextCancelButton = binding.imgBtnDriverCreateRideDestinationCancel
+
 
         searchResultRecyclerView = binding.recyclerViewDriverCreateRide
 
 
         // LAYOUT SETTINGS
-        performOriginCurrentPlaceRequest()
+        performOriginCurrentPlaceRequest()      // Get current location
 
         searchRideViewModel.origin.observe(viewLifecycleOwner) { searchLocation ->
-
-            mapFragment.getMapAsync {googleMap ->
-                // Map Settings
-                googleMap.isMyLocationEnabled = true
-                googleMap.uiSettings.isMyLocationButtonEnabled = false
-
-
-                val fusedLocationProviderClient = FusedLocationProviderClient(requireContext())
-
-                // Draw marker
-                getDeviceLocation(fusedLocationProviderClient,
-                    onLocationResult = { currentLocation ->
-                        searchLocation.geolocation?.let { location ->
-                            val originMarker = MarkerOptions().position(location)
-                                .icon(getOriginMarkerBitmap(requireContext()))
-
-                            googleMap.addMarker(originMarker)
-                            googleMap.moveCamera(
-                                CameraUpdateFactory.newLatLngZoom(
-                                    currentLocation,
-                                    ZOOM_INDEX
-                                )
-                            )
-                        }
-
-                    },
-                    onLocationError = {
-                        // Handle the case where there's an error getting the device location
-                        // Toast.makeText(requireContext(), "Error getting device location", Toast.LENGTH_SHORT).show()
-                    }
-                )
-
-                setupMapListeners(googleMap, fusedLocationProviderClient)
-            }
+            setupMap(searchLocation)
 
             originLocationEditText.setText(searchLocation.name)
             destinationLocationEditText.requestFocus()
+            updateMap()
         }
 
         searchRideViewModel.destination.observe(viewLifecycleOwner) { destinationSearchLocation ->
             destinationLocationEditText.setText(destinationSearchLocation.name)
+            updateMap()
         }
 
         // EVENT LISTENERS
-        originEditTextCancelButton.setOnClickListener {
-            originLocationEditText.text.clear()
+
+        setupOriginEditText()
+
+        setupDestinationEditText()
+
+
+        // NAVIGATION EVENT LISTENERS
+        // Driver Add Ride Fragment -> Search Fragment
+        backBtn.setOnClickListener {
+            //findNavController().navigate(R.id.action_searchFragment_to_homeFragment)
         }
 
-        destinationEditTextCancelButton.setOnClickListener {
-            destinationLocationEditText.text.clear()
-        }
 
-        originLocationEditText.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-            focusOriginEditText(hasFocus)
-        }
+        return binding.root
+    }
 
-        destinationLocationEditText.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-            focusDestinationEditText(hasFocus)
-        }
+
+    // CUSTOMIZE METHODS
+
+    private fun setupOriginEditText() {
+        val originLocationEditText = binding.editTextCreateRideOriginLocation
+        val originEditTextCancelButton = binding.imgBtnDriverCreateRideOriginCancel
 
         originLocationEditText.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {
@@ -195,6 +166,20 @@ class DriverCreateRideFragment : Fragment() {
 
         })
 
+        // FOCUS CHANGE LISTENER
+        originLocationEditText.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            focusOriginEditText(hasFocus)
+        }
+
+        originEditTextCancelButton.setOnClickListener {
+            originLocationEditText.text.clear()
+        }
+    }
+
+    private fun setupDestinationEditText() {
+        val destinationLocationEditText = binding.editTextCreateRideDestinationLocation
+        val destinationEditTextCancelButton = binding.imgBtnDriverCreateRideDestinationCancel
+
         destinationLocationEditText.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {
                 // Unused
@@ -231,19 +216,58 @@ class DriverCreateRideFragment : Fragment() {
 
         })
 
-
-        // NAVIGATION EVENT LISTENERS
-        // Driver Add Ride Fragment -> Search Fragment
-        backBtn.setOnClickListener {
-            //findNavController().navigate(R.id.action_searchFragment_to_homeFragment)
+        // FOCUS CHANGE LISTENER
+        destinationLocationEditText.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            focusDestinationEditText(hasFocus)
         }
 
-
-        return binding.root
+        destinationEditTextCancelButton.setOnClickListener {
+            destinationLocationEditText.text.clear()
+        }
     }
 
+    @SuppressLint("MissingPermission")
+    private fun setupMap(searchLocation: SearchLocation) {
+        // Setup Google Map
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map_driver_create_ride_container) as SupportMapFragment
 
-    // CUSTOMIZE METHODS
+        mapFragment.getMapAsync {googleMap ->
+            // Map Settings
+            googleMap.isMyLocationEnabled = true
+            googleMap.uiSettings.isMyLocationButtonEnabled = false
+            googleMap.uiSettings.isMapToolbarEnabled = false
+
+
+            val fusedLocationProviderClient = FusedLocationProviderClient(requireContext())
+
+            // Draw marker
+            getDeviceLocation(fusedLocationProviderClient,
+                onLocationResult = { currentLocation ->
+                    searchLocation.geolocation?.let { location ->
+                        val originMarker = MarkerOptions().position(location)
+                            .icon(getMarkerBitmap(requireContext(), com.google.android.material.R.attr.colorPrimary))
+
+                        googleMap.addMarker(originMarker)
+                        googleMap.moveCamera(
+                            CameraUpdateFactory.newLatLngZoom(
+                                currentLocation,
+                                ZOOM_INDEX
+                            )
+                        )
+                    }
+
+                },
+                onLocationError = {
+                    // Handle the case where there's an error getting the device location
+                    // Toast.makeText(requireContext(), "Error getting device location", Toast.LENGTH_SHORT).show()
+                }
+            )
+
+            setupMapListeners(googleMap, fusedLocationProviderClient)
+        }
+    }
+
+    // BEHAVIOURAL METHODS
     private fun showSearchResultCard(show: Boolean) {
         val searchResultCard = binding.cardDriverCreateRideSearchResultRecyclerView
 
@@ -256,6 +280,7 @@ class DriverCreateRideFragment : Fragment() {
         val originLocationEditText = binding.editTextCreateRideOriginLocation
         val originEditTextCancelButton = binding.imgBtnDriverCreateRideOriginCancel
         val destinationEditTextCancelButton = binding.imgBtnDriverCreateRideDestinationCancel
+
 
         val typedValue = TypedValue()
         // Resolve the attribute to get the color value programmatically
@@ -274,10 +299,11 @@ class DriverCreateRideFragment : Fragment() {
 
             if(originLocationEditText.text.isNullOrEmpty()) {
                 originEditTextCancelButton.visibility = View.INVISIBLE
+                showSearchResultCard(false)
             } else {
                 originEditTextCancelButton.visibility = View.VISIBLE
             }
-
+            destinationEditTextCancelButton.visibility = View.INVISIBLE
 
             updateSearchResultRecyclerViewPosition()
         } else {
@@ -314,11 +340,11 @@ class DriverCreateRideFragment : Fragment() {
 
             if(destinationLocationEditText.text.isNullOrEmpty() || destinationLocationEditText.text.isNullOrBlank()) {
                 destinationEditTextCancelButton.visibility = View.INVISIBLE
+                showSearchResultCard(false)
             } else {
                 destinationEditTextCancelButton.visibility = View.VISIBLE
             }
-
-
+            originEditTextCancelButton.visibility = View.INVISIBLE
 
             updateSearchResultRecyclerViewPosition()
         } else {
@@ -327,6 +353,7 @@ class DriverCreateRideFragment : Fragment() {
             pickUpLocationEditTextCard.strokeColor = colorOutlineVariant
             destinationLocationEditTextCard.strokeColor = colorOutlineVariant
             destinationEditTextCancelButton.visibility = View.INVISIBLE
+
         }
     }
 
@@ -371,7 +398,7 @@ class DriverCreateRideFragment : Fragment() {
             onLocationResult = { currentLocation ->
                 val currentCameraPosition = googleMap.cameraPosition.target
 
-                if (!isMapOnCurrentLocation(currentCameraPosition, currentLocation)) {
+                if (!GoogleMapUtils().isMapOnCurrentLocation(currentCameraPosition, currentLocation)) {
                     showMyLocationButton(true)
                 } else {
                     showMyLocationButton(false)
@@ -403,19 +430,29 @@ class DriverCreateRideFragment : Fragment() {
         )
     }
 
-    private fun isMapOnCurrentLocation(
-        currentCameraPosition: LatLng,
-        currentLocation: LatLng
-    ): Boolean {
-        locationCamera.latitude = currentCameraPosition.latitude
-        locationCamera.longitude = currentCameraPosition.longitude
 
-        locationUser.latitude = currentLocation.latitude
-        locationUser.longitude = currentLocation.longitude
 
-        val distance = locationCamera.distanceTo(locationUser)
+    private fun updateMap() {
+        val origin = searchRideViewModel.origin.value?.geolocation
+        val destination = searchRideViewModel.destination.value?.geolocation
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map_driver_create_ride_container) as SupportMapFragment
+        val googleMapUtils = GoogleMapUtils()
 
-        return distance < 0.03f
+        // Color
+        val originColor = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorPrimary)
+        val destinationColor = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorError)
+
+        mapFragment.getMapAsync { googleMap ->
+            val originLocationIcon = getMarkerBitmap(requireContext(), originColor)
+            val destinationLocationIcon = getMarkerBitmap(requireContext(), destinationColor)
+
+            googleMap.setOnMapLoadedCallback {
+                googleMapUtils.addMarker(googleMap, origin, originLocationIcon)
+                googleMapUtils.addMarker(googleMap, destination, destinationLocationIcon)
+                googleMapUtils.updateMapZoomAndCamera(requireContext(), googleMap, origin, destination)
+                googleMapUtils.drawRoute(googleMap, origin, destination)
+            }
+        }
     }
 
     private fun showMyLocationButton(show: Boolean) {
@@ -424,18 +461,16 @@ class DriverCreateRideFragment : Fragment() {
         myLocationBtn.visibility = if (show) View.VISIBLE else View.GONE
     }
 
-    private fun getOriginMarkerBitmap(context: Context): BitmapDescriptor {
-        val SCALE_FACTOR = 2.0f
+    private fun getMarkerBitmap(context: Context, color: Int): BitmapDescriptor {
+        val SCALE_FACTOR = 1.0f
 
         // Create a VectorDrawable from the default marker resource
-        val vectorDrawable =
-            ContextCompat.getDrawable(context, R.drawable.location) as VectorDrawable
+        val vectorDrawable = ContextCompat.getDrawable(context, R.drawable.location) as? VectorDrawable
 
-        val colorPrimary = Color.parseColor("#246489")
-        vectorDrawable.setColorFilter(colorPrimary, PorterDuff.Mode.SRC_IN)
+        vectorDrawable?.setColorFilter(color, PorterDuff.Mode.SRC_IN)
 
-        val bitmapWidth = (vectorDrawable.intrinsicWidth * SCALE_FACTOR).toInt()
-        val bitmapHeight = (vectorDrawable.intrinsicHeight * SCALE_FACTOR).toInt()
+        val bitmapWidth = (vectorDrawable?.intrinsicWidth ?: 0 * SCALE_FACTOR).toInt()
+        val bitmapHeight = (vectorDrawable?.intrinsicHeight ?: 0 * SCALE_FACTOR).toInt()
 
         // Convert the VectorDrawable to a BitmapDescriptor
         val bitmap = Bitmap.createBitmap(
@@ -444,11 +479,12 @@ class DriverCreateRideFragment : Fragment() {
             Bitmap.Config.ARGB_8888
         )
         val canvas = Canvas(bitmap)
-        vectorDrawable.setBounds(0, 0, canvas.width, canvas.height)
-        vectorDrawable.draw(canvas)
+        vectorDrawable?.setBounds(0, 0, canvas.width, canvas.height)
+        vectorDrawable?.draw(canvas)
 
         return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
+
 
     // LOCATION RELATED METHODS
     @SuppressLint("MissingPermission")
@@ -511,6 +547,7 @@ class DriverCreateRideFragment : Fragment() {
                             // Focus lost, do nothing..
                         }
 
+                        CommonUtils().closeKeyboard(requireView(), requireContext())
                         showSearchResultCard(false)
                     }
                 searchResultRecyclerView.layoutManager = LinearLayoutManager(context)
