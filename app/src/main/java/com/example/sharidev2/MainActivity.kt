@@ -192,7 +192,7 @@ class MainActivity : AppCompatActivity() {
 
             // Update UI on the main thread
             launch(Dispatchers.Main) {
-                //areaText.text = addressText
+                areaText.text = addressText
             }
         }
     }
