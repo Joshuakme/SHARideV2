@@ -69,7 +69,6 @@ class DriverCreateRideFragment : Fragment() {
     // Flags
     private var isOriginFocused = false
     private var isDestinationFocused = false
-    private val ZOOM_INDEX = 17.8f
 
 
     override fun onCreateView(
@@ -98,19 +97,17 @@ class DriverCreateRideFragment : Fragment() {
         // LAYOUT SETTINGS
         setupMap()
         if(searchRideViewModel.origin.value == null) {
-            Log.e("APA NI?????","Request Current Location")
             performOriginCurrentPlaceRequest()      // Get current location
         }
 
         searchRideViewModel.origin.observe(viewLifecycleOwner) { searchLocation ->
-            Log.e("APA NI?????","Origin Edit Text")
             originLocationEditText.setText(searchLocation.name)
             destinationLocationEditText.requestFocus()
             updateMap()
         }
 
         searchRideViewModel.destination.observe(viewLifecycleOwner) { destinationSearchLocation ->
-            Log.e("APA NI?????","Destination Edit Text")
+            Toast.makeText(requireContext(), destinationSearchLocation.name, Toast.LENGTH_SHORT).show()
             destinationLocationEditText.setText(destinationSearchLocation.name)
             destinationLocationEditText.clearFocus()
             nextBtn.requestFocus()
@@ -189,7 +186,6 @@ class DriverCreateRideFragment : Fragment() {
 
         originEditTextCancelButton.setOnClickListener {
             originLocationEditText.text.clear()
-            searchRideViewModel.removeOrigin()
         }
     }
 
@@ -240,7 +236,6 @@ class DriverCreateRideFragment : Fragment() {
 
         destinationEditTextCancelButton.setOnClickListener {
             destinationLocationEditText.text.clear()
-            searchRideViewModel.removeDestination()
         }
     }
 
@@ -486,7 +481,6 @@ class DriverCreateRideFragment : Fragment() {
 
 
 
-
     // LOCATION RELATED METHODS
     @SuppressLint("MissingPermission")
     private fun performLocationAutocompleteRequest(query: String, currentLocation: LatLng?) {
@@ -624,23 +618,4 @@ class DriverCreateRideFragment : Fragment() {
             }
     }
 
-    override fun onResume() {
-        super.onResume()
-        //focusOnNextButtonIfNeeded()
-        Log.e("SEKARANG APA??", "On Resume!")
-    }
-
-    private fun focusOnNextButtonIfNeeded() {
-        val originSelected = searchRideViewModel.origin.value != null
-        val destinationSelected = searchRideViewModel.destination.value != null
-        val originLocationEditText = binding.editTextCreateRideOriginLocation
-        val destinationLocationEditText = binding.editTextCreateRideDestinationLocation
-        val nextBtn = binding.btnDriverCreateRideCtaNext
-
-
-            originLocationEditText.clearFocus()
-            destinationLocationEditText.clearFocus()
-            nextBtn.requestFocus()
-
-    }
 }

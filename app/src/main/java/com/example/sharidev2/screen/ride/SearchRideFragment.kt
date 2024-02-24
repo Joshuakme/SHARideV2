@@ -565,8 +565,6 @@ class SearchRideFragment : Fragment() {
                         } else if (isDestinationFocused) {
                             searchRideViewModel.setDestination(selectedLocation)
                         } else {
-                            Toast.makeText(requireContext(), "focus lost", Toast.LENGTH_SHORT)
-                                .show()
                         }
 
                         //performOriginAutocompleteRequest(currentLocation = currentLocation)
