@@ -136,6 +136,7 @@ class SharedSearchRideViewModel(
         return currentTime.withHour(finalHour).withMinute(finalMinute).withSecond(0).withNano(0)
     }
 
+    // RESET
     fun resetData() {
         savedStateHandle.remove<SearchLocation>(ORIGIN_KEY)
         savedStateHandle.remove<SearchLocation>(DESTINATION_KEY)
@@ -143,6 +144,34 @@ class SharedSearchRideViewModel(
         savedStateHandle.remove<VehicleType>(VEHICLE_TYPE_KEY)
         savedStateHandle.remove<LocalDate>(RIDE_DATE_KEY)
         savedStateHandle.remove<LocalTime>(RIDE_TIME_KEY)
+        savedStateHandle.remove<SearchRide>(SEARCH_RIDE_KEY)
+    }
+
+    fun removeOrigin() {
+        savedStateHandle.remove<SearchLocation>(ORIGIN_KEY)
+    }
+
+    fun removeDestination() {
+        savedStateHandle.remove<SearchLocation>(DESTINATION_KEY)
+    }
+
+    fun removeDriverGender() {
+        savedStateHandle.remove<Gender>(DRIVER_GENDER_KEY)
+    }
+
+    fun removeVehicleType() {
+        savedStateHandle.remove<VehicleType>(VEHICLE_TYPE_KEY)
+    }
+
+    fun removeRideDate() {
+        savedStateHandle.remove<LocalDate>(RIDE_DATE_KEY)
+    }
+
+    fun removeRideTime() {
+        savedStateHandle.remove<LocalTime>(RIDE_TIME_KEY)
+    }
+
+    fun removeSearchRide() {
         savedStateHandle.remove<SearchRide>(SEARCH_RIDE_KEY)
     }
 }
