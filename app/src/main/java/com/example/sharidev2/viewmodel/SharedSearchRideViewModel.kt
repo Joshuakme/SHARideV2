@@ -1,5 +1,6 @@
 package com.example.sharidev2.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
@@ -81,6 +82,7 @@ class SharedSearchRideViewModel(
     // Destination Location
     fun setDestination(newDestination: SearchLocation) {
         savedStateHandle[DESTINATION_KEY] = newDestination
+        Log.e("TENGOK DESTINASI", newDestination.name)
     }
 
     // Driver's Gender
@@ -144,34 +146,6 @@ class SharedSearchRideViewModel(
         savedStateHandle.remove<VehicleType>(VEHICLE_TYPE_KEY)
         savedStateHandle.remove<LocalDate>(RIDE_DATE_KEY)
         savedStateHandle.remove<LocalTime>(RIDE_TIME_KEY)
-        savedStateHandle.remove<SearchRide>(SEARCH_RIDE_KEY)
-    }
-
-    fun removeOrigin() {
-        savedStateHandle.remove<SearchLocation>(ORIGIN_KEY)
-    }
-
-    fun removeDestination() {
-        savedStateHandle.remove<SearchLocation>(DESTINATION_KEY)
-    }
-
-    fun removeDriverGender() {
-        savedStateHandle.remove<Gender>(DRIVER_GENDER_KEY)
-    }
-
-    fun removeVehicleType() {
-        savedStateHandle.remove<VehicleType>(VEHICLE_TYPE_KEY)
-    }
-
-    fun removeRideDate() {
-        savedStateHandle.remove<LocalDate>(RIDE_DATE_KEY)
-    }
-
-    fun removeRideTime() {
-        savedStateHandle.remove<LocalTime>(RIDE_TIME_KEY)
-    }
-
-    fun removeSearchRide() {
         savedStateHandle.remove<SearchRide>(SEARCH_RIDE_KEY)
     }
 }

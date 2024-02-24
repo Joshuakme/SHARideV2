@@ -10,7 +10,6 @@
     <dimen name="ss_fragment_nav_icon_scale">1.3</dimen>
     <dimen name="ss_bottom_dialog_top_indicator_height">3dp</dimen>
     <dimen name="ss_map_padding">40dp</dimen>
-    <dimen name="ss_bottom_navigation_height">49dp</dimen>
 
 
 
