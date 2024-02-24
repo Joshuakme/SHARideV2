@@ -1,12 +1,24 @@
 package com.example.sharidev2.utility
 
+import android.content.ContentValues
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.PorterDuff
+import android.graphics.drawable.VectorDrawable
 import android.location.Location
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.ColorInt
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
+import com.example.sharidev2.R
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
 import java.util.Calendar
 
 class CommonUtils {
@@ -56,6 +68,66 @@ class CommonUtils {
         context?.theme?.resolveAttribute(themeColorId, typedValue, true)
         return typedValue.data
     }
+
+    fun getBitmapFromVector(context: Context, color: Int): BitmapDescriptor {
+        val SCALE_FACTOR = 1.0f
+
+        // Create a VectorDrawable from the default marker resource
+        val vectorDrawable = ContextCompat.getDrawable(context, R.drawable.location) as? VectorDrawable
+
+        vectorDrawable?.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+
+        val bitmapWidth = (vectorDrawable?.intrinsicWidth ?: 0 * SCALE_FACTOR).toInt()
+        val bitmapHeight = (vectorDrawable?.intrinsicHeight ?: 0 * SCALE_FACTOR).toInt()
+
+        // Convert the VectorDrawable to a BitmapDescriptor
+        val bitmap = Bitmap.createBitmap(
+            bitmapWidth,
+            bitmapHeight,
+            Bitmap.Config.ARGB_8888
+        )
+        val canvas = Canvas(bitmap)
+        vectorDrawable?.setBounds(0, 0, canvas.width, canvas.height)
+        vectorDrawable?.draw(canvas)
+
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
+    }
+
+    fun getDeviceCurrentLocation(
+        fusedLocationProviderClient: FusedLocationProviderClient,
+        onLocationResult: (LatLng) -> Unit,
+        onLocationError: () -> Unit
+    ) {
+        /*
+         * Get the best and most recent location of the device, which may be null in rare
+         * cases when a location is not available.
+         */
+        try {
+            val locationResult = fusedLocationProviderClient.lastLocation
+            locationResult.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val lastKnownLocation = task.result
+                    if (lastKnownLocation != null) {
+                        val latLng = LatLng(lastKnownLocation.latitude, lastKnownLocation.longitude)
+
+                        onLocationResult.invoke(latLng)
+                    } else {
+                        // Handle the case where lastKnownLocation is null
+                        onLocationError.invoke()
+                    }
+                } else {
+                    // Handle the case where the task is not successful
+                    onLocationError.invoke()
+                    Log.d(ContentValues.TAG, "Current location is null. Using defaults.")
+                }
+            }
+        } catch (e: SecurityException) {
+            // Handle the case where a SecurityException occurs
+            onLocationError.invoke()
+            Log.e("Exception: %s", e.message, e)
+        }
+    }
+
     fun closeKeyboard(view: View, context: Context) {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)

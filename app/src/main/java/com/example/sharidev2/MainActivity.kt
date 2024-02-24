@@ -59,11 +59,6 @@ class MainActivity : AppCompatActivity() {
 
         getCurrentLocation()
 
-        currentLocationViewModel.currentLocation.observe(this) { newLocation ->
-            // Handle location changes
-            Log.d("Fragment", "Location observed: $newLocation")
-        }
-
         // Check Network Connection
         startService(Intent(this, ConnectivityService::class.java))
 
@@ -139,7 +134,6 @@ class MainActivity : AppCompatActivity() {
                 // Get the latest location from the result
                 val latestLocation = locationResult.lastLocation
 
-                fetchAreaFromLocation(latestLocation)
 
                 // Now you have the latest current location (latitude and longitude)
                 // You can use it in your autocomplete request or any other use case
@@ -172,28 +166,5 @@ class MainActivity : AppCompatActivity() {
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
     }
 
-    private fun fetchAreaFromLocation(location: Location) {
-        val areaText = findViewById<TextView>(R.id.text_home_welcome_user_area)
 
-        lifecycleScope.launch(Dispatchers.IO) {
-            val geocoder = Geocoder(this@MainActivity, Locale.getDefault())
-            var addressText = ""
-
-            try {
-                val addresses: List<Address>? = geocoder.getFromLocation(location.latitude, location.longitude, 1)
-
-                addresses?.let {
-                    val address = it[0]
-                    addressText = address.locality ?: "Unknown Location"
-                }
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-
-            // Update UI on the main thread
-            launch(Dispatchers.Main) {
-                areaText.text = addressText
-            }
-        }
-    }
 }

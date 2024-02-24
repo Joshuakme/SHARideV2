@@ -27,6 +27,7 @@
                 android:id="@+id/img_btn_driver_create_ride_nav_back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/ss_screen_top_margin"
                 android:background="#00FFFFFF"
                 android:scaleX="@dimen/ss_profile_subfragment_nav_icon_scale"
                 android:scaleY="@dimen/ss_profile_subfragment_nav_icon_scale"
@@ -37,7 +38,7 @@
 
             <TextView
                 android:id="@+id/text_fragment_title_driver_create_ride"
-                style="@style/text_fragment_title_profile"
+                style="@style/text_fragment_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins"
@@ -59,7 +60,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cl_profile_personal_info_upper_bar"
+            app:layout_constraintTop_toBottomOf="@+id/card_driver_create_ride_location"
             app:mapId="@string/map_id" />
 
         <!--  "My Location" Button  -->
@@ -95,7 +96,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/ss_screen_width_margin"
-            android:layout_marginTop="16dp"
             android:layout_marginEnd="@dimen/ss_screen_width_margin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -107,7 +107,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="12dp">
-
 
 
                 <!--  Input: Pick Up Location  -->
@@ -126,11 +125,11 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
                         android:clickable="true"
                         android:focusable="true"
-                        android:focusableInTouchMode="true">
+                        android:focusableInTouchMode="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
                         <ImageButton
                             android:id="@+id/img_btn_create_ride_pick_up"
@@ -157,7 +156,7 @@
                             android:paddingTop="@dimen/ss_home_input_field_vertical_padding"
                             android:paddingEnd="@dimen/ss_home_input_field_horizontal_padding"
                             android:paddingBottom="@dimen/ss_home_input_field_vertical_padding"
-                            android:text="Current location"
+                            android:text="@string/home_fragment_pick_up_location"
                             android:textColorHint="?android:attr/textColorHint"
                             android:textSize="14sp" />
 
@@ -168,7 +167,9 @@
                             android:layout_marginEnd="8dp"
                             android:background="#00FFFFFF"
                             android:src="@drawable/baseline_close_24"
-                            app:tint="?android:attr/textColorHint" />
+                            android:visibility="invisible"
+                            app:tint="?android:attr/textColorHint"
+                            tools:visibility="invisible" />
 
                     </LinearLayout>
 
@@ -193,7 +194,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true">
 
                         <ImageButton
                             android:id="@+id/img_btn_create_ride_destination"
@@ -230,14 +233,16 @@
                             android:layout_marginEnd="8dp"
                             android:background="#00FFFFFF"
                             android:src="@drawable/baseline_close_24"
-                            app:tint="?android:attr/textColorHint" />
+                            android:visibility="invisible"
+                            app:tint="?android:attr/textColorHint"
+                            tools:visibility="invisible" />
 
                     </LinearLayout>
 
                 </com.google.android.material.card.MaterialCardView>
 
                 <Button
-                    android:id="@+id/btn_search_select_origin_cta"
+                    android:id="@+id/btn_driver_create_ride_cta_next"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"

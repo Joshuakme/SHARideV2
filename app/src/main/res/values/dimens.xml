@@ -3,18 +3,19 @@
     <!--  SPACE SIZE (ss)  -->
     <!--  General  -->
     <dimen name="ss_screen_width_margin">24dp</dimen>
-    <dimen name="ss_screen_top_margin">24dp</dimen>     <!-- 24dp is ori margin, 25dp is the status bar height -->
+    <dimen name="ss_screen_top_margin">16dp</dimen>     <!-- 24dp is ori margin, 25dp is the status bar height -->
     <dimen name="ss_section_bottom_margin">32dp</dimen>
     <dimen name="ss_screen_title_bottom_margin">8dp</dimen>
     <dimen name="ss_rounded_background_corner_radius">12dp</dimen>
     <dimen name="ss_fragment_nav_icon_scale">1.3</dimen>
     <dimen name="ss_bottom_dialog_top_indicator_height">3dp</dimen>
-    <dimen name="ss_map_padding">20dp</dimen>
+    <dimen name="ss_map_padding">40dp</dimen>
+    <dimen name="ss_bottom_navigation_height">49dp</dimen>
 
 
 
     <!--  Home Fragment  -->
-    <dimen name="ss_home_nav_top_padding">48dp</dimen>
+    <dimen name="ss_home_nav_top_padding">40dp</dimen>
     <dimen name="ss_home_pic_size">65dp</dimen>
     <dimen name="ss_home_input_field_width_margin">12dp</dimen>
     <dimen name="ss_home_input_field_bottom_margin">12dp</dimen>
@@ -64,7 +65,7 @@
 
     <!--  FONT SIZE (fs)  -->
     <!--  General  -->
-    <dimen name="fs_fragment_title">20sp</dimen>
+    <dimen name="fs_fragment_title">16sp</dimen>
     <dimen name="fs_fragment_loading_error_text">20sp</dimen>
 
     <!--  Bottom Navigation  -->

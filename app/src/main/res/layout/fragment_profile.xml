@@ -641,12 +641,6 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- semi-transparent grey color -->
-
-            <!--  Text: Encourage User to Login  -->
-
-            <!--  Button: Log In  -->
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
