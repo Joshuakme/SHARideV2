@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentMessagesBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -25,12 +26,11 @@ class MessagesFragment : Fragment() {
 
 
         // ELEMENT VARIABLES
-        val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)
         val testChatCard = binding.cardChat
 
 
         // LAYOUT SETTINGS
-        bottomNav?.visibility = View.VISIBLE
+        (activity as MainActivity).setBottomNavVisible(true)
 
         // EVENT LISTENERS
         // *** View Ali Chat ***

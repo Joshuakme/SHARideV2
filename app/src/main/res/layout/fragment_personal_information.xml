@@ -25,6 +25,7 @@
                 android:id="@+id/img_btn_profile_personal_info_nav_back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/ss_screen_top_margin"
                 android:background="#00FFFFFF"
                 android:scaleX="@dimen/ss_profile_subfragment_nav_icon_scale"
                 android:scaleY="@dimen/ss_profile_subfragment_nav_icon_scale"
@@ -35,7 +36,7 @@
 
             <TextView
                 android:id="@+id/text_fragment_title_personal_information"
-                style="@style/text_fragment_title_profile"
+                style="@style/text_fragment_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"

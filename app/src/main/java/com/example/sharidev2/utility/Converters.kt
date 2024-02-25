@@ -1,0 +1,295 @@
+package com.example.sharidev2.utility
+
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.room.TypeConverter
+import com.example.sharidev2.data.model.Address
+import com.example.sharidev2.data.model.Chat
+import com.example.sharidev2.data.model.DriverStatus
+import com.example.sharidev2.data.model.Gender
+import com.example.sharidev2.data.model.Location
+import com.example.sharidev2.data.model.Message
+import com.example.sharidev2.data.model.PassengerStatus
+import com.example.sharidev2.data.model.Review
+import com.example.sharidev2.data.model.SearchLocation
+import com.example.sharidev2.data.model.User
+import com.example.sharidev2.data.model.UserStatus
+import com.example.sharidev2.data.model.Vehicle
+import com.example.sharidev2.data.model.VehicleType
+import com.google.android.gms.maps.model.LatLng
+import com.google.common.reflect.TypeToken
+import com.google.gson.Gson
+import java.io.ByteArrayOutputStream
+import java.lang.reflect.Type
+import java.math.BigDecimal
+import java.math.RoundingMode
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+
+
+class Converters {
+    private val gson = Gson()
+
+    companion object {
+        fun metersToKiloMeters(value: Int): Double {
+            return value.toDouble() / 1000
+        }
+
+        fun getBitmapFromVectorDrawable(vectorDrawable: Drawable): Bitmap {
+            val bitmap = Bitmap.createBitmap(
+                vectorDrawable.intrinsicWidth,
+                vectorDrawable.intrinsicHeight,
+                Bitmap.Config.ARGB_8888
+            )
+            val canvas = Canvas(bitmap)
+            vectorDrawable.setBounds(0, 0, canvas.width, canvas.height)
+            vectorDrawable.draw(canvas)
+            return bitmap
+        }
+    }
+
+    // DATE & TIME Converters
+    @RequiresApi(Build.VERSION_CODES.O)
+    @TypeConverter
+    fun fromLocalDate(date: LocalDate?): String? {
+        return date?.format(DateTimeFormatter.ISO_LOCAL_DATE)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    @TypeConverter
+    fun toLocalDate(dateString: String?): LocalDate? {
+        return dateString?.let {
+            LocalDate.parse(it, DateTimeFormatter.ISO_LOCAL_DATE)
+        }
+    }
+
+    // LocalTime converters
+    @RequiresApi(Build.VERSION_CODES.O)
+    @TypeConverter
+    fun fromLocalTime(time: LocalTime?): String? {
+        return time?.format(DateTimeFormatter.ISO_LOCAL_TIME)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    @TypeConverter
+    fun toLocalTime(timeString: String?): LocalTime? {
+        return timeString?.let {
+            LocalTime.parse(it, DateTimeFormatter.ISO_LOCAL_TIME)
+        }
+    }
+
+
+    // LOCATION converters
+    @TypeConverter
+    fun fromSearchLocation(searchLocation: SearchLocation?): String? {
+        return searchLocation?.let { Gson().toJson(it) }
+    }
+
+    @TypeConverter
+    fun toSearchLocation(value: String?): SearchLocation? {
+        val type = object : TypeToken<SearchLocation>() {}.type
+        return value?.let { Gson().fromJson(it, type) }
+    }
+
+    @TypeConverter
+    fun fromLatLng(latLng: LatLng?): String? {
+        return latLng?.let { Gson().toJson(it) }
+    }
+
+    @TypeConverter
+    fun toLatLng(value: String?): LatLng? {
+        return value?.let { Gson().fromJson(it, LatLng::class.java) }
+    }
+
+
+    // User converters
+    @TypeConverter
+    fun fromUser(user: User?): String? {
+        return gson.toJson(user)
+    }
+
+    @TypeConverter
+    fun toUser(userString: String?): User? {
+        return gson.fromJson(userString, User::class.java)
+    }
+
+    // Address converters
+    @TypeConverter
+    fun fromAddressList(addressList: MutableList<Address>?): String? {
+        return gson.toJson(addressList)
+    }
+
+    @TypeConverter
+    fun toAddressList(addressListString: String?): MutableList<Address>? {
+        val type: Type = object : TypeToken<MutableList<Address>?>() {}.type
+        return gson.fromJson(addressListString, type)
+    }
+
+    // Gender converters
+    @TypeConverter
+    fun fromGender(gender: Gender?): String? {
+        return gender?.name
+    }
+
+    @TypeConverter
+    fun toGender(genderString: String?): Gender? {
+        return genderString?.let { Gender.valueOf(it) }
+    }
+
+    // Chat converters
+    @TypeConverter
+    fun fromChat(chat: Chat?): String? {
+        return gson.toJson(chat)
+    }
+
+    @TypeConverter
+    fun toChat(chatString: String?): Chat? {
+        return gson.fromJson(chatString, Chat::class.java)
+    }
+
+    // List<String> converters
+    @TypeConverter
+    fun fromStringList(stringList: List<String>?): String? {
+        return gson.toJson(stringList)
+    }
+
+    @TypeConverter
+    fun toStringList(stringListString: String?): List<String>? {
+        val type = object : TypeToken<List<String>?>() {}.type
+        return gson.fromJson(stringListString, type)
+    }
+
+    // MutableList<Message> converters
+    @TypeConverter
+    fun fromMessageList(messageList: MutableList<Message>?): String? {
+        return gson.toJson(messageList)
+    }
+
+    @TypeConverter
+    fun toMessageList(messageListString: String?): MutableList<Message>? {
+        val type = object : TypeToken<MutableList<Message>?>() {}.type
+        return gson.fromJson(messageListString, type)
+    }
+
+    // DriverStatus converters
+    @TypeConverter
+    fun fromDriverStatus(driverStatus: DriverStatus?): String? {
+        return gson.toJson(driverStatus)
+    }
+
+    @TypeConverter
+    fun toDriverStatus(driverStatusString: String?): DriverStatus? {
+        return gson.fromJson(driverStatusString, DriverStatus::class.java)
+    }
+
+    // PassengerStatus converters
+    @TypeConverter
+    fun fromPassengerStatus(passengerStatus: PassengerStatus?): String? {
+        return gson.toJson(passengerStatus)
+    }
+
+    @TypeConverter
+    fun toPassengerStatus(passengerStatusString: String?): PassengerStatus? {
+        return gson.fromJson(passengerStatusString, PassengerStatus::class.java)
+    }
+
+    // MutableList<PassengerStatus> converters
+    @TypeConverter
+    fun fromPassengerStatusList(passengerStatusList: MutableList<PassengerStatus>?): String? {
+        return gson.toJson(passengerStatusList)
+    }
+
+    @TypeConverter
+    fun toPassengerStatusList(passengerStatusListString: String?): MutableList<PassengerStatus>? {
+        val type = object : TypeToken<MutableList<PassengerStatus>?>() {}.type
+        return gson.fromJson(passengerStatusListString, type)
+    }
+
+    // UserStatus converters
+    @TypeConverter
+    fun fromUserStatus(userStatus: UserStatus?): String? {
+        return userStatus?.name
+    }
+
+    @TypeConverter
+    fun toUserStatus(userStatusString: String?): UserStatus? {
+        return userStatusString?.let { UserStatus.valueOf(it) }
+    }
+
+    // MutableList<User> converters
+    @TypeConverter
+    fun fromUserList(userList: MutableList<User>?): String? {
+        return gson.toJson(userList)
+    }
+
+    @TypeConverter
+    fun toUserList(userListString: String?): MutableList<User>? {
+        val type = object : TypeToken<MutableList<User>?>() {}.type
+        return gson.fromJson(userListString, type)
+    }
+
+    // Review converters
+    @TypeConverter
+    fun fromReviewList(reviewList: List<Review>?): String? {
+        return gson.toJson(reviewList)
+    }
+
+    @TypeConverter
+    fun toReviewList(reviewListString: String?): List<Review>? {
+        val type: Type = object : TypeToken<List<Review>?>() {}.type
+        return gson.fromJson(reviewListString, type)
+    }
+
+    @TypeConverter
+    fun fromVehicle(vehicle: Vehicle): String {
+        val gson = Gson()
+        return gson.toJson(vehicle)
+    }
+
+    @TypeConverter
+    fun toVehicle(value: String): Vehicle {
+        val gson = Gson()
+        val type: Type = object : TypeToken<Vehicle>() {}.type
+        return gson.fromJson(value, type)
+    }
+
+    @TypeConverter
+    fun fromVehicleType(vehicleType: VehicleType): String {
+        return vehicleType.name
+    }
+
+    @TypeConverter
+    fun toVehicleType(value: String): VehicleType {
+        return enumValueOf(value)
+    }
+
+    @TypeConverter
+    fun fromBitmapList(bitmapList: List<Bitmap>?): String {
+        val gson = Gson()
+        return gson.toJson(bitmapList)
+    }
+
+    @TypeConverter
+    fun toBitmapList(value: String): List<Bitmap> {
+        val gson = Gson()
+        val type: Type = object : TypeToken<List<Bitmap>>() {}.type
+        return gson.fromJson(value, type)
+    }
+
+    @TypeConverter
+    fun fromBitmap(bitmap: Bitmap): ByteArray {
+        val outputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+        return outputStream.toByteArray()
+    }
+
+    @TypeConverter
+    fun toBitmap(byteArray: ByteArray): Bitmap {
+        return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+    }
+}
