@@ -1,8 +1,10 @@
 package com.example.sharidev2.screen.ride
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -21,8 +23,12 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
+import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.databinding.FragmentSearchSelectOriginBinding
+import com.example.sharidev2.utility.CommonUtils
+import com.example.sharidev2.utility.GoogleMapUtils
 import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
+import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -31,6 +37,10 @@ import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest
+import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.material.card.MaterialCardView
 
 class SearchSelectOriginFragment : Fragment() {
@@ -38,8 +48,8 @@ class SearchSelectOriginFragment : Fragment() {
     private val searchRideViewModel: SharedSearchRideViewModel by activityViewModels()
     private lateinit var myLocationBtn: MaterialCardView
 
-    private val locationCamera = Location("Camera")
-    private val locationUser = Location("User")
+    private lateinit var placesClient: PlacesClient
+    private lateinit var mapFragment: SupportMapFragment
     private val ZOOM_INDEX = 17.8f
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,72 +63,78 @@ class SearchSelectOriginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(
-            inflater,
-            R.layout.fragment_search_select_origin,
-            container,
-            false
-        )
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search_select_origin, container, false)
+
+
+        // VARIABLES INIT
+        placesClient = Places.createClient(requireContext())
 
         // ELEMENT VARIABLES
-        val backBtn = binding.cardSearchSelectOriginBackContainer
         myLocationBtn = binding.cardSearchSelectOriginMyLocationContainer
-        val mapFragment =
+        mapFragment =
             childFragmentManager.findFragmentById(R.id.map_search_origin_container) as SupportMapFragment
         val originNameText = binding.textSearchSelectOriginLocationName
         val originDistanceAddress = binding.textSearchSelectOriginLocationDistanceAddress
-        val originDetailCard = binding.cardSearchSelectOriginOriginContainer
-        val chooseOriginBtn = binding.btnSearchSelectOriginCta
-
 
 
         // LAYOUT SETTINGS
         (activity as MainActivity).setBottomNavVisible(false)
 
+        setupMap()
+        if(searchRideViewModel.origin.value == null) {
+            performOriginCurrentPlaceRequest()      // Get current location
+        }
 
-        //Toast.makeText(requireContext(), searchRideViewModel.origin.value?.name.toString(), Toast.LENGTH_SHORT).show()
         // GOOGLE MAP
         searchRideViewModel.origin.observe(viewLifecycleOwner) { searchLocation ->
-
-            mapFragment.getMapAsync { googleMap ->
-                // Handle the GoogleMap instance
-                // You can use the googleMap object to add markers, set camera position, etc.
-                val fusedLocationProviderClient = FusedLocationProviderClient(requireContext())
-
-                googleMap.isMyLocationEnabled = true
-                googleMap.uiSettings.isMyLocationButtonEnabled = false
-
-                getDeviceLocation(fusedLocationProviderClient,
-                    onLocationResult = { currentLocation ->
-                        searchLocation.geolocation?.let { location ->
-                            val originMarker = MarkerOptions().position(location)
-                                .icon(getOriginMarkerBitmap(requireContext()))
-
-                            googleMap.addMarker(originMarker)
-                            googleMap.moveCamera(
-                                CameraUpdateFactory.newLatLngZoom(
-                                    currentLocation,
-                                    ZOOM_INDEX
-                                )
-                            )
-                        }
-
-                    },
-                    onLocationError = {
-                        // Handle the case where there's an error getting the device location
-                        // Toast.makeText(requireContext(), "Error getting device location", Toast.LENGTH_SHORT).show()
-                    }
-                )
-
-                setupMapListeners(googleMap, fusedLocationProviderClient)
-            }
-
             originNameText.text = searchLocation.name
             originDistanceAddress.text = searchLocation.detailAddress
+            updateMap()
         }
 
 
         // NAVIGATION EVENT LISTENERS
+        setupNavigationListener()
+
+        return binding.root
+    }
+
+
+
+    // CUSTOMIZE METHODS
+    @SuppressLint("MissingPermission")
+    private fun setupMap() {
+        // Setup Google Map
+        mapFragment.getMapAsync {googleMap ->
+            // Map Settings
+            googleMap.isMyLocationEnabled = true
+            googleMap.uiSettings.isMyLocationButtonEnabled = false
+            googleMap.uiSettings.isMapToolbarEnabled = false
+
+
+            val fusedLocationProviderClient = FusedLocationProviderClient(requireContext())
+
+            // Draw marker
+            CommonUtils().getDeviceCurrentLocation(fusedLocationProviderClient,
+                onLocationResult = { currentLocation ->
+
+                    updateMap(originLocation = currentLocation)
+                },
+                onLocationError = {
+                    // Handle the case where there's an error getting the device location
+                    // Toast.makeText(requireContext(), "Error getting device location", Toast.LENGTH_SHORT).show()
+                }
+            )
+
+            setupMapListeners(googleMap, fusedLocationProviderClient)
+        }
+    }
+
+    private fun setupNavigationListener() {
+        val backBtn = binding.cardSearchSelectOriginBackContainer
+        val originDetailCard = binding.cardSearchSelectOriginOriginContainer
+        val chooseOriginBtn = binding.btnSearchSelectOriginCta
+
         // Search Select Origin Fragment -> Search Fragment
         backBtn.setOnClickListener {
             findNavController().navigate(R.id.action_searchSelectOriginFragment_to_searchFragment)
@@ -134,8 +150,6 @@ class SearchSelectOriginFragment : Fragment() {
         chooseOriginBtn.setOnClickListener {
             findNavController().navigate(R.id.action_searchSelectOriginFragment_to_rideDetailConfigurationFragment)
         }
-
-        return binding.root
     }
 
     @SuppressLint("MissingPermission")
@@ -173,6 +187,8 @@ class SearchSelectOriginFragment : Fragment() {
         }
     }
 
+
+    // GOOGLE MAP RELATED METHODS
     private fun setupMapListeners(
         googleMap: GoogleMap,
         fusedLocationProviderClient: FusedLocationProviderClient
@@ -192,12 +208,12 @@ class SearchSelectOriginFragment : Fragment() {
         googleMap: GoogleMap,
         fusedLocationProviderClient: FusedLocationProviderClient
     ) {
-        getDeviceLocation(
+        CommonUtils().getDeviceCurrentLocation(
             fusedLocationProviderClient,
             onLocationResult = { currentLocation ->
                 val currentCameraPosition = googleMap.cameraPosition.target
 
-                if (!isMapOnCurrentLocation(currentCameraPosition, currentLocation)) {
+                if (!GoogleMapUtils().isMapOnCurrentLocation(currentCameraPosition, currentLocation)) {
                     showMyLocationButton(true)
                 } else {
                     showMyLocationButton(false)
@@ -229,48 +245,88 @@ class SearchSelectOriginFragment : Fragment() {
         )
     }
 
-    private fun isMapOnCurrentLocation(
-        currentCameraPosition: LatLng,
-        currentLocation: LatLng
-    ): Boolean {
-        locationCamera.latitude = currentCameraPosition.latitude
-        locationCamera.longitude = currentCameraPosition.longitude
+    private fun updateMap(originLocation: LatLng? = null) {
+        val origin = searchRideViewModel.origin.value?.geolocation
+        val destination = searchRideViewModel.destination.value?.geolocation
+        val googleMapUtils = GoogleMapUtils()
 
-        locationUser.latitude = currentLocation.latitude
-        locationUser.longitude = currentLocation.longitude
+        // Colors
+        val originColor = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorPrimary)
+        val destinationColor = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorError)
 
-        val distance = locationCamera.distanceTo(locationUser)
+        mapFragment.getMapAsync { googleMap ->
+            val originLocationIcon = CommonUtils().getBitmapFromVector(requireContext(), originColor)
+            val destinationLocationIcon = CommonUtils().getBitmapFromVector(requireContext(), destinationColor)
 
-        return distance < 0.03f
+            googleMap.setOnMapLoadedCallback {
+                googleMap.clear()   // Clear previous markers
+
+                // Add origin marker
+                originLocation?.let {
+                    googleMapUtils.addMarker(googleMap, it, originLocationIcon)
+                } ?: origin?.let {
+                    googleMapUtils.addMarker(googleMap, it, originLocationIcon)
+                }
+
+                // Add destination marker
+                destination?.let {
+                    googleMapUtils.addMarker(googleMap, it, destinationLocationIcon)
+                }
+
+                googleMapUtils.updateMapZoomAndCamera(requireContext(), googleMap, origin, destination)
+                googleMapUtils.drawRoute(googleMap, origin, destination)
+            }
+        }
     }
 
     private fun showMyLocationButton(show: Boolean) {
         myLocationBtn.visibility = if (show) View.VISIBLE else View.GONE
     }
 
-    private fun getOriginMarkerBitmap(context: Context): BitmapDescriptor {
-        val SCALE_FACTOR = 2.0f
 
-        // Create a VectorDrawable from the default marker resource
-        val vectorDrawable =
-            ContextCompat.getDrawable(context, R.drawable.location) as VectorDrawable
+    // LOCATION RELATED METHODS
+    private fun performOriginCurrentPlaceRequest() {
+        // Use fields to define the data types to return.
+        val placeFields: List<Place.Field> = listOf(
+            Place.Field.NAME,
+            Place.Field.ADDRESS,
+            Place.Field.LAT_LNG,
+            Place.Field.ID)
 
-        val colorPrimary = Color.parseColor("#246489")
-        vectorDrawable.setColorFilter(colorPrimary, PorterDuff.Mode.SRC_IN)
+        // Use the builder to create a FindCurrentPlaceRequest.
+        val request: FindCurrentPlaceRequest = FindCurrentPlaceRequest.newInstance(placeFields)
 
-        val bitmapWidth = (vectorDrawable.intrinsicWidth * SCALE_FACTOR).toInt()
-        val bitmapHeight = (vectorDrawable.intrinsicHeight * SCALE_FACTOR).toInt()
+        // Call findCurrentPlace and handle the response (first check that the user has granted permission).
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) ==
+            PackageManager.PERMISSION_GRANTED) {
 
-        // Convert the VectorDrawable to a BitmapDescriptor
-        val bitmap = Bitmap.createBitmap(
-            bitmapWidth,
-            bitmapHeight,
-            Bitmap.Config.ARGB_8888
-        )
-        val canvas = Canvas(bitmap)
-        vectorDrawable.setBounds(0, 0, canvas.width, canvas.height)
-        vectorDrawable.draw(canvas)
+            val placeResponse = placesClient.findCurrentPlace(request)
+            placeResponse.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val response = task.result
+                    val highestLikelihoodPlace = response?.placeLikelihoods?.maxByOrNull { it.likelihood }
 
-        return BitmapDescriptorFactory.fromBitmap(bitmap)
+                    highestLikelihoodPlace?.let {placeLikelihood ->
+                        val originPlace = SearchLocation(
+                            placeId = placeLikelihood.place.id ?: "",
+                            name = placeLikelihood.place.name ?: "Name Not Found",
+                            detailAddress = placeLikelihood.place.address ?: "Address Not Found",
+                            geolocation = placeLikelihood.place.latLng
+                        )
+
+                        searchRideViewModel.setOrigin(originPlace)
+                    }
+                } else {
+                    val exception = task.exception
+                    if (exception is ApiException) {
+                        Log.e(ContentValues.TAG, "Place not found: ${exception.statusCode}")
+                    }
+                }
+            }
+        } else {
+            // A local method to request required permissions;
+            // See https://developer.android.com/training/permissions/requesting
+            //getLocationPermission()
+        }
     }
 }

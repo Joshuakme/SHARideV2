@@ -150,14 +150,15 @@
         android:name="com.example.sharidev2.screen.ride.DriverCreateRideFragment"
         android:label="DriverCreateRideFragment" >
         <action
-            android:id="@+id/action_driverCreateRideFragment_to_searchFragment"
-            app:destination="@id/searchFragment" />
-        <action
             android:id="@+id/action_driverCreateRideFragment_to_driverRideConfigFragment"
             app:destination="@id/driverRideConfigFragment" />
     </fragment>
     <fragment
         android:id="@+id/driverRideConfigFragment"
         android:name="com.example.sharidev2.screen.ride.DriverRideConfigFragment"
-        android:label="DriverRideConfigFragment" />
+        android:label="DriverRideConfigFragment" >
+        <action
+            android:id="@+id/action_driverRideConfigFragment_to_driverCreateRideFragment"
+            app:destination="@id/driverCreateRideFragment" />
+    </fragment>
 </navigation>

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentDriverRideConfigBinding
 import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
@@ -24,6 +25,7 @@ class DriverRideConfigFragment : Fragment() {
 
 
         // ELEMENT VARIABLES
+        val backBtn = binding.imgBtnDriverRideConfigNavBack
         val originText = binding.textDriverRideConfigOrigin
         val destinationText = binding.textDriverRideConfigDestination
 
@@ -38,7 +40,9 @@ class DriverRideConfigFragment : Fragment() {
 
 
         // EVENT LISTENERS
-
+        backBtn.setOnClickListener {
+            findNavController().popBackStack()
+        }
 
 
         return binding.root
