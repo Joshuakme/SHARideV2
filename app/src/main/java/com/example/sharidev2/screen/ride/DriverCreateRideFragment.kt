@@ -107,7 +107,6 @@ class DriverCreateRideFragment : Fragment() {
         }
 
         searchRideViewModel.destination.observe(viewLifecycleOwner) { destinationSearchLocation ->
-            Toast.makeText(requireContext(), destinationSearchLocation.name, Toast.LENGTH_SHORT).show()
             destinationLocationEditText.setText(destinationSearchLocation.name)
             destinationLocationEditText.clearFocus()
             nextBtn.requestFocus()
@@ -115,16 +114,14 @@ class DriverCreateRideFragment : Fragment() {
         }
 
         // EVENT LISTENERS
-
         setupOriginEditText()
-
         setupDestinationEditText()
 
 
         // NAVIGATION EVENT LISTENERS
         // Driver Add Ride Fragment -> Search Fragment
         backBtn.setOnClickListener {
-            findNavController().navigate(R.id.action_driverCreateRideFragment_to_searchFragment)
+            findNavController().popBackStack()
         }
 
         // Driver Add Ride Fragment -> Driver Ride Config Fragment
@@ -135,6 +132,7 @@ class DriverCreateRideFragment : Fragment() {
 
         return binding.root
     }
+
 
 
     // CUSTOMIZE METHODS
@@ -254,18 +252,7 @@ class DriverCreateRideFragment : Fragment() {
             // Draw marker
             CommonUtils().getDeviceCurrentLocation(fusedLocationProviderClient,
                 onLocationResult = { currentLocation ->
-
                         updateMap(originLocation = currentLocation)
-//                        val originMarker = MarkerOptions().position(location)
-//                            .icon(CommonUtils().getBitmapFromVector(requireContext(), com.google.android.material.R.attr.colorPrimary))
-//
-//                        googleMap.addMarker(originMarker)
-//                        googleMap.moveCamera(
-//                            CameraUpdateFactory.newLatLngZoom(
-//                                currentLocation,
-//                                ZOOM_INDEX
-//                            )
-//                        )
                 },
                 onLocationError = {
                     // Handle the case where there's an error getting the device location
