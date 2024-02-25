@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentProfileBinding
+import com.example.sharidev2.firebase.FirebaseInitializer
 import com.example.sharidev2.utility.LoadingDialogFragment
 import com.example.sharidev2.viewmodel.LoginViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -21,12 +22,8 @@ import com.google.firebase.auth.FirebaseAuth
 class ProfileFragment : Fragment() {
     // Variables Init
     private lateinit var binding : FragmentProfileBinding
-    private val auth = FirebaseAuth.getInstance()
+    private val auth = FirebaseInitializer.firebaseAuth
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,9 +52,6 @@ class ProfileFragment : Fragment() {
 
 
         // Check if user is logged in and navigate to respective screen
-        val viewModel = ViewModelProvider(this)[LoginViewModel::class.java]
-
-
 
 
 

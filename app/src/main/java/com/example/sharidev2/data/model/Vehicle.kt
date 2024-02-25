@@ -6,12 +6,12 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Vehicle(
-    val vehicleID: String,
-    val brand: String,
-    val model: String,
-    val type: VehicleType,
-    val plateNumber: String,
-    val color: String,  // Enum of vehicle color
+    val vehicleID: String = "",
+    val brand: String = "",
+    val model: String = "",
+    val type: VehicleType = VehicleType.Sedans,
+    val plateNumber: String = "",
+    val color: String = "",  // Enum of vehicle color
     val photos: MutableList<String>? = null,    // Link of image
-    val capacity: Int,
+    val capacity: Int = 0,
 ) : Parcelable

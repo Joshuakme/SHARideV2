@@ -10,10 +10,10 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class SearchLocation(
-    val placeId: String,
-    val name: String,
+    val placeId: String = "",
+    val name: String = "",
     val distanceMetersFromOrigin: Int = 0,
-    val detailAddress: String,
+    val detailAddress: String = "",
     var geolocation: LatLng? = null
 )  : Parcelable {
 

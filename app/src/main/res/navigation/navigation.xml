@@ -160,5 +160,9 @@
         <action
             android:id="@+id/action_driverRideConfigFragment_to_driverCreateRideFragment"
             app:destination="@id/driverCreateRideFragment" />
+        <action
+            android:id="@+id/action_driverRideConfigFragment_to_bookingFragment"
+            app:destination="@id/bookingFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

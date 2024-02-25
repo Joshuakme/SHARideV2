@@ -118,18 +118,36 @@ class DriverRideConfigFragment : Fragment() {
         }
 
         createRideBtn.setOnClickListener {
-            createRideViewModel.createRideStatus.observe(viewLifecycleOwner) {success ->
-                if(success) {
-                    createRideBtnCtaText.visibility = View.VISIBLE
-                    createRideBtnLoadingProgressBar.visibility = View.GONE
-                } else {
-                    createRideBtnCtaText.visibility = View.INVISIBLE
-                    createRideBtnLoadingProgressBar.visibility = View.VISIBLE
-                }
-            }
-
             viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
                 createRideViewModel.createRide()
+            }
+
+            createRideViewModel.createRideStatus.observe(viewLifecycleOwner) {response ->
+                // RIDE STATUS
+                val CREATE_RIDE_PENDING = 0
+                val CREATE_RIDE_SUCCESS = 1
+                val CREATE_RIDE_FAILED = -1
+
+                when(response) {
+                    CREATE_RIDE_PENDING -> {
+                        createRideBtnCtaText.visibility = View.INVISIBLE
+                        createRideBtnLoadingProgressBar.visibility = View.VISIBLE
+                    }
+                    CREATE_RIDE_SUCCESS -> {
+                        createRideBtnCtaText.visibility = View.VISIBLE
+                        createRideBtnLoadingProgressBar.visibility = View.GONE
+
+                        createRideViewModel.resetData()
+
+                        findNavController().navigate(R.id.action_driverRideConfigFragment_to_bookingFragment)
+                        Toast.makeText(requireContext(), "Ride created successfully!", Toast.LENGTH_SHORT).show()
+                    }
+                    CREATE_RIDE_FAILED -> {
+                        createRideBtnCtaText.visibility = View.INVISIBLE
+                        createRideBtnLoadingProgressBar.visibility = View.VISIBLE
+                        Toast.makeText(requireContext(), "Ride created failed!", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
     }

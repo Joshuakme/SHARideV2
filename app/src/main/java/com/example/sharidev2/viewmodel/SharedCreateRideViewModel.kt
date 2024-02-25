@@ -37,6 +37,11 @@ class SharedCreateRideViewModel(
     private val RIDE_TIME_KEY = "ride_time"
     private val CREATE_RIDE_STATUS_KEY = "create_ride_status"
 
+    // RIDE STATUS
+    private val CREATE_RIDE_PENDING = 0
+    private val CREATE_RIDE_SUCCESS = 1
+    private val CREATE_RIDE_FAILED = -1
+
 
     // INTERNAL DATA MEMBERS
     // Origin Location
@@ -46,7 +51,7 @@ class SharedCreateRideViewModel(
     val destination: LiveData<SearchLocation> = savedStateHandle.getLiveData(DESTINATION_KEY)
 
     // Driver
-    val driver: LiveData<User> = savedStateHandle.getLiveData(DRIVER_KEY)
+    val driver: LiveData<String> = savedStateHandle.getLiveData(DRIVER_KEY)
 
     // Vehicle
     val vehicle: LiveData<Vehicle> = savedStateHandle.getLiveData(VEHICLE_KEY)
@@ -61,7 +66,7 @@ class SharedCreateRideViewModel(
     val rideTime: LiveData<LocalTime> = savedStateHandle.getLiveData(RIDE_TIME_KEY)
 
     // Create Ride Status
-    val createRideStatus: LiveData<Boolean> = savedStateHandle.getLiveData(CREATE_RIDE_STATUS_KEY)
+    val createRideStatus: LiveData<Int> = savedStateHandle.getLiveData(CREATE_RIDE_STATUS_KEY)
 
 
     // CONSTRUCTOR
@@ -75,7 +80,7 @@ class SharedCreateRideViewModel(
             setRideTime(getDefaultRideTime())
         }
 
-        setCreateRideStatus(false)
+        setCreateRideStatus(CREATE_RIDE_PENDING)
     }
 
 
@@ -91,7 +96,7 @@ class SharedCreateRideViewModel(
     }
 
     // Driver
-    fun setDriver(newDriver: User) {
+    fun setDriver(newDriver: String) {
         savedStateHandle[DRIVER_KEY] = newDriver
     }
 
@@ -120,8 +125,8 @@ class SharedCreateRideViewModel(
     }
 
     // Create Ride Status
-    fun setCreateRideStatus(success: Boolean) {
-        savedStateHandle[CREATE_RIDE_STATUS_KEY] = success
+    fun setCreateRideStatus(response: Int) {
+        savedStateHandle[CREATE_RIDE_STATUS_KEY] = response
     }
 
 
@@ -140,20 +145,32 @@ class SharedCreateRideViewModel(
         viewModelScope.launch(Dispatchers.Main) {
             rideRepository.createRide(newCreatedRide, object : RideRepository.CreateRideCallback {
                 override fun onCreateSuccess() {
-                    setCreateRideStatus(true)
+                    setCreateRideStatus(CREATE_RIDE_SUCCESS)
                 }
 
                 override fun onCreateFailure(error: Throwable) {
                     Log.e("Create Ride", error.message.toString())
 
-                    setCreateRideStatus(false)
+                    setCreateRideStatus(CREATE_RIDE_FAILED)
                 }
             })
         }
     }
 
 
+
     // HELPER METHODS
+    fun resetData() {
+        setOrigin(SearchLocation()) // Pass an empty SearchLocation or null, depending on your implementation
+        setDestination(SearchLocation())
+        setDriver("") // Pass an empty User or null
+        setVehicle(Vehicle()) // Pass an empty Vehicle or null
+        setCapacity(0) // Set capacity to 0 or any default value you prefer
+        setRideDate(LocalDate.now()) // Set the date to the current date or any default date
+        setRideTime(getDefaultRideTime()) // Set the time to the default ride time
+        setCreateRideStatus(CREATE_RIDE_PENDING) // Reset the create ride status
+    }
+
     private fun getDefaultRideTime(): LocalTime {
         val calendar: Calendar = Calendar.getInstance()
 

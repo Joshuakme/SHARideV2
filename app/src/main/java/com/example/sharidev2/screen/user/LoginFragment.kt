@@ -179,8 +179,10 @@ class LoginFragment : Fragment() {
 
         // Login Button
         loginBtn.setOnClickListener {
-            val credential: PhoneAuthCredential = PhoneAuthProvider.getCredential(verificationCode, otpCodeEditText.text.toString())
-            signInWithPhone(credential)
+            if(verificationCode != null) {
+                val credential: PhoneAuthCredential = PhoneAuthProvider.getCredential(verificationCode, otpCodeEditText.text.toString())
+                signInWithPhone(credential)
+            }
         }
 
         loginWithGoogleBtn.setOnClickListener {
