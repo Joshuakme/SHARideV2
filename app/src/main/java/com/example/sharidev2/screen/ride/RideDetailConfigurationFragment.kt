@@ -48,16 +48,8 @@ class RideDetailConfigurationFragment :
 
         // ELEMENT VARIABLES
         val backBtn = binding.imgBtnRideDetailConfigBack
-        val originRideDetailText = binding.textRideDetailConfigOrigin
-        val destinationRideDetailText = binding.textRideDetailConfigDestination
-        val driverGenderSelectText = binding.textRideDetailConfigSpinnerDriverGender
-        val vehicleTypeSelectText = binding.textRideDetailConfigSpinnerVehicleType
-        val rideDateSelectText = binding.textRideDetailConfigSpinnerScheduleDate
-        val rideTimeSelectText = binding.textRideDetailConfigSpinnerScheduleTime
-        val driverGenderSpinner = binding.spinnerRideDetailConfigDriverGender
-        val vehicleTypeSpinner = binding.spinnerRideDetailConfigVehicleType
-        val rideDateSpinner = binding.spinnerRideDetailConfigScheduleDate
-        val rideTimeSpinner = binding.spinnerRideDetailConfigScheduleTime
+
+
         val findRideButton = binding.btnRideDetailConfigurationCtaFindRide
 
 
@@ -65,6 +57,39 @@ class RideDetailConfigurationFragment :
         (activity as MainActivity).setBottomNavVisible(false)
 
         // VIEW MODEL OBSERVATION
+        setupViewModelObservers()
+
+        // EVENT LISTENERS
+        setupOnClickListeners()
+
+
+        // NAVIGATION EVENT LISTENERS
+        // Ride Detail Configuration Fragment -> Search Select Origin Fragment
+        backBtn.setOnClickListener {
+            findNavController().navigate(R.id.action_rideDetailConfigurationFragment_to_searchSelectOriginFragment)
+        }
+
+        // Ride Detail Configuration Fragment -> Matched Ride Fragment
+        findRideButton.setOnClickListener {
+            searchRideViewModel.setSearchRide()
+            findNavController().navigate(R.id.action_rideDetailConfigurationFragment_to_matchedRideFragment)
+        }
+
+
+        return binding.root
+    }
+
+
+
+    private fun setupViewModelObservers() {
+        val originRideDetailText = binding.textRideDetailConfigOrigin
+        val destinationRideDetailText = binding.textRideDetailConfigDestination
+        val driverGenderSelectText = binding.textRideDetailConfigSpinnerDriverGender
+        val vehicleTypeSelectText = binding.textRideDetailConfigSpinnerVehicleType
+        val rideDateSelectText = binding.textRideDetailConfigSpinnerScheduleDate
+        val rideTimeSelectText = binding.textRideDetailConfigSpinnerScheduleTime
+
+
         // Search Ride Origin Location
         searchRideViewModel.origin.observe(viewLifecycleOwner) { origin ->
             originRideDetailText.text = origin.name
@@ -94,9 +119,15 @@ class RideDetailConfigurationFragment :
         searchRideViewModel.rideTime.observe(viewLifecycleOwner) { rideTime ->
             rideTimeSelectText.text = rideTime.format(timeFormatter)
         }
+    }
+
+    private fun setupOnClickListeners() {
+        val driverGenderSpinner = binding.spinnerRideDetailConfigDriverGender
+        val vehicleTypeSpinner = binding.spinnerRideDetailConfigVehicleType
+        val rideDateSpinner = binding.spinnerRideDetailConfigScheduleDate
+        val rideTimeSpinner = binding.spinnerRideDetailConfigScheduleTime
 
 
-        // EVENT LISTENERS
         driverGenderSpinner.setOnClickListener {
             showDriverGenderDialog()
         }
@@ -112,24 +143,7 @@ class RideDetailConfigurationFragment :
         rideTimeSpinner.setOnClickListener {
             showTimePickerDialog()
         }
-
-
-        // NAVIGATION EVENT LISTENERS
-        // Ride Detail Configuration Fragment -> Search Select Origin Fragment
-        backBtn.setOnClickListener {
-            findNavController().navigate(R.id.action_rideDetailConfigurationFragment_to_searchSelectOriginFragment)
-        }
-
-        // Ride Detail Configuration Fragment -> Matched Ride Fragment
-        findRideButton.setOnClickListener {
-            searchRideViewModel.setSearchRide()
-            findNavController().navigate(R.id.action_rideDetailConfigurationFragment_to_matchedRideFragment)
-        }
-
-
-        return binding.root
     }
-
 
     // Method to show the Bottom Dialog Fragment
     private fun showDriverGenderDialog() {

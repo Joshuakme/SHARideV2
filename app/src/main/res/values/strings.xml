@@ -65,15 +65,18 @@
     <string name="ride_detail_config_fragment_section_title_schedule_date_time_reminder">*Current date time will be selected if leave blank</string>
     <string name="ride_detail_config_fragment_cta_button_find_ride">Find Ride</string>
     <string name="ride_detail_config_fragment_cta_button_create_ride">Create Ride</string>
-    <string name="ride_detail_config_fragment_section_title_vehicle">Vehicle</string>
+
 
     <!--  Driver Create Ride Fragment  -->
     <string name="driver_create_ride_fragment_title_create_new_ride">Create New Ride</string>
     <string name="driver_create_ride_fragment_cta_next">Next</string>
     <string name="driver_create_ride_fragment_cta_create_ride">Create Ride</string>
+    <string name="driver_create_ride_fragment_section_title_vehicle">Vehicle</string>
+    <string name="driver_create_ride_fragment_section_title_passenger_capacity">Passenger Capacity</string>
 
     <!--  Driver Ride Config Fragment  -->
     <string name="driver_ride_config_fragment_title_new_ride_config">New Ride Configuration</string>
+    <string name="driver_ride_config_fragment_passenger_capacity_value">%d pax</string>
 
 
     <!--  Booking Fragment  -->
@@ -159,6 +162,10 @@
 
     <string name="placeholder_login_country_name">Malaysia</string>
     <string name="placeholder_login_country_code">+60</string>
+
+    <string name="placeholder_vehicle_plate_number">WAD3324</string>
+    <string name="placeholder_vehicle_color">White</string>
+    <string name="placeholder_vehicle_brand_model">Perodua Axia</string>
 
     <string name="placeholder_search_result_place_name">Zepp Kuala Lumpur</string>
     <string name="placeholder_search_result_place_distance_address">8.85km \u200B \u2022 \u200B Jalan Pudu, Bandar Kuala Lumpur, 55100, Wp Kuala Lumpur, Wp Kuala Lumpur</string>

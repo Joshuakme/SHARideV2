@@ -11,6 +11,5 @@ data class SearchRide(
     val destination: SearchLocation,
     val date: LocalDate,
     val time: LocalTime,
-    val driverGender: Gender?,
-    val vehicleType: VehicleType?
+    val rideOption: RideOption,
 )  : Parcelable

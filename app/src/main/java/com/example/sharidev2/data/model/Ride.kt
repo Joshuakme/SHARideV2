@@ -1,7 +1,6 @@
 package com.example.sharidev2.data.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import com.google.firebase.auth.FirebaseUser
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -11,16 +10,16 @@ data class Ride (
     val destination: SearchLocation,
     val date: LocalDate,
     val time: LocalTime,
-    val driver: User,           // Will be "User" class / "Driver" class
-    val passengers: MutableList<Passenger>,
-    val rideStatus: RideStatus,
-    val driverStatus: DriverStatus,
-    val passengersStatus: MutableList<PassengerStatus>,
-    val startTime: LocalTime,
-    val completeTime: LocalTime,
+    val driver: FirebaseUser,
+    val passengers: MutableList<Passenger>? = mutableListOf(),
+    val rideStatus: RideStatus = RideStatus.CREATED,
+    val driverStatus: UserStatus = UserStatus.REQUESTED,
+    val passengersStatus: MutableList<PassengerStatus> = mutableListOf(),
+    val startTime: LocalTime? = null,
+    val completeTime: LocalTime? = null,
     val vehicle: Vehicle,
     val availableSeats: Int,
-    val price: Double,
-    val reviews: List<Review>,
-    val chat: Chat,
+    val price: List<Map<Passenger, Double>>? = listOf(),
+    val reviews: List<Review>? = emptyList(),
+    val chat: Chat? = null,
 )

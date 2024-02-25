@@ -7,6 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.example.sharidev2.data.model.Gender
 import com.example.sharidev2.data.model.Ride
+import com.example.sharidev2.data.model.RideOption
 import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.data.model.SearchRide
 import com.example.sharidev2.data.model.VehicleType
@@ -82,7 +83,6 @@ class SharedSearchRideViewModel(
     // Destination Location
     fun setDestination(newDestination: SearchLocation) {
         savedStateHandle[DESTINATION_KEY] = newDestination
-        Log.e("TENGOK DESTINASI", newDestination.name)
     }
 
     // Driver's Gender
@@ -112,8 +112,10 @@ class SharedSearchRideViewModel(
                                 destination.value!!,
                                 rideDate.value!!,
                                 rideTime.value!!,
-                                driverGender.value,
-                                vehicleType.value
+                                RideOption(
+                                    driverGender.value,
+                                    vehicleType.value
+                                )
                             )
 
         savedStateHandle[SEARCH_RIDE_KEY] = newSearchRide
