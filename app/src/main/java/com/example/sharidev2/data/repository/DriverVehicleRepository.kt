@@ -1,0 +1,66 @@
+package com.example.sharidev2.data.repository
+
+import android.util.Log
+import com.example.sharidev2.data.model.Vehicle
+import com.example.sharidev2.data.model.VehicleType
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
+class DriverVehicleRepository(
+    private val firestore: FirebaseFirestore,
+    firebaseAuth: FirebaseAuth
+) {
+    private val currentUser = firebaseAuth.currentUser
+
+
+    suspend fun getDriverVehicleList(): List<Vehicle> {
+        return withContext(Dispatchers.IO) {
+            try {
+                if (currentUser != null) {
+                    val querySnapshot = firestore.collection("vehicle")
+                        .whereEqualTo("userUid", currentUser.uid)
+                        .get()
+                        .await()
+
+                    val vehicleList = convertDriverVehicleToList(querySnapshot)
+
+
+                    vehicleList
+                } else {
+                    Log.e("KENAPA??", "Belum Login")
+                    emptyList()
+                }
+            } catch (e: Exception) {
+                Log.e("KENAPA??", e.message.toString())
+                emptyList()
+            }
+        }
+    }
+
+
+    // HELPER METHODS
+    private fun convertDriverVehicleToList(querySnapshot: QuerySnapshot): List<Vehicle> {
+        val vehicleList = mutableListOf<Vehicle>()
+
+
+        for (document in querySnapshot.documents) {
+            val vehicleID: String = document.id
+            val brand: String = document.getString("brand") ?: ""
+            val model: String = document.getString("model") ?: ""
+            val type: VehicleType = document.getString("type")?.let { VehicleType.fromString(it) } ?: VehicleType.Sedans
+            val plateNumber: String = document.getString("plateNumber") ?: ""
+            val color: String = document.getString("color") ?: ""
+            val photos: MutableList<String> = document.get("photos") as MutableList<String>
+            val capacity: Int = (document.get("capacity") as Long).toInt()
+
+
+            val vehicle = Vehicle(vehicleID, brand, model, type, plateNumber, color, photos, capacity)
+            vehicleList.add(vehicle)
+        }
+
+        return vehicleList.toList()
+    }
+}
