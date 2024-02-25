@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bottom_dialog_background"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context=".screen.ride.VehicleBottomDialogFragment">
+
+    <!--  Top Indicator  -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="100000dp">
+
+        <View
+            android:id="@+id/view_bottom_dialog_vehicle_top_indicator"
+            android:layout_width="35dp"
+            android:layout_height="@dimen/ss_bottom_dialog_top_indicator_height"
+            android:background="@color/system_neutral2_500" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_bottom_dialog_vehicle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:listitem="@layout/recycler_item_bottom_dialog_vehicle"
+        tools:visibility="gone" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar_vehicle"
+        style="@android:style/Widget.Holo.Light.ProgressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>
