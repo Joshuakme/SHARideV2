@@ -33,9 +33,10 @@
                         </option>
                         <option name="values">
                           <map>
+                            <entry key="assetSourceType" value="FILE" />
                             <entry key="autoMirrored" value="true" />
-                            <entry key="outputName" value="outline_add_24" />
-                            <entry key="sourceFile" value="F:\Download\location_pin_002.svg" />
+                            <entry key="outputName" value="outline_suv_24" />
+                            <entry key="sourceFile" value="F:\Download\vehicle_type_vector\suv_512.svg" />
                           </map>
                         </option>
                       </PersistentState>

@@ -27,11 +27,11 @@ class BookingFragment : Fragment() {
 
         // LAYOUT SETTINGS
         (activity as MainActivity).setBottomNavVisible(true)
+        (activity as MainActivity).resetBottomNavPosition()
 
 
 
         return binding.root
     }
-
 
 }

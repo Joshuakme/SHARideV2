@@ -46,6 +46,7 @@ class ProfileFragment : Fragment() {
 
         // LAYOUT SETTINGS
         (activity as MainActivity).setBottomNavVisible(true)
+        (activity as MainActivity).resetBottomNavPosition()
         profileNameText.text = user?.displayName ?: getString(R.string.profile_log_in)
         profileUserIdText.visibility = if(user == null) View.GONE else View.VISIBLE
         profileUserIdText.text = "@${user?.displayName}"

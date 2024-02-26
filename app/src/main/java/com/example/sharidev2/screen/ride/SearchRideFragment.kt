@@ -95,7 +95,6 @@ class SearchRideFragment : Fragment() {
 
 
 
-
         pickUpLocationEditText.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             focusOriginEditText(hasFocus)
         }
@@ -238,7 +237,12 @@ class SearchRideFragment : Fragment() {
 
 
     private fun showRideTimingDialog() {
-        val dialogFragment = TimingBottomDialogFragment()
+        val dialogFragment = TimingBottomDialogFragment(object: TimingBottomDialogFragment.DialogClickListener {
+            override fun onCancelClick() {
+                selectSearchNow(true)
+            }
+
+        })
         dialogFragment.show(childFragmentManager, dialogFragment.tag)
         dialogFragment.isCancelable = false
     }

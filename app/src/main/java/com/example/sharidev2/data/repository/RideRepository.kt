@@ -45,12 +45,13 @@ class RideRepository(
                             // Write failed
                             callback.onCreateFailure(e)
                         }
+
                 } else {
                     // User not logged in yet
+                    Log.e("HAIYAA", "User is not logged in yet")
                 }
             } catch(e: Exception) {
                 Log.e("KENAPA??", e.message.toString())
-                Log.e("KENAPA??", e.localizedMessage)
             }
         }
     }

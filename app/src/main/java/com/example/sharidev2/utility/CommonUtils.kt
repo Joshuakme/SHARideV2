@@ -1,5 +1,7 @@
 package com.example.sharidev2.utility
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
@@ -11,8 +13,7 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import androidx.annotation.ColorInt
-import androidx.core.content.ContentProviderCompat.requireContext
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.example.sharidev2.R
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -126,6 +127,18 @@ class CommonUtils {
             onLocationError.invoke()
             Log.e("Exception: %s", e.message, e)
         }
+    }
+
+    fun copyLinkToClipboard(context: Context, textToCopy: String) {
+        // Get ClipboardManager
+        val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
+        // Create a ClipData object
+        val clipData = ClipData.newPlainText("URL", textToCopy)
+
+        // Set the ClipData object to the clipboard
+        clipboardManager.setPrimaryClip(clipData)
+        Toast.makeText(context, "Link copied to clipboard", Toast.LENGTH_SHORT).show()
     }
 
     fun closeKeyboard(view: View, context: Context) {

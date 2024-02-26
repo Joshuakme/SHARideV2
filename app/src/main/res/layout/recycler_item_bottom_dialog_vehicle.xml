@@ -4,12 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:padding="8dp">
+    android:orientation="horizontal">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1">
 
 
@@ -51,7 +50,7 @@
     <ImageView
         android:id="@+id/img_bottom_dialog_vehicle_thumbnail"
         android:layout_width="130dp"
-        android:layout_height="wrap_content"
+        android:layout_height="73dp"
         android:adjustViewBounds="true"
         android:cropToPadding="false"
         android:src="@drawable/perodua_axia_wad3324"
