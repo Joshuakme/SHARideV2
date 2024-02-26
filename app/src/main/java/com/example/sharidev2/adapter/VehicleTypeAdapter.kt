@@ -3,9 +3,11 @@ package com.example.sharidev2.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sharidev2.R
+import com.example.sharidev2.data.model.VehicleType
 
 class VehicleTypeAdapter(
     private var vehicleTypeList: List<String>,
@@ -18,9 +20,11 @@ class VehicleTypeAdapter(
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var vehicleTypeName: TextView
+        var vehicleTypeIcon: ImageView
 
         init {
             vehicleTypeName = itemView.findViewById(R.id.text_bottom_dialog_vehicle_type_item_name)
+            vehicleTypeIcon = itemView.findViewById(R.id.img_bottom_dialog_vehicle_type_icon)
         }
 
     }
@@ -33,13 +37,28 @@ class VehicleTypeAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val gender: String = vehicleTypeList[position]
+        val vehicleType: String = vehicleTypeList[position]
 
         // Bind data into UI
-        holder.vehicleTypeName.text = gender
+        holder.vehicleTypeName.text = vehicleType
+
+        when(VehicleType.fromString(vehicleType)) {
+            VehicleType.Sedans -> {
+                holder.vehicleTypeIcon.setImageResource(R.drawable.outline_sedan_24)
+            }
+            VehicleType.Hatchbacks -> {
+                holder.vehicleTypeIcon.setImageResource(R.drawable.outline_hatchback_24)
+            }
+            VehicleType.Minivans -> {
+                holder.vehicleTypeIcon.setImageResource(R.drawable.outline_minivan_24)
+            }
+            VehicleType.SUVs -> {
+                holder.vehicleTypeIcon.setImageResource(R.drawable.outline_suv_24)
+            }
+        }
 
         holder.itemView.setOnClickListener {
-            clickListener.onVehicleTypeClick(gender)
+            clickListener.onVehicleTypeClick(vehicleType)
         }
     }
 
