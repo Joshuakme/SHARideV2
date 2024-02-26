@@ -29,6 +29,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import android.location.Location
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
@@ -39,7 +40,8 @@ import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var bottomNav: BottomNavigationView
+    private lateinit var bottomNavContainer: LinearLayout
+
     private val currentLocationViewModel: CurrentLocationViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +51,8 @@ class MainActivity : AppCompatActivity() {
         // Variables
         val navHostFragment = supportFragmentManager.findFragmentById(binding.fragmentContainerMain.id) as NavHostFragment
         val navController = navHostFragment.navController
-        bottomNav = binding.bottomNavigation
+        val bottomNav = binding.bottomNavigation
+        bottomNavContainer = binding.llBottomNavigation
 
 
         bottomNav.setupWithNavController(navController)
@@ -89,7 +92,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setBottomNavVisible(visible: Boolean) {
-        bottomNav.visibility = if(visible) View.VISIBLE else View.GONE
+        bottomNavContainer.visibility = if(visible) View.VISIBLE else View.GONE
+    }
+
+    fun resetBottomNavPosition() {
+        bottomNavContainer.translationY = 0f
     }
 
     private fun getCurrentLocation() {

@@ -93,8 +93,6 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-            <!--  Google Map Section  -->
-
             <!--  Ride Search Bar  -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_home_search_bar"
@@ -149,94 +147,19 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_home_share_this_app"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/ss_screen_width_margin"
-                android:layout_marginEnd="@dimen/ss_screen_width_margin"
-                app:cardCornerRadius="0dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/card_home_search_bar"
-                app:strokeWidth="0dp">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/text_home_share_this_app_section"
-                        style="@style/text_section_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-
-                        android:layout_marginBottom="12dp"
-                        android:text="@string/home_section_share_this_app_title" />
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:cardBackgroundColor="?attr/colorSurfaceContainer"
-                        app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
-                        app:contentPadding="4dp"
-                        app:strokeWidth="0dp">
-
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/text_home_share_this_app_link"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:ellipsize="end"
-                                android:gravity="center"
-                                android:singleLine="true"
-                                android:text="@string/placeholder_home_share_this_app_link"
-                                android:textColor="?attr/colorOutline" />
-
-                            <ImageButton
-                                android:id="@+id/btn_home_share_this_app_copy"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="#00FFFFFF"
-                                android:padding="8dp"
-                                android:src="@drawable/baseline_content_copy_24"
-                                app:tint="?android:attr/textColorHint" />
-
-                            <ImageButton
-                                android:id="@+id/btn_home_share_this_app_share"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="#00FFFFFF"
-                                android:padding="8dp"
-                                android:src="@drawable/baseline_share_24"
-                                app:tint="?android:attr/textColorHint" />
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-                </LinearLayout>
-
-
-            </com.google.android.material.card.MaterialCardView>
-
-
+            <!--  Recent Rides  -->
             <TextView
                 android:id="@+id/text_home_recent_rides_section"
                 style="@style/text_section_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/ss_screen_width_margin"
-                android:layout_marginTop="27dp"
                 android:layout_marginEnd="@dimen/ss_screen_width_margin"
                 android:text="@string/home_section_recent_rides_title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/card_home_share_this_app" />
+                app:layout_constraintTop_toBottomOf="@+id/card_home_search_bar" />
 
             <HorizontalScrollView
                 android:id="@+id/horizontalScrollView"
@@ -422,49 +345,134 @@
                 </LinearLayout>
             </HorizontalScrollView>
 
-            <TextView
-                android:id="@+id/text_home_nearby_rides_section"
-                style="@style/text_section_title"
+
+            D
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_home_section_nearby_rides"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/ss_screen_width_margin"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="@dimen/ss_screen_width_margin"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/text_home_nearby_rides_section"
+                        style="@style/text_section_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:text="@string/home_section_nearby_rides_title" />
+
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/materialCardView3"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_marginTop="8dp"
+                        app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius">
+
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_marginTop="16dp"
+                        app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius">
+
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!--  Share this app  -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_home_share_this_app"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/ss_screen_width_margin"
-                android:layout_marginTop="27dp"
+                android:layout_marginTop="24dp"
                 android:layout_marginEnd="@dimen/ss_screen_width_margin"
-                android:text="@string/home_section_nearby_rides_title"
+                app:cardCornerRadius="0dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView" />
+                app:layout_constraintTop_toBottomOf="@+id/card_home_section_nearby_rides"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/text_home_share_this_app_section"
+                        style="@style/text_section_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginBottom="12dp"
+                        android:text="@string/home_section_share_this_app_title" />
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardBackgroundColor="?attr/colorSurfaceContainer"
+                        app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
+                        app:contentPadding="4dp"
+                        app:strokeWidth="0dp">
 
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/materialCardView3"
-                android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:layout_marginStart="@dimen/ss_screen_width_margin"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="@dimen/ss_screen_width_margin"
-                app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_home_nearby_rides_section">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/text_home_share_this_app_link"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:ellipsize="end"
+                                android:gravity="center"
+                                android:singleLine="true"
+                                android:text="@string/placeholder_home_share_this_app_link"
+                                android:textColor="?attr/colorOutline" />
+
+                            <ImageButton
+                                android:id="@+id/btn_home_share_this_app_copy"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="#00FFFFFF"
+                                android:padding="8dp"
+                                android:src="@drawable/baseline_content_copy_24"
+                                app:tint="?android:attr/textColorHint" />
+
+                            <ImageButton
+                                android:id="@+id/btn_home_share_this_app_share"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="#00FFFFFF"
+                                android:padding="8dp"
+                                android:src="@drawable/baseline_share_24"
+                                app:tint="?android:attr/textColorHint" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
 
 
             </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:layout_marginStart="@dimen/ss_screen_width_margin"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="@dimen/ss_screen_width_margin"
-                app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/materialCardView3">
-
-
-            </com.google.android.material.card.MaterialCardView>
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
