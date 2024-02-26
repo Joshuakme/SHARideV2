@@ -5,23 +5,27 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
-import com.example.sharidev2.data.model.SearchRide
 import com.example.sharidev2.databinding.FragmentRideDetailConfigurationBinding
 import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
+import com.google.firebase.Timestamp
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import com.wdullaer.materialdatetimepicker.time.Timepoint
+import java.sql.Time
+import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
+import java.time.ZoneOffset
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 
 class RideDetailConfigurationFragment :
@@ -31,9 +35,11 @@ class RideDetailConfigurationFragment :
     private lateinit var binding: FragmentRideDetailConfigurationBinding
     private val searchRideViewModel by activityViewModels<SharedSearchRideViewModel>()
     private val calendar: Calendar = Calendar.getInstance()
-    private val dateFormatter = DateTimeFormatter.ofPattern("yyyy MMM dd")
-    private val timeFormatter = DateTimeFormatter.ofPattern("hh : mm a")
+    private val dateFormatter = SimpleDateFormat("yyyy MMM dd", Locale.ENGLISH)
+    private val timeFormatter = SimpleDateFormat("hh : mm a", Locale.ENGLISH)
 
+    private lateinit var selectedDate: Date
+    private lateinit var selectedTime: LocalTime
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,14 +117,11 @@ class RideDetailConfigurationFragment :
         }
 
         // Search Ride Date
-        searchRideViewModel.rideDate.observe(viewLifecycleOwner) { rideDate ->
-            rideDateSelectText.text = rideDate.format(dateFormatter)
+        searchRideViewModel.rideDateTime.observe(viewLifecycleOwner) { rideDateTime ->
+            rideDateSelectText.text = dateFormatter.format(rideDateTime.toDate())
+            rideTimeSelectText.text = timeFormatter.format(rideDateTime.toDate())
         }
 
-        // Search Ride Time
-        searchRideViewModel.rideTime.observe(viewLifecycleOwner) { rideTime ->
-            rideTimeSelectText.text = rideTime.format(timeFormatter)
-        }
     }
 
     private fun setupOnClickListeners() {
@@ -137,11 +140,11 @@ class RideDetailConfigurationFragment :
         }
 
         rideDateSpinner.setOnClickListener {
-            showDatePickerDialog()
+            //showDatePickerDialog()
         }
 
         rideTimeSpinner.setOnClickListener {
-            showTimePickerDialog()
+            //showTimePickerDialog()
         }
     }
 
@@ -174,7 +177,7 @@ class RideDetailConfigurationFragment :
     }
 
     private fun showTimePickerDialog() {
-        val currentDate = searchRideViewModel.rideDate.value ?: LocalDate.now()
+        val currentDate = searchRideViewModel.rideDateTime.value ?: Timestamp.now()
 
         val timePickerDialog = TimePickerDialog.newInstance(
             this,
@@ -185,7 +188,7 @@ class RideDetailConfigurationFragment :
 
         timePickerDialog.setTimeInterval(1, 5)
 
-        if (currentDate.isEqual(LocalDate.now())) {
+        if (currentDate == Timestamp.now()) {
             timePickerDialog.setMinTime(Timepoint(Calendar.HOUR_OF_DAY, Calendar.MINUTE))
         }
 
@@ -193,15 +196,18 @@ class RideDetailConfigurationFragment :
     }
 
     override fun onDateSet(view: DatePickerDialog?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
-        val selectedDate = LocalDate.of(year, monthOfYear + 1, dayOfMonth)
+        selectedDate = Date(year, monthOfYear + 1, dayOfMonth)
 
-        searchRideViewModel.setRideDate(selectedDate)
+        val selectedTimestamp = Timestamp(selectedDate)
+
+
+        searchRideViewModel.setRideDateTime(selectedTimestamp)
     }
 
     override fun onTimeSet(view: TimePickerDialog?, hourOfDay: Int, minute: Int, second: Int) {
-        val selectedTime = LocalTime.of(hourOfDay, minute)
+        val selectedTime = Time(hourOfDay, minute, 0)
 
-        searchRideViewModel.setRideTime(selectedTime)
+       // searchRideViewModel.setRideDateTime(selectedDate.time)
     }
 
     private fun getLastDayOfYear(calendar: Calendar): Calendar {

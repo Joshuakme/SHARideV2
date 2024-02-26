@@ -4,8 +4,14 @@ import com.example.sharidev2.data.model.MatchedRide
 import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.data.model.SearchRide
 import com.example.sharidev2.data.model.User
+import com.google.firebase.Timestamp
+import java.time.LocalTime
+import java.util.concurrent.TimeUnit
+import kotlin.math.abs
+import kotlin.time.Duration.Companion.hours
 
 class RideUtils {
+
 
     fun findMatchingRides(user: User, searchRide: SearchRide, rides: List<Ride>): List<MatchedRide> {
         val matchedRides = mutableListOf<MatchedRide>()
@@ -28,15 +34,38 @@ class RideUtils {
         // For simplicity, let's assume a linear combination of criteria for this example
         val originScore = if (searchRide.origin == ride.origin) 1.0 else 0.0
         val destinationScore = if (searchRide.destination == ride.destination) 1.0 else 0.0
-        val dateScore = if (searchRide.date == ride.date) 1.0 else 0.0
-        val timeScore = if (searchRide.time == ride.time) 1.0 else 0.0
+        val dateScore = if (searchRide.datetime == ride.datetime) 1.0 else 0.0
 
         // You can adjust weights based on the importance of each criterion
         val totalWeight = 4.0
-        val similarityScore = (originScore + destinationScore + dateScore + timeScore) / totalWeight
+        val similarityScore = (originScore + destinationScore + dateScore) / totalWeight
 
         return similarityScore
     }
+
+
+    fun filterDrivers(
+        searchRide: SearchRide,
+        availableRides: List<Ride>
+    ): List<Ride> {
+        return availableRides.filter { ride ->
+
+            // Check if origin and destination match
+            ride.origin.overlaps(searchRide.origin) &&
+            ride.destination.overlaps(searchRide.destination) &&
+
+            ride.datetime.toDate() == searchRide.datetime.toDate() &&
+            isTimeCompatible(searchRide.datetime, ride.datetime) &&
+
+            ride.availableSeats >= 1
+        }
+    }
+
+    private fun isTimeCompatible(searchTime: Timestamp, rideTime: Timestamp, timeWindowInHours: Int = 1): Boolean {
+        val differenceInHours = abs(TimeUnit.HOURS.convert(searchTime.seconds - rideTime.seconds, TimeUnit.SECONDS))
+        return differenceInHours <= timeWindowInHours
+    }
+
 
     // Fare Calculation (Passenger from the various Ride Driver)
     fun calculateEstimatedPrice(searchRide: SearchRide, actualRideList: List<Ride>): List<Double> {

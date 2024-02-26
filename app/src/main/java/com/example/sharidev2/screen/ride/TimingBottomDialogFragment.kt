@@ -11,12 +11,15 @@ import com.example.sharidev2.R
 import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.card.MaterialCardView
+import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
+import java.time.ZoneOffset
 
 class TimingBottomDialogFragment(
     private val dialogClickListener: DialogClickListener
@@ -89,8 +92,9 @@ class TimingBottomDialogFragment(
             val selectedTime = LocalTime.of(selectedHour, selectedMinute)
 
             // Pass both the selected date and time to the ViewModel
-            searchRideViewModel.setRideDate(selectedDate)
-            searchRideViewModel.setRideTime(selectedTime)
+            val datetime = Date((selectedDate.atTime(selectedTime).toInstant(ZoneOffset.UTC).toEpochMilli()))
+            searchRideViewModel.setRideDateTime(Timestamp(datetime))
+
 
             // Dismiss the dialog
             dismiss()

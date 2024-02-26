@@ -7,5 +7,12 @@ enum class UserStatus {
     WAITING,        // The status when a passenger is waiting for vehicle to arrive.
     IN_VEHICLE,     // The status when the user is in the vehicle.
     COMPLETED,      // The status when the ride is successfully completed.
-    CANCELED,
+    CANCELED;
+
+    companion object {
+        fun fromString(value: String): UserStatus {
+            return entries
+                .find { it.name.equals(value, ignoreCase = true) } ?: REQUESTED
+        }
+    }
 }

@@ -16,15 +16,17 @@ import com.example.sharidev2.viewmodel.SharedCreateRideViewModel
 import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 
 class DriverRideConfigFragment : Fragment() {
     private lateinit var binding: FragmentDriverRideConfigBinding
     private val createRideViewModel: SharedCreateRideViewModel by activityViewModels()
 
-    private val dateFormatter = DateTimeFormatter.ofPattern("yyyy MMM dd")
-    private val timeFormatter = DateTimeFormatter.ofPattern("hh : mm a")
+    private val dateFormatter = SimpleDateFormat("yyyy MMM dd", Locale.ENGLISH)
+    private val timeFormatter = SimpleDateFormat("hh : mm a", Locale.ENGLISH)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -91,13 +93,11 @@ class DriverRideConfigFragment : Fragment() {
             passengerCapacitySpinnerText.text = getString(R.string.driver_ride_config_fragment_passenger_capacity_value, capacity)
         }
 
-        createRideViewModel.rideDate.observe(viewLifecycleOwner) {rideDate ->
-            rideDateSpinnerText.text = rideDate.format(dateFormatter)
+        createRideViewModel.rideDateTime.observe(viewLifecycleOwner) {rideDate ->
+            rideDateSpinnerText.text =  dateFormatter.format(rideDate.toDate())
+            rideTimeSpinnerText.text = timeFormatter.format(rideDate.toDate())
         }
 
-        createRideViewModel.rideTime.observe(viewLifecycleOwner) {rideTime ->
-            rideTimeSpinnerText.text = rideTime.format(timeFormatter)
-        }
 
 
     }

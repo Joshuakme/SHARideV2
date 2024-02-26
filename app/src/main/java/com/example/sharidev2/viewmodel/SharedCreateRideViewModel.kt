@@ -11,12 +11,11 @@ import com.example.sharidev2.data.model.User
 import com.example.sharidev2.data.model.Vehicle
 import com.example.sharidev2.data.repository.RideRepository
 import com.example.sharidev2.firebase.FirebaseInitializer
-import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.LocalTime
-import java.util.Calendar
+
 
 class SharedCreateRideViewModel(
     private val savedStateHandle: SavedStateHandle
@@ -30,11 +29,9 @@ class SharedCreateRideViewModel(
     // DATA KEY CONSTANT
     private val ORIGIN_KEY = "origin"
     private val DESTINATION_KEY = "destination"
-    private val DRIVER_KEY = "driver"
     private val VEHICLE_KEY = "vehicle"
     private val PASSENGER_CAPACITY_KEY = "passenger_capacity"
-    private val RIDE_DATE_KEY = "ride_date"
-    private val RIDE_TIME_KEY = "ride_time"
+    private val RIDE_DATE_TIME_KEY = "ride_date"
     private val CREATE_RIDE_STATUS_KEY = "create_ride_status"
 
     // RIDE STATUS
@@ -50,20 +47,14 @@ class SharedCreateRideViewModel(
     // Destination Location
     val destination: LiveData<SearchLocation> = savedStateHandle.getLiveData(DESTINATION_KEY)
 
-    // Driver
-    val driver: LiveData<String> = savedStateHandle.getLiveData(DRIVER_KEY)
-
     // Vehicle
     val vehicle: LiveData<Vehicle> = savedStateHandle.getLiveData(VEHICLE_KEY)
 
     // Passenger Capacity
     val capacity: LiveData<Int> = savedStateHandle.getLiveData(PASSENGER_CAPACITY_KEY)
 
-    // Ride Date
-    val rideDate: LiveData<LocalDate> = savedStateHandle.getLiveData(RIDE_DATE_KEY)
-
-    // Ride Time
-    val rideTime: LiveData<LocalTime> = savedStateHandle.getLiveData(RIDE_TIME_KEY)
+    // Ride Date Time
+    val rideDateTime: LiveData<Timestamp> = savedStateHandle.getLiveData(RIDE_DATE_TIME_KEY)
 
     // Create Ride Status
     val createRideStatus: LiveData<Int> = savedStateHandle.getLiveData(CREATE_RIDE_STATUS_KEY)
@@ -71,13 +62,8 @@ class SharedCreateRideViewModel(
 
     // CONSTRUCTOR
     init {
-        if (rideDate.value == null) {
-            setRideDate(LocalDate.now())
-        }
-
-        // Check if rideTime is not assigned and assign the default value
-        if (rideTime.value == null) {
-            setRideTime(getDefaultRideTime())
+        if (rideDateTime.value == null) {
+            setRideDateTime(Timestamp.now())
         }
 
         setCreateRideStatus(CREATE_RIDE_PENDING)
@@ -95,11 +81,6 @@ class SharedCreateRideViewModel(
         savedStateHandle[DESTINATION_KEY] = newDestination
     }
 
-    // Driver
-    fun setDriver(newDriver: String) {
-        savedStateHandle[DRIVER_KEY] = newDriver
-    }
-
     // Vehicle
     fun setVehicle(newVehicle: Vehicle) {
         savedStateHandle[VEHICLE_KEY] = newVehicle
@@ -114,14 +95,9 @@ class SharedCreateRideViewModel(
         }
     }
 
-    // Ride Date
-    fun setRideDate(newRideDate: LocalDate) {
-        savedStateHandle[RIDE_DATE_KEY] = newRideDate
-    }
-
-    // Ride Time
-    fun setRideTime(newRideTime: LocalTime) {
-        savedStateHandle[RIDE_TIME_KEY] = newRideTime
+    // Ride Date Time
+    fun setRideDateTime(newRideDateTime: Timestamp) {
+        savedStateHandle[RIDE_DATE_TIME_KEY] = newRideDateTime
     }
 
     // Create Ride Status
@@ -135,9 +111,9 @@ class SharedCreateRideViewModel(
         val newCreatedRide = Ride(
             origin = origin.value!!,
             destination = destination.value!!,
-            date = rideDate.value!!,
-            time = rideTime.value!!,
-            driver = FirebaseInitializer.firebaseAuth.currentUser!!,
+            datetime = rideDateTime.value!!,
+            driver = FirebaseInitializer.firebaseAuth.currentUser?.let { User.fromFirebaseUser(it) }
+                ?: User(),
             vehicle = vehicle.value!!,
             availableSeats = capacity.value!!
         )
@@ -163,30 +139,9 @@ class SharedCreateRideViewModel(
     fun resetData() {
         setOrigin(SearchLocation()) // Pass an empty SearchLocation or null, depending on your implementation
         setDestination(SearchLocation())
-        setDriver("") // Pass an empty User or null
         setVehicle(Vehicle()) // Pass an empty Vehicle or null
         setCapacity(0) // Set capacity to 0 or any default value you prefer
-        setRideDate(LocalDate.now()) // Set the date to the current date or any default date
-        setRideTime(getDefaultRideTime()) // Set the time to the default ride time
+        setRideDateTime(Timestamp.now()) // Set the date to the current date or any default date
         setCreateRideStatus(CREATE_RIDE_PENDING) // Reset the create ride status
-    }
-
-    private fun getDefaultRideTime(): LocalTime {
-        val calendar: Calendar = Calendar.getInstance()
-
-        val currentTime =
-            LocalTime.of(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE))
-
-        return roundUpToNearestInterval(currentTime, 5)
-    }
-
-    private fun roundUpToNearestInterval(currentTime: LocalTime, intervalMinutes: Int): LocalTime {
-        val minuteOfHour = currentTime.minute
-        val roundedMinute =
-            ((minuteOfHour + intervalMinutes - 1) / intervalMinutes) * intervalMinutes
-        val hourAdjustment = roundedMinute / 60
-        val finalMinute = roundedMinute % 60
-        val finalHour = (currentTime.hour + hourAdjustment) % 24
-        return currentTime.withHour(finalHour).withMinute(finalMinute).withSecond(0).withNano(0)
     }
 }

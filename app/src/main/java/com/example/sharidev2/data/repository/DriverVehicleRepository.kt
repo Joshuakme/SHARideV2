@@ -1,8 +1,10 @@
 package com.example.sharidev2.data.repository
 
+import android.net.Uri
 import android.util.Log
 import com.example.sharidev2.data.model.Vehicle
 import com.example.sharidev2.data.model.VehicleType
+import com.example.sharidev2.utility.Converters
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
@@ -44,6 +46,7 @@ class DriverVehicleRepository(
     // HELPER METHODS
     private fun convertDriverVehicleToList(querySnapshot: QuerySnapshot): List<Vehicle> {
         val vehicleList = mutableListOf<Vehicle>()
+        val converters = Converters()
 
 
         for (document in querySnapshot.documents) {
@@ -53,7 +56,7 @@ class DriverVehicleRepository(
             val type: VehicleType = document.getString("type")?.let { VehicleType.fromString(it) } ?: VehicleType.Sedans
             val plateNumber: String = document.getString("plateNumber") ?: ""
             val color: String = document.getString("color") ?: ""
-            val photos: MutableList<String> = document.get("photos") as MutableList<String>
+            val photos: MutableList<Uri> = converters.toUriList(document.get("photos") as MutableList<String>).toMutableList()
             val capacity: Int = (document.get("capacity") as Long).toInt()
 
 

@@ -1,25 +1,22 @@
 package com.example.sharidev2.data.model
 
-import com.google.firebase.auth.FirebaseUser
-import java.time.LocalDate
-import java.time.LocalTime
+import com.google.firebase.Timestamp
 
 data class Ride (
-    val id: Int? = null,
+    val id: String? = null,
     val origin: SearchLocation,
     val destination: SearchLocation,
-    val date: LocalDate,
-    val time: LocalTime,
-    val driver: FirebaseUser,
+    val datetime: Timestamp,
+    val driver: User,
     val passengers: MutableList<Passenger>? = mutableListOf(),
     val rideStatus: RideStatus = RideStatus.CREATED,
     val driverStatus: UserStatus = UserStatus.REQUESTED,
-    val passengersStatus: MutableList<PassengerStatus> = mutableListOf(),
-    val startTime: LocalTime? = null,
-    val completeTime: LocalTime? = null,
+    val passengersStatus: MutableList<UserStatus> = mutableListOf(),
+    val startTime: Timestamp? = null,
+    val completeTime: Timestamp? = null,
     val vehicle: Vehicle,
     val availableSeats: Int,
-    val price: List<Map<Passenger, Double>>? = listOf(),
+    val price: List<Map<String, Double>>? = listOf(),   // list of Map<userId, price>
     val reviews: List<Review>? = emptyList(),
     val chat: Chat? = null,
 )

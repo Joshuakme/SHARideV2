@@ -4,17 +4,18 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
+import android.location.Location
+import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.room.TypeConverter
 import com.example.sharidev2.data.model.Address
 import com.example.sharidev2.data.model.Chat
-import com.example.sharidev2.data.model.DriverStatus
 import com.example.sharidev2.data.model.Gender
-import com.example.sharidev2.data.model.Location
 import com.example.sharidev2.data.model.Message
-import com.example.sharidev2.data.model.PassengerStatus
+import com.example.sharidev2.data.model.Passenger
 import com.example.sharidev2.data.model.Review
+import com.example.sharidev2.data.model.RideOption
 import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.data.model.User
 import com.example.sharidev2.data.model.UserStatus
@@ -22,11 +23,10 @@ import com.example.sharidev2.data.model.Vehicle
 import com.example.sharidev2.data.model.VehicleType
 import com.google.android.gms.maps.model.LatLng
 import com.google.common.reflect.TypeToken
+import com.google.firebase.Timestamp
 import com.google.gson.Gson
 import java.io.ByteArrayOutputStream
 import java.lang.reflect.Type
-import java.math.BigDecimal
-import java.math.RoundingMode
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -53,14 +53,149 @@ class Converters {
         }
     }
 
+
+    // SEARCH LOCATION CONVERTERS
+    fun toSearchLocation(map: Map<String, Any>): SearchLocation {
+        val placeId = map["placeId"] as String
+        val name = map["name"] as String
+        val distanceMetersFromOrigin = (map["distanceMetersFromOrigin"] as Long).toInt()
+        val detailAddress = map["detailAddress"] as String
+
+        val geolocationMap = map.getValue("geolocation") as Map<String, Double>
+        val latitude = geolocationMap["latitude"]
+        val longitude = geolocationMap["longitude"]
+
+        return SearchLocation(
+            placeId,
+            name,
+            distanceMetersFromOrigin,
+            detailAddress,
+            LatLng(latitude?: 0.0, longitude?: 0.0)
+        )
+    }
+
+    fun toSearchLocationList(mapList: List<Map<String, Any>>): List<SearchLocation> {
+        val searchLocationList = mutableListOf<SearchLocation>()
+
+        for(map in mapList) {
+            searchLocationList.add(toSearchLocation(map))
+        }
+
+        return searchLocationList
+    }
+
+
+    // USER CONVERTERS
+    fun toUser(map: Map<String, Any>): User {
+        val uid = map["uid"] as String
+        val displayName = map["displayName"] as String
+        val email = map["email"] as String
+        val phoneNumber = map["phoneNumber"] as String
+        val photoUrl = map["photoUrl"] as String
+
+        val rideOptionMap = map["rideOption"] as Map<String, Any>
+        val driverGender = Gender.valueOf(rideOptionMap["driverGender"] as String)
+        val vehicleType = VehicleType.valueOf(rideOptionMap["vehicleType"] as String)
+        val petFriendly = rideOptionMap["petFriendly"] as Boolean
+        val rideOption = RideOption(driverGender, vehicleType, petFriendly)
+
+        val rating = map["rating"] as Float
+        val savedAddresses = toSearchLocationList(map["savedAddresses"] as List<Map<String, Any>>).toMutableList()
+        val gender = Gender.valueOf(map["gender"] as String)
+        val joinedDate = map["joinedDate"] as Timestamp
+
+        return User(
+            uid,
+            displayName,
+            email,
+            phoneNumber,
+            Uri.parse(photoUrl),
+            rideOption,
+            rating,
+            savedAddresses,
+            gender,
+            joinedDate
+        )
+    }
+
+    fun toUserList(mapList: List<Map<String, Any>>): List<User> {
+        val userList = mutableListOf<User>()
+
+        for(map in mapList) {
+            userList.add(toUser(map))
+        }
+
+        return userList
+    }
+
+    fun toPassenger(map: Map<String, Any>): Passenger {
+        val userMap = toUser(map["user"] as Map<String, Any>)
+
+        val locationMap = map["location"] as Map<String, Any>
+        val latitude = locationMap["lattitude"] as Double
+        val longitude = locationMap["longitude"] as Double
+        val location = LatLng(latitude, longitude)
+
+        return Passenger(userMap, location)
+    }
+
+    fun toPassengerList(mapList: List<Map<String, Any>>): List<Passenger> {
+        val passengerList = mutableListOf<Passenger>()
+
+        for(map in mapList) {
+            passengerList.add(toPassenger(map))
+        }
+
+        return passengerList
+    }
+
+    // PHOTOS CONVERTERS
+    fun toUriList(photoUrlList: List<String>): List<Uri> {
+        val uriList = mutableListOf<Uri>()
+
+        for(photo in photoUrlList) {
+            uriList.add(Uri.parse(photo))
+        }
+
+        return uriList
+    }
+
+
+    // VEHICLE CONVERTERS
+    fun toVehicle(map: Map<String, Any>): Vehicle {
+        val vehicleID = map["vehicleID"] as String
+        val brand = map["brand"] as String
+        val model = map["model"] as String
+        val type = VehicleType.valueOf(map["type"] as String)
+        val plateNumber = map["plateNumber"] as String
+        val color = map["color"] as String
+
+        val photosString = map["photos"] as List<String>
+        val photos = mutableListOf<Uri>()
+        for (photo in photosString) {
+            photos.add(Uri.parse(photo))
+        }
+
+        val capacity = map["capacity"] as Int
+
+        return Vehicle(
+            vehicleID,
+            brand,
+            model,
+            type,
+            plateNumber,
+            color,
+            photos,
+            capacity
+        )
+    }
+
     // DATE & TIME Converters
-    @RequiresApi(Build.VERSION_CODES.O)
     @TypeConverter
     fun fromLocalDate(date: LocalDate?): String? {
         return date?.format(DateTimeFormatter.ISO_LOCAL_DATE)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     @TypeConverter
     fun toLocalDate(dateString: String?): LocalDate? {
         return dateString?.let {
@@ -69,13 +204,11 @@ class Converters {
     }
 
     // LocalTime converters
-    @RequiresApi(Build.VERSION_CODES.O)
     @TypeConverter
     fun fromLocalTime(time: LocalTime?): String? {
         return time?.format(DateTimeFormatter.ISO_LOCAL_TIME)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     @TypeConverter
     fun toLocalTime(timeString: String?): LocalTime? {
         return timeString?.let {
@@ -176,39 +309,7 @@ class Converters {
         return gson.fromJson(messageListString, type)
     }
 
-    // DriverStatus converters
-    @TypeConverter
-    fun fromDriverStatus(driverStatus: DriverStatus?): String? {
-        return gson.toJson(driverStatus)
-    }
 
-    @TypeConverter
-    fun toDriverStatus(driverStatusString: String?): DriverStatus? {
-        return gson.fromJson(driverStatusString, DriverStatus::class.java)
-    }
-
-    // PassengerStatus converters
-    @TypeConverter
-    fun fromPassengerStatus(passengerStatus: PassengerStatus?): String? {
-        return gson.toJson(passengerStatus)
-    }
-
-    @TypeConverter
-    fun toPassengerStatus(passengerStatusString: String?): PassengerStatus? {
-        return gson.fromJson(passengerStatusString, PassengerStatus::class.java)
-    }
-
-    // MutableList<PassengerStatus> converters
-    @TypeConverter
-    fun fromPassengerStatusList(passengerStatusList: MutableList<PassengerStatus>?): String? {
-        return gson.toJson(passengerStatusList)
-    }
-
-    @TypeConverter
-    fun toPassengerStatusList(passengerStatusListString: String?): MutableList<PassengerStatus>? {
-        val type = object : TypeToken<MutableList<PassengerStatus>?>() {}.type
-        return gson.fromJson(passengerStatusListString, type)
-    }
 
     // UserStatus converters
     @TypeConverter

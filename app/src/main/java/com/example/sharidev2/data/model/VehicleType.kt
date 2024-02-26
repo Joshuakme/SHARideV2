@@ -8,7 +8,7 @@ enum class VehicleType {
 
     companion object {
         fun fromString(value: String): VehicleType {
-            return values().find { it.name.equals(value, ignoreCase = true) } ?: Sedans
+            return entries.find { it.name.equals(value, ignoreCase = true) } ?: Sedans
         }
     }
 }

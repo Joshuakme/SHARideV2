@@ -1,17 +1,34 @@
 package com.example.sharidev2.data.model
 
+import android.net.Uri
+import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.IgnoreExtraProperties
 import java.time.LocalDateTime
 
-@IgnoreExtraProperties
 data class User(
     val uid: String? = null,
-    val username: String? = null,
+    val displayName: String? = null,
     val email: String? = null,
-    val specialAttribute: String? = null,
-    val profilePictureUrl: String? = null,
+    val phoneNumber: String? = null,
+    val photoUrl: Uri? = null,
+    val rideOption: RideOption? = null,
     val rating: Float ?= null,
-    val savedAddresses: MutableList<Address> ?= null,
+    val savedAddresses: MutableList<SearchLocation> ?= null,
     val gender: Gender ?= null,
-    val joinedDate: LocalDateTime = LocalDateTime.now()
-)
+    val joinedDate: Timestamp? = null
+) {
+    companion object {
+        fun fromFirebaseUser(firebaseUser: FirebaseUser): User {
+            firebaseUser.apply {
+                val uid = this.uid
+                val displayName = this.displayName
+                val email = this.email
+                val phoneNumber = this.phoneNumber
+                val photoUrl = this.photoUrl
+
+                return User(uid, displayName, email, phoneNumber, photoUrl)
+            }
+        }
+    }
+}
