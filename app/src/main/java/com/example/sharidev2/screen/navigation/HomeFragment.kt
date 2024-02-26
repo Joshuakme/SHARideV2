@@ -1,5 +1,6 @@
 package com.example.sharidev2.screen.navigation
 
+import android.content.Intent
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
@@ -10,9 +11,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -20,6 +23,7 @@ import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.adapter.RidePagerAdapter
 import com.example.sharidev2.databinding.FragmentHomeBinding
+import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -52,6 +56,9 @@ class HomeFragment : Fragment() {
         val homeNestedScrollView = binding.nsvFragmentHome
         val welcomeHomeText = binding.textHomeWelcomeUser
         val searchBarBtn = binding.cardHomeSearchBar
+        val shareThisAppLinkText = binding.textHomeShareThisAppLink
+        val shareThisAppCopyBtn = binding.btnHomeShareThisAppCopy
+        val shareThisAppShareBtn = binding.btnHomeShareThisAppShare
 
         // AUTH VARIABLES
         val user = auth.currentUser
@@ -59,6 +66,7 @@ class HomeFragment : Fragment() {
 
         // LAYOUT SETTINGS
         (activity as MainActivity).setBottomNavVisible(true)
+        (activity as MainActivity).resetBottomNavPosition()
         welcomeHomeText.text = getString(R.string.home_fragment_welcome_user, user?.displayName ?: "back")
 
 
@@ -73,6 +81,20 @@ class HomeFragment : Fragment() {
         homeNestedScrollView.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
             val bottomNavContainer = requireActivity().findViewById<LinearLayout>(R.id.ll_bottom_navigation)
             val bottomNav = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation)
+
+            val constraintLayout = (activity as MainActivity).findViewById<ConstraintLayout>(R.id.constraint_main_activity)
+            val activityFragmentContainer = (activity as MainActivity).findViewById<FragmentContainerView>(R.id.fragment_container_main)
+            val constraintSet = ConstraintSet()
+
+            constraintSet.clone(constraintLayout)
+
+            if(scrollY > 0) {   // Scroll down
+                Log.e("SCROLL DI MANA", "Scrolling down")
+                constraintSet.connect(activityFragmentContainer.id, ConstraintSet.BOTTOM, constraintLayout.id, ConstraintSet.BOTTOM)
+            } else {
+                constraintSet.connect(activityFragmentContainer.id, ConstraintSet.BOTTOM, bottomNavContainer.id, ConstraintSet.TOP)
+            }
+            constraintSet.applyTo(constraintLayout)
 
             // Calculate the scroll change
             val dy = oldScrollY - scrollY
@@ -92,6 +114,19 @@ class HomeFragment : Fragment() {
             findNavController().navigate(R.id.action_homeFragment_to_searchFragment)
         }
 
+        shareThisAppCopyBtn.setOnClickListener {
+            CommonUtils().copyLinkToClipboard(requireContext(), getString(R.string.share_app_link))
+        }
+
+        shareThisAppShareBtn.setOnClickListener {
+            val sendIntent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, getString(R.string.share_app_link))
+                type = "text/plain"
+            }
+            val shareIntent = Intent.createChooser(sendIntent, null)
+            startActivity(shareIntent)
+        }
 
 
         // Set up adapter
@@ -154,5 +189,12 @@ class HomeFragment : Fragment() {
                 areaText.text = addressText
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val homeNestedScrollView = binding.nsvFragmentHome
+        homeNestedScrollView.scrollY = 0
     }
 }
