@@ -23,7 +23,8 @@ class SharedCreateRideViewModel(
     // Repository
     private val rideRepository = RideRepository(
         FirebaseInitializer.firestore,
-        FirebaseInitializer.firebaseAuth
+        FirebaseInitializer.firebaseAuth,
+        FirebaseInitializer.firebaseUtils
     )
 
     // DATA KEY CONSTANT

@@ -5,6 +5,7 @@ import android.util.Log
 import com.example.sharidev2.data.model.Vehicle
 import com.example.sharidev2.data.model.VehicleType
 import com.example.sharidev2.utility.Converters
+import com.example.sharidev2.utility.FirebaseUtils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
@@ -13,9 +14,10 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 class DriverVehicleRepository(
     private val firestore: FirebaseFirestore,
-    firebaseAuth: FirebaseAuth
+    private val firebaseAuth: FirebaseAuth,
 ) {
     private val currentUser = firebaseAuth.currentUser
+    private val firebaseUtils = FirebaseUtils(firestore, firebaseAuth)
 
 
     suspend fun getDriverVehicleList(): List<Vehicle> {
@@ -53,7 +55,7 @@ class DriverVehicleRepository(
             val vehicleID: String = document.id
             val brand: String = document.getString("brand") ?: ""
             val model: String = document.getString("model") ?: ""
-            val type: VehicleType = document.getString("type")?.let { VehicleType.fromString(it) } ?: VehicleType.Sedans
+            val type: VehicleType = document.getString("type")?.let { VehicleType.valueOf(it) } ?: VehicleType.Sedan
             val plateNumber: String = document.getString("plateNumber") ?: ""
             val color: String = document.getString("color") ?: ""
             val photos: MutableList<Uri> = converters.toUriList(document.get("photos") as MutableList<String>).toMutableList()

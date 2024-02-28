@@ -42,17 +42,17 @@ class VehicleTypeAdapter(
         // Bind data into UI
         holder.vehicleTypeName.text = vehicleType
 
-        when(VehicleType.fromString(vehicleType)) {
-            VehicleType.Sedans -> {
+        when(VehicleType.valueOf(vehicleType)) {
+            VehicleType.Sedan -> {
                 holder.vehicleTypeIcon.setImageResource(R.drawable.outline_sedan_24)
             }
-            VehicleType.Hatchbacks -> {
+            VehicleType.Hatchback -> {
                 holder.vehicleTypeIcon.setImageResource(R.drawable.outline_hatchback_24)
             }
-            VehicleType.Minivans -> {
+            VehicleType.Minivan -> {
                 holder.vehicleTypeIcon.setImageResource(R.drawable.outline_minivan_24)
             }
-            VehicleType.SUVs -> {
+            VehicleType.SUV -> {
                 holder.vehicleTypeIcon.setImageResource(R.drawable.outline_suv_24)
             }
         }

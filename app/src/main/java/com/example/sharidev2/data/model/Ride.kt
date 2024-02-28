@@ -11,12 +11,12 @@ data class Ride (
     val passengers: MutableList<Passenger>? = mutableListOf(),
     val rideStatus: RideStatus = RideStatus.CREATED,
     val driverStatus: UserStatus = UserStatus.REQUESTED,
-    val passengersStatus: MutableList<UserStatus> = mutableListOf(),
+    val passengersStatus: Map<String, UserStatus> = mapOf(),
     val startTime: Timestamp? = null,
     val completeTime: Timestamp? = null,
     val vehicle: Vehicle,
     val availableSeats: Int,
-    val price: List<Map<String, Double>>? = listOf(),   // list of Map<userId, price>
+    val price: Map<String, Double>? = mapOf(),   // list of Map<userId, price>
     val reviews: List<Review>? = emptyList(),
     val chat: Chat? = null,
 )

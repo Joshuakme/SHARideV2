@@ -91,7 +91,7 @@ class ChatFragment : Fragment() {
         chatSendButton.setOnClickListener {
             val message = chatTextInput.text.toString()
 
-            val newMessage = Message("m3", "s3", message, readBy = emptyList(), messageType = MessageType.TEXT)
+            val newMessage = Message("m3", "s3", message, readBy = emptyList(), messageType = MessageType.Text)
 
             chatMessageList.add(newMessage)
 
@@ -110,14 +110,14 @@ class ChatFragment : Fragment() {
                     "s1",
                     "Hi, I'm ALi. Nice to meet you.",
                     readBy = listOf<String>(),
-                    messageType = MessageType.TEXT
+                    messageType = MessageType.Text
                 ),
             Message(
                 "m2",
                 "s2",
                 "Yooo",
                 readBy = listOf<String>(),
-                messageType = MessageType.TEXT
+                messageType = MessageType.Text
             ),
         )
     }

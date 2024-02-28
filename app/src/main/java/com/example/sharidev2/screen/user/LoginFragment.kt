@@ -19,6 +19,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentLoginBinding
+import com.example.sharidev2.firebase.FirebaseInitializer
 import com.example.sharidev2.utility.FirebaseUtils
 import com.example.sharidev2.viewmodel.LoginViewModel
 import com.google.android.material.card.MaterialCardView
@@ -42,7 +43,8 @@ class LoginFragment : Fragment() {
 
     private var timeoutSeconds: Long = 60 // Initial countdown time in seconds
 
-    private val auth = FirebaseAuth.getInstance()
+    private val auth = FirebaseInitializer.firebaseAuth
+    private val firebaseUtils = FirebaseUtils(FirebaseInitializer.firestore, auth)
     private lateinit var verificationCode: String
     private lateinit var forceResendingToken: PhoneAuthProvider.ForceResendingToken
 
@@ -352,7 +354,7 @@ class LoginFragment : Fragment() {
                     // TODO: save the phone number to firebase database
                     CoroutineScope(Dispatchers.Main).launch {
                         // Call assignUserDefaultInfo from within the coroutine
-                        FirebaseUtils().assignUserDefaultInfo(task.result?.additionalUserInfo)
+                        firebaseUtils.assignUserDefaultInfo(task.result?.additionalUserInfo)
                     }
                     Toast.makeText(requireContext(), "Logged in successfully!", Toast.LENGTH_SHORT)
                         .show()

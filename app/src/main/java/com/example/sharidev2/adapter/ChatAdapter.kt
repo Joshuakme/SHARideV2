@@ -58,7 +58,7 @@ class ChatAdapter(
         val message = messageList[position]
         val currentUser = FirebaseAuth.getInstance().currentUser?.uid
 
-        if(currentUser.equals(message.senderID)) {
+        if(currentUser.equals(message.senderId)) {
             return ITEM_SENT
         } else {
             return ITEM_RECEIVE

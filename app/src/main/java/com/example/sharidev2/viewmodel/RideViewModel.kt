@@ -16,7 +16,11 @@ import kotlin.coroutines.coroutineContext
 class RideViewModel(
     private val savedStateHandle: SavedStateHandle
 ): ViewModel() {
-    private val rideRepository = RideRepository(FirebaseInitializer.firestore, FirebaseInitializer.firebaseAuth)
+    private val rideRepository = RideRepository(
+        FirebaseInitializer.firestore,
+        FirebaseInitializer.firebaseAuth,
+        FirebaseInitializer.firebaseUtils
+    )
 
     // DATA KEY CONSTANT
     private val RIDE_LIST_KEY = "ride_list"

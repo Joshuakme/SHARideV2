@@ -10,7 +10,7 @@ data class Vehicle(
     val vehicleID: String? = "",
     val brand: String? = "",
     val model: String? = "",
-    val type: VehicleType = VehicleType.Sedans,
+    val type: VehicleType = VehicleType.Sedan,
     val plateNumber: String? = "",
     val color: String? = "",  // Enum of vehicle color
     val photos: MutableList<Uri>? = null,    // Link of image

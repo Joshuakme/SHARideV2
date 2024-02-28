@@ -14,7 +14,7 @@ data class User(
     val photoUrl: Uri? = null,
     val rideOption: RideOption? = null,
     val rating: Float ?= null,
-    val savedAddresses: MutableList<SearchLocation> ?= null,
+    val savedAddress: MutableList<SearchLocation> ?= null,
     val gender: Gender ?= null,
     val joinedDate: Timestamp? = null
 ) {
