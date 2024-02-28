@@ -30,7 +30,9 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="8dp"
+            android:visibility="gone"
+            tools:visibility="gone">
 
             <TextView
                 android:id="@+id/text_booking_title"
@@ -78,7 +80,8 @@
             android:id="@+id/recycler_booking"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/recycler_item_booking_history" />
+            tools:listitem="@layout/recycler_item_booking_history"
+            tools:visibility="gone" />
 
 
         <com.google.android.material.card.MaterialCardView
@@ -107,15 +110,14 @@
 
         <!--  Progress Bar  -->
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cl_chat_loading_spinner"
+            android:id="@+id/cl_booking_loading_spinner"
             android:layout_width="match_parent"
-            android:layout_height="470dp"
-            android:visibility="gone"
-            tools:visibility="gone">
+            android:layout_height="match_parent"
+            android:translationY="-8dp">
 
             <ProgressBar
                 android:id="@+id/progressBar"
-                style="@android:style/Widget.Holo.Light.ProgressBar.Inverse"
+                style="@android:style/Widget.Holo.Light.ProgressBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"

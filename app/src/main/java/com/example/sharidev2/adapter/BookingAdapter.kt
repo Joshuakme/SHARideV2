@@ -1,5 +1,7 @@
 package com.example.sharidev2.adapter
 
+import android.content.Context
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +17,7 @@ import java.util.Date
 import java.util.Locale
 
 class BookingAdapter (
+    private val context: Context,
     private val currentUser: FirebaseUser,
     private val bookingList: List<Ride>,
     private val clickListener: OnBookingClickListener
@@ -28,11 +31,13 @@ class BookingAdapter (
         var titleText: TextView
         var dateText: TextView
         var priceText: TextView
+        var bookingTagText: TextView
 
         init {
             titleText = itemView.findViewById(R.id.text_booking_title)
             dateText = itemView.findViewById(R.id.text_booking_date)
             priceText = itemView.findViewById(R.id.text_booking_price)
+            bookingTagText = itemView.findViewById(R.id.text_booking_tag)
         }
     }
 
@@ -46,14 +51,32 @@ class BookingAdapter (
         val booking: Ride = bookingList[position]
 
         // Date Time Format
-        val bookingDateFormatter = SimpleDateFormat("dd MMM, HH:mm", Locale.ENGLISH)
+        val bookingDateFormatter = SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.ENGLISH)
 
         // Bind data into UI
         holder.titleText.text = booking.destination.name
-        holder.dateText.text = bookingDateFormatter.format(Date(booking.datetime.seconds * 1000))
+        holder.dateText.text = bookingDateFormatter.format(Date(booking.datetime.seconds * 1000)).replace("AM", "am").replace("PM", "pm")
         holder.priceText.text = holder.itemView.context.getString(R.string.booking_item_price,
-            booking.price?.get(currentUser.uid ?: ""))
+            booking.price?.get(currentUser.uid) ?: 0.0
+        )
 
+        val typedValue = TypedValue()
+        // Resolve the attribute to get the color value programmatically
+        context.theme?.resolveAttribute(com.google.android.material.R.attr.colorPrimary, typedValue, true)
+        val colorPrimary = typedValue.data
+        context.theme?.resolveAttribute(com.google.android.material.R.attr.colorError, typedValue, true)
+        val colorError = typedValue.data
+
+
+        if(isDriver(booking)) {
+            holder.bookingTagText.text = "Driver"
+            holder.priceText.setTextColor(colorPrimary)
+        } else if(isPassenger(booking)) {
+            holder.bookingTagText.text = "Passenger"
+            holder.priceText.setTextColor(colorError)
+        } else {
+            holder.bookingTagText.visibility = View.GONE
+        }
 
 
         holder.itemView.setOnClickListener {
@@ -68,5 +91,13 @@ class BookingAdapter (
     // Method to update data
     fun updateData() {
         notifyDataSetChanged()
+    }
+
+    private fun isDriver(ride: Ride): Boolean {
+        return ride.driver.uid == currentUser.uid
+    }
+
+    private fun isPassenger(ride: Ride): Boolean {
+        return ride.price?.containsKey(currentUser.uid) ?: false
     }
 }

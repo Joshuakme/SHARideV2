@@ -38,16 +38,11 @@ class BookingFragment : Fragment() {
 
         // ELEMENT VARIABLES
 
-
-
-        // VIEWMODEL
-
-
         // LAYOUT SETTINGS
         (activity as MainActivity).setBottomNavVisible(true)
         (activity as MainActivity).resetBottomNavPosition()
 
-
+        showLoadingProgressBar(true)
         initRecyclerView()
 
 
@@ -59,29 +54,61 @@ class BookingFragment : Fragment() {
         val currentUser = FirebaseInitializer.firebaseAuth.currentUser
 
         rideViewModel.rideList.observe(viewLifecycleOwner) {rideList ->
-
-            val filteredList = rideList.filter { ride ->
-                if (currentUser != null && ride.price != null) {
-                    ride.price.containsKey(currentUser.uid)
-                } else {
-                    false
-                }
-            }
-
-            Toast.makeText(requireContext(), filteredList.size.toString(), Toast.LENGTH_SHORT).show()
-
-            if(currentUser != null) {
-                bookingAdapter = BookingAdapter(currentUser, filteredList, object: BookingAdapter.OnBookingClickListener {
-                    override fun onBookingClick(booking: Ride) {
-                        TODO("Navigate to booking detail page")
-                        TODO("Pass data to the detail page")
+            if(rideList != null) {
+                val filteredList = rideList.filter { ride ->
+                    if (currentUser != null && ride.price != null) {
+                        ride.price.containsKey(currentUser.uid) || (ride.driver.uid == currentUser.uid)
+                    } else {
+                        false
                     }
-                })
-                recyclerView.adapter = bookingAdapter
-                recyclerView.layoutManager = LinearLayoutManager(requireContext())
-            }
+                }
 
-            Toast.makeText(requireContext(), rideList.size.toString(), Toast.LENGTH_LONG).show()
+                if(currentUser != null && filteredList.isNotEmpty()) {
+                    bookingAdapter = BookingAdapter(requireContext(), currentUser, filteredList, object: BookingAdapter.OnBookingClickListener {
+                        override fun onBookingClick(booking: Ride) {
+                            TODO("Navigate to booking detail page")
+                            TODO("Pass data to the detail page")
+                        }
+                    })
+                    recyclerView.adapter = bookingAdapter
+                    recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+                    showLoadingProgressBar(false)
+                } else {
+                    // No
+                    showLoadingProgressBar(false)
+                    showErrorLoading(true)
+                }
+            } else {
+                showLoadingProgressBar(false)
+            }
+        }
+    }
+
+
+    private fun showLoadingProgressBar(show: Boolean) {
+        val bookingRecyclerView = binding.recyclerBooking
+        val loadingProgressBar = binding.clBookingLoadingSpinner
+        val errorLoadingCard = binding.cardErrorLoadBookingHistory
+
+        if(show) {
+            bookingRecyclerView.visibility = View.GONE
+            loadingProgressBar.visibility = View.VISIBLE
+            errorLoadingCard.visibility = View.GONE
+        } else {
+            bookingRecyclerView.visibility = View.VISIBLE
+            loadingProgressBar.visibility = View.GONE
+            errorLoadingCard.visibility = View.GONE
+        }
+    }
+
+    private fun showErrorLoading(show: Boolean) {
+        val errorLoadingCard = binding.cardErrorLoadBookingHistory
+
+        if(show) {
+            errorLoadingCard.visibility = View.VISIBLE
+        } else {
+            errorLoadingCard.visibility = View.GONE
         }
     }
 }

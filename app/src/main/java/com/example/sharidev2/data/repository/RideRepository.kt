@@ -138,7 +138,7 @@ class RideRepository(
                         val completeTime = getTimestamp("completeTime")
                         val vehicle = firebaseUtils.getVehicleFromId(getString("vehicle") ?: "")
                         val availableSeats = (get("availableSeats") as Long).toInt()
-                        val price = get("price") as Map<String, Double>
+                        val price = converters.toPrice(get("price") as Map<String, Long>)
                         val reviews = converters.toReviewList(get("reviews") as List<Map<String, Any>>)
                         val chat = firebaseUtils.getChatFromChatId(getString("chat") ?: "")
 

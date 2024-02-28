@@ -271,6 +271,20 @@ class Converters() {
     }
 
 
+    // PRICE CONVERTERS
+    fun toPrice(map: Map<String, Long>): Map<String, Double> {
+        val prices: MutableMap<String, Double> = mutableMapOf()
+        for (entry in map) {
+            val userId = entry.key
+            val price = entry.value.toDouble()
+
+
+            // Add to the map using userId as key and converted UserStatus as value
+            prices[userId] = price
+        }
+        return prices.toMap() // Convert to immutable map
+    }
+
 
     // DATE & TIME Converters
     @TypeConverter
