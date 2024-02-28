@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+<<<<<<< HEAD
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentChatBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -17,6 +18,24 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 class ChatFragment : Fragment() {
     // Global Variables Init
     private lateinit var binding: FragmentChatBinding
+=======
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.sharidev2.MainActivity
+import com.example.sharidev2.R
+import com.example.sharidev2.adapter.ChatAdapter
+import com.example.sharidev2.databinding.FragmentChatBinding
+import com.example.sharidev2.data.model.Message
+import com.example.sharidev2.data.model.MessageType
+import com.google.android.material.bottomnavigation.BottomNavigationView
+
+
+
+class ChatFragment : Fragment() {
+    // Global Variables Init
+    private lateinit var binding: FragmentChatBinding
+    private val chatMessageList: MutableList<Message> = getMessageChat()
+
+>>>>>>> main
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -26,18 +45,34 @@ class ChatFragment : Fragment() {
 
 
         // ELEMENTS
+<<<<<<< HEAD
         val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)
         val navBackButton = binding.imgBtnChatBack
         val chatMessagesRecyclerView = binding.recyclerViewChatMessages
         val chatTextInput = binding.editTextMessagesChatInput
+=======
+        val navBackButton = binding.imgBtnChatBack
+        val chatMessagesRecyclerView = binding.recyclerViewChatMessages
+        val chatTextInput = binding.editTextMessagesChatInput
+        val chatSendButton = binding.imgBtnMessagesChatSend
+>>>>>>> main
         val chatTextInputContainer = binding.llChatBottomNav
 
 
         // LAYOUT SETTINGS
+<<<<<<< HEAD
         bottomNav?.visibility = View.GONE
 
         // Set Up RecyclerView
         chatMessagesRecyclerView
+=======
+        (activity as MainActivity).setBottomNavVisible(false)
+
+        // Set Up RecyclerView
+        val chatAdapter = ChatAdapter(chatMessageList)
+        chatMessagesRecyclerView.layoutManager = LinearLayoutManager(context)
+        chatMessagesRecyclerView.adapter = chatAdapter
+>>>>>>> main
 
 
         // EVENT LISTENERS
@@ -78,7 +113,43 @@ class ChatFragment : Fragment() {
         })
 
 
+<<<<<<< HEAD
 
         return binding.root
     }
+=======
+        chatSendButton.setOnClickListener {
+            val message = chatTextInput.text.toString()
+
+            val newMessage = Message("m3", "s3", message, readBy = emptyList(), messageType = MessageType.TEXT)
+
+            chatMessageList.add(newMessage)
+
+            chatTextInput.text.clear()
+        }
+
+
+        return binding.root
+    }
+
+
+    private fun getMessageChat(): MutableList<Message> {
+        return mutableListOf(
+            Message(
+                    "m1",
+                    "s1",
+                    "Hi, I'm ALi. Nice to meet you.",
+                    readBy = listOf<String>(),
+                    messageType = MessageType.TEXT
+                ),
+            Message(
+                "m2",
+                "s2",
+                "Yooo",
+                readBy = listOf<String>(),
+                messageType = MessageType.TEXT
+            ),
+        )
+    }
+>>>>>>> main
 }

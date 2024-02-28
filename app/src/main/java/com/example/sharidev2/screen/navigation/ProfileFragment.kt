@@ -1,20 +1,27 @@
 package com.example.sharidev2.screen.navigation
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentProfileBinding
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.example.sharidev2.utility.LoadingDialogFragment
+import com.example.sharidev2.viewmodel.LoginViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 
 class ProfileFragment : Fragment() {
     // Variables Init
     private lateinit var binding : FragmentProfileBinding
+    private val auth = FirebaseAuth.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,22 +36,48 @@ class ProfileFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false)
 
         // ELEMENT VARIABLES
-        val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        val profileNameText = binding.textProfileDisplayName
+        val profileUserIdText = binding.textProfileUserId
         val personalInfoBtn = binding.cardPersonalInfo
         val paymentMethodBtn = binding.cardPaymentMethod
-        val addressesdBtn = binding.cardAddresses
+        val addressesBtn = binding.cardAddresses
         val emergencyContactBtn = binding.cardEmergencyContact
+        val logoutBtn = binding.cardProfileLogoutBtn
 
+        // AUTH VARIABLES
+        val user = auth.currentUser
 
         // LAYOUT SETTINGS
-        bottomNav?.visibility = View.VISIBLE
+        (activity as MainActivity).setBottomNavVisible(true)
+        profileNameText.text = user?.displayName ?: getString(R.string.profile_log_in)
+        profileUserIdText.visibility = if(user == null) View.GONE else View.VISIBLE
+        profileUserIdText.text = "@${user?.displayName}"
+
+
+        // Check if user is logged in and navigate to respective screen
+        val viewModel = ViewModelProvider(this)[LoginViewModel::class.java]
+
+
+
 
 
         // NAVIGATION EVENT LISTENERS
+        if(auth.currentUser == null) {
+            findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
+        }
+
+        // Profile Fragment -> Login Fragment
+        profileNameText.setOnClickListener {
+            if(auth.currentUser != null) {}
+            else {
+                findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
+            }
+        }
+
         // Profile Fragment -> Personal Information Fragment
         personalInfoBtn.setOnClickListener {
             //findNavController().navigate(R.id.action_profileFragment_to_personalInformationFragment)
-            findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
+            findNavController().navigate(R.id.action_profileFragment_to_personalInformationFragment)
         }
 
         // Profile Fragment -> Payment Method Fragment
@@ -53,7 +86,7 @@ class ProfileFragment : Fragment() {
         }
 
         // Profile Fragment -> Addresses Fragment
-        addressesdBtn.setOnClickListener {
+        addressesBtn.setOnClickListener {
             // TODO: Set up nav graph (addresses)
             // findNavController().navigate(R.id.action_profileFragment_to_personalInformationFragment)
         }
@@ -65,10 +98,17 @@ class ProfileFragment : Fragment() {
         }
 
 
+        // Log out
+        logoutBtn.setOnClickListener {
+            // TODO: Dialog to confirm user to logout
 
+            auth.signOut()
+
+            Toast.makeText(requireContext(), "Logged out!", Toast.LENGTH_SHORT).show()
+            findNavController().navigate(R.id.action_profileFragment_to_homeFragment)
+        }
 
         return binding.root
     }
-
 
 }

@@ -3,6 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+<<<<<<< HEAD
+=======
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.sharidev2.viewmodel.LoginViewModel" />
+    </data>
+
+>>>>>>> main
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -50,11 +59,49 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_login_title">
 
+<<<<<<< HEAD
             <Spinner
                 android:id="@+id/spinner_login_mobile_country_code"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:dropDownWidth="match_parent" />
+=======
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/spinner_login_mobile_country_code"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:cardCornerRadius="0dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/text_login_spinner_mobile_country_code"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:fontFamily="@font/poppins_medium"
+                        android:text='@{viewModel.countryCode != null ? @string/login_fragment_input_country_code(viewModel.countryCode) : "+60"}'
+                        android:textColor="?android:attr/textColorHint"
+                        android:textSize="17sp" />
+
+                    <ImageButton
+                        android:id="@+id/img_btn_login_spinner_choose_country"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="#00FFFFFF"
+                        android:clickable="false"
+                        android:src="@drawable/baseline_arrow_drop_down_24"
+                        app:tint="?android:attr/textColorHint" />
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+>>>>>>> main
 
             <EditText
                 android:id="@+id/edit_text_login_enter_phone_number"
@@ -66,10 +113,17 @@
                 android:hint="@string/login_fragment_input_mobile_number_hint"
                 android:inputType="number"
                 android:maxLines="1"
+<<<<<<< HEAD
                 android:paddingStart="@dimen/ss_input_field_horizontal_padding"
                 android:paddingTop="@dimen/ss_input_field_vertical_padding"
                 android:paddingEnd="@dimen/ss_input_field_horizontal_padding"
                 android:paddingBottom="@dimen/ss_input_field_vertical_padding"
+=======
+                android:paddingStart="@dimen/ss_home_input_field_horizontal_padding"
+                android:paddingTop="@dimen/ss_home_input_field_vertical_padding"
+                android:paddingEnd="@dimen/ss_home_input_field_horizontal_padding"
+                android:paddingBottom="@dimen/ss_home_input_field_vertical_padding"
+>>>>>>> main
                 android:textColorHint="?attr/colorOutlineVariant"
                 android:textSize="17sp" />
         </LinearLayout>
@@ -95,7 +149,10 @@
             android:layout_marginStart="@dimen/ss_screen_width_margin"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="@dimen/ss_screen_width_margin"
+<<<<<<< HEAD
             android:onClick="generateOtp"
+=======
+>>>>>>> main
             android:orientation="horizontal"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
@@ -113,12 +170,21 @@
                 android:hint="@string/login_fragment_input_verify_code_hint"
                 android:inputType="number"
                 android:maxLines="1"
+<<<<<<< HEAD
                 android:paddingStart="@dimen/ss_input_field_horizontal_padding"
                 android:paddingTop="@dimen/ss_input_field_vertical_padding"
                 android:paddingEnd="@dimen/ss_input_field_horizontal_padding"
                 android:paddingBottom="@dimen/ss_input_field_vertical_padding"
                 android:textColorHint="?attr/colorOutlineVariant"
                 android:textSize="16sp" />
+=======
+                android:paddingStart="@dimen/ss_home_input_field_horizontal_padding"
+                android:paddingTop="@dimen/ss_home_input_field_vertical_padding"
+                android:paddingEnd="@dimen/ss_home_input_field_horizontal_padding"
+                android:paddingBottom="@dimen/ss_home_input_field_vertical_padding"
+                android:textColorHint="?attr/colorOutlineVariant"
+                android:textSize="17sp" />
+>>>>>>> main
 
             <TextView
                 android:id="@+id/text_login_resend_verify_code_countdown"
@@ -139,6 +205,7 @@
                 android:gravity="center"
                 android:paddingEnd="4dp"
                 android:text="@string/login_fragment_btn_verify_code_resend"
+<<<<<<< HEAD
                 android:textColor="?attr/colorSecondary"
                 android:visibility="gone"
                 tools:visibility="gone" />
@@ -151,6 +218,12 @@
                 android:scaleX="0.7"
                 android:scaleY="0.7" />
 
+=======
+                android:textColor="?attr/colorPrimary"
+                android:visibility="gone"
+                tools:visibility="gone" />
+
+>>>>>>> main
         </LinearLayout>
 
         <View
@@ -165,13 +238,25 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_login_input_verify_code" />
 
+<<<<<<< HEAD
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/btn_login_cta_login"
+=======
+        <!-- Get OTP Button -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/btn_login_cta_get_otp"
+>>>>>>> main
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/ss_screen_width_margin"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="@dimen/ss_screen_width_margin"
+<<<<<<< HEAD
+=======
+            android:clickable="true"
+            android:contextClickable="false"
+            android:longClickable="false"
+>>>>>>> main
             app:cardBackgroundColor="?attr/colorSurfaceInverse"
             app:cornerRadius="8dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -181,6 +266,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
+<<<<<<< HEAD
                 android:layout_height="wrap_content">
 
                 <TextView
@@ -193,16 +279,63 @@
                     android:text="@string/login_fragment_btn_login"
                     android:onClick="VerifyOtp"
                     android:textColor="?attr/colorOnPrimary"
+=======
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:contextClickable="false"
+                android:longClickable="false">
+
+                <TextView
+                    android:id="@+id/text_login_cta_btn_get_otp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:contextClickable="false"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:gravity="center"
+                    android:linksClickable="false"
+                    android:longClickable="false"
+                    android:padding="14dp"
+                    android:text="@string/login_fragment_btn_get_otp"
+                    android:textColor="?attr/colorOnPrimary"
+                    android:visibility="visible"
+>>>>>>> main
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
+<<<<<<< HEAD
                     app:layout_constraintVertical_bias="0.5" />
+=======
+                    app:layout_constraintVertical_bias="0.5"
+                    tools:visibility="visible" />
+
+                <ProgressBar
+                    android:id="@+id/progress_bar_get_otp_cta_btn"
+                    style="@android:style/Widget.Holo.Light.ProgressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:indeterminateTint="?attr/colorOnPrimary"
+                    android:maxWidth="40dip"
+                    android:maxHeight="40dip"
+                    android:minWidth="40dip"
+                    android:minHeight="40dip"
+                    android:progressTint="?attr/colorOnPrimary"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.5"
+                    tools:visibility="gone" />
+>>>>>>> main
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
+<<<<<<< HEAD
         <!--        <com.google.android.material.button.MaterialButton-->
 <!--            android:id="@+id/btn_login_cta_login"-->
 <!--            android:layout_width="0dp"-->
@@ -218,6 +351,80 @@
 <!--            app:layout_constraintEnd_toEndOf="parent"-->
 <!--            app:layout_constraintStart_toStartOf="parent"-->
 <!--            app:layout_constraintTop_toBottomOf="@+id/view_login_mobile_number_divider" />-->
+=======
+        <!-- Login Button -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/btn_login_cta_login"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/ss_screen_width_margin"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="@dimen/ss_screen_width_margin"
+            android:clickable="false"
+            android:contextClickable="false"
+            android:longClickable="false"
+            android:visibility="invisible"
+            app:cardBackgroundColor="?attr/colorSurfaceInverse"
+            app:cornerRadius="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view_login_verify_code_divider"
+            app:strokeWidth="0dp"
+            tools:visibility="invisible">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:contextClickable="false"
+                android:longClickable="false">
+
+                <TextView
+                    android:id="@+id/text_login_cta_btn_login"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:contextClickable="false"
+                    android:enabled="false"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:gravity="center"
+                    android:linksClickable="false"
+                    android:longClickable="false"
+                    android:padding="14dp"
+                    android:text="@string/login_fragment_btn_login"
+                    android:textColor="?attr/colorOnPrimary"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.5"
+                    tools:visibility="visible" />
+
+                <ProgressBar
+                    android:id="@+id/progress_bar_login_cta_btn"
+                    style="@android:style/Widget.Holo.Light.ProgressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:indeterminateTint="?attr/colorOnPrimary"
+                    android:maxWidth="40dip"
+                    android:maxHeight="40dip"
+                    android:minWidth="40dip"
+                    android:minHeight="40dip"
+                    android:progressTint="?attr/colorOnPrimary"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.5"
+                    tools:visibility="gone" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+>>>>>>> main
 
 
         <!--  Divider: Third party O-Auth  -->
@@ -352,10 +559,21 @@
 
         <ProgressBar
             android:id="@+id/loading_login"
+<<<<<<< HEAD
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="gone"
+=======
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+>>>>>>> main
             tools:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
