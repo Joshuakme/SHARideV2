@@ -22,7 +22,6 @@
         android:layout_height="wrap_content"
         android:text="@string/placeholder_booking_recycler_item_date"
         android:textColor="@color/system_neutral2_500"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_booking_title" />
 
@@ -39,8 +38,10 @@
         android:id="@+id/divider_booking_item"
         android:layout_width="0dp"
         android:layout_height="1dp"
+        android:layout_marginTop="8dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_booking_date" />
 </androidx.constraintlayout.widget.ConstraintLayout>
