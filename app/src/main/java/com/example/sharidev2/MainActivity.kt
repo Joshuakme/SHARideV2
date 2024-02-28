@@ -16,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.sharidev2.databinding.ActivityMainBinding
@@ -30,6 +29,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import android.location.Location
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
@@ -40,18 +40,19 @@ import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var bottomNav: BottomNavigationView
+    private lateinit var bottomNavContainer: LinearLayout
+
     private val currentLocationViewModel: CurrentLocationViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         // Variables
         val navHostFragment = supportFragmentManager.findFragmentById(binding.fragmentContainerMain.id) as NavHostFragment
         val navController = navHostFragment.navController
-        bottomNav = binding.bottomNavigation
+        val bottomNav = binding.bottomNavigation
+        bottomNavContainer = binding.llBottomNavigation
 
 
         bottomNav.setupWithNavController(navController)
@@ -91,7 +92,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setBottomNavVisible(visible: Boolean) {
-        bottomNav.visibility = if(visible) View.VISIBLE else View.GONE
+        bottomNavContainer.visibility = if(visible) View.VISIBLE else View.GONE
+    }
+
+    fun resetBottomNavPosition() {
+        bottomNavContainer.translationY = 0f
     }
 
     private fun getCurrentLocation() {
@@ -169,17 +174,4 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
-
-    // UTILITIES METHODS
-    private fun setWindowFlag(bits: Int, on: Boolean) {
-        val win = window
-        val winParams = win.attributes
-        if (on) {
-            winParams.flags = winParams.flags or bits
-        } else {
-            winParams.flags = winParams.flags and bits.inv()
-        }
-        win.attributes = winParams
-    }
 }

@@ -265,13 +265,23 @@
                     app:layout_constraintTop_toBottomOf="@+id/card_create_ride_pick_up_location"
                     tools:visibility="gone">
 
+                    <ProgressBar
+                        android:id="@+id/progress_bar_driver_create_ride_location"
+                        style="@android:style/Widget.Holo.Light.ProgressBar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleX="0.1"
+                        android:scaleY="0.1" />
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recycler_view_driver_create_ride"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:paddingHorizontal="8dp"
                         android:paddingVertical="4dp"
-                        tools:listitem="@layout/recycler_item_search_place_result" />
+                        android:visibility="gone"
+                        tools:listitem="@layout/recycler_item_search_place_result"
+                        tools:visibility="gone" />
                 </com.google.android.material.card.MaterialCardView>
 
             </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,11 +8,7 @@
         android:layout_height="match_parent"
         android:background="?android:attr/colorBackground"
         android:elevation="8dp"
-<<<<<<< HEAD
-        tools:context=".screen.home.OfferRideFragment">
-=======
         tools:context=".screen.ride.OfferRideFragment">
->>>>>>> main
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/nsv_home_offer_ride"
@@ -64,17 +60,10 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:fontFamily="@font/poppins_medium"
-<<<<<<< HEAD
-                            android:paddingStart="@dimen/ss_input_field_horizontal_padding"
-                            android:paddingTop="@dimen/ss_input_field_vertical_padding"
-                            android:paddingEnd="@dimen/ss_input_field_horizontal_padding"
-                            android:paddingBottom="@dimen/ss_input_field_vertical_padding"
-=======
                             android:paddingStart="@dimen/ss_home_input_field_horizontal_padding"
                             android:paddingTop="@dimen/ss_home_input_field_vertical_padding"
                             android:paddingEnd="@dimen/ss_home_input_field_horizontal_padding"
                             android:paddingBottom="@dimen/ss_home_input_field_vertical_padding"
->>>>>>> main
                             android:text="@string/home_fragment_pick_up_location"
                             android:textColor="?attr/colorOutline"
                             android:textSize="16sp" />
@@ -118,17 +107,10 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:fontFamily="@font/poppins_medium"
-<<<<<<< HEAD
-                            android:paddingStart="@dimen/ss_input_field_horizontal_padding"
-                            android:paddingTop="@dimen/ss_input_field_vertical_padding"
-                            android:paddingEnd="@dimen/ss_input_field_horizontal_padding"
-                            android:paddingBottom="@dimen/ss_input_field_vertical_padding"
-=======
                             android:paddingStart="@dimen/ss_home_input_field_horizontal_padding"
                             android:paddingTop="@dimen/ss_home_input_field_vertical_padding"
                             android:paddingEnd="@dimen/ss_home_input_field_horizontal_padding"
                             android:paddingBottom="@dimen/ss_home_input_field_vertical_padding"
->>>>>>> main
                             android:text="@string/home_fragment_destination_location"
                             android:textColor="?attr/colorOutline"
                             android:textSize="16sp" />
@@ -169,17 +151,10 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:fontFamily="@font/poppins_medium"
-<<<<<<< HEAD
-                            android:paddingStart="@dimen/ss_input_field_horizontal_padding"
-                            android:paddingTop="@dimen/ss_input_field_vertical_padding"
-                            android:paddingEnd="@dimen/ss_input_field_horizontal_padding"
-                            android:paddingBottom="@dimen/ss_input_field_vertical_padding"
-=======
                             android:paddingStart="@dimen/ss_home_input_field_horizontal_padding"
                             android:paddingTop="@dimen/ss_home_input_field_vertical_padding"
                             android:paddingEnd="@dimen/ss_home_input_field_horizontal_padding"
                             android:paddingBottom="@dimen/ss_home_input_field_vertical_padding"
->>>>>>> main
                             android:text="@string/home_fragment_date_time"
                             android:textColor="?attr/colorOutline"
                             android:textSize="16sp" />
@@ -219,17 +194,10 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:fontFamily="@font/poppins_medium"
-<<<<<<< HEAD
-                            android:paddingStart="@dimen/ss_input_field_horizontal_padding"
-                            android:paddingTop="@dimen/ss_input_field_vertical_padding"
-                            android:paddingEnd="@dimen/ss_input_field_horizontal_padding"
-                            android:paddingBottom="@dimen/ss_input_field_vertical_padding"
-=======
                             android:paddingStart="@dimen/ss_home_input_field_horizontal_padding"
                             android:paddingTop="@dimen/ss_home_input_field_vertical_padding"
                             android:paddingEnd="@dimen/ss_home_input_field_horizontal_padding"
                             android:paddingBottom="@dimen/ss_home_input_field_vertical_padding"
->>>>>>> main
                             android:text="@string/home_fragment_offer_ride_vehicle"
                             android:textColor="?attr/colorOutline"
                             android:textSize="16sp" />

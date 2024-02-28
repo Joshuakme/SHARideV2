@@ -3,18 +3,12 @@ package com.example.sharidev2.screen.ride
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ContentValues
-import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.PorterDuff
-import android.graphics.drawable.VectorDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.util.TypedValue
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +16,7 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,17 +29,12 @@ import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.GoogleMapUtils
 import com.example.sharidev2.utility.NetworkUtils
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
-import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
+import com.example.sharidev2.viewmodel.SharedCreateRideViewModel
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.common.internal.service.Common
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptor
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
@@ -59,7 +49,7 @@ import com.google.android.libraries.places.api.net.PlacesClient
 class DriverCreateRideFragment : Fragment() {
     private lateinit var binding: FragmentDriverCreateRideBinding
     private val currentLocationViewModel: CurrentLocationViewModel by activityViewModels()
-    private val searchRideViewModel: SharedSearchRideViewModel by activityViewModels()
+    private val createRideViewModel: SharedCreateRideViewModel by activityViewModels()
 
     private lateinit var placesClient: PlacesClient
     private lateinit var searchResultRecyclerView: RecyclerView
@@ -96,17 +86,17 @@ class DriverCreateRideFragment : Fragment() {
 
         // LAYOUT SETTINGS
         setupMap()
-        if(searchRideViewModel.origin.value == null) {
+        if(createRideViewModel.origin.value == null) {
             performOriginCurrentPlaceRequest()      // Get current location
         }
 
-        searchRideViewModel.origin.observe(viewLifecycleOwner) { searchLocation ->
+        createRideViewModel.origin.observe(viewLifecycleOwner) { searchLocation ->
             originLocationEditText.setText(searchLocation.name)
             destinationLocationEditText.requestFocus()
             updateMap()
         }
 
-        searchRideViewModel.destination.observe(viewLifecycleOwner) { destinationSearchLocation ->
+        createRideViewModel.destination.observe(viewLifecycleOwner) { destinationSearchLocation ->
             destinationLocationEditText.setText(destinationSearchLocation.name)
             destinationLocationEditText.clearFocus()
             nextBtn.requestFocus()
@@ -427,8 +417,8 @@ class DriverCreateRideFragment : Fragment() {
 
 
     private fun updateMap(originLocation: LatLng? = null) {
-        val origin = searchRideViewModel.origin.value?.geolocation
-        val destination = searchRideViewModel.destination.value?.geolocation
+        val origin = createRideViewModel.origin.value?.geolocation
+        val destination = createRideViewModel.destination.value?.geolocation
         val googleMapUtils = GoogleMapUtils()
 
         // Colors
@@ -482,24 +472,33 @@ class DriverCreateRideFragment : Fragment() {
 
         placesClient.findAutocompletePredictions(request)
             .addOnSuccessListener { response ->
-                val locationList = getPredictionList(response.autocompletePredictions)
+                if(isAdded) {   // check if the fragment is attached to the parent
+                    val locationList = getPredictionList(response.autocompletePredictions)
 
-                searchResultAdapter =
-                    SearchRideAdapter(requireContext(), locationList) { selectedLocation ->
-                        // Determine if the user is focusing on origin or destination
-                        if (isOriginFocused) {
-                            searchRideViewModel.setOrigin(selectedLocation)
-                        } else if (isDestinationFocused) {
-                            searchRideViewModel.setDestination(selectedLocation)
-                        } else {
-                            // Focus lost, do nothing..
-                        }
+                    if(locationList.isNotEmpty()) {
+                        val locationLoadingProgressBar = binding.progressBarDriverCreateRideLocation
+                        val recyclerView = binding.recyclerViewDriverCreateRide
+                        locationLoadingProgressBar.visibility = View.GONE
+                        recyclerView.visibility = View.VISIBLE
 
-                        CommonUtils().closeKeyboard(requireView(), requireContext())
-                        showSearchResultCard(false)
+                        searchResultAdapter =
+                            SearchRideAdapter(requireContext(), locationList) { selectedLocation ->
+                                // Determine if the user is focusing on origin or destination
+                                if (isOriginFocused) {
+                                    createRideViewModel.setOrigin(selectedLocation)
+                                } else if (isDestinationFocused) {
+                                    createRideViewModel.setDestination(selectedLocation)
+                                } else {
+                                    // Focus lost, do nothing..
+                                }
+
+                                CommonUtils().closeKeyboard(requireView(), requireContext())
+                                showSearchResultCard(false)
+                            }
+                        searchResultRecyclerView.layoutManager = LinearLayoutManager(context)
+                        searchResultRecyclerView.adapter = searchResultAdapter
                     }
-                searchResultRecyclerView.layoutManager = LinearLayoutManager(context)
-                searchResultRecyclerView.adapter = searchResultAdapter
+                }
             }
             .addOnFailureListener {
                 Log.e(tag, it.message.toString())
@@ -554,7 +553,7 @@ class DriverCreateRideFragment : Fragment() {
                             geolocation = placeLikelihood.place.latLng
                         )
 
-                        searchRideViewModel.setOrigin(originPlace)
+                        createRideViewModel.setOrigin(originPlace)
                     }
                 } else {
                     val exception = task.exception

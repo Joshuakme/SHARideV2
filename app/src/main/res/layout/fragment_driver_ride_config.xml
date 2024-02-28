@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.sharidev2.viewmodel.SharedSearchRideViewModel" />
+            type="com.example.sharidev2.viewmodel.SharedCreateRideViewModel" />
     </data>
 
     <LinearLayout
@@ -149,73 +149,6 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <!--  Driver's Gender  -->
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_driver_ride_config_driver_gender"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/ss_ride_detail_config_item_margin_bottom"
-                    app:cardBackgroundColor="#00FFFFFF"
-                    app:cardCornerRadius="0dp"
-                    app:strokeWidth="0dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
-
-                        <!--  Driver's Gender  -->
-                        <TextView
-                            android:id="@+id/text_driver_ride_config_driver_gender"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="center_vertical"
-                            android:text="@string/ride_detail_config_fragment_section_title_driver_gender"
-                            android:textColor="?android:attr/textColorHint"
-                            android:textSize="@dimen/fs_ride_detail_config_item_text_size"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/spinner_driver_ride_config_driver_gender"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:foregroundGravity="center_vertical|center_horizontal"
-                            app:cardBackgroundColor="#00FFFFFF"
-                            app:cardCornerRadius="0dp"
-                            app:cardElevation="0dp"
-                            app:strokeWidth="0dp">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:gravity="center">
-
-                                <TextView
-                                    android:id="@+id/text_driver_ride_config_spinner_driver_gender"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:clickable="false"
-                                    android:fontFamily="@font/poppins"
-                                    android:text='@{viewModel.driverGender != null ? viewModel.driverGender : " - "}'
-                                    android:textSize="15sp" />
-
-                                <ImageButton
-                                    android:id="@+id/img_btn_driver_ride_config_spinner_choose_driver_gender"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:background="#00FFFFFF"
-                                    android:clickable="false"
-                                    android:src="@drawable/baseline_arrow_drop_down_24"
-                                    app:tint="?attr/colorOnSurface" />
-                            </LinearLayout>
-
-                        </com.google.android.material.card.MaterialCardView>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
                 <!--  Vehicle Type  -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/card_driver_ride_config_vehicle"
@@ -233,19 +166,19 @@
 
                         <!--  Vehicle Type  -->
                         <TextView
-                            android:id="@+id/text_driver_ride_config_vehicle_type"
+                            android:id="@+id/text_driver_ride_config_vehicle"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:gravity="center_vertical"
-                            android:text="@string/ride_detail_config_fragment_section_title_vehicle"
+                            android:text="@string/driver_create_ride_fragment_section_title_vehicle"
                             android:textColor="?android:attr/textColorHint"
                             android:textSize="@dimen/fs_ride_detail_config_item_text_size"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/spinner_driver_ride_config_vehicle_type"
+                            android:id="@+id/spinner_driver_ride_config_vehicle"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             app:cardBackgroundColor="#00FFFFFF"
@@ -259,19 +192,85 @@
                                 android:gravity="center">
 
                                 <TextView
-                                    android:id="@+id/text_driver_ride_config_spinner_vehicle_type"
+                                    android:id="@+id/text_driver_ride_config_spinner_vehicle"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:clickable="false"
                                     android:fontFamily="@font/poppins"
-                                    android:text='@{viewModel.vehicleType != null ? viewModel.vehicleType : " - "}'
+                                    android:text='@{viewModel.vehicle != null ? viewModel.vehicle.plateNumber  : " - "}'
                                     android:textSize="15sp" />
 
                                 <ImageButton
-                                    android:id="@+id/img_btn_driver_ride_config_spinner_choose_vehicle_type"
+                                    android:id="@+id/img_btn_driver_ride_config_spinner_choose_vehicle"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
+                                    android:background="#00FFFFFF"
+                                    android:clickable="false"
+                                    android:src="@drawable/baseline_arrow_drop_down_24"
+                                    app:tint="?attr/colorOnSurface" />
+                            </LinearLayout>
+
+                        </com.google.android.material.card.MaterialCardView>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!--  Customize Ride Capacity  -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_driver_ride_config_ride_capacity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/ss_ride_detail_config_item_margin_bottom"
+                    app:cardBackgroundColor="#00FFFFFF"
+                    app:cardCornerRadius="0dp"
+                    app:strokeWidth="0dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <!--  Vehicle Type  -->
+                        <TextView
+                            android:id="@+id/text_driver_ride_config_ride_capacity"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:text="@string/driver_create_ride_fragment_section_title_passenger_capacity"
+                            android:textColor="?android:attr/textColorHint"
+                            android:textSize="@dimen/fs_ride_detail_config_item_text_size"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/spinner_driver_ride_config_ride_capacity"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            app:cardBackgroundColor="#00FFFFFF"
+                            app:cardCornerRadius="0dp"
+                            app:cardElevation="0dp"
+                            app:strokeWidth="0dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:clickable="false"
+                                android:gravity="center">
+
+                                <TextView
+                                    android:id="@+id/text_driver_ride_config_spinner_ride_capacity"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:clickable="false"
+                                    android:fontFamily="@font/poppins"
+                                    android:text='@{viewModel.vehicle != null ? Integer.toString(viewModel.vehicle.capacity) : "-"}'
+                                    android:textSize="15sp" />
+
+                                <ImageButton
+                                    android:id="@+id/img_btn_driver_ride_config_spinner_choose_ride_capacity"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
                                     android:background="#00FFFFFF"
                                     android:clickable="false"
                                     android:src="@drawable/baseline_arrow_drop_down_24"
@@ -389,7 +388,7 @@
                                 android:gravity="center">
 
                                 <TextView
-                                    android:id="@+id/text_rdriver_ride_config_spinner_schedule_time"
+                                    android:id="@+id/text_driver_ride_config_spinner_schedule_time"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:clickable="false"
@@ -446,6 +445,19 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.5" />
+
+                <ProgressBar
+                    android:id="@+id/progress_bar_driver_ride_cta_create_ride"
+                    style="@android:style/Widget.Holo.Light.ProgressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/text_driver_ride_config_cta_create_ride"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.5"
+                    tools:visibility="gone" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.google.android.material.card.MaterialCardView>

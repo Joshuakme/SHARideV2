@@ -36,16 +36,15 @@
             app:destination="@id/paymentMethodFragment" />
         <action
             android:id="@+id/action_profileFragment_to_loginFragment"
-<<<<<<< HEAD
-            app:destination="@id/loginFragment" />
-=======
             app:destination="@id/loginFragment"
             app:popUpTo="@id/profileFragment"
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_profileFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
->>>>>>> main
+        <action
+            android:id="@+id/action_profileFragment_to_emergencyContactFragment"
+            app:destination="@id/emergencyContactFragment" />
     </fragment>
     <fragment
         android:id="@+id/bookingFragment"
@@ -64,18 +63,12 @@
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
-<<<<<<< HEAD
-        android:name="com.example.sharidev2.screen.home.SearchFragment"
-=======
         android:name="com.example.sharidev2.screen.ride.SearchRideFragment"
->>>>>>> main
         android:label="SearchFragment" >
         <action
             android:id="@+id/action_searchFragment_to_homeFragment"
             app:destination="@id/homeFragment"
             app:popUpToInclusive="true" />
-<<<<<<< HEAD
-=======
         <action
             android:id="@+id/action_searchFragment_to_searchSelectOriginFragment"
             app:destination="@id/searchSelectOriginFragment">
@@ -95,7 +88,6 @@
         <action
             android:id="@+id/action_searchFragment_to_driverCreateRideFragment"
             app:destination="@id/driverCreateRideFragment" />
->>>>>>> main
     </fragment>
     <fragment
         android:id="@+id/personalInformationFragment"
@@ -120,8 +112,6 @@
         <action
             android:id="@+id/action_loginFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
-<<<<<<< HEAD
-=======
         <action
             android:id="@+id/action_loginFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
@@ -173,6 +163,39 @@
         <action
             android:id="@+id/action_driverRideConfigFragment_to_driverCreateRideFragment"
             app:destination="@id/driverCreateRideFragment" />
->>>>>>> main
+        <action
+            android:id="@+id/action_driverRideConfigFragment_to_bookingFragment"
+            app:destination="@id/bookingFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/emergencyContactFragment"
+        android:name="com.example.sharidev2.screen.emergency.EmergencyContactFragment"
+        android:label="EmergencyContactFragment" >
+        <action
+            android:id="@+id/action_emergencyContactFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_emergencyContactFragment_to_addContactFragment"
+            app:destination="@id/addContactFragment" />
+        <action
+            android:id="@+id/action_emergencyContactFragment_to_editContactFragment"
+            app:destination="@id/editContactFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addContactFragment"
+        android:name="com.example.sharidev2.screen.emergency.AddContactFragment"
+        android:label="AddContactFragment" >
+        <action
+            android:id="@+id/action_addContactFragment_to_emergencyContactFragment"
+            app:destination="@id/emergencyContactFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editContactFragment"
+        android:name="com.example.sharidev2.screen.emergency.EditContactFragment"
+        android:label="EditContactFragment" >
+        <action
+            android:id="@+id/action_editContactFragment_to_emergencyContactFragment"
+            app:destination="@id/emergencyContactFragment" />
     </fragment>
 </navigation>

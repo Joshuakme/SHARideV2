@@ -7,10 +7,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.example.sharidev2.data.model.Gender
 import com.example.sharidev2.data.model.Ride
+import com.example.sharidev2.data.model.RideOption
 import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.data.model.SearchRide
 import com.example.sharidev2.data.model.VehicleType
 import com.example.sharidev2.data.state.SearchRideDetailConfigurationState
+import com.google.firebase.Timestamp
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import com.wdullaer.materialdatetimepicker.time.Timepoint
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,8 +31,7 @@ class SharedSearchRideViewModel(
     private val DESTINATION_KEY = "destination"
     private val DRIVER_GENDER_KEY = "driver_gender"
     private val VEHICLE_TYPE_KEY = "vehicle_type"
-    private val RIDE_DATE_KEY = "ride_date"
-    private val RIDE_TIME_KEY = "ride_time"
+    private val RIDE_DATE_TIME_KEY = "ride_date_time"
     private val SEARCH_RIDE_KEY = "search_ride"
 
 
@@ -48,11 +49,9 @@ class SharedSearchRideViewModel(
     // Vehicle Type
     val vehicleType: LiveData<VehicleType> = savedStateHandle.getLiveData(VEHICLE_TYPE_KEY)
 
-    // Ride Date
-    val rideDate: LiveData<LocalDate> = savedStateHandle.getLiveData(RIDE_DATE_KEY)
+    // Ride Date Time
+    val rideDateTime: LiveData<Timestamp> = savedStateHandle.getLiveData(RIDE_DATE_TIME_KEY)
 
-    // Ride Time
-    val rideTime: LiveData<LocalTime> = savedStateHandle.getLiveData(RIDE_TIME_KEY)
 
     // Seat Needed
 
@@ -62,13 +61,8 @@ class SharedSearchRideViewModel(
 
     // CONSTRUCTOR
     init {
-        if(rideDate.value == null) {
-            setRideDate(LocalDate.now())
-        }
-
-        // Check if rideTime is not assigned and assign the default value
-        if (rideTime.value == null) {
-            setRideTime(getDefaultRideTime())
+        if(rideDateTime.value == null) {
+            setRideDateTime(Timestamp.now())
         }
     }
 
@@ -82,7 +76,6 @@ class SharedSearchRideViewModel(
     // Destination Location
     fun setDestination(newDestination: SearchLocation) {
         savedStateHandle[DESTINATION_KEY] = newDestination
-        Log.e("TENGOK DESTINASI", newDestination.name)
     }
 
     // Driver's Gender
@@ -95,14 +88,9 @@ class SharedSearchRideViewModel(
         savedStateHandle[VEHICLE_TYPE_KEY] = newVehicleType
     }
 
-    // Ride Date
-    fun setRideDate(newRideDate: LocalDate) {
-        savedStateHandle[RIDE_DATE_KEY] = newRideDate
-    }
-
-    // Ride Time
-    fun setRideTime(newRideTime: LocalTime) {
-        savedStateHandle[RIDE_TIME_KEY] = newRideTime
+    // Ride Date Time
+    fun setRideDateTime(newRideDateTime: Timestamp) {
+        savedStateHandle[RIDE_DATE_TIME_KEY] = newRideDateTime
     }
 
     // Search Ride
@@ -110,10 +98,11 @@ class SharedSearchRideViewModel(
         val newSearchRide = SearchRide(
                                 origin.value!!,
                                 destination.value!!,
-                                rideDate.value!!,
-                                rideTime.value!!,
-                                driverGender.value,
-                                vehicleType.value
+                                rideDateTime.value!!,
+                                RideOption(
+                                    driverGender.value,
+                                    vehicleType.value
+                                )
                             )
 
         savedStateHandle[SEARCH_RIDE_KEY] = newSearchRide
@@ -138,14 +127,4 @@ class SharedSearchRideViewModel(
         return currentTime.withHour(finalHour).withMinute(finalMinute).withSecond(0).withNano(0)
     }
 
-    // RESET
-    fun resetData() {
-        savedStateHandle.remove<SearchLocation>(ORIGIN_KEY)
-        savedStateHandle.remove<SearchLocation>(DESTINATION_KEY)
-        savedStateHandle.remove<Gender>(DRIVER_GENDER_KEY)
-        savedStateHandle.remove<VehicleType>(VEHICLE_TYPE_KEY)
-        savedStateHandle.remove<LocalDate>(RIDE_DATE_KEY)
-        savedStateHandle.remove<LocalTime>(RIDE_TIME_KEY)
-        savedStateHandle.remove<SearchRide>(SEARCH_RIDE_KEY)
-    }
 }

@@ -1,27 +1,29 @@
 package com.example.sharidev2.screen.ride
 
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.NumberPicker
 import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.RecyclerView
 import com.example.sharidev2.R
-import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.card.MaterialCardView
-import java.text.DateFormatSymbols
+import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
+import java.time.ZoneOffset
 
-class TimingBottomDialogFragment : BottomSheetDialogFragment() {
+class TimingBottomDialogFragment(
+    private val dialogClickListener: DialogClickListener
+) : BottomSheetDialogFragment() {
     private val searchRideViewModel: SharedSearchRideViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -68,6 +70,8 @@ class TimingBottomDialogFragment : BottomSheetDialogFragment() {
         }
 
         cancelButton.setOnClickListener {
+
+            dialogClickListener.onCancelClick()
             dismiss()
         }
 
@@ -88,15 +92,13 @@ class TimingBottomDialogFragment : BottomSheetDialogFragment() {
             val selectedTime = LocalTime.of(selectedHour, selectedMinute)
 
             // Pass both the selected date and time to the ViewModel
-            searchRideViewModel.setRideDate(selectedDate)
-            searchRideViewModel.setRideTime(selectedTime)
+            val datetime = Date((selectedDate.atTime(selectedTime).toInstant(ZoneOffset.UTC).toEpochMilli()))
+            searchRideViewModel.setRideDateTime(Timestamp(datetime))
+
 
             // Dismiss the dialog
             dismiss()
         }
-
-
-
 
         // Set up initial hour and minute pickers
         updateHourMinutePickers()
@@ -216,5 +218,9 @@ class TimingBottomDialogFragment : BottomSheetDialogFragment() {
         val maxMinute = 59
 
         return Pair(Pair(minHour, minMinute), Pair(maxHour, maxMinute))
+    }
+
+    interface DialogClickListener {
+        fun onCancelClick()
     }
 }

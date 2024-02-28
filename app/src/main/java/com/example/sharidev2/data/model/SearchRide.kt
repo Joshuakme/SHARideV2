@@ -1,6 +1,7 @@
 package com.example.sharidev2.data.model
 
 import android.os.Parcelable
+import com.google.firebase.Timestamp
 import kotlinx.parcelize.Parcelize
 import java.time.LocalDate
 import java.time.LocalTime
@@ -9,8 +10,6 @@ import java.time.LocalTime
 data class SearchRide(
     val origin: SearchLocation,
     val destination: SearchLocation,
-    val date: LocalDate,
-    val time: LocalTime,
-    val driverGender: Gender?,
-    val vehicleType: VehicleType?
+    val datetime: Timestamp,
+    val rideOption: RideOption,
 )  : Parcelable

@@ -6,21 +6,21 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sharidev2.R
-import com.example.sharidev2.screen.emergency.contactClass
+import com.example.sharidev2.data.model.Contact
 
-class ContactAdapter(private val contactList:ArrayList<contactClass>):RecyclerView.Adapter<ContactAdapter.contactHolder>() {
-    private lateinit var cListener:OnItemClickListener
-    interface  OnItemClickListener{
+class ContactAdapter(
+    private val contactList: List<Contact>,
+    private var cListener: OnItemClickListener
+):RecyclerView.Adapter<ContactAdapter.ContactHolder>() {
+
+    interface OnItemClickListener{
         fun onItemClick(position: Int)
     }
 
-    fun setOnItemClickListener(listener: OnItemClickListener){
-        cListener =listener
-    }
 
-    class contactHolder(contactView:View,listener: OnItemClickListener):RecyclerView.ViewHolder(contactView){
-        val contactname: TextView =contactView.findViewById(R.id.tv_display_contact_name)
-        val contactPhone: TextView =contactView.findViewById(R.id.tv_display_contact_phone)
+    class ContactHolder(contactView:View, listener: OnItemClickListener):RecyclerView.ViewHolder(contactView){
+        val contactname: TextView = contactView.findViewById(R.id.tv_display_contact_name)
+        val contactPhone: TextView = contactView.findViewById(R.id.tv_display_contact_phone)
         init{
             contactView.setOnClickListener{
                 listener.onItemClick(adapterPosition)
@@ -28,18 +28,18 @@ class ContactAdapter(private val contactList:ArrayList<contactClass>):RecyclerVi
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): contactHolder {
-        val contactView =LayoutInflater.from(parent.context).inflate(R.layout.contact,parent,false)
-        return contactHolder(contactView,cListener)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactHolder {
+        val contactView =LayoutInflater.from(parent.context).inflate(R.layout.recycler_item_emergency_contact,parent,false)
+        return ContactHolder(contactView,cListener)
     }
 
     override fun getItemCount(): Int {
         return contactList.size
     }
 
-    override fun onBindViewHolder(holder: contactHolder, position: Int) {
-        val currentContact =contactList[position]
-        holder.contactname.text =currentContact.contactName.toString()
-        holder.contactPhone.text =currentContact.contactPhoneNo.toString()
+    override fun onBindViewHolder(holder: ContactHolder, position: Int) {
+        val currentContact = contactList[position]
+        holder.contactname.text = currentContact.contactName.toString()
+        holder.contactPhone.text = "+60" + currentContact.contactPhone.toString()
     }
 }
