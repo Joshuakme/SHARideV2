@@ -66,7 +66,10 @@
             android:layout_height="0dp"
             android:layout_marginStart="@dimen/ss_screen_width_margin"
             android:layout_marginEnd="@dimen/ss_screen_width_margin"
+<<<<<<< HEAD
+=======
             android:paddingTop="8dp"
+>>>>>>> main
             app:layout_constraintBottom_toTopOf="@+id/ll_chat_bottom_nav"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

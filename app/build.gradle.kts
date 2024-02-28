@@ -6,12 +6,15 @@ plugins {
     // Add the Google services Gradle plugin
     id("com.google.gms.google-services")
 
+<<<<<<< HEAD
+=======
     kotlin("kapt")
 
     // Navigation Safe Args
     id("androidx.navigation.safeargs")
 
     id("kotlin-parcelize")
+>>>>>>> main
 }
 
 android {
@@ -60,13 +63,21 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     implementation("androidx.annotation:annotation:1.7.1")
+<<<<<<< HEAD
+    implementation("com.google.firebase:firebase-storage-ktx:20.3.0")
+    implementation("com.google.firebase:firebase-database:20.3.0")
+=======
     implementation("com.google.firebase:firebase-firestore-ktx:24.10.0")
     implementation("androidx.core:core-i18n:1.0.0-alpha01")
+>>>>>>> main
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> main
     // Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
 
@@ -86,16 +97,22 @@ dependencies {
 
     // Google Maps
     implementation("com.google.android.gms:play-services-maps:18.2.0")
+<<<<<<< HEAD
+=======
     implementation("com.google.android.gms:play-services-places:17.0.0")
     implementation("com.google.android.gms:play-services-location:18.0.0")
     implementation("com.google.android.libraries.places:places:2.4.0")
     implementation("com.android.volley:volley:1.2.0")
+>>>>>>> main
 
     // Viewpager 2
     implementation("androidx.viewpager2:viewpager2:1.0.0")
 
     // Date Time Picker
     implementation("com.wdullaer:materialdatetimepicker:4.2.3")
+<<<<<<< HEAD
+}
+=======
     implementation("com.github.swnishan:materialdatetimepicker:1.0.0")
 
     // Room Database
@@ -109,3 +126,4 @@ dependencies {
     implementation("com.google.code.gson:gson:2.8.8")
 
 }
+>>>>>>> main

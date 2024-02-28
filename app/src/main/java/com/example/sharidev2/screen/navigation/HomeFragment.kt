@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.adapter.RidePagerAdapter
@@ -43,7 +44,6 @@ class HomeFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
-
 
 
         // ELEMENT VARIABLES
