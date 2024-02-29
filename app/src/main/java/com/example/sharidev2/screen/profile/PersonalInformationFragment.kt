@@ -31,6 +31,7 @@ class PersonalInformationFragment : Fragment() {
 
         // ELEMENT VARIABLES
         val backBtn = binding.imgBtnProfilePersonalInfoNavBack
+        val driverLicense = binding.cardPersonalInfoDrivingLicense
 
 
         // LAYOUT SETTINGS
@@ -41,6 +42,10 @@ class PersonalInformationFragment : Fragment() {
         // Personal Information Fragment -> Profile Fragment
         backBtn.setOnClickListener {
             findNavController().navigate(R.id.action_personalInformationFragment_to_profileFragment)
+        }
+
+        driverLicense.setOnClickListener{
+            findNavController().navigate(R.id.action_personalInformationFragment_to_drivingLicenseFragment)
         }
 
 

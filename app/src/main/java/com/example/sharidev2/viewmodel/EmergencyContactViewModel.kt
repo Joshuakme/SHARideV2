@@ -1,9 +1,7 @@
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.fragment.findNavController
 import com.example.sharidev2.data.model.Contact
 import com.example.sharidev2.data.repository.EmergencyContactRepository
 import com.example.sharidev2.firebase.FirebaseInitializer
@@ -28,7 +26,7 @@ class EmergencyContactViewModel(
 
     init {
         viewModelScope.launch(Dispatchers.Main) {
-            val emergencyContacts = repository.getEmergencyContacts().toMutableList()
+            val emergencyContacts = repository.getAllContacts().toMutableList()
 
             setContactList(emergencyContacts)
         }

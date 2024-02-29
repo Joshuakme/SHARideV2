@@ -96,6 +96,9 @@
         <action
             android:id="@+id/action_personalInformationFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_personalInformationFragment_to_drivingLicenseFragment"
+            app:destination="@id/drivingLicenseFragment" />
     </fragment>
     <fragment
         android:id="@+id/paymentMethodFragment"
@@ -197,5 +200,13 @@
         <action
             android:id="@+id/action_editContactFragment_to_emergencyContactFragment"
             app:destination="@id/emergencyContactFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/drivingLicenseFragment"
+        android:name="DrivingLicenseFragment"
+        android:label="DrivingLicenseFragment" >
+        <action
+            android:id="@+id/action_drivingLicenseFragment_to_personalInformationFragment"
+            app:destination="@id/personalInformationFragment" />
     </fragment>
 </navigation>

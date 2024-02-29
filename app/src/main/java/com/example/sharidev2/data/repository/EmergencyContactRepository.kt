@@ -1,11 +1,7 @@
 package com.example.sharidev2.data.repository
 
 
-import android.content.Context
 import android.util.Log
-import android.widget.Toast
-import androidx.navigation.NavController
-import com.example.sharidev2.R
 import com.example.sharidev2.data.model.Contact
 import com.example.sharidev2.utility.Converters
 import com.example.sharidev2.utility.FirebaseUtils
@@ -82,37 +78,8 @@ class EmergencyContactRepository(
         }
     }
 
+
     suspend fun getAllContacts(): List<Contact> {
-        return withContext(Dispatchers.IO) {
-            val contactList = mutableListOf<Contact>()
-
-            contactsRef.get()
-                .addOnSuccessListener {
-                    for (document in it.documents) {
-                        val contactData = document.data
-
-                        val contactName = contactData?.get("contactName") as String
-                        val contactPhone = contactData?.get("contactPhone") as String
-                        val userUid = contactData["userUid"] as String
-
-                        contactList.add(
-                            Contact(
-                                contactName,
-                                contactPhone,
-                                userUid
-                            )
-                        )
-                    }
-                }
-                .addOnFailureListener {
-                    Log.e("Get All Contacts", it.message.toString())
-                }
-            contactList.toList()
-        }
-    }
-
-
-    suspend fun getEmergencyContacts(): List<Contact> {
         return withContext(Dispatchers.IO) {
             val contactList = mutableListOf<Contact>()
 

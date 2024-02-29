@@ -30,6 +30,7 @@ class FirebaseUtils(
         val NOT_BELONG_USER = 1 // Contact doesn't belong to the current user
         val USER_NOT_AUTHENTICATED = 2 // User not authenticated
         val EXCEPTION = 3 // Handle exceptions
+        val DATA_NOT_VALID = 4
 
     }
 

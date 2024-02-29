@@ -113,4 +113,8 @@ dependencies {
     // Gson
     implementation("com.google.code.gson:gson:2.8.8")
 
+    // Glide
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 }
+android.buildFeatures.buildConfig true
