@@ -6,8 +6,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/ss_screen_width_margin"
-        android:layout_marginRight="@dimen/ss_screen_width_margin"
         android:orientation="vertical"
         tools:context=".screen.navigation.BookingFragment">
 
@@ -17,16 +15,46 @@
             style="@style/text_fragment_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
             android:text="@string/booking_fragment_title_booking" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout_booking"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp">
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tab_item_booking_active"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/booking_tab_item_active" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tab_item_booking_past"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/booking_tab_item_past" />
+
+        </com.google.android.material.tabs.TabLayout>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewpager_booking"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
 
         <TextView
             android:id="@+id/text_booking_section_title_recent"
             style="@style/text_section_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/booking_section_title_recent" />
+            android:text="@string/booking_section_title_recent"
+            android:visibility="gone"
+            tools:visibility="gone" />
 
         <!--  Example Placeholder  -->
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -76,57 +104,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/text_booking_date" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_booking"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:listitem="@layout/recycler_item_booking_history"
-            tools:visibility="gone" />
-
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_error_load_booking_history"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            app:cardBackgroundColor="#00FFFFFF"
-            app:cardCornerRadius="0dp"
-            app:cardForegroundColor="#00FFFFFF"
-            app:layout_constraintHeight_default="percent"
-            app:layout_constraintHeight_percent="0.5"
-            app:strokeColor="#00FFFFFF"
-            tools:visibility="gone">
-
-            <TextView
-                android:id="@+id/text_error_load_booking"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/booking_error_loading"
-                android:textColor="@color/system_neutral2_600"
-                android:textSize="@dimen/fs_fragment_loading_error_text" />
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <!--  Progress Bar  -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cl_booking_loading_spinner"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:translationY="-8dp">
-
-            <ProgressBar
-                android:id="@+id/progressBar"
-                style="@android:style/Widget.Holo.Light.ProgressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.5" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
 </layout>

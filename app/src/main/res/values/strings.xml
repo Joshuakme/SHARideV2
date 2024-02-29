@@ -85,6 +85,9 @@
     <string name="booking_section_title_recent">Recent</string>
     <string name="booking_error_loading">Sorry, no booking found!</string>
     <string name="booking_item_price">RM %.2f</string>
+    <string name="booking_tab_item_active">Active</string>
+    <string name="booking_tab_item_past">Past</string>
+
 
     <!--  Messages Fragment  -->
     <string name="messages_fragment_title_messages">Messages</string>

@@ -63,47 +63,4 @@
     </style>
 
 
-    <!--  Date Time Scroll Picker  -->
-    <style name="DatePickerStyle" parent="Widget.MaterialDatePicker">
-        <item name="android:textAppearance">@style/TextAppearance.DatePicker</item>
-        <item name="android:background">?attr/colorSurfaceContainer</item>
-        <item name="highlighterColor">?attr/colorPrimary</item>
-        <item name="isShowHighlighter">true</item>
-        <item name="highlighterHeight">55dp</item>
-        <item name="fadeInAlpha">.3</item>
-        <item name="fadeOutAlpha">.7</item>
-        <item name="fadeInDuration">300</item>
-        <item name="fadeOutDuration">1000</item>
-        <item name="minYear">1995</item>
-        <item name="maxYear">2050</item>
-        <item name="defaultYear">2021</item>
-        <item name="defaultMonth">1</item>
-        <item name="defaultDay">1</item>
-        <item name="dateFormat">DD_MMM_YYYY</item>
-    </style>
-
-    <style name="TimePickerStyle" parent="Widget.MaterialTimePicker">
-        <item name="android:textAppearance">@style/TextAppearance.TimePicker</item>
-        <item name="android:background">?attr/colorSurfaceContainer</item>
-        <item name="highlighterColor">?attr/colorPrimary</item>
-        <item name="highlighterHeight">60dp</item>
-        <item name="isShowHighlighter">true</item>
-        <item name="timeConvention">HOURS_12</item>
-        <item name="fadeInAlpha">.3</item>
-        <item name="fadeOutAlpha">.7</item>
-        <item name="fadeInDuration">300</item>
-        <item name="fadeOutDuration">1000</item>
-        <item name="defaultHour">10</item>
-        <item name="defaultMinute">30</item>
-    </style>
-
-    <style name="TextAppearance.TimePicker" parent="@style/TextAppearance.MaterialTimePicker">
-        <item name="android:textSize">22sp</item>
-        <item name="android:textColor">?attr/colorError</item>
-    </style>
-
-    <style name="TextAppearance.DatePicker" parent="@style/TextAppearance.MaterialDatePicker">
-        <item name="android:textSize">19sp</item>
-        <item name="android:textColor">?attr/colorError</item>
-    </style>
 </resources>

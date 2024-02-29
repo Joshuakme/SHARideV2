@@ -157,7 +157,6 @@ class FirebaseUtils(
                 members,
                 lastMessage,
                 timestamp,
-                typingUsers,
                 messageList
             )
         }

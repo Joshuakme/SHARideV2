@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:context=".screen.ride.ViewpagerBookingItemFragment">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_booking"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/ss_screen_width_margin"
+            android:layout_marginEnd="@dimen/ss_screen_width_margin"
+            android:visibility="gone"
+            tools:listitem="@layout/recycler_item_booking_history"
+            tools:visibility="visible" />
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_error_load_booking_history"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            app:cardBackgroundColor="#00FFFFFF"
+            app:cardCornerRadius="0dp"
+            app:cardForegroundColor="#00FFFFFF"
+            app:layout_constraintHeight_default="percent"
+            app:layout_constraintHeight_percent="0.5"
+            app:strokeColor="#00FFFFFF"
+            tools:visibility="gone">
+
+            <TextView
+                android:id="@+id/text_error_load_booking"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/booking_error_loading"
+                android:textColor="@color/system_neutral2_600"
+                android:textSize="@dimen/fs_fragment_loading_error_text" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!--  Progress Bar  -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_booking_loading_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:visibility="gone">
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="@android:style/Widget.Holo.Light.ProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.5" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+</layout>

@@ -116,7 +116,8 @@ class SharedCreateRideViewModel(
             driver = FirebaseInitializer.firebaseAuth.currentUser?.let { User.fromFirebaseUser(it) }
                 ?: User(),
             vehicle = vehicle.value!!,
-            availableSeats = capacity.value!!
+            availableSeats = capacity.value!!,
+            createdAt = Timestamp.now()
         )
 
         viewModelScope.launch(Dispatchers.Main) {

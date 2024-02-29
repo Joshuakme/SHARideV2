@@ -1,6 +1,7 @@
 package com.example.sharidev2.adapter
 
 import android.content.Context
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sharidev2.R
+import com.example.sharidev2.data.model.Passenger
 import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.data.model.Vehicle
 import com.example.sharidev2.firebase.FirebaseInitializer
@@ -19,7 +21,7 @@ import java.util.Locale
 class BookingAdapter (
     private val context: Context,
     private val currentUser: FirebaseUser,
-    private val bookingList: List<Ride>,
+    private var bookingList: List<Ride>,
     private val clickListener: OnBookingClickListener
 ) : RecyclerView.Adapter<BookingAdapter.ViewHolder>() {
 
@@ -61,11 +63,14 @@ class BookingAdapter (
         )
 
         val typedValue = TypedValue()
-        // Resolve the attribute to get the color value programmatically
         context.theme?.resolveAttribute(com.google.android.material.R.attr.colorPrimary, typedValue, true)
         val colorPrimary = typedValue.data
         context.theme?.resolveAttribute(com.google.android.material.R.attr.colorError, typedValue, true)
         val colorError = typedValue.data
+
+
+        Log.e("Booking Adapter", "${booking.destination.name} - isPassenger: " + isPassenger(booking))
+        Log.e("Booking Adapter", "${booking.destination.name} - isDriver: " + isDriver(booking))
 
 
         if(isDriver(booking)) {
@@ -89,7 +94,9 @@ class BookingAdapter (
     }
 
     // Method to update data
-    fun updateData() {
+    fun updateList(newBookingList: List<Ride>) {
+        bookingList = newBookingList
+
         notifyDataSetChanged()
     }
 
@@ -98,6 +105,10 @@ class BookingAdapter (
     }
 
     private fun isPassenger(ride: Ride): Boolean {
-        return ride.price?.containsKey(currentUser.uid) ?: false
+
+        return ride.passengers?.any { passenger ->
+            Log.e("Booking Adapter", "${ride.destination.name} - isPassenger " + passenger.userUid)
+            passenger.userUid == currentUser.uid } ?: false
     }
+
 }

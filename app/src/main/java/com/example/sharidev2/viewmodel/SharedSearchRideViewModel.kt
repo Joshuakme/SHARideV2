@@ -1,26 +1,15 @@
 package com.example.sharidev2.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.example.sharidev2.data.model.Gender
-import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.data.model.RideOption
 import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.data.model.SearchRide
 import com.example.sharidev2.data.model.VehicleType
-import com.example.sharidev2.data.state.SearchRideDetailConfigurationState
 import com.google.firebase.Timestamp
-import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
-import com.wdullaer.materialdatetimepicker.time.Timepoint
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import java.time.LocalDate
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 import java.util.Calendar
 
 class SharedSearchRideViewModel(

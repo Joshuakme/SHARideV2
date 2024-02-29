@@ -1,5 +1,6 @@
 package com.example.sharidev2.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -8,6 +9,8 @@ import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.data.repository.RideRepository
 import com.example.sharidev2.firebase.FirebaseInitializer
+import com.example.sharidev2.screen.ride.ViewpagerBookingItemFragment
+import com.google.firebase.Timestamp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -24,21 +27,50 @@ class RideViewModel(
 
     // DATA KEY CONSTANT
     private val RIDE_LIST_KEY = "ride_list"
+    private val ACTIVE_RIDE_LIST_KEY = "active_ride_list"
+    private val PAST_RIDE_LIST_KEY = "past_ride_list"
 
 
     // INTERNAL DATA MEMBERS
     // Ride List Location
     val rideList: LiveData<List<Ride>> = savedStateHandle.getLiveData(RIDE_LIST_KEY)
+    val activeRideList: LiveData<List<Ride>> = savedStateHandle.getLiveData(ACTIVE_RIDE_LIST_KEY)
+    val pastRideList: LiveData<List<Ride>> = savedStateHandle.getLiveData(PAST_RIDE_LIST_KEY)
 
     init {
         viewModelScope.launch(Dispatchers.Main) {
             setRideList(rideRepository.getAllRides())
+            setActiveRideList(getRides(FilterType.ACTIVE).sortedBy { it.datetime }.reversed())
+            setPastRideList(getRides(FilterType.PAST))
         }
     }
 
     // SETTER in SavedStateHandle
-    // Origin Location
     fun setRideList(newRideList: List<Ride>) {
         savedStateHandle[RIDE_LIST_KEY] = newRideList
+    }
+
+    fun setActiveRideList(newRideList: List<Ride>) {
+        savedStateHandle[ACTIVE_RIDE_LIST_KEY] = newRideList
+    }
+
+    fun setPastRideList(newRideList: List<Ride>) {
+        savedStateHandle[PAST_RIDE_LIST_KEY] = newRideList
+    }
+
+    private fun getRides(filterType: FilterType): List<Ride> {
+        val currentTimestamp = Timestamp.now()
+
+        return rideList.value?.filter { ride ->
+            when (filterType) {
+                FilterType.ACTIVE -> ride.datetime > currentTimestamp
+                FilterType.PAST -> ride.datetime < currentTimestamp
+            }
+        } ?: emptyList()
+    }
+
+    enum class FilterType {
+        ACTIVE,
+        PAST
     }
 }
