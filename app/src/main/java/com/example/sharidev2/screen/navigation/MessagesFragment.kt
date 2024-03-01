@@ -31,6 +31,7 @@ class MessagesFragment : Fragment() {
 
         // LAYOUT SETTINGS
         (activity as MainActivity).setBottomNavVisible(true)
+        (activity as MainActivity).resetBottomNavPosition()
 
         // EVENT LISTENERS
         // *** View Ali Chat ***

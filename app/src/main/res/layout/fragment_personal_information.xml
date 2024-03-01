@@ -25,10 +25,6 @@
                 android:id="@+id/img_btn_profile_personal_info_nav_back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-<<<<<<< HEAD
-=======
-                android:layout_marginTop="@dimen/ss_screen_top_margin"
->>>>>>> main
                 android:background="#00FFFFFF"
                 android:scaleX="@dimen/ss_profile_subfragment_nav_icon_scale"
                 android:scaleY="@dimen/ss_profile_subfragment_nav_icon_scale"
@@ -39,11 +35,7 @@
 
             <TextView
                 android:id="@+id/text_fragment_title_personal_information"
-<<<<<<< HEAD
                 style="@style/text_fragment_title_profile"
-=======
-                style="@style/text_fragment_title"
->>>>>>> main
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -326,7 +318,6 @@
                         app:layout_constraintTop_toBottomOf="@+id/text_personal_info_item_title_mobile_number" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
-<<<<<<< HEAD
 
             <!--  Profile: User Vehicle Documentation -->
             <androidx.cardview.widget.CardView
@@ -346,7 +337,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/personal_information_item_title_vehicle_doc"
-                        android:textColor="@color/black"
+                        android:textColor="?android:attr/textColorHint"
                         android:textSize="@dimen/ss_profile_personal_info_item_text_size"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -393,7 +384,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/personal_information_item_title_driving_license"
-                        android:textColor="@color/black"
+                        android:textColor="?android:attr/textColorHint"
                         android:textSize="@dimen/ss_profile_personal_info_item_text_size"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -422,15 +413,12 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
-=======
->>>>>>> main
         </LinearLayout>
 
     </LinearLayout>
 </layout>
 
 
-<<<<<<< HEAD
     <!--    &lt;!&ndash;  Profile: User ID  &ndash;&gt;
     <androidx.cardview.widget.CardView
     android:id="@+id/card_personal_info_placeholder"
@@ -491,66 +479,3 @@
             app:layout_constraintTop_toBottomOf="@+id/text_personal_info_item_title_placeholder" />
     </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>-->
-=======
-<!--    &lt;!&ndash;  Profile: User ID  &ndash;&gt;
-<androidx.cardview.widget.CardView
-android:id="@+id/card_personal_info_placeholder"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:layout_marginBottom="@dimen/ss_profile_section_item_bottom_margin"
-app:cardBackgroundColor="#00FFFFFF"
-app:cardElevation="0dp">
-
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <TextView
-        android:id="@+id/text_personal_info_item_title_placeholder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/personal_information_item_title_placeholder"
-        android:textColor="?android:attr/textColorHint"
-        android:textSize="@dimen/ss_profile_personal_info_item_text_size"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/text_personal_info_item_value_placeholder"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:gravity="right|center_vertical"
-        android:text="@string/placeholder_profile_user_placeholder"
-        android:textColor="?attr/colorOnBackground"
-        android:textSize="@dimen/ss_profile_personal_info_item_text_size"
-        app:layout_constraintEnd_toStartOf="@+id/img_btn_placeholder_next"
-        app:layout_constraintStart_toEndOf="@+id/text_personal_info_item_title_placeholder"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/img_btn_placeholder_next"
-        android:layout_width="9dp"
-        android:layout_height="10dp"
-        android:background="#00FFFFFF"
-        android:scaleX="0.7"
-        android:src="@drawable/baseline_keyboard_arrow_right_24"
-        app:layout_constraintBottom_toBottomOf="@+id/text_personal_info_item_value_placeholder"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="?android:attr/textColorHint" />
-
-    <View
-        android:id="@+id/divider_placeholder"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_marginTop="16dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_personal_info_item_title_placeholder" />
-</androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.cardview.widget.CardView>-->
-
->>>>>>> main

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ll_edit_gender_title"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="top"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_edit_gender_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/ss_screen_top_margin">
+
+        <ImageView
+            android:id="@+id/btn_back_edit_gender"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.069"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.454"
+            app:srcCompat="@drawable/baseline_arrow_back_24" />
+
+        <TextView
+            android:id="@+id/tv_edit_gender_title"
+            android:layout_width="wrap_content"
+            android:layout_height="47dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/robotomedium"
+            android:text="Edit Gender"
+            android:textSize="@dimen/fs_fragment_title"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/yv_choose_gender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Choose Gender"
+        android:layout_marginStart="@dimen/ss_screen_width_margin"
+        android:layout_marginEnd="@dimen/ss_screen_width_margin"
+        android:layout_marginTop="@dimen/ss_screen_top_margin"
+        android:layout_marginBottom="@dimen/text_margin"/>
+
+    <LinearLayout
+        android:id="@+id/ll_cv_edit_gender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cv_gender"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/ss_screen_width_margin"
+            android:layout_marginRight="@dimen/ss_screen_width_margin"
+            app:cardCornerRadius="15dp">
+
+            <LinearLayout
+                android:id="@+id/ll_edit_gender"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RadioGroup
+                    android:id="@+id/radio_group_gender"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Male Radio Button -->
+                    <RadioButton
+                        android:id="@+id/radio_button_male"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/ss_screen_width_margin"
+                        android:layout_marginEnd="@dimen/ss_screen_width_margin"
+                        android:text="Male"
+                        android:textColor="@color/black" />
+
+                    <!-- Female Radio Button -->
+                    <RadioButton
+                        android:id="@+id/radio_button_female"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/ss_screen_width_margin"
+                        android:layout_marginEnd="@dimen/ss_screen_width_margin"
+                        android:text="Female"
+                        android:textColor="@color/black" />
+                </RadioGroup>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+    <!-- Save Button -->
+    <Button
+        android:id="@+id/btn_update_gender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="50dp"
+        android:text="Save"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_edit_gender"
+        />
+</LinearLayout>

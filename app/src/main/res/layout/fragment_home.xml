@@ -1,623 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-<<<<<<< HEAD
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_marginStart="3dp"
-    android:layout_marginEnd="3dp"
-    android:layout_marginBottom="4dp">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-=======
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nsv_fragment_home"
->>>>>>> main
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".screen.navigation.HomeFragment">
 
-<<<<<<< HEAD
-
-        <!--  User Info Section  -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cl_home_user_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/colorPrimaryVariant"
-            android:paddingTop="@dimen/ss_home_nav_top_padding"
-            android:paddingBottom="64dp"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible">
-
-            <!--  Profile Picture  -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_home_user_profile_pic"
-                android:layout_width="@dimen/ss_home_pic_size"
-                android:layout_height="@dimen/ss_home_pic_size"
-                android:layout_marginStart="@dimen/ss_screen_width_margin"
-                app:cardBackgroundColor="#00FFFFFF"
-                app:cardCornerRadius="1000dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:strokeColor="#00FFFFFF">
-
-                <ImageView
-                    android:id="@+id/img_user_profile_pic"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:srcCompat="@drawable/baseline_account_circle_24"
-                    app:tint="?attr/colorOnPrimary" />
-            </com.google.android.material.card.MaterialCardView>
-
-            <TextView
-                android:id="@+id/text_home_welcome_user"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:fontFamily="@font/poppins_bold"
-                android:text="@string/home_fragment_welcome_user"
-                android:textColor="?attr/colorOnPrimary"
-                android:textSize="20sp"
-                app:layout_constraintBottom_toTopOf="@+id/img_home_welcome_user_location"
-                app:layout_constraintStart_toEndOf="@+id/card_home_user_profile_pic"
-                app:layout_constraintTop_toTopOf="@+id/card_home_user_profile_pic" />
-
-            <ImageView
-                android:id="@+id/img_home_welcome_user_location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:scaleX="0.9"
-                android:scaleY="0.9"
-                android:src="@drawable/outline_location_on_24"
-                android:translationY="-2dp"
-                app:layout_constraintBottom_toBottomOf="@+id/card_home_user_profile_pic"
-                app:layout_constraintStart_toEndOf="@+id/card_home_user_profile_pic"
-                app:layout_constraintTop_toBottomOf="@+id/text_home_welcome_user"
-                app:tint="?attr/colorOnPrimary" />
-
-            <TextView
-                android:id="@+id/text_home_welcome_user_area"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/home_fragment_welcome_user_area"
-                android:textColor="?attr/colorOnPrimary"
-                android:textSize="16sp"
-                app:layout_constraintStart_toEndOf="@+id/img_home_welcome_user_location"
-                app:layout_constraintTop_toBottomOf="@+id/text_home_welcome_user" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-        <!--  Google Map Section  -->
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/map_home_container"
-            class="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cl_home_user_info"
-            tools:visibility="gone" />
-
-        <!--  Ride Search Bar  -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_home_search_bar"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/ss_screen_width_margin"
-            android:layout_marginEnd="@dimen/ss_screen_width_margin"
-            android:translationY="-27dp"
-            app:cardBackgroundColor="?attr/colorOnPrimarySurface"
-            app:cardCornerRadius="100000dp"
-            app:cardElevation="3dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cl_home_user_info"
-            app:strokeWidth="0dp">
-
-            <LinearLayout
-                android:id="@+id/ll_home_search_bar_container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="16dp"
-                android:paddingStart="16dp"
-                android:paddingEnd="14dp">
-
-                <TextView
-                    android:id="@+id/edit_text_home_search_bar"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:clickable="false"
-                    android:fontFamily="@font/poppins_semibold"
-                    android:hint="@string/home_fragment_search_hint"
-                    android:maxLines="1"
-                    android:padding="0dp"
-                    android:textColor="?android:attr/textColorHintInverse"
-                    android:textColorHint="?attr/colorOutline"
-                    android:textSize="14sp" />
-
-                <ImageButton
-                    android:id="@+id/img_btn_home_seearch_bar_foward"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="#00FFFFFF"
-                    android:clickable="false"
-                    android:cropToPadding="false"
-                    android:src="@drawable/baseline_arrow_forward_24" />
-            </LinearLayout>
-
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <TextView
-            android:id="@+id/text_home_nearby_rides_section"
-            style="@style/text_section_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/ss_screen_width_margin"
-            android:layout_marginEnd="@dimen/ss_screen_width_margin"
-            android:text="@string/home_section_recent_rides_title"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/card_home_search_bar" />
-
-        <HorizontalScrollView
-            android:id="@+id/horizontalScrollView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:scrollIndicators="none"
-            android:scrollbarSize="0dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_home_nearby_rides_section">
-
-            <LinearLayout
-                android:id="@+id/ll_home_nearby_rides_container"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:orientation="horizontal"
-                android:padding="2dp"
-                android:paddingStart="@dimen/ss_screen_width_margin">
-
-                <!--  Card 1  -->
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="@dimen/ss_home_recent_rides_card_width"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="3dp"
-                    app:strokeWidth="0dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:paddingBottom="8dp">
-
-                        <androidx.cardview.widget.CardView
-                            style="@style/ImageCardViewStyle"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/ss_home_recent_rides_card_image_height"
-                            android:layout_marginBottom="8dp">
-
-                            <ImageView
-                                android:id="@+id/imageView"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:scaleType="fitXY"
-                                app:srcCompat="@drawable/ride_to_downtown" />
-                        </androidx.cardview.widget.CardView>
-
-
-                        <TextView
-                            android:id="@+id/textView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginEnd="16dp"
-                            android:ellipsize="end"
-                            android:fontFamily="@font/poppins_semibold"
-                            android:maxLines="1"
-                            android:text="Ride to Downtown" />
-
-                        <TextView
-                            android:id="@+id/textView2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginEnd="16dp"
-                            android:text="2 km away"
-                            android:textColor="@color/system_neutral2_600"
-                            android:textSize="12sp" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <!--  Card 2  -->
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="@dimen/ss_home_recent_rides_card_width"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="3dp"
-                    app:strokeWidth="0dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:paddingBottom="8dp">
-
-                        <androidx.cardview.widget.CardView
-                            style="@style/ImageCardViewStyle"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/ss_home_recent_rides_card_image_height"
-                            android:layout_marginBottom="8dp">
-
-                            <ImageView
-                                android:id="@+id/imageView2"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:scaleType="fitXY"
-                                app:srcCompat="@drawable/ride_to_airport" />
-                        </androidx.cardview.widget.CardView>
-
-
-                        <TextView
-                            android:id="@+id/textView3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginEnd="16dp"
-                            android:ellipsize="end"
-                            android:fontFamily="@font/poppins_semibold"
-                            android:maxLines="1"
-                            android:text="Ride to Airport" />
-
-                        <TextView
-                            android:id="@+id/textView4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginEnd="16dp"
-                            android:text="2 km away"
-                            android:textColor="@color/system_neutral2_600"
-                            android:textSize="12sp" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <!--  Card 3  -->
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="@dimen/ss_home_recent_rides_card_width"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="3dp"
-                    app:strokeWidth="0dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:paddingBottom="8dp">
-
-                        <androidx.cardview.widget.CardView
-                            style="@style/ImageCardViewStyle"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/ss_home_recent_rides_card_image_height"
-                            android:layout_marginBottom="8dp">
-
-                            <ImageView
-                                android:id="@+id/imageView3"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:scaleType="fitXY"
-                                app:srcCompat="@drawable/ride_to_downtown" />
-                        </androidx.cardview.widget.CardView>
-
-
-                        <TextView
-                            android:id="@+id/textView5"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginEnd="16dp"
-                            android:ellipsize="end"
-                            android:fontFamily="@font/poppins_semibold"
-                            android:maxLines="1"
-                            android:text="Ride to TRX Shopping Center (Tun Razak Exchange)" />
-
-                        <TextView
-                            android:id="@+id/textView6"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginEnd="16dp"
-                            android:text="2 km away"
-                            android:textColor="@color/system_neutral2_600"
-                            android:textSize="12sp" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-            </LinearLayout>
-        </HorizontalScrollView>
-
-        <TextView
-            android:id="@+id/text_home_recent_rides_section"
-            style="@style/text_section_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/ss_screen_width_margin"
-            android:layout_marginTop="27dp"
-            android:layout_marginEnd="@dimen/ss_screen_width_margin"
-            android:text="@string/home_section_categories_rides_title"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView" />
-
-        <!--  Categories Section  -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="#00FFFFFF"
-            android:clipToPadding="false"
-            android:gravity="left|end"
-            android:orientation="horizontal"
-            android:padding="4dp"
-            android:paddingStart="@dimen/ss_screen_width_margin"
-            android:paddingEnd="@dimen/ss_screen_width_margin"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_home_recent_rides_section">
-
-            <!--  Card 1: Shopping Mall  -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="#00FFFFFF"
-                app:cardElevation="0dp"
-                app:strokeWidth="0dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:id="@+id/imageView4"
-                        android:layout_width="@dimen/ss_home_categories_card_image_width_height"
-                        android:layout_height="@dimen/ss_home_categories_card_image_width_height"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="3dp"
-                        android:layout_marginEnd="3dp"
-                        android:layout_marginBottom="4dp"
-                        app:srcCompat="@drawable/baseline_local_mall_24"
-                        app:tint="?attr/colorOnSurface" />
-
-                    <TextView
-                        android:id="@+id/textView7"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins"
-                        android:text="Mall" />
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" />
-
-            <!--  Card 2: Airport  -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="#00FFFFFF"
-                app:cardElevation="0dp"
-                app:strokeWidth="0dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:id="@+id/imageView5"
-                        android:layout_width="@dimen/ss_home_categories_card_image_width_height"
-                        android:layout_height="@dimen/ss_home_categories_card_image_width_height"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="3dp"
-                        android:layout_marginEnd="3dp"
-                        android:layout_marginBottom="4dp"
-                        app:srcCompat="@drawable/baseline_local_airport_24"
-                        app:tint="?attr/colorOnSurface" />
-
-                    <TextView
-                        android:id="@+id/textView8"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins"
-                        android:text="Airport" />
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" />
-
-            <!--  Card 3: Station  -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="#00FFFFFF"
-                app:cardElevation="0dp"
-                app:strokeWidth="0dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:id="@+id/imageView6"
-                        android:layout_width="@dimen/ss_home_categories_card_image_width_height"
-                        android:layout_height="@dimen/ss_home_categories_card_image_width_height"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="3dp"
-                        android:layout_marginEnd="3dp"
-                        android:layout_marginBottom="4dp"
-                        app:srcCompat="@drawable/baseline_directions_bus_24"
-                        app:tint="?attr/colorOnSurface" />
-
-                    <TextView
-                        android:id="@+id/textView9"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins"
-                        android:text="Station" />
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" />
-
-
-            <!--  Card 4: Unknown  -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="#00FFFFFF"
-                app:cardElevation="0dp"
-                app:strokeWidth="0dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:id="@+id/imageView7"
-                        android:layout_width="@dimen/ss_home_categories_card_image_width_height"
-                        android:layout_height="@dimen/ss_home_categories_card_image_width_height"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="3dp"
-                        android:layout_marginEnd="3dp"
-                        android:layout_marginBottom="4dp"
-                        app:srcCompat="@drawable/baseline_stars_24"
-                        app:tint="?attr/colorOnSurface" />
-
-                    <TextView
-                        android:id="@+id/textView10"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins"
-                        android:text="Unknown" />
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-        </LinearLayout>
-
-
-        <!--  Ride Offer Section  -->
-        <!--        <com.google.android.material.card.MaterialCardView-->
-        <!--            android:id="@+id/card_home_main_menu"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="0dp"-->
-        <!--            android:layout_marginStart="32dp"-->
-        <!--            android:layout_marginEnd="32dp"-->
-        <!--            app:cardCornerRadius="8dp"-->
-        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--            app:layout_constraintEnd_toEndOf="parent"-->
-        <!--            app:layout_constraintStart_toStartOf="parent"-->
-        <!--            app:layout_constraintTop_toTopOf="parent"-->
-        <!--            app:layout_constraintVertical_bias="0.5"-->
-        <!--            app:layout_constraintHeight_percent="0.6" >-->
-
-        <!--            <androidx.constraintlayout.widget.ConstraintLayout-->
-        <!--                android:layout_width="match_parent"-->
-        <!--                android:layout_height="match_parent">-->
-
-        <!--                <com.google.android.material.card.MaterialCardView-->
-        <!--                    android:id="@+id/card_home_main_menu_tab_container"-->
-        <!--                    android:layout_width="0dp"-->
-        <!--                    android:layout_height="wrap_content"-->
-        <!--                    android:layout_marginStart="@dimen/ss_screen_width_margin"-->
-        <!--                    android:layout_marginTop="@dimen/ss_screen_top_margin"-->
-        <!--                    android:layout_marginEnd="@dimen/ss_screen_width_margin"-->
-        <!--                    app:cardCornerRadius="8dp"-->
-        <!--                    app:cardElevation="4dp"-->
-        <!--                    app:layout_constraintEnd_toEndOf="parent"-->
-        <!--                    app:layout_constraintStart_toStartOf="parent"-->
-        <!--                    app:layout_constraintTop_toTopOf="parent">-->
-
-        <!--                    <com.google.android.material.tabs.TabLayout-->
-        <!--                        android:id="@+id/tab_home_main_menu"-->
-        <!--                        style="@style/CustomTabLayout"-->
-        <!--                        android:layout_width="match_parent"-->
-        <!--                        android:layout_height="match_parent"-->
-        <!--                        android:layout_alignParentTop="true"-->
-        <!--                        android:background="?attr/colorSurfaceVariant"-->
-        <!--                        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"-->
-        <!--                        app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--                        app:layout_constraintEnd_toEndOf="parent"-->
-        <!--                        app:layout_constraintStart_toStartOf="parent"-->
-        <!--                        app:layout_constraintTop_toTopOf="parent"-->
-        <!--                        app:tabIndicator="?attr/colorSurfaceDim"-->
-        <!--                        app:tabIndicatorAnimationMode="elastic"-->
-        <!--                        app:tabIndicatorFullWidth="true"-->
-        <!--                        app:tabIndicatorGravity="stretch"-->
-        <!--                        app:tabMode="fixed"-->
-        <!--                        app:tabPaddingBottom="@dimen/ss_home_tab_vertical_padding"-->
-        <!--                        app:tabPaddingTop="@dimen/ss_home_tab_vertical_padding"-->
-        <!--                        app:tabSelectedTextColor="?attr/colorOnSecondary"-->
-        <!--                        app:tabTextAppearance="@style/TabTextStyle"-->
-        <!--                        app:tabTextColor="?attr/colorOnSurfaceVariant" />-->
-
-        <!--                </com.google.android.material.card.MaterialCardView>-->
-
-        <!--                <androidx.viewpager2.widget.ViewPager2-->
-        <!--                    android:id="@+id/viewPager_home_main_menu"-->
-        <!--                    android:layout_width="match_parent"-->
-        <!--                    android:layout_height="0dp"-->
-        <!--                    android:layout_below="@id/card_home_main_menu_tab_container"-->
-        <!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--                    app:layout_constraintEnd_toEndOf="parent"-->
-        <!--                    app:layout_constraintStart_toStartOf="parent"-->
-        <!--                    app:layout_constraintTop_toBottomOf="@+id/card_home_main_menu_tab_container" />-->
-
-        <!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
-
-        <!--        </com.google.android.material.card.MaterialCardView>-->
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-=======
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -702,8 +93,6 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-            <!--  Google Map Section  -->
-
             <!--  Ride Search Bar  -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_home_search_bar"
@@ -758,94 +147,19 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_home_share_this_app"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/ss_screen_width_margin"
-                android:layout_marginEnd="@dimen/ss_screen_width_margin"
-                app:cardCornerRadius="0dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/card_home_search_bar"
-                app:strokeWidth="0dp">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/text_home_share_this_app_section"
-                        style="@style/text_section_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-
-                        android:layout_marginBottom="12dp"
-                        android:text="@string/home_section_share_this_app_title" />
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:cardBackgroundColor="?attr/colorSurfaceContainer"
-                        app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
-                        app:contentPadding="4dp"
-                        app:strokeWidth="0dp">
-
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/text_home_share_this_app_link"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:ellipsize="end"
-                                android:gravity="center"
-                                android:singleLine="true"
-                                android:text="@string/placeholder_home_share_this_app_link"
-                                android:textColor="?attr/colorOutline" />
-
-                            <ImageButton
-                                android:id="@+id/btn_home_share_this_app_copy"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="#00FFFFFF"
-                                android:padding="8dp"
-                                android:src="@drawable/baseline_content_copy_24"
-                                app:tint="?android:attr/textColorHint" />
-
-                            <ImageButton
-                                android:id="@+id/btn_home_share_this_app_share"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="#00FFFFFF"
-                                android:padding="8dp"
-                                android:src="@drawable/baseline_share_24"
-                                app:tint="?android:attr/textColorHint" />
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-                </LinearLayout>
-
-
-            </com.google.android.material.card.MaterialCardView>
-
-
+            <!--  Recent Rides  -->
             <TextView
                 android:id="@+id/text_home_recent_rides_section"
                 style="@style/text_section_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/ss_screen_width_margin"
-                android:layout_marginTop="27dp"
                 android:layout_marginEnd="@dimen/ss_screen_width_margin"
                 android:text="@string/home_section_recent_rides_title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/card_home_share_this_app" />
+                app:layout_constraintTop_toBottomOf="@+id/card_home_search_bar" />
 
             <HorizontalScrollView
                 android:id="@+id/horizontalScrollView"
@@ -1031,51 +345,135 @@
                 </LinearLayout>
             </HorizontalScrollView>
 
-            <TextView
-                android:id="@+id/text_home_nearby_rides_section"
-                style="@style/text_section_title"
+
+            D
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_home_section_nearby_rides"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/ss_screen_width_margin"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="@dimen/ss_screen_width_margin"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/text_home_nearby_rides_section"
+                        style="@style/text_section_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:text="@string/home_section_nearby_rides_title" />
+
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/materialCardView3"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_marginTop="8dp"
+                        app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius">
+
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_marginTop="16dp"
+                        app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius">
+
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!--  Share this app  -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_home_share_this_app"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/ss_screen_width_margin"
-                android:layout_marginTop="27dp"
+                android:layout_marginTop="24dp"
                 android:layout_marginEnd="@dimen/ss_screen_width_margin"
-                android:text="@string/home_section_nearby_rides_title"
+                app:cardCornerRadius="0dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView" />
+                app:layout_constraintTop_toBottomOf="@+id/card_home_section_nearby_rides"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/text_home_share_this_app_section"
+                        style="@style/text_section_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginBottom="12dp"
+                        android:text="@string/home_section_share_this_app_title" />
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardBackgroundColor="?attr/colorSurfaceContainer"
+                        app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
+                        app:contentPadding="4dp"
+                        app:strokeWidth="0dp">
 
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/materialCardView3"
-                android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:layout_marginStart="@dimen/ss_screen_width_margin"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="@dimen/ss_screen_width_margin"
-                app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_home_nearby_rides_section">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/text_home_share_this_app_link"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:ellipsize="end"
+                                android:gravity="center"
+                                android:singleLine="true"
+                                android:text="@string/placeholder_home_share_this_app_link"
+                                android:textColor="?attr/colorOutline" />
+
+                            <ImageButton
+                                android:id="@+id/btn_home_share_this_app_copy"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="#00FFFFFF"
+                                android:padding="8dp"
+                                android:src="@drawable/baseline_content_copy_24"
+                                app:tint="?android:attr/textColorHint" />
+
+                            <ImageButton
+                                android:id="@+id/btn_home_share_this_app_share"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="#00FFFFFF"
+                                android:padding="8dp"
+                                android:src="@drawable/baseline_share_24"
+                                app:tint="?android:attr/textColorHint" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
 
 
             </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:layout_marginStart="@dimen/ss_screen_width_margin"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="@dimen/ss_screen_width_margin"
-                app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/materialCardView3">
-
-
-            </com.google.android.material.card.MaterialCardView>
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
->>>>>>> main
 </layout>

@@ -5,56 +5,83 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.createSavedStateHandle
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.Recycler
+import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
+import com.example.sharidev2.adapter.BookingAdapter
+import com.example.sharidev2.data.model.Ride
+import com.example.sharidev2.databinding.FragmentBookingBinding
+import com.example.sharidev2.firebase.FirebaseInitializer
+import com.example.sharidev2.viewmodel.RideViewModel
+import com.google.firebase.auth.FirebaseUser
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [BookingFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class BookingFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var binding: FragmentBookingBinding
+    private val rideViewModel: RideViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var bookingAdapter: BookingAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_booking, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_booking, container, false)
+
+
+        // ELEMENT VARIABLES
+
+
+
+        // VIEWMODEL
+
+
+        // LAYOUT SETTINGS
+        (activity as MainActivity).setBottomNavVisible(true)
+        (activity as MainActivity).resetBottomNavPosition()
+
+
+        initRecyclerView()
+
+
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment BookingFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            BookingFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    private fun initRecyclerView() {
+        val recyclerView = binding.recyclerBooking
+        val currentUser = FirebaseInitializer.firebaseAuth.currentUser
+
+        rideViewModel.rideList.observe(viewLifecycleOwner) {rideList ->
+
+            val filteredList = rideList.filter { ride ->
+                if (currentUser != null && ride.price != null) {
+                    ride.price.containsKey(currentUser.uid)
+                } else {
+                    false
                 }
             }
+
+            Toast.makeText(requireContext(), filteredList.size.toString(), Toast.LENGTH_SHORT).show()
+
+            if(currentUser != null) {
+                bookingAdapter = BookingAdapter(currentUser, filteredList, object: BookingAdapter.OnBookingClickListener {
+                    override fun onBookingClick(booking: Ride) {
+                        TODO("Navigate to booking detail page")
+                        TODO("Pass data to the detail page")
+                    }
+                })
+                recyclerView.adapter = bookingAdapter
+                recyclerView.layoutManager = LinearLayoutManager(requireContext())
+            }
+
+            Toast.makeText(requireContext(), rideList.size.toString(), Toast.LENGTH_LONG).show()
+        }
     }
 }

@@ -1,12 +1,12 @@
 package com.example.sharidev2.data.model
 
-import java.time.LocalDateTime
+import com.google.firebase.Timestamp
 
 data class Message(
-    val messageID: String,
-    val senderID: String,
+    val messageId: String,
+    val senderId: String,
     val text: String,
-    val timestamp: Long? = null,
+    val timestamp: Timestamp? = null,
     val attachmentURL: String? = null, // Nullable for text messages
     val readBy: List<String>,
     val messageType: MessageType

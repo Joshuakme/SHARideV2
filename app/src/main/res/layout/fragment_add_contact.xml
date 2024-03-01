@@ -10,7 +10,7 @@
         android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/c;_add_emergency_contact_title"
+            android:id="@+id/cl_add_emergency_contact_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/ss_home_nav_top_padding">
@@ -23,7 +23,7 @@
                 android:contentDescription="ignore"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/tv_emergency_contact_title"
+                app:layout_constraintEnd_toStartOf="@+id/tv_add_emergency_contact_title"
                 app:layout_constraintHorizontal_bias="0.219"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

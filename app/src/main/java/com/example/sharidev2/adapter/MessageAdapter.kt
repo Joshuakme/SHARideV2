@@ -5,7 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sharidev2.R
-import com.example.sharidev2.model.Message
+import com.example.sharidev2.data.model.Message
+
 
 class MessageAdapter(private val messages: List<Message>) :
 

@@ -1,6 +1,8 @@
 package com.example.sharidev2.data.model
 
+import com.google.android.gms.maps.model.LatLng
+
 data class Passenger(
-    val user: User,
-    val location: Location // Location of the passenger
+    val userId: String? = null,
+    val location: LatLng? = null // Location of the passenger
 )

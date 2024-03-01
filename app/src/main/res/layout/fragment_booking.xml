@@ -78,21 +78,21 @@
             android:id="@+id/recycler_booking"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"
-            tools:listitem="@layout/recycler_item_booking_history"
-            tools:visibility="gone" />
+            tools:listitem="@layout/recycler_item_booking_history" />
 
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_error_load_booking_history"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:visibility="gone"
             app:cardBackgroundColor="#00FFFFFF"
             app:cardCornerRadius="0dp"
             app:cardForegroundColor="#00FFFFFF"
             app:layout_constraintHeight_default="percent"
             app:layout_constraintHeight_percent="0.5"
-            app:strokeColor="#00FFFFFF">
+            app:strokeColor="#00FFFFFF"
+            tools:visibility="gone">
 
             <TextView
                 android:id="@+id/text_error_load_booking"
