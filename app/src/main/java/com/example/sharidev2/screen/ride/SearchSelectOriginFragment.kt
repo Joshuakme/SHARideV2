@@ -87,9 +87,11 @@ class SearchSelectOriginFragment : Fragment() {
 
         // GOOGLE MAP
         searchRideViewModel.origin.observe(viewLifecycleOwner) { searchLocation ->
-            originNameText.text = searchLocation.name
-            originDistanceAddress.text = searchLocation.detailAddress
-            updateMap()
+            if(searchLocation != null) {
+                originNameText.text = searchLocation.name
+                originDistanceAddress.text = searchLocation.detailAddress
+                updateMap()
+            }
         }
 
 

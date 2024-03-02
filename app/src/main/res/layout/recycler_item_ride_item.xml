@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
+        app:contentPadding="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!--  Driver Icon   -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_ride_driver_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="100000dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:strokeWidth="0dp">
+
+                <ImageView
+                    android:id="@+id/img_ride_driver_icon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:scaleType="fitCenter"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:srcCompat="@drawable/baseline_account_circle_24"
+                    app:tint="?attr/colorOnBackground"
+                    tools:layout_editor_absoluteY="8dp" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <!--  Destination Location   -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_ride_item_location_timeline"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                app:layout_constraintEnd_toStartOf="@+id/card_ride_available_seats"
+                app:layout_constraintStart_toEndOf="@+id/card_ride_driver_icon"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:listitem="@layout/timeline_item_ride_location" />
+
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_ride_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:translationY="-1dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainer"
+                app:cardCornerRadius="6dp"
+                app:contentPaddingBottom="4dp"
+                app:contentPaddingLeft="8dp"
+                app:contentPaddingRight="8dp"
+                app:contentPaddingTop="4dp"
+                app:layout_constraintStart_toEndOf="@+id/card_ride_driver_icon"
+                app:layout_constraintTop_toBottomOf="@+id/recycler_ride_item_location_timeline"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/img_ride_item_seat_icon"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="4dp"
+                        app:srcCompat="@drawable/baseline_airline_seat_recline_normal_24"
+                        app:tint="?attr/colorOutline" />
+
+                    <TextView
+                        android:id="@+id/text_ride_item_seats_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center|center_vertical"
+                        android:text="@string/matched_ride_fragment_vehicle_capacity"
+                        android:textColor="?attr/colorOutline"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:id="@+id/text_ride_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/placeholder_booking_recycler_item_date"
+                android:textColor="@color/system_neutral2_500"
+                android:textSize="12sp"
+                app:layout_constraintStart_toEndOf="@+id/card_ride_driver_icon"
+                app:layout_constraintTop_toBottomOf="@+id/card_ride_tag" />
+
+
+            <!--  Available Seats Chip   -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_ride_available_seats"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="?attr/colorSecondaryContainer"
+                app:cardCornerRadius="4dp"
+                app:contentPaddingLeft="6dp"
+                app:contentPaddingRight="6dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:strokeWidth="0dp">
+
+                <TextView
+                    android:id="@+id/text_ride_available_seats"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins"
+                    android:text="@string/matched_ride_fragment_ride_available_seats"
+                    android:textColor="?attr/colorSecondary"
+                    android:textSize="11sp" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

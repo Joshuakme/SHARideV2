@@ -6,8 +6,8 @@ import com.example.sharidev2.data.model.Chat
 import com.example.sharidev2.data.model.Gender
 import com.example.sharidev2.data.model.Message
 import com.example.sharidev2.data.model.MessageType
+import com.example.sharidev2.data.model.Review
 import com.example.sharidev2.data.model.RideOption
-import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.data.model.User
 import com.example.sharidev2.data.model.Vehicle
 import com.example.sharidev2.data.model.VehicleType
@@ -27,6 +27,16 @@ class FirebaseUtils(
     // Variables
     private val converters = Converters()
 
+    companion object {
+        // CONSTANT
+        val SUCCESS = 0 // Success
+        val NOT_BELONG_USER = 1 // Contact doesn't belong to the current user
+        val USER_NOT_AUTHENTICATED = 2 // User not authenticated
+        val EXCEPTION = 3 // Handle exceptions
+        val DATA_NOT_VALID = 4
+
+    }
+
     // COROUTINES FUNCTIONS
     suspend fun getUserFromUid(userUid: String): User {
         return withContext(Dispatchers.IO) {
@@ -35,7 +45,6 @@ class FirebaseUtils(
                     .document(userUid)
                     .get()
                     .await()
-
 
                 val uid = user.getString("uid")
                 val displayName = user.getString("displayName")
@@ -50,7 +59,7 @@ class FirebaseUtils(
                 val rideOption = RideOption(driverGender, vehicleType, petFriendly)
 
                 val rating = (user.get("rating") as Long).toFloat()
-                //val savedAddresses = converters.toSearchLocationList(user.get("savedAddresses") as List<Map<String, Any>>).toMutableList()
+                val savedAddresses = converters.toSearchLocationList(user.get("savedAddress") as List<Map<String, Any>>).toMutableList()
                 val gender = Gender.valueOf(user.getString("gender") ?: "")
                 val joinedDate = user.getTimestamp("joinedDate")
 
@@ -63,7 +72,7 @@ class FirebaseUtils(
                     photoUri,
                     rideOption,
                     rating,
-                    mutableListOf(),
+                    savedAddresses,
                     gender,
                     joinedDate
                 )
@@ -159,6 +168,38 @@ class FirebaseUtils(
                 timestamp,
                 messageList
             )
+        }
+    }
+
+    suspend fun getReviewFromChatId(reviewId: String): Review {
+        return withContext(Dispatchers.IO) {
+            try {
+                val review = firestore.collection("review")
+                    .document(reviewId)
+                    .get()
+                    .await()
+
+                val reviewID = review.id
+                val reviewer = review.getString("reviewer") ?: ""
+                val reviewedUser = review.getString("reviewedUser")
+                val rating = (review.get("rating") as Long).toFloat()
+                val comment = review.getString("comment")
+                val dateTime = review.getTimestamp("datetime")
+
+
+
+                return@withContext Review(
+                    reviewID,
+                    reviewer,
+                    reviewedUser,
+                    rating,
+                    comment,
+                    dateTime
+                )
+            } catch (e: Exception) {
+                Log.e("Get Vehicle From ID", e.message.toString())
+                return@withContext Review()
+            }
         }
     }
 

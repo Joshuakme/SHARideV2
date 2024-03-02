@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.sharidev2.data.model.Passenger
 import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.data.repository.RideRepository
@@ -58,6 +59,10 @@ class RideViewModel(
         savedStateHandle[PAST_RIDE_LIST_KEY] = newRideList
     }
 
+    suspend fun addPassengerToRide(passenger: Passenger, rideId: String): Int {
+        return rideRepository.addPassenger(passenger, rideId)
+    }
+
     private fun getRides(filterType: FilterType): List<Ride> {
         val currentTimestamp = Timestamp.now()
 
@@ -69,8 +74,11 @@ class RideViewModel(
         } ?: emptyList()
     }
 
+
     enum class FilterType {
         ACTIVE,
         PAST
     }
+
+
 }

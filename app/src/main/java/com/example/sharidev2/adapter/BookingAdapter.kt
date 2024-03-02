@@ -58,9 +58,13 @@ class BookingAdapter (
         // Bind data into UI
         holder.titleText.text = booking.destination.name
         holder.dateText.text = bookingDateFormatter.format(Date(booking.datetime.seconds * 1000)).replace("AM", "am").replace("PM", "pm")
-        holder.priceText.text = holder.itemView.context.getString(R.string.booking_item_price,
-            booking.price?.get(currentUser.uid) ?: 0.0
-        )
+        holder.priceText.text = if(booking.passengers?.get(currentUser.uid)?.ridePrice != null) {
+                                    holder.itemView.context.getString(R.string.booking_item_price,
+                                        booking.passengers[currentUser.uid]!!.ridePrice)
+                                } else {
+                                    "pending"
+                                }
+
 
         val typedValue = TypedValue()
         context.theme?.resolveAttribute(com.google.android.material.R.attr.colorPrimary, typedValue, true)
@@ -101,14 +105,14 @@ class BookingAdapter (
     }
 
     private fun isDriver(ride: Ride): Boolean {
-        return ride.driver.uid == currentUser.uid
+        return ride.driver.userUid == currentUser.uid
     }
 
     private fun isPassenger(ride: Ride): Boolean {
 
         return ride.passengers?.any { passenger ->
-            Log.e("Booking Adapter", "${ride.destination.name} - isPassenger " + passenger.userUid)
-            passenger.userUid == currentUser.uid } ?: false
+            Log.e("Booking Adapter", "${ride.destination.name} - isPassenger " + passenger.key)
+            passenger.key == currentUser.uid } ?: false
     }
 
 }

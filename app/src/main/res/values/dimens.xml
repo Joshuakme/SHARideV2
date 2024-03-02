@@ -52,7 +52,7 @@
     <dimen name="ss_profile_section_title_bottom_margin">16dp</dimen>
     <dimen name="ss_profile_section_item_bottom_margin">16dp</dimen>
     <dimen name="ss_profile_title_top_margin">24dp</dimen>
-    <dimen name="ss_profile_subfragment_nav_icon_scale">1</dimen>
+    <dimen name="ss_profile_subfragment_nav_icon_scale">0.9</dimen>
 
     <dimen name="ss_profile_personal_info_pic_size">110dp</dimen>
 

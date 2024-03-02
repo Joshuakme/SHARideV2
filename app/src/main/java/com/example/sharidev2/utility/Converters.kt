@@ -5,6 +5,7 @@ import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.Log
+import com.example.sharidev2.data.model.Driver
 import com.example.sharidev2.data.model.Gender
 import com.example.sharidev2.data.model.Message
 import com.example.sharidev2.data.model.MessageType
@@ -118,28 +119,78 @@ class Converters() {
         return userList
     }
 
-    fun toPassenger(map: Map<String, Any>): Passenger {
-
+    fun toDriver(map: Map<String, Any>, user: User): Driver {
         val userUid = map["userUid"] as String
-        val locationMap = map["location"] as Map<String, Any>
-        val latitude = (locationMap["latitude"] as Long).toDouble()
-        val longitude = (locationMap["longitude"] as Long).toDouble()
-        val location = LatLng(latitude, longitude)
 
-        return Passenger(userUid, location)
-    }
+        val locationMap = map["location"] as Map<String, Any>?
 
-    fun toPassengerList(mapList: List<Map<String, Any>>): List<Passenger> {
-        val passengerList = mutableListOf<Passenger>()
+        val location = if(locationMap != null) {
+            val latitude = (locationMap["latitude"] as Long).toDouble()
+            val longitude = (locationMap["longitude"] as Long).toDouble()
 
-        for(map in mapList) {
-            if(map.isNotEmpty()) {
-                passengerList.add(toPassenger(map))
-            }
+            LatLng(latitude, longitude)
+        } else {
+            LatLng(0.0, 0.0)
         }
 
-        return passengerList.toList()
+        val status = UserStatus.valueOf((map["status"] as String))
+        val vehicle = toVehicle(map["vehicle"] as Map<String, Any>)
+
+        return Driver(
+            userUid,
+            user,
+            location,
+            status,
+            vehicle
+        )
     }
+
+    fun toPassenger(map: Map<String, Any>, user: User): Passenger {
+        val userUid = map["userUid"] as String
+
+        val locationMap = map["location"] as Map<String, Any>?
+        val location = if(locationMap != null) {
+            val latitude = (locationMap["latitude"] as Long).toDouble()
+            val longitude = (locationMap["longitude"] as Long).toDouble()
+            LatLng(latitude, longitude)
+        } else {
+            LatLng(0.0, 0.0)
+        }
+
+        val status = UserStatus.valueOf((map["status"] as String))
+        val ridePrice = (map["price"] as Long?)?.toDouble()
+
+        return Passenger(
+            userUid,
+            user,
+            location,
+            status,
+            ridePrice
+        )
+    }
+
+    fun toPassengers(map: Map<String, Any>, userList: List<User>) : Map<String, Passenger> {
+        val passengerMap = mutableMapOf<String, Passenger>()
+
+        for(entry in map) {
+            val valueMap = entry.value as Map<String, Any>
+
+            var user = User()
+            for(u in userList) {
+                if(u.uid == entry.key) {
+                    user = u
+                    break
+                }
+            }
+
+            val passenger = toPassenger(valueMap, user)
+
+            passengerMap[entry.key] = passenger
+        }
+
+        return  passengerMap
+    }
+
 
     // PHOTOS CONVERTERS
     fun toUriList(photoUrlList: List<String>): List<Uri> {
@@ -200,7 +251,7 @@ class Converters() {
             photos.add(Uri.parse(photo))
         }
 
-        val capacity = map["capacity"] as Int
+        val capacity = (map["capacity"] as Long).toInt()
 
         return Vehicle(
             vehicleID,

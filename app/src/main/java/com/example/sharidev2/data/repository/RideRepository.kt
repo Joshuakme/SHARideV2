@@ -2,15 +2,15 @@ package com.example.sharidev2.data.repository
 
 import android.util.Log
 import com.example.sharidev2.data.model.Chat
+import com.example.sharidev2.data.model.Passenger
+import com.example.sharidev2.data.model.Review
 import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.data.model.RideStatus
-import com.example.sharidev2.data.model.UserStatus
+import com.example.sharidev2.data.model.User
 import com.example.sharidev2.utility.Converters
 import com.example.sharidev2.utility.FirebaseUtils
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FieldPath
-import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
@@ -37,16 +37,12 @@ class RideRepository(
                         "origin" to ride.origin,
                         "destination" to ride.destination,
                         "datetime" to ride.datetime,
-                        "driver" to currentUser.uid,
+                        "driver" to ride.driver,
                         "passengers" to ride.passengers,
                         "rideStatus" to ride.rideStatus,
-                        "driverStatus" to ride.driverStatus,
-                        "passengersStatus" to ride.passengersStatus,
                         "startTime" to ride.startTime,
                         "completeTime" to ride.completeTime,
-                        "vehicle" to ride.vehicle.vehicleID,
                         "availableSeats" to ride.availableSeats,
-                        "price" to ride.price,
                         "reviews" to ride.reviews,
                         "chat" to newChat.chatId
                     )
@@ -74,7 +70,7 @@ class RideRepository(
     private suspend fun createChat(): Chat {
         return withContext(Dispatchers.IO) {
             try{
-                val chatId = firestore.collection("chats").document().id
+                val chatId = firestore.collection("chat").document().id
 
                 val chat = Chat(chatId = chatId, members = listOf(currentUser!!.uid))
 
@@ -91,8 +87,38 @@ class RideRepository(
         }
     }
 
+    suspend fun addPassenger(newPassenger: Passenger, rideId: String): Int {
+        return withContext(Dispatchers.IO) {
+            try {
+                val rideRef = firestore.collection("ride").document(rideId)
 
-    // RETRIEVE
+                // Update the document with the new passenger
+                rideRef.update("passengers.${newPassenger.userUid}", newPassenger).await()
+
+//                // Get the current passengers count
+//                val rideDoc = rideRef.get().await()
+//                val passengersCount = (rideDoc.get("passengers") as? Map<*, *>)?.size ?: 0
+//
+//                // Get the vehicle capacity
+//                val vehicleCapacity = (rideDoc.getLong("vehicle.capacity")?.minus(1)) ?: 0
+//
+//                // Calculate the available seats
+//                val availableSeats = vehicleCapacity - passengersCount
+//
+//                // Update the available seats count
+//                rideRef.update("availableSeats", availableSeats).await()
+
+                FirebaseUtils.SUCCESS
+            } catch (e: Exception) {
+                Log.e("Add Passenger", e.message.toString())
+                FirebaseUtils.EXCEPTION
+            }
+        }
+    }
+
+
+
+    // RETRIEVE METHODS
     suspend fun getAllRides(): List<Ride> {
         return withContext(Dispatchers.IO) {
             try{
@@ -146,6 +172,15 @@ class RideRepository(
     }
 
 
+    // UPDATE FUNCTIONS
+    suspend fun updatePassenger(newPassenger: Passenger) {
+
+    }
+
+    suspend fun updateRideAvailableSeats(newAvailableSeats: Int, ) {
+
+    }
+
 
 
     // HELPER METHODS
@@ -159,17 +194,29 @@ class RideRepository(
                         val origin = converters.toSearchLocation(get("origin") as Map<String, Any>)
                         val destination = converters.toSearchLocation(get("destination") as Map<String, Any>)
                         val datetime = getTimestamp("datetime") ?: Timestamp.now()
-                        val driver = firebaseUtils.getUserFromUid(getString("driver") ?: "")
-                        val passengers = converters.toPassengerList(get("passengers") as List<Map<String, Any>>).toMutableList()
+
+                        val driverUid = (get("driver") as Map<String, Any>)["userUid"] as String
+                        val driverUser = firebaseUtils.getUserFromUid(driverUid)
+                        val driver = converters.toDriver(get("driver") as Map<String, Any>, driverUser)
+
+                        val passengerUserList = mutableListOf<User>()
+                        val passengerMap = get("passengers") as Map<String, Any>
+                        for(field in passengerMap) {
+                            passengerUserList.add(firebaseUtils.getUserFromUid(field.key))
+                        }
+                        val passengers = converters.toPassengers(get("passengers") as Map<String, Any>, passengerUserList)
+
+
                         val rideStatus = RideStatus.valueOf(getString("rideStatus") ?: "")
-                        val driverStatus = UserStatus.valueOf(getString("driverStatus") ?: "")
-                        val passengersStatus = converters.toPassengersStatus(get("passengersStatus") as Map<String, String>)
                         val startTime = if(get("startTime") != null) (get("startTime") as Timestamp) else null
                         val completeTime = if(get("completeTime") != null) (get("completeTime") as Timestamp) else null
-                        val vehicle = firebaseUtils.getVehicleFromId(getString("vehicle") ?: "")
                         val availableSeats = (get("availableSeats") as Long).toInt()
-                        val price = converters.toPrice(get("price") as Map<String, Long>)
-                        val reviews = converters.toReviewList(get("reviews") as List<Map<String, Any>>)
+
+                        val reviewIdList = get("reviews") as List<String>
+                        val reviewList = mutableListOf<Review>()
+                        for(reviewId in reviewIdList) {
+                            reviewList.add(firebaseUtils.getReviewFromChatId(reviewId))
+                        }
                         val chat = firebaseUtils.getChatFromChatId(getString("chat") ?: "")
                         val createdAt = getTimestamp("createdAt")
 
@@ -182,14 +229,10 @@ class RideRepository(
                             driver,
                             passengers,
                             rideStatus,
-                            driverStatus,
-                            passengersStatus,
                             startTime,
                             completeTime,
-                            vehicle,
                             availableSeats,
-                            price,
-                            reviews,
+                            reviewList,
                             chat,
                             createdAt
                         )

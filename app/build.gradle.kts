@@ -94,7 +94,9 @@ dependencies {
     // Viewpager 2
     implementation("androidx.viewpager2:viewpager2:1.0.0")
 
-
     // Gson
     implementation("com.google.code.gson:gson:2.8.8")
+
+    // Timeline
+    implementation("com.github.vipulasri:timelineview:1.1.5")
 }

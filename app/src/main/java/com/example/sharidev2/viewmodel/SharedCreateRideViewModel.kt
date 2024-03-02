@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.sharidev2.data.model.Driver
 import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.data.model.User
@@ -109,29 +110,36 @@ class SharedCreateRideViewModel(
 
     // Create Ride
     suspend fun createRide() {
-        val newCreatedRide = Ride(
-            origin = origin.value!!,
-            destination = destination.value!!,
-            datetime = rideDateTime.value!!,
-            driver = FirebaseInitializer.firebaseAuth.currentUser?.let { User.fromFirebaseUser(it) }
-                ?: User(),
-            vehicle = vehicle.value!!,
-            availableSeats = capacity.value!!,
-            createdAt = Timestamp.now()
-        )
+        val currentUser = FirebaseInitializer.firebaseAuth.currentUser
 
-        viewModelScope.launch(Dispatchers.Main) {
-            rideRepository.createRide(newCreatedRide, object : RideRepository.CreateRideCallback {
-                override fun onCreateSuccess() {
-                    setCreateRideStatus(CREATE_RIDE_SUCCESS)
-                }
+        if(currentUser != null) {
+            val newCreatedRide = Ride(
+                origin = origin.value!!,
+                destination = destination.value!!,
+                datetime = rideDateTime.value!!,
+                driver = Driver(
+                    userUid = currentUser?.uid,
+                    vehicle = vehicle.value!!
+                ),
+                availableSeats = capacity.value!!,
+                createdAt = Timestamp.now()
+            )
 
-                override fun onCreateFailure(error: Throwable) {
-                    Log.e("Create Ride", error.message.toString())
+            viewModelScope.launch(Dispatchers.Main) {
+                rideRepository.createRide(newCreatedRide, object : RideRepository.CreateRideCallback {
+                    override fun onCreateSuccess() {
+                        setCreateRideStatus(CREATE_RIDE_SUCCESS)
+                    }
 
-                    setCreateRideStatus(CREATE_RIDE_FAILED)
-                }
-            })
+                    override fun onCreateFailure(error: Throwable) {
+                        Log.e("Create Ride", error.message.toString())
+
+                        setCreateRideStatus(CREATE_RIDE_FAILED)
+                    }
+                })
+            }
+        } else {
+            setCreateRideStatus(CREATE_RIDE_FAILED)
         }
     }
 

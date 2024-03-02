@@ -24,6 +24,14 @@ import java.util.Calendar
 
 class CommonUtils {
 
+    companion object {
+        val DATA_LOADING = 0
+        val DATA_SUCCESS = 1
+        val DATA_FAILED = 2
+    }
+
+
+
     fun calculateDistance(
         lat1: Double,
         lon1: Double,
