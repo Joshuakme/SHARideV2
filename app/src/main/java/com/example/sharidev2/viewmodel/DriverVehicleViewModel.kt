@@ -7,14 +7,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sharidev2.data.model.Vehicle
 import com.example.sharidev2.data.repository.DriverVehicleRepository
-import com.example.sharidev2.firebase.FirebaseInitializer
+import com.example.sharidev2.utility.FirebaseClient
 import kotlinx.coroutines.launch
 
 class DriverVehicleViewModel: ViewModel() {
-    private val driverVehicleRepository = DriverVehicleRepository(
-        FirebaseInitializer.firestore,
-        FirebaseInitializer.firebaseAuth
-    )
+    private val driverVehicleRepository = DriverVehicleRepository()
 
     private val _vehicleList = MutableLiveData<List<Vehicle>>()
     val vehicleList: LiveData<List<Vehicle>> get() = _vehicleList

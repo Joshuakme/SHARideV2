@@ -14,14 +14,12 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.example.sharidev2.R
 import com.example.sharidev2.data.model.Passenger
-import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.databinding.FragmentRideDetailBinding
-import com.example.sharidev2.firebase.FirebaseInitializer
-import com.example.sharidev2.utility.FirebaseUtils
+import com.example.sharidev2.utility.Constants
+import com.example.sharidev2.utility.FirebaseClient
 import com.example.sharidev2.viewmodel.RideViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -52,7 +50,7 @@ class RideDetailFragment : Fragment() {
         // DATA
         val rideId = arguments?.getString("rideId")
         Log.e("", "RideId: $rideId")
-        val currentUser = FirebaseInitializer.firebaseAuth.currentUser
+        val currentUser = FirebaseClient.firebaseAuth.currentUser
 
         // ELEMENT VARIABLES
         val requestBtn = binding.btnRideDetailRequestRide
@@ -71,13 +69,13 @@ class RideDetailFragment : Fragment() {
                     val responseStatus = rideViewModel.addPassengerToRide(passenger, rideId)
 
                     when(responseStatus) {
-                        FirebaseUtils.SUCCESS -> {
+                        Constants.FIREBASE_REQUEST_SUCCESS -> {
                             Toast.makeText(requireContext(), "Ride requested successfully!", Toast.LENGTH_SHORT).show()
 
                             navController.navigate(R.id.action_rideDetailFragment_to_bookingFragment)
                         }
 
-                        FirebaseUtils.EXCEPTION -> {
+                        Constants.FIREBASE_REQUEST_EXCEPTION -> {
                             Toast.makeText(requireContext(), "Ride requested failed!", Toast.LENGTH_SHORT).show()
                         }
                     }

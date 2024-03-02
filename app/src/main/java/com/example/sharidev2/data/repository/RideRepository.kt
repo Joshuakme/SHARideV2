@@ -7,11 +7,11 @@ import com.example.sharidev2.data.model.Review
 import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.data.model.RideStatus
 import com.example.sharidev2.data.model.User
+import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.Converters
-import com.example.sharidev2.utility.FirebaseUtils
+import com.example.sharidev2.utility.FirebaseClient
+import com.example.sharidev2.utility.UserClient
 import com.google.firebase.Timestamp
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.Dispatchers
@@ -19,13 +19,14 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 
-class RideRepository(
-    private val firestore: FirebaseFirestore,
-    firebaseAuth: FirebaseAuth,
-    private val firebaseUtils: FirebaseUtils
-) {
-    private val currentUser = firebaseAuth.currentUser
+class RideRepository() {
+    // Firebase Instances
+    private val firestore = FirebaseClient.firestore
+
+    private val currentUser = UserClient.currentUser()
     private val converters = Converters()
+
+    private val rideCollectionRef = firestore.collection("ride")
 
     suspend fun createRide(ride: Ride, callback: CreateRideCallback) {
         return withContext(Dispatchers.IO) {
@@ -72,7 +73,7 @@ class RideRepository(
             try{
                 val chatId = firestore.collection("chat").document().id
 
-                val chat = Chat(chatId = chatId, members = listOf(currentUser!!.uid))
+                val chat = Chat(chatId = chatId, members = listOf(currentUser?.uid!!))
 
                 firestore.collection("chats").document(chatId)
                     .set(chat)
@@ -108,10 +109,10 @@ class RideRepository(
 //                // Update the available seats count
 //                rideRef.update("availableSeats", availableSeats).await()
 
-                FirebaseUtils.SUCCESS
+                Constants.FIREBASE_REQUEST_SUCCESS
             } catch (e: Exception) {
                 Log.e("Add Passenger", e.message.toString())
-                FirebaseUtils.EXCEPTION
+                Constants.FIREBASE_REQUEST_EXCEPTION
             }
         }
     }
@@ -122,7 +123,7 @@ class RideRepository(
     suspend fun getAllRides(): List<Ride> {
         return withContext(Dispatchers.IO) {
             try{
-                val querySnapshot = firestore.collection("ride")
+                val querySnapshot = rideCollectionRef
 //                    .where(
 //                        Filter.or(
 //                            Filter.equalTo("driver", currentUser?.uid),
@@ -144,6 +145,8 @@ class RideRepository(
             }
         }
     }
+
+
 
     suspend fun getFilterDriverRideList(date: Timestamp): List<Ride> {
         return withContext(Dispatchers.Main) {
@@ -182,7 +185,6 @@ class RideRepository(
     }
 
 
-
     // HELPER METHODS
     private suspend fun createRideListFromQuerySnapshot(querySnapshot: QuerySnapshot): List<Ride> {
         val filteredRideList = mutableListOf<Ride>()
@@ -196,13 +198,13 @@ class RideRepository(
                         val datetime = getTimestamp("datetime") ?: Timestamp.now()
 
                         val driverUid = (get("driver") as Map<String, Any>)["userUid"] as String
-                        val driverUser = firebaseUtils.getUserFromUid(driverUid)
+                        val driverUser = FirebaseClient.getUserFromUid(driverUid)
                         val driver = converters.toDriver(get("driver") as Map<String, Any>, driverUser)
 
                         val passengerUserList = mutableListOf<User>()
                         val passengerMap = get("passengers") as Map<String, Any>
                         for(field in passengerMap) {
-                            passengerUserList.add(firebaseUtils.getUserFromUid(field.key))
+                            passengerUserList.add(FirebaseClient.getUserFromUid(field.key))
                         }
                         val passengers = converters.toPassengers(get("passengers") as Map<String, Any>, passengerUserList)
 
@@ -215,9 +217,9 @@ class RideRepository(
                         val reviewIdList = get("reviews") as List<String>
                         val reviewList = mutableListOf<Review>()
                         for(reviewId in reviewIdList) {
-                            reviewList.add(firebaseUtils.getReviewFromChatId(reviewId))
+                            reviewList.add(FirebaseClient.getReviewFromChatId(reviewId))
                         }
-                        val chat = firebaseUtils.getChatFromChatId(getString("chat") ?: "")
+                        val chat = FirebaseClient.getChatFromChatId(getString("chat") ?: "")
                         val createdAt = getTimestamp("createdAt")
 
 

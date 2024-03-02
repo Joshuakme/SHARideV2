@@ -12,12 +12,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sharidev2.R
-import com.example.sharidev2.adapter.BookingAdapter
 import com.example.sharidev2.adapter.RideAdapter
 import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.databinding.FragmentMatchedRideBinding
-import com.example.sharidev2.firebase.FirebaseInitializer
+import com.example.sharidev2.utility.FirebaseClient
 import com.example.sharidev2.utility.CommonUtils
+import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.viewmodel.RideViewModel
 
 class MatchedRideFragment :
@@ -25,7 +25,7 @@ class MatchedRideFragment :
     RideAdapter.OnRideClickListener {
     private lateinit var binding: FragmentMatchedRideBinding
     private val rideViewModel: RideViewModel by viewModels()
-    private val currentUser = FirebaseInitializer.firebaseAuth.currentUser
+    private val currentUser = FirebaseClient.firebaseAuth.currentUser
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,22 +45,22 @@ class MatchedRideFragment :
 
 
         rideViewModel.rideList.observe(viewLifecycleOwner) {rideList ->
-            loading(CommonUtils.DATA_LOADING)
+            loading(Constants.UI_DATA_LOADING)
 
             if(currentUser != null && rideList != null && rideList.isNotEmpty()) {
                 resultNumText.text = getString(R.string.matched_ride_fragment_ride_found_result_number, rideList.size)
 
                 adapter = RideAdapter(requireContext(), rideList, this)
                 recyclerView.adapter = adapter
-                loading(CommonUtils.DATA_SUCCESS)
+                loading(Constants.UI_DATA_SUCCESS)
             } else if (rideList == null || rideList.isEmpty()) {
-                loading(CommonUtils.DATA_FAILED)
+                loading(Constants.UI_DATA_FAILED)
             } else if(currentUser == null) {
                 Toast.makeText(requireContext(), "Please login to proceed", Toast.LENGTH_SHORT).show()
-                loading(CommonUtils.DATA_FAILED)
+                loading(Constants.UI_DATA_FAILED)
             } else {
                 Toast.makeText(requireContext(), "Error loading result", Toast.LENGTH_SHORT).show()
-                loading(CommonUtils.DATA_FAILED)
+                loading(Constants.UI_DATA_FAILED)
             }
 
         }
@@ -89,19 +89,19 @@ class MatchedRideFragment :
         val errorLinearLayout = binding.llMatchedRideErrorResult
 
         when(loadingState) {
-            CommonUtils.DATA_LOADING -> {
+            Constants.UI_DATA_LOADING -> {
                 loadingMatchedRideCard.visibility = View.VISIBLE
                 resultLinearLayout.visibility = View.GONE
                 errorLinearLayout.visibility = View.GONE
             }
 
-            CommonUtils.DATA_SUCCESS -> {
+            Constants.UI_DATA_SUCCESS -> {
                 loadingMatchedRideCard.visibility = View.GONE
                 resultLinearLayout.visibility = View.VISIBLE
                 errorLinearLayout.visibility = View.GONE
             }
 
-            CommonUtils.DATA_FAILED -> {
+            Constants.UI_DATA_FAILED -> {
                 loadingMatchedRideCard.visibility = View.GONE
                 resultLinearLayout.visibility = View.GONE
                 errorLinearLayout.visibility = View.VISIBLE

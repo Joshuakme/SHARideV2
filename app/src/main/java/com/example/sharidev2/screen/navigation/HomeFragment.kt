@@ -50,8 +50,6 @@ class HomeFragment : Fragment() {
 
 
         // ELEMENT VARIABLES
-//        val tabLayout: TabLayout = binding.tabHomeMainMenu
-//        val viewPager: ViewPager2 = binding.viewPagerHomeMainMenu
         val homeNestedScrollView = binding.nsvFragmentHome
         val welcomeHomeText = binding.textHomeWelcomeUser
         val searchBarBtn = binding.cardHomeSearchBar
@@ -70,10 +68,12 @@ class HomeFragment : Fragment() {
 
 
         currentLocationViewModel.currentLocation.observe(viewLifecycleOwner) {currentLocation ->
-            fetchAreaFromLocation(Location(LocationManager.GPS_PROVIDER).apply {
-                latitude = currentLocation.latitude
-                longitude = currentLocation.longitude
-            })
+            if(currentLocation != null) {
+                fetchAreaFromLocation(Location(LocationManager.GPS_PROVIDER).apply {
+                    latitude = currentLocation.latitude
+                    longitude = currentLocation.longitude
+                })
+            }
         }
 
 

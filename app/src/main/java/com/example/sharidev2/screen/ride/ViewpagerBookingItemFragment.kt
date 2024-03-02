@@ -1,7 +1,6 @@
 package com.example.sharidev2.screen.ride
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,14 +12,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.sharidev2.R
 import com.example.sharidev2.adapter.BookingAdapter
 import com.example.sharidev2.data.model.Ride
-import com.example.sharidev2.data.model.SearchLocation
-import com.example.sharidev2.data.model.User
-import com.example.sharidev2.data.model.Vehicle
 import com.example.sharidev2.databinding.FragmentViewpagerBookingItemBinding
-import com.example.sharidev2.firebase.FirebaseInitializer
+import com.example.sharidev2.utility.FirebaseClient
 import com.example.sharidev2.viewmodel.RideViewModel
-import com.google.android.gms.maps.model.LatLng
-import com.google.firebase.Timestamp
 
 
 class ViewpagerBookingItemFragment :
@@ -29,7 +23,7 @@ class ViewpagerBookingItemFragment :
     private lateinit var binding: FragmentViewpagerBookingItemBinding
     private val rideViewModel: RideViewModel by viewModels()
     private lateinit var adapter: BookingAdapter
-    private val currentUser = FirebaseInitializer.firebaseAuth.currentUser
+    private val currentUser = FirebaseClient.firebaseAuth.currentUser
 
 
     // CONSTANT

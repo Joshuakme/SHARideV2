@@ -5,19 +5,18 @@ import android.util.Log
 import com.example.sharidev2.data.model.Vehicle
 import com.example.sharidev2.data.model.VehicleType
 import com.example.sharidev2.utility.Converters
-import com.example.sharidev2.utility.FirebaseUtils
+import com.example.sharidev2.utility.FirebaseClient
+import com.example.sharidev2.utility.UserClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-class DriverVehicleRepository(
-    private val firestore: FirebaseFirestore,
-    private val firebaseAuth: FirebaseAuth,
-) {
-    private val currentUser = firebaseAuth.currentUser
-    private val firebaseUtils = FirebaseUtils(firestore, firebaseAuth)
+class DriverVehicleRepository() {
+    private val firestore = FirebaseClient.firestore
+
+    private val currentUser = UserClient.currentUser()
 
 
     suspend fun getDriverVehicleList(): List<Vehicle> {

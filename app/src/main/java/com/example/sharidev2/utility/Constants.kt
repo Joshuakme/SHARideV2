@@ -1,0 +1,23 @@
+package com.example.sharidev2.utility
+
+class Constants {
+    companion object {
+        // PERMISIONS
+        val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9002
+        val PERMISSIONS_REQUEST_ENABLE_GPS = 9003
+
+
+        // FIREBASE REQUEST STATUS
+        val FIREBASE_REQUEST_SUCCESS = 1000 // Success
+        val FIREBASE_REQUEST_NOT_BELONG_USER = 1001 // Contact doesn't belong to the current user
+        val FIREBASE_REQUEST_USER_NOT_AUTHENTICATED = 1002 // User not authenticated
+        val FIREBASE_REQUEST_EXCEPTION = 1003 // Handle exceptions
+        val FIREBASE_REQUEST_DATA_NOT_VALID = 1004
+
+
+        // UI DATA LOADING
+        val UI_DATA_LOADING = 2000
+        val UI_DATA_SUCCESS = 2001
+        val UI_DATA_FAILED = 2002
+    }
+}

@@ -4,45 +4,44 @@ package com.example.sharidev2
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Address
-import android.location.Geocoder
 import android.os.Bundle
-import android.os.Looper
-import android.util.Log
 import android.view.View
+import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.sharidev2.databinding.ActivityMainBinding
 import com.example.sharidev2.service.ConnectivityService
+import com.example.sharidev2.utility.Constants.Companion.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
+import com.example.sharidev2.utility.FirebaseClient
+import com.example.sharidev2.utility.UserClient
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import android.location.Location
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
-import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.io.IOException
-import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var bottomNavContainer: LinearLayout
 
     private val currentLocationViewModel: CurrentLocationViewModel by viewModels()
+
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private var locationPermissionGranted = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,10 +56,19 @@ class MainActivity : AppCompatActivity() {
 
         bottomNav.setupWithNavController(navController)
 
-
         Places.initialize(applicationContext, "AIzaSyBTPyaUpFhz9GMIpFq40zi9cZlCeZZZtQc")
 
-        getCurrentLocation()
+        lifecycleScope.launch(Dispatchers.IO) {
+            UserClient.setCurrentUser(FirebaseClient.firebaseAuth.currentUser?.uid ?: "")
+        }
+
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        if(locationPermissionGranted) {
+            getLastKnownLocation()
+        } else {
+            getLocationPermission()
+        }
 
         // Check Network Connection
         startService(Intent(this, ConnectivityService::class.java))
@@ -99,60 +107,9 @@ class MainActivity : AppCompatActivity() {
         bottomNavContainer.translationY = 0f
     }
 
-    private fun getCurrentLocation() {
 
-        val requestLocationPermissionLauncher =
-            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-                if (isGranted) {
-                    // Permission is granted. Proceed with location updates.
-                    requestLocationUpdates()
-                } else {
-                    // Permission is denied. Handle accordingly.
-                }
-            }
-
-        // Check and request location permission
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            // Permission is already granted. Proceed with location updates.
-            requestLocationUpdates()
-        } else {
-            // Request location permission
-            requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-        }
-    }
-
-    private fun requestLocationUpdates() {
-        // Initialize FusedLocationProviderClient
-        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
-        val locationRequest = LocationRequest.create().apply {
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            interval = 10000 // Update location every 10 seconds (adjust as needed)
-        }
-
-        val locationCallback = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult) {
-                super.onLocationResult(locationResult)
-
-                // Get the latest location from the result
-                val latestLocation = locationResult.lastLocation
-
-
-                // Now you have the latest current location (latitude and longitude)
-                // You can use it in your autocomplete request or any other use case
-                val currentLocation = LatLng(latestLocation.latitude, latestLocation.longitude)
-                currentLocationViewModel.setLocation(currentLocation)
-
-                // If you only need one location update, you can remove the callback after obtaining the location.
-                fusedLocationClient.removeLocationUpdates(this)
-            }
-        }
-
-        // Request location updates
+    private fun getLastKnownLocation() {
+        // If no permission granted
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -161,17 +118,63 @@ class MainActivity : AppCompatActivity() {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+            Toast.makeText(applicationContext, "Location permission denied", Toast.LENGTH_SHORT).show()
             return
         }
-        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
+
+        // Create a LocationRequest object
+        val locationRequest = LocationRequest.create().apply {
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY // Set the priority to high accuracy
+            interval = 10000  // Update location (10 seconds)
+        }
+
+        fusedLocationClient.requestLocationUpdates(locationRequest, object: LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                super.onLocationResult(locationResult)
+
+                // Get the latest location from the result
+                val latestLocation = locationResult.lastLocation
+
+                val currentLocation = LatLng(latestLocation.latitude, latestLocation.longitude)
+
+                currentLocationViewModel.setLocation(currentLocation)
+
+                fusedLocationClient.removeLocationUpdates(this)
+            }
+        }, null)
     }
 
 
+    private fun getLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this.applicationContext,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED) {
+            locationPermissionGranted = true;
+
+            getLastKnownLocation();
+        } else {
+            ActivityCompat.requestPermissions(this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
+    }
+
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        when(requestCode) {
+            PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION -> {
+                if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    locationPermissionGranted = true
+                } else {
+                    //Toast.makeText(applicationContext, "Location permission denied", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
 }

@@ -7,16 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
-import com.example.sharidev2.adapter.BookingAdapter
 import com.example.sharidev2.adapter.BookingPagerAdapter
-import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.databinding.FragmentBookingBinding
-import com.example.sharidev2.firebase.FirebaseInitializer
-import com.example.sharidev2.viewmodel.RideViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 
 

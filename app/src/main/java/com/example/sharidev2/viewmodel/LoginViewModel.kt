@@ -44,9 +44,5 @@ class LoginViewModel : ViewModel() {
     }
 
 
-    companion object {
-        fun getInstance(owner: ViewModelStoreOwner): LoginViewModel {
-            return ViewModelProvider(owner)[LoginViewModel::class.java]
-        }
-    }
+
 }

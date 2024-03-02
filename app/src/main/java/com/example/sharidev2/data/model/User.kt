@@ -12,9 +12,9 @@ data class User(
     val email: String? = null,
     val phoneNumber: String? = null,
     val photoUrl: Uri? = null,
-    val rideOption: RideOption? = null,
+    val rideOption: RideOption? = RideOption(),
     val rating: Float ?= null,
-    val savedAddress: MutableList<SearchLocation> ?= null,
+    val savedAddress: Collection<SearchLocation> ?= null,
     val gender: Gender ?= null,
     val joinedDate: Timestamp? = null
 ) {

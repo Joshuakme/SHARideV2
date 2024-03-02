@@ -8,12 +8,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.sharidev2.data.model.Driver
 import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.data.model.SearchLocation
-import com.example.sharidev2.data.model.User
 import com.example.sharidev2.data.model.Vehicle
 import com.example.sharidev2.data.repository.RideRepository
-import com.example.sharidev2.firebase.FirebaseInitializer
+import com.example.sharidev2.utility.FirebaseClient
 import com.google.firebase.Timestamp
-import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -22,11 +20,7 @@ class SharedCreateRideViewModel(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     // Repository
-    private val rideRepository = RideRepository(
-        FirebaseInitializer.firestore,
-        FirebaseInitializer.firebaseAuth,
-        FirebaseInitializer.firebaseUtils
-    )
+    private val rideRepository = RideRepository()
 
     // DATA KEY CONSTANT
     private val ORIGIN_KEY = "origin"
@@ -110,7 +104,7 @@ class SharedCreateRideViewModel(
 
     // Create Ride
     suspend fun createRide() {
-        val currentUser = FirebaseInitializer.firebaseAuth.currentUser
+        val currentUser = FirebaseClient.firebaseAuth.currentUser
 
         if(currentUser != null) {
             val newCreatedRide = Ride(
