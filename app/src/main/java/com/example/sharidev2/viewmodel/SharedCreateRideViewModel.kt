@@ -21,6 +21,7 @@ class SharedCreateRideViewModel(
 ) : ViewModel() {
     // Repository
     private val rideRepository = RideRepository()
+    private val currentLocationViewModel = CurrentLocationViewModel()
 
     // DATA KEY CONSTANT
     private val ORIGIN_KEY = "origin"
@@ -113,6 +114,7 @@ class SharedCreateRideViewModel(
                 datetime = rideDateTime.value!!,
                 driver = Driver(
                     userUid = currentUser?.uid,
+                    location = currentLocationViewModel.currentLocation.value,
                     vehicle = vehicle.value!!
                 ),
                 availableSeats = capacity.value!!,

@@ -76,6 +76,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")                     // Dependency for the Firebase Authentication library
     implementation("com.google.android.gms:play-services-auth:20.7.0")      // Dependency for the Google Play services library and specify its version
     implementation("com.google.firebase:firebase-firestore-ktx:24.10.0")
+    implementation("com.google.firebase:firebase-storage")
 
     // Navigation
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.6")
@@ -90,6 +91,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:18.0.0")
     implementation("com.google.android.libraries.places:places:2.4.0")
     implementation("com.android.volley:volley:1.2.0")
+    implementation("com.google.maps.android:android-maps-utils:1.3.1")
 
     // Viewpager 2
     implementation("androidx.viewpager2:viewpager2:1.0.0")
@@ -99,4 +101,13 @@ dependencies {
 
     // Timeline
     implementation("com.github.vipulasri:timelineview:1.1.5")
+
+    // Retrofit for making HTTP requests
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+
+    // Gson converter for JSON serialization/deserialization
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    // OkHttp logging interceptor for logging HTTP requests and responses
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.1")
 }

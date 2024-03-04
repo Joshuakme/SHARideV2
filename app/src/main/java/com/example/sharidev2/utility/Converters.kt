@@ -5,6 +5,7 @@ import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.Log
+import com.example.sharidev2.data.model.Chat
 import com.example.sharidev2.data.model.Driver
 import com.example.sharidev2.data.model.Gender
 import com.example.sharidev2.data.model.Message
@@ -20,6 +21,7 @@ import com.example.sharidev2.data.model.VehicleType
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.Timestamp
 import com.google.gson.Gson
+import kotlin.reflect.typeOf
 
 
 class Converters() {
@@ -90,8 +92,9 @@ class Converters() {
         val petFriendly = rideOptionMap["petFriendly"] as Boolean
         val rideOption = RideOption(driverGender, vehicleType, petFriendly)
 
-        val rating = map["rating"] as Float
-        val savedAddresses = toSearchLocationList(map["savedAddresses"] as List<Map<String, Any>>).toMutableList()
+        val rating = if(map["rating"] != null) map["rating"] as Double else null
+        //val savedAddresses = toSearchLocationList(map["savedAddresses"] as List<Map<String, Any>>).toMutableList()
+        val savedAddresses = mapOf<String, SearchLocation>()
         val gender = Gender.valueOf(map["gender"] as String)
         val joinedDate = map["joinedDate"] as Timestamp
 
@@ -119,16 +122,18 @@ class Converters() {
         return userList
     }
 
-    fun toDriver(map: Map<String, Any>, user: User): Driver {
+    fun toDriver(map: Map<String, Any>): Driver {
         val userUid = map["userUid"] as String
 
-        val locationMap = map["location"] as Map<String, Any>?
+        val driverUser = toUser(map["user"] as Map<String, Any>)
 
+        val locationMap = map["location"] as Map<String, Any>?
         val location = if(locationMap != null) {
-            val latitude = (locationMap["latitude"] as Long).toDouble()
-            val longitude = (locationMap["longitude"] as Long).toDouble()
+            val latitude = locationMap["latitude"] as Double
+            val longitude = locationMap["longitude"] as Double
 
             LatLng(latitude, longitude)
+
         } else {
             LatLng(0.0, 0.0)
         }
@@ -138,15 +143,17 @@ class Converters() {
 
         return Driver(
             userUid,
-            user,
+            driverUser,
             location,
             status,
             vehicle
         )
+        return Driver()
     }
 
-    fun toPassenger(map: Map<String, Any>, user: User): Passenger {
+    fun toPassenger(map: Map<String, Any>): Passenger {
         val userUid = map["userUid"] as String
+        val user = toUser(map["user"] as Map<String, Any>)
 
         val locationMap = map["location"] as Map<String, Any>?
         val location = if(locationMap != null) {
@@ -169,27 +176,6 @@ class Converters() {
         )
     }
 
-    fun toPassengers(map: Map<String, Any>, userList: List<User>) : Map<String, Passenger> {
-        val passengerMap = mutableMapOf<String, Passenger>()
-
-        for(entry in map) {
-            val valueMap = entry.value as Map<String, Any>
-
-            var user = User()
-            for(u in userList) {
-                if(u.uid == entry.key) {
-                    user = u
-                    break
-                }
-            }
-
-            val passenger = toPassenger(valueMap, user)
-
-            passengerMap[entry.key] = passenger
-        }
-
-        return  passengerMap
-    }
 
 
     // PHOTOS CONVERTERS
@@ -265,6 +251,21 @@ class Converters() {
         )
     }
 
+
+    // CHAT CONVERTERS
+    fun toChat(map: Map<String, Any>): Chat {
+        val chatId = map["chatId"] as String
+        val members = map["members"] as List<String>
+        val lastMessage = map["lastMessage"] as String
+        val timestamp = map["timestamp"] as Timestamp
+
+        return Chat(
+            chatId,
+            members,
+            lastMessage,
+            timestamp
+        )
+    }
 
     // MESSAGE CONVERTERS
     fun toMessage(map: Map<String, Any>): Message {

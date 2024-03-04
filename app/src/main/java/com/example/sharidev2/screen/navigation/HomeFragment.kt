@@ -88,7 +88,6 @@ class HomeFragment : Fragment() {
             constraintSet.clone(constraintLayout)
 
             if(scrollY > 0) {   // Scroll down
-                Log.e("SCROLL DI MANA", "Scrolling down")
                 constraintSet.connect(activityFragmentContainer.id, ConstraintSet.BOTTOM, constraintLayout.id, ConstraintSet.BOTTOM)
             } else {
                 constraintSet.connect(activityFragmentContainer.id, ConstraintSet.BOTTOM, bottomNavContainer.id, ConstraintSet.TOP)

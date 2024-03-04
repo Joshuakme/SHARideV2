@@ -2,37 +2,40 @@ package com.example.sharidev2
 
 
 import android.Manifest
+import android.app.ActivityManager
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.sharidev2.databinding.ActivityMainBinding
-import com.example.sharidev2.service.ConnectivityService
+import com.example.sharidev2.service.NetworkService
+import com.example.sharidev2.service.LocationService
 import com.example.sharidev2.utility.Constants.Companion.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
+import com.example.sharidev2.utility.Constants.Companion.PERMISSIONS_REQUEST_POST_NOTIFICATION
 import com.example.sharidev2.utility.FirebaseClient
 import com.example.sharidev2.utility.UserClient
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -42,6 +45,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var locationPermissionGranted = false
+    private var postNotificationPermissionGranted = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,8 +74,14 @@ class MainActivity : AppCompatActivity() {
             getLocationPermission()
         }
 
+        if(postNotificationPermissionGranted) {
+            // Do nothing
+        } else {
+            getPostNotificationPermission()
+        }
+
         // Check Network Connection
-        startService(Intent(this, ConnectivityService::class.java))
+        startNetworkService()
 
 
 //        if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
@@ -122,26 +132,18 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        // Create a LocationRequest object
-        val locationRequest = LocationRequest.create().apply {
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY // Set the priority to high accuracy
-            interval = 10000  // Update location (10 seconds)
-        }
+        fusedLocationClient.lastLocation
+            .addOnCompleteListener {task ->
+                if(task.isSuccessful) {
+                    val location = task.result
 
-        fusedLocationClient.requestLocationUpdates(locationRequest, object: LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult) {
-                super.onLocationResult(locationResult)
+                    val currentLocation = LatLng(location.latitude, location.longitude)
 
-                // Get the latest location from the result
-                val latestLocation = locationResult.lastLocation
-
-                val currentLocation = LatLng(latestLocation.latitude, latestLocation.longitude)
-
-                currentLocationViewModel.setLocation(currentLocation)
-
-                fusedLocationClient.removeLocationUpdates(this)
+                    currentLocationViewModel.setLocation(currentLocation)
+                }
             }
-        }, null)
+
+        startLocationService()
     }
 
 
@@ -175,6 +177,86 @@ class MainActivity : AppCompatActivity() {
                     //Toast.makeText(applicationContext, "Location permission denied", Toast.LENGTH_SHORT).show()
                 }
             }
+
+            PERMISSIONS_REQUEST_POST_NOTIFICATION -> {
+                if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    postNotificationPermissionGranted = true
+                } else {
+                    // Do nothing
+                }
+            }
+        }
+    }
+
+    private fun startNetworkService() {
+        if(!isNetworkServiceRunning()) {
+            val serviceIntent = Intent(this, NetworkService::class.java)
+
+            startService(serviceIntent)
+        }
+    }
+
+    private fun isNetworkServiceRunning(): Boolean {
+        val manager = getSystemService(ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+            if ("com.example.sharidev2.service.NetworkService" == service.service.className) {
+                Log.d(TAG, "isNetworkServiceRunning: network service is already running.")
+                return true
+            }
+        }
+        Log.d(TAG, "isNetworkServiceRunning: network service is not running.")
+        return false
+    }
+
+    private fun startLocationService() {
+        if (!isLocationServiceRunning()) {
+            val serviceIntent = Intent(this, LocationService::class.java)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                if(postNotificationPermissionGranted) {
+                    startForegroundService(serviceIntent)
+                } else {
+                    getPostNotificationPermission()
+                }
+            } else {
+                startService(serviceIntent)
+            }
+        }
+    }
+
+    private fun isLocationServiceRunning(): Boolean {
+        val manager = getSystemService(ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+            if ("com.example.sharidev2.service.LocationService" == service.service.className) {
+                Log.d(TAG, "isLocationServiceRunning: location service is already running.")
+                return true
+            }
+        }
+        Log.d(TAG, "isLocationServiceRunning: location service is not running.")
+        return false
+    }
+
+
+    private fun getPostNotificationPermission() {
+        if (ContextCompat.checkSelfPermission(this.applicationContext,
+                Manifest.permission.POST_NOTIFICATIONS)
+            == PackageManager.PERMISSION_GRANTED) {
+            postNotificationPermissionGranted = true
+            // do nothing
+        } else {
+            ActivityCompat.requestPermissions(this,
+                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                PERMISSIONS_REQUEST_POST_NOTIFICATION)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if(locationPermissionGranted) {
+            getLastKnownLocation()
+        } else {
+            getLocationPermission()
         }
     }
 }

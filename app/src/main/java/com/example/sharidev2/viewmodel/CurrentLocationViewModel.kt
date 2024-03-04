@@ -21,7 +21,6 @@ class CurrentLocationViewModel: ViewModel() {
     fun setLocation(location: LatLng) {
         _currentLocation.value = location
 
-
         viewModelScope.launch(Dispatchers.IO) {
             val currentUserLocation = UserLocation(
                 location = location

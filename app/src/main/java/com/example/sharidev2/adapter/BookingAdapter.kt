@@ -17,7 +17,7 @@ import java.util.Locale
 
 class BookingAdapter (
     private val context: Context,
-    private val currentUser: FirebaseUser,
+    private val currentUserUid: String,
     private var bookingList: List<Ride>,
     private val clickListener: OnBookingClickListener
 ) : RecyclerView.Adapter<BookingAdapter.ViewHolder>() {
@@ -54,10 +54,12 @@ class BookingAdapter (
 
         // Bind data into UI
         holder.titleText.text = booking.destination.name
-        holder.dateText.text = bookingDateFormatter.format(Date(booking.datetime.seconds * 1000)).replace("AM", "am").replace("PM", "pm")
-        holder.priceText.text = if(booking.passengers?.get(currentUser.uid)?.ridePrice != null) {
+        holder.dateText.text = bookingDateFormatter.format(Date(booking.datetime.seconds * 1000))
+                                    .replace("AM", "am")
+                                    .replace("PM", "pm")
+        holder.priceText.text = if(booking.passengers?.get(currentUserUid)?.ridePrice != null) {
                                     holder.itemView.context.getString(R.string.booking_item_price,
-                                        booking.passengers[currentUser.uid]!!.ridePrice)
+                                        booking.passengers[currentUserUid]!!.ridePrice)
                                 } else {
                                     "pending"
                                 }
@@ -68,10 +70,6 @@ class BookingAdapter (
         val colorPrimary = typedValue.data
         context.theme?.resolveAttribute(com.google.android.material.R.attr.colorError, typedValue, true)
         val colorError = typedValue.data
-
-
-        Log.e("Booking Adapter", "${booking.destination.name} - isPassenger: " + isPassenger(booking))
-        Log.e("Booking Adapter", "${booking.destination.name} - isDriver: " + isDriver(booking))
 
 
         if(isDriver(booking)) {
@@ -102,14 +100,12 @@ class BookingAdapter (
     }
 
     private fun isDriver(ride: Ride): Boolean {
-        return ride.driver.userUid == currentUser.uid
+        return ride.driver.userUid == currentUserUid
     }
 
     private fun isPassenger(ride: Ride): Boolean {
-
         return ride.passengers?.any { passenger ->
-            Log.e("Booking Adapter", "${ride.destination.name} - isPassenger " + passenger.key)
-            passenger.key == currentUser.uid } ?: false
+            passenger.key == currentUserUid } ?: false
     }
 
 }

@@ -5,6 +5,7 @@ import com.example.sharidev2.data.model.UserLocation
 import com.example.sharidev2.utility.FirebaseClient
 import com.example.sharidev2.utility.UserClient
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 class UserLocationRepository() {
@@ -37,18 +38,20 @@ class UserLocationRepository() {
     // UPDATE
     suspend fun updateUserLocation(newUserLocation: UserLocation) {
         return withContext(Dispatchers.IO) {
-            val user = newUserLocation.user ?: FirebaseClient.getUserFromUid(currentUser?.uid!!)
+            if(currentUser != null) {
+                val user = newUserLocation.user ?: FirebaseClient.getUserFromUid(currentUser.uid)
 
-            newUserLocation.user = user
+                newUserLocation.user = user
 
-            locationCollectionRef.document(user.uid?: "")
-                .set(newUserLocation)
-                .addOnSuccessListener {
-                    Log.e("Update User Location", "Success")
+
+                try {
+                    locationCollectionRef.document(user.uid?: "")
+                        .set(newUserLocation)
+                        .await()
+                } catch (e: Exception) {
+                    Log.e("Update User Location", e.message.toString())
                 }
-                .addOnFailureListener {
-                    Log.e("Update User Location", it.message.toString())
-                }
+            }
         }
     }
 }

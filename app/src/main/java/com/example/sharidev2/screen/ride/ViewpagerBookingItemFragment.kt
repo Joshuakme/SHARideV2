@@ -42,10 +42,9 @@ class ViewpagerBookingItemFragment :
         val recyclerView = binding.recyclerBooking
 
 
-        if(currentUser != null) {
-            adapter = BookingAdapter(requireContext(), currentUser, emptyList(),this)
+        if(currentUser?.uid != null) {
+            adapter = BookingAdapter(requireContext(), currentUser.uid, emptyList(),this)
             recyclerView.layoutManager = LinearLayoutManager(requireContext())
-
         }
 
         return binding.root

@@ -410,7 +410,7 @@ class LoginFragment : Fragment() {
                         phoneNumber = task.result.user?.phoneNumber,
                         photoUrl = task.result.user?.photoUrl,
                         rideOption = RideOption(),
-                        savedAddress = mutableListOf(),
+                        savedAddress = mapOf(),
                         joinedDate = Timestamp.now()
                     )
 

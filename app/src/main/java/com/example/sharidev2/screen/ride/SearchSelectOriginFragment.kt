@@ -27,6 +27,7 @@ import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.databinding.FragmentSearchSelectOriginBinding
 import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.GoogleMapUtils
+import com.example.sharidev2.viewmodel.CurrentLocationViewModel
 import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -46,11 +47,11 @@ import com.google.android.material.card.MaterialCardView
 class SearchSelectOriginFragment : Fragment() {
     private lateinit var binding: FragmentSearchSelectOriginBinding
     private val searchRideViewModel: SharedSearchRideViewModel by activityViewModels()
+    private val currentLocationViewModel: CurrentLocationViewModel by activityViewModels()
     private lateinit var myLocationBtn: MaterialCardView
 
     private lateinit var placesClient: PlacesClient
     private lateinit var mapFragment: SupportMapFragment
-    private val ZOOM_INDEX = 17.8f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -114,21 +115,16 @@ class SearchSelectOriginFragment : Fragment() {
             googleMap.uiSettings.isMapToolbarEnabled = false
 
 
-            val fusedLocationProviderClient = FusedLocationProviderClient(requireContext())
+            currentLocationViewModel.currentLocation.observe(viewLifecycleOwner) {currentLocation ->
+                updateMap(originLocation = currentLocation)
 
-            // Draw marker
-            CommonUtils().getDeviceCurrentLocation(fusedLocationProviderClient,
-                onLocationResult = { currentLocation ->
-
-                    updateMap(originLocation = currentLocation)
-                },
-                onLocationError = {
-                    // Handle the case where there's an error getting the device location
-                    // Toast.makeText(requireContext(), "Error getting device location", Toast.LENGTH_SHORT).show()
-                }
-            )
-
-            setupMapListeners(googleMap, fusedLocationProviderClient)
+                GoogleMapUtils().setupMapListeners(googleMap, currentLocation, myLocationBtn,
+                    object: GoogleMapUtils.MyLocationButtonCallback {
+                        override fun showMyLocationButton(show: Boolean) {
+                            showMyLocationBtn(show)
+                        }
+                    })
+            }
         }
     }
 
@@ -190,63 +186,6 @@ class SearchSelectOriginFragment : Fragment() {
     }
 
 
-    // GOOGLE MAP RELATED METHODS
-    private fun setupMapListeners(
-        googleMap: GoogleMap,
-        fusedLocationProviderClient: FusedLocationProviderClient
-    ) {
-        googleMap.setOnCameraMoveListener {
-            handleCameraMove(googleMap, fusedLocationProviderClient)
-            true
-        }
-
-        myLocationBtn.setOnClickListener {
-            handleMyLocationButtonClick(googleMap, fusedLocationProviderClient)
-            true
-        }
-    }
-
-    private fun handleCameraMove(
-        googleMap: GoogleMap,
-        fusedLocationProviderClient: FusedLocationProviderClient
-    ) {
-        CommonUtils().getDeviceCurrentLocation(
-            fusedLocationProviderClient,
-            onLocationResult = { currentLocation ->
-                val currentCameraPosition = googleMap.cameraPosition.target
-
-                if (!GoogleMapUtils().isMapOnCurrentLocation(currentCameraPosition, currentLocation)) {
-                    showMyLocationButton(true)
-                } else {
-                    showMyLocationButton(false)
-                }
-            },
-            onLocationError = {
-                // Toast.makeText(requireContext(), "Error getting device location", Toast.LENGTH_SHORT).show()
-            }
-        )
-    }
-
-    private fun handleMyLocationButtonClick(
-        googleMap: GoogleMap,
-        fusedLocationProviderClient: FusedLocationProviderClient
-    ) {
-        getDeviceLocation(
-            fusedLocationProviderClient,
-            onLocationResult = { currentLocation ->
-                googleMap.animateCamera(
-                    CameraUpdateFactory.newLatLngZoom(
-                        currentLocation,
-                        ZOOM_INDEX
-                    )
-                )
-            },
-            onLocationError = {
-                // Toast.makeText(requireContext(), "Error getting device location", Toast.LENGTH_SHORT).show()
-            }
-        )
-    }
-
     private fun updateMap(originLocation: LatLng? = null) {
         val origin = searchRideViewModel.origin.value?.geolocation
         val destination = searchRideViewModel.destination.value?.geolocation
@@ -276,12 +215,12 @@ class SearchSelectOriginFragment : Fragment() {
                 }
 
                 googleMapUtils.updateMapZoomAndCamera(requireContext(), googleMap, origin, destination)
-                googleMapUtils.drawRoute(googleMap, origin, destination)
+                //googleMapUtils.drawRoute(googleMap, origin, destination)
             }
         }
     }
 
-    private fun showMyLocationButton(show: Boolean) {
+    private fun showMyLocationBtn(show: Boolean) {
         myLocationBtn.visibility = if (show) View.VISIBLE else View.GONE
     }
 

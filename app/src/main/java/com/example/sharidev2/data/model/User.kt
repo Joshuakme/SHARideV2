@@ -13,22 +13,10 @@ data class User(
     val phoneNumber: String? = null,
     val photoUrl: Uri? = null,
     val rideOption: RideOption? = RideOption(),
-    val rating: Float ?= null,
-    val savedAddress: Collection<SearchLocation> ?= null,
+    val rating: Double ?= null,
+    val savedAddress: Map<String, SearchLocation>? = mapOf(),
     val gender: Gender ?= null,
     val joinedDate: Timestamp? = null
 ) {
-    companion object {
-        fun fromFirebaseUser(firebaseUser: FirebaseUser): User {
-            firebaseUser.apply {
-                val uid = this.uid
-                val displayName = this.displayName
-                val email = this.email
-                val phoneNumber = this.phoneNumber
-                val photoUrl = this.photoUrl
 
-                return User(uid, displayName, email, phoneNumber, photoUrl)
-            }
-        }
-    }
 }

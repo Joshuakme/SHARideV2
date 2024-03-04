@@ -7,5 +7,5 @@ data class Chat (
     val members: List<String>? = null,
     val lastMessage: String? = null,
     val timestamp: Timestamp? = null,
-    val messages: MutableList<Message>? = mutableListOf()
+    var messages: MutableMap<String, Message>? = mutableMapOf()
 )

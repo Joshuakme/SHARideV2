@@ -1,5 +1,7 @@
 package com.example.sharidev2.utility
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
 import com.example.sharidev2.data.model.Chat
@@ -16,9 +18,13 @@ import com.google.firebase.auth.AdditionalUserInfo
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.IOException
 
 object FirebaseClient {
     val firestore: FirebaseFirestore by lazy {
@@ -28,6 +34,11 @@ object FirebaseClient {
     val firebaseAuth: FirebaseAuth by lazy {
         FirebaseAuth.getInstance()
     }
+
+    val firebaseStorage: FirebaseStorage by lazy {
+        FirebaseStorage.getInstance()
+    }
+
 
     // Variables
     private val converters = Converters()
@@ -49,14 +60,24 @@ object FirebaseClient {
                 val photoUri = Uri.parse(user.getString("photoUrl"))
 
                 val rideOptionMap = user.get("rideOption") as Map<String, String>
-                val driverGender = Gender.valueOf(rideOptionMap["driverGender"] as String)
-                val vehicleType = VehicleType.valueOf(rideOptionMap["vehicleType"] as String)
-                val petFriendly = rideOptionMap["petFriendly"] as Boolean
+                val driverGender = rideOptionMap["driverGender"]?.let { Gender.valueOf(it) }
+                val vehicleType = rideOptionMap["vehicleType"]?.let { VehicleType.valueOf(it) }
+                val petFriendly = rideOptionMap["petFriendly"] as? Boolean
+
                 val rideOption = RideOption(driverGender, vehicleType, petFriendly)
 
-                val rating = (user.get("rating") as Long).toFloat()
-                val savedAddresses = converters.toSearchLocationList(user.get("savedAddress") as List<Map<String, Any>>).toMutableList()
-                val gender = Gender.valueOf(user.getString("gender") ?: "")
+                val rating = (user.get("rating") as Long).toDouble()
+
+//                val savedAddresses =
+//                    converters.toSearchLocationList(user.get("savedAddress") as List<Map<String, Any>>)
+//                        .toMutableList()
+
+                val gender = if(user.getString("gender") != null) {
+                    Gender.valueOf(user.getString("gender")!!)
+                }else {
+                    null
+                }
+
                 val joinedDate = user.getTimestamp("joinedDate")
 
 
@@ -68,7 +89,7 @@ object FirebaseClient {
                     photoUri,
                     rideOption,
                     rating,
-                    savedAddresses,
+                    mapOf(),
                     gender,
                     joinedDate
                 )
@@ -134,11 +155,12 @@ object FirebaseClient {
             val lastMessage = chatData["lastMessage"] as? String ?: ""
             val timestamp = chatData["timestamp"] as? Timestamp
             val typingUsers = chatData["typingUsers"] as? List<String> ?: emptyList()
-            val messageList = mutableListOf<Message>()
+            val messageMap = mutableMapOf<String,  Message>()
 
             // Retrieve messages with proper suspend handling
             try {
-                val messagesRef = firestore.collection("chat").document(chatId).collection("messages")
+                val messagesRef =
+                    firestore.collection("chat").document(chatId).collection("messages")
                 val messageDocs = messagesRef.get().await()
                 messageDocs.forEach { messageDoc ->
                     val messageData = messageDoc.data ?: return@forEach
@@ -149,9 +171,11 @@ object FirebaseClient {
                         timestamp = messageData["timestamp"] as? Timestamp,
                         attachmentURL = messageData["attachmentURL"] as? String,
                         readBy = messageData["readBy"] as? List<String> ?: emptyList(),
-                        messageType = MessageType.valueOf(messageData["messageType"] as? String ?: "")
+                        messageType = MessageType.valueOf(
+                            messageData["messageType"] as? String ?: ""
+                        )
                     )
-                    messageList.add(message)
+                    messageMap[messageDoc.id] = message
                 }
             } catch (e: Exception) {
                 Log.e("Get Chat From ChatId (Messages)", e.message.toString())
@@ -162,7 +186,7 @@ object FirebaseClient {
                 members,
                 lastMessage,
                 timestamp,
-                messageList
+                messageMap
             )
         }
     }
@@ -198,6 +222,23 @@ object FirebaseClient {
         }
     }
 
+    suspend fun getRideFromRideId(rideId: String) {
+        return withContext(Dispatchers.IO) {
+            try {
+                val ride = firestore.collection("ride")
+                    .document(rideId)
+                    .get()
+                    .await()
+
+
+            } catch (e: Exception) {
+                Log.e("Get Ride From ID", e.message.toString())
+                return@withContext
+            }
+        }
+    }
+
+
     suspend fun assignUserDefaultInfo(additionalUserInfo: AdditionalUserInfo?) {
         val defaultUsername = generateUniqueUsername()
         updateProfileWithDefaultUsername(defaultUsername, additionalUserInfo)
@@ -206,7 +247,8 @@ object FirebaseClient {
     // Function to check if a username is already taken (suspended version)
     private suspend fun isUsernameTaken(username: String): Boolean = withContext(Dispatchers.IO) {
         // TODO: Get username list from Firestore
-        val existingUsernames = listOf("user1", "user2", "user3") // Replace this with your actual list of usernames
+        val existingUsernames =
+            listOf("user1", "user2", "user3") // Replace this with your actual list of usernames
 
         existingUsernames.contains(username)
     }
@@ -216,13 +258,17 @@ object FirebaseClient {
         var username: String
         do {
             // Generate a random string for the username
-            username = commonUtils.generateRandomString(8) // You can customize the length of the username as needed
+            username =
+                commonUtils.generateRandomString(8) // You can customize the length of the username as needed
         } while (isUsernameTaken(username)) // Keep generating until a unique username is found
         return username
     }
 
     // Update the user's profile with the generated default username
-    private suspend fun updateProfileWithDefaultUsername(defaultUsername: String, additionalUserInfo: AdditionalUserInfo?) {
+    private suspend fun updateProfileWithDefaultUsername(
+        defaultUsername: String,
+        additionalUserInfo: AdditionalUserInfo?
+    ) {
         val user = firebaseAuth.currentUser
 
         if (user != null && additionalUserInfo?.isNewUser == true) {
@@ -236,5 +282,36 @@ object FirebaseClient {
                 ?.await()
         }
 
+    }
+
+    fun convertFirebaseImageToBitmap(
+        storageReference: StorageReference,
+        onSuccess: (Bitmap) -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        try {
+            // Create a temporary file to store the downloaded image
+            val localFile = File.createTempFile("temp_image", "jpg")
+
+            // Download the image file from Firebase Storage
+            storageReference.getFile(localFile)
+                .addOnSuccessListener {
+                    // Image downloaded successfully, decode it into a Bitmap
+                    val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
+
+                    // Callback with the Bitmap
+                    onSuccess(bitmap)
+
+                    // Delete the temporary file
+                    localFile.delete()
+                }
+                .addOnFailureListener { exception ->
+                    // Error occurred while downloading the image
+                    onFailure(exception)
+                }
+        } catch (e: IOException) {
+            // Error occurred while creating a temporary file
+            onFailure(e)
+        }
     }
 }

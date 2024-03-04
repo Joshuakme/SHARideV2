@@ -4,6 +4,11 @@
     <string name="map_id" translatable="false">ed88a81f472d4f02</string>
     <string name="share_app_link" translatable="false">joshuakme.github.io/SHARide-Web/</string>
 
+
+    <!--  FIREBASE COLLECTION  -->
+    <string name="firebase_collection_user_location">userLocation</string>
+
+
     <!--  *******  -->
     <!--  GENERAL  -->
     <!--  *******  -->
