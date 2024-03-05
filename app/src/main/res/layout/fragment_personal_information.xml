@@ -159,30 +159,23 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
+
                     <TextView
                         android:id="@+id/text_personal_info_item_value_user_id"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="80dp"
                         android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="16dp"
                         android:gravity="right|center_vertical"
                         android:text="@string/placeholder_profile_user_userid"
-                        android:textColor="?attr/colorOnBackground"
+                        android:textColor="?android:attr/textColorHint"
                         android:textSize="@dimen/ss_profile_personal_info_item_text_size"
+                        app:layout_constraintBottom_toTopOf="@+id/divider_user_id"
                         app:layout_constraintEnd_toStartOf="@+id/img_btn_user_id_next"
                         app:layout_constraintStart_toEndOf="@+id/text_personal_info_item_title_userid"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <ImageButton
-                        android:id="@+id/img_btn_user_id_next"
-                        android:layout_width="9dp"
-                        android:layout_height="10dp"
-                        android:background="#00FFFFFF"
-                        android:scaleX="0.7"
-                        android:src="@drawable/baseline_keyboard_arrow_right_24"
-                        app:layout_constraintBottom_toBottomOf="@+id/text_personal_info_item_value_user_id"
-                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:tint="?android:attr/textColorHint" />
+                        app:layout_constraintVertical_bias="0.0" />
 
                     <View
                         android:id="@+id/divider_user_id"

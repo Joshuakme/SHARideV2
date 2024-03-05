@@ -45,6 +45,24 @@ class PersonalInfoViewModel: ViewModel() {    // LiveData for current display na
         }
     }
 
+    fun isDisplayNameValid(displayName: String): Boolean {
+        // Define the regex pattern for valid display names
+        val regex = "^[a-zA-Z0-9_\\-\\.]{2,24}$".toRegex()
+
+        // Check if the display name matches the pattern and does not contain invalid characters
+        return regex.matches(displayName) && !displayName.contains("!") &&
+                !displayName.contains("@") && !displayName.contains("#") &&
+                !displayName.contains("$") && !displayName.contains("%") &&
+                !displayName.contains("^") && !displayName.contains("&") &&
+                !displayName.contains("*") && !displayName.contains("(") &&
+                !displayName.contains(")") && !displayName.contains("-") &&
+                !displayName.contains("_") && !displayName.contains("=") &&
+                !displayName.contains("+") && !displayName.contains("/") &&
+                !displayName.contains("<") && !displayName.contains(">") &&
+                !displayName.contains("?") && !displayName.contains("`") &&
+                !displayName.contains("~")
+    }
+
 
     // Function to update the user mobile phone number
     suspend fun updateMobile(newMobile: String) {

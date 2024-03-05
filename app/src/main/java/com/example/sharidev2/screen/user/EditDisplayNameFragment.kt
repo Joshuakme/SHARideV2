@@ -55,21 +55,24 @@ class EditDisplayNameFragment: Fragment() {
         saveDisplayNameBtn.setOnClickListener {
             val newDisplayName = binding.inputEditUsername.text.toString()
             // Update the display name in the ViewModel
-            if (newDisplayName.isNotBlank()) {
+            if (viewModel.isDisplayNameValid(newDisplayName)) {
+                // Update the display name in the ViewModel
                 viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
                     viewModel.updateDisplayName(newDisplayName)
 
                     Toast.makeText(
                         requireContext(),
-                        "Update username successfully!",
+                        "Update Username Successfully!",
                         Toast.LENGTH_SHORT
-                    )
-                        .show()
+                    ).show()
                     findNavController().popBackStack()
                 }
-            }else{
-                Toast.makeText(requireContext(), "Failed to edit display name!", Toast.LENGTH_SHORT)
-                    .show()
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "Invalid display name. Please ensure it is 2-24 characters long and does not contain invalid characters.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 

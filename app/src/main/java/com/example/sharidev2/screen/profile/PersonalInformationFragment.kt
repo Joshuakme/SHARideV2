@@ -13,6 +13,7 @@ import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentPersonalInformationBinding
 import com.example.sharidev2.viewmodel.PersonalInfoViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
 
 
 class PersonalInformationFragment : Fragment() {
@@ -64,6 +65,8 @@ class PersonalInformationFragment : Fragment() {
         viewModel.gender.observe(viewLifecycleOwner) { gender ->
             binding.textPersonalInfoItemValueGender.text = gender
         }
+
+        binding.textPersonalInfoItemValueUserId.text = FirebaseAuth.getInstance().currentUser?.uid
 
 
 
