@@ -6,7 +6,6 @@ import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +20,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
+import com.example.sharidev2.data.repository.UserLocationRepository
 import com.example.sharidev2.databinding.FragmentHomeBinding
 import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
@@ -67,7 +67,7 @@ class HomeFragment : Fragment() {
         welcomeHomeText.text = getString(R.string.home_fragment_welcome_user, user?.displayName ?: "back")
 
 
-        currentLocationViewModel.currentLocation.observe(viewLifecycleOwner) {currentLocation ->
+        currentLocationViewModel.currentLocation.observe(viewLifecycleOwner) { currentLocation ->
             if(currentLocation != null) {
                 fetchAreaFromLocation(Location(LocationManager.GPS_PROVIDER).apply {
                     latitude = currentLocation.latitude

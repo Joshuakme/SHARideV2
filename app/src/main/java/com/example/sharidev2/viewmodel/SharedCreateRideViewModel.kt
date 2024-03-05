@@ -10,7 +10,9 @@ import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.data.model.Vehicle
 import com.example.sharidev2.data.repository.RideRepository
+import com.example.sharidev2.data.repository.UserLocationRepository
 import com.example.sharidev2.utility.FirebaseClient
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.Timestamp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,7 +23,7 @@ class SharedCreateRideViewModel(
 ) : ViewModel() {
     // Repository
     private val rideRepository = RideRepository()
-    private val currentLocationViewModel = CurrentLocationViewModel()
+    private val currentLocationRepo = UserLocationRepository()
 
     // DATA KEY CONSTANT
     private val ORIGIN_KEY = "origin"
@@ -104,17 +106,22 @@ class SharedCreateRideViewModel(
 
 
     // Create Ride
-    suspend fun createRide() {
+    suspend fun createRide(currentLocation: LatLng) {
         val currentUser = FirebaseClient.firebaseAuth.currentUser
 
         if(currentUser != null) {
+            Log.e("Shared Create Ride ViewModel",
+                "Current Location: $currentLocation"
+            )
+            Log.e("Shared Create Ride ViewModel", "Current User ID: " + currentUser.uid)
+
             val newCreatedRide = Ride(
                 origin = origin.value!!,
                 destination = destination.value!!,
                 datetime = rideDateTime.value!!,
                 driver = Driver(
-                    userUid = currentUser?.uid,
-                    location = currentLocationViewModel.currentLocation.value,
+                    userUid = currentUser.uid,
+                    location = currentLocation,
                     vehicle = vehicle.value!!
                 ),
                 availableSeats = capacity.value!!,

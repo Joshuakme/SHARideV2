@@ -8,17 +8,14 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Location
+import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.os.Looper
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.example.sharidev2.R
-import com.example.sharidev2.data.model.User
-import com.example.sharidev2.data.model.UserLocation
 import com.example.sharidev2.utility.FirebaseClient
-import com.example.sharidev2.utility.UserClient
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -26,14 +23,13 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 
 
-class LocationService : Service() {
+class LocationService: Service() {
     private var fusedLocationClient: FusedLocationProviderClient? = null
-    private val currentLocationViewModel = CurrentLocationViewModel()
     private val currentUser = FirebaseClient.firebaseAuth.currentUser
+    private val currentLocationViewModel = CurrentLocationViewModel()
+
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -67,48 +63,53 @@ class LocationService : Service() {
     }
 
     private fun getLocation() {
-            // ---------------------------------- LocationRequest ------------------------------------
-            // Create the location request to start receiving updates
-            val locationRequestHighAccuracy = LocationRequest()
-            locationRequestHighAccuracy.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-            locationRequestHighAccuracy.setInterval(UPDATE_INTERVAL)
-            locationRequestHighAccuracy.setFastestInterval(FASTEST_INTERVAL)
+        // ---------------------------------- LocationRequest ------------------------------------
+        // Create the location request to start receiving updates
+        val locationRequestHighAccuracy = LocationRequest()
+        locationRequestHighAccuracy.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+        locationRequestHighAccuracy.setInterval(UPDATE_INTERVAL)
+        locationRequestHighAccuracy.setFastestInterval(FASTEST_INTERVAL)
 
 
-            // new Google API SDK v11 uses getFusedLocationProviderClient(this)
-            if (ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                Log.d(TAG, "getLocation: stopping the location service.")
-                stopSelf()
-                return
-            }
+        // new Google API SDK v11 uses getFusedLocationProviderClient(this)
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            Log.d(TAG, "getLocation: stopping the location service.")
+            stopSelf()
+            return
+        }
 
-            fusedLocationClient!!.requestLocationUpdates(locationRequestHighAccuracy, object: LocationCallback() {
-                override fun onLocationResult(locationResult: LocationResult) {
-                    super.onLocationResult(locationResult)
+        fusedLocationClient!!.requestLocationUpdates(locationRequestHighAccuracy, object: LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                super.onLocationResult(locationResult)
 
-                    // Get the latest location from the result
-                    val location = locationResult.lastLocation
+                // Get the latest location from the result
+                val location = locationResult.lastLocation
 
-                    if (location != null) {
-                        val currentLocation = LatLng(location.latitude, location.longitude)
+                if (location != null) {
+                    val currentLocation = LatLng(location.latitude, location.longitude)
 
-                        if(currentUser != null) {
-                            currentLocationViewModel.setLocation(currentLocation)
-                        } else {
-                            //stopSelf()
-                        }
+                    if(currentUser != null) {
+
+                        currentLocationViewModel.setLocation(currentLocation)
+                    } else {
+                        //stopSelf()
                     }
                 }
-            }, Looper.myLooper())   // Looper.myLooper tells this to repeat forever until thread is destroyed
-        }
+            }
+        }, Looper.myLooper())   // Looper.myLooper tells this to repeat forever until thread is destroyed
+    }
+
+
+
 
     companion object {
         private const val TAG = "LocationService"
         private const val UPDATE_INTERVAL = (4 * 1000 /* 4 secs */).toLong()
         private const val FASTEST_INTERVAL: Long = 2000 /* 2 sec */
     }
+
 }

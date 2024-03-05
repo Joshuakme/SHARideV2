@@ -16,7 +16,7 @@ import kotlinx.coroutines.withContext
 class DriverVehicleRepository() {
     private val firestore = FirebaseClient.firestore
 
-    private val currentUser = UserClient.currentUser()
+    private val currentUser = FirebaseClient.firebaseAuth.currentUser
 
 
     suspend fun getDriverVehicleList(): List<Vehicle> {
@@ -29,7 +29,6 @@ class DriverVehicleRepository() {
                         .await()
 
                     val vehicleList = convertDriverVehicleToList(querySnapshot)
-
 
                     vehicleList
                 } else {

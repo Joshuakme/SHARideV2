@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.sharidev2.R
 import com.example.sharidev2.adapter.SearchRideAdapter
 import com.example.sharidev2.data.model.SearchLocation
+import com.example.sharidev2.data.repository.UserLocationRepository
 import com.example.sharidev2.databinding.FragmentDriverCreateRideBinding
 import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.GoogleMapUtils
@@ -31,8 +32,6 @@ import com.example.sharidev2.utility.NetworkUtils
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
 import com.example.sharidev2.viewmodel.SharedCreateRideViewModel
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
@@ -241,7 +240,7 @@ class DriverCreateRideFragment : Fragment() {
 
 
             // Draw marker
-            currentLocationViewModel.currentLocation.observe(viewLifecycleOwner) {origin ->
+            currentLocationViewModel.currentLocation.observe(viewLifecycleOwner) { origin ->
                 updateMap(originLocation = origin)
                 GoogleMapUtils().setupMapListeners(googleMap, origin, myLocationBtn,
                     object: GoogleMapUtils.MyLocationButtonCallback {

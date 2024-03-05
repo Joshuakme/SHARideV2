@@ -24,7 +24,9 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/ss_screen_width_margin"
                 android:layout_marginTop="@dimen/ss_screen_top_margin"
+                android:layout_marginEnd="@dimen/ss_screen_width_margin"
                 android:layout_marginBottom="32dp">
 
                 <!--  Fragment Back Button  -->
@@ -84,19 +86,27 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="12dp"
                         android:gravity="center_vertical"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textView7">
 
-                        <ImageView
-                            android:id="@+id/imageView4"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/textView7"
-                            app:srcCompat="@drawable/baseline_account_circle_24"
-                            app:tint="?attr/colorOnBackground" />
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/card_ride_detail_driver_image"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius">
+
+                            <ImageView
+                                android:id="@+id/img_ride_detail_driver"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/textView7"
+                                app:srcCompat="@drawable/baseline_account_circle_24"
+                                app:tint="?attr/colorOnBackground" />
+
+                        </com.google.android.material.card.MaterialCardView>
 
                         <LinearLayout
                             android:id="@+id/linearLayout2"
@@ -104,29 +114,29 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:orientation="vertical"
-                            app:layout_constraintBottom_toBottomOf="@+id/imageView4"
-                            app:layout_constraintStart_toEndOf="@+id/imageView4"
-                            app:layout_constraintTop_toTopOf="@+id/imageView4">
+                            app:layout_constraintBottom_toBottomOf="@+id/img_ride_detail_driver"
+                            app:layout_constraintStart_toEndOf="@+id/img_ride_detail_driver"
+                            app:layout_constraintTop_toTopOf="@+id/img_ride_detail_driver">
 
                             <TextView
-                                android:id="@+id/textView8"
+                                android:id="@+id/text_ride_detail_driver_name"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="16dp"
                                 android:text="Derek"
                                 android:textSize="16sp"
-                                app:layout_constraintStart_toEndOf="@+id/imageView4"
-                                app:layout_constraintTop_toTopOf="@+id/imageView4" />
+                                app:layout_constraintStart_toEndOf="@+id/img_ride_detail_driver"
+                                app:layout_constraintTop_toTopOf="@+id/img_ride_detail_driver" />
 
                             <TextView
-                                android:id="@+id/textView9"
+                                android:id="@+id/text_ride_detail_phone_number"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="16dp"
                                 android:text="+60 12**89"
                                 android:textColor="?attr/colorOutline"
-                                app:layout_constraintStart_toEndOf="@+id/imageView4"
-                                app:layout_constraintTop_toBottomOf="@+id/textView8" />
+                                app:layout_constraintStart_toEndOf="@+id/img_ride_detail_driver"
+                                app:layout_constraintTop_toBottomOf="@+id/text_ride_detail_driver_name" />
 
                         </LinearLayout>
 
@@ -153,12 +163,16 @@
                                     tools:layout_editor_absoluteX="250dp" />
 
                                 <TextView
-                                    android:id="@+id/textView10"
+                                    android:id="@+id/text_ride_detail_driver_rating"
                                     android:layout_width="wrap_content"
                                     android:layout_height="match_parent"
                                     android:layout_gravity="center_vertical"
                                     android:gravity="center_vertical"
-                                    android:text="4.5 (1 reviews)" />
+                                    android:lines="1"
+                                    android:maxLines="1"
+                                    android:singleLine="true"
+                                    android:text="@string/ride_detail_fragment_driver_rating"
+                                    android:translationY="2dp" />
 
                             </LinearLayout>
                         </com.google.android.material.card.MaterialCardView>
@@ -196,73 +210,33 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/textView12"
+                        android:id="@+id/text_ride_detail_passengers_seats_booked"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
                         android:layout_weight="1"
-                        android:text="0/4 seats booked"
+                        android:text="@string/ride_detail_fragment_passengers_seat_booked"
                         app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
-                    <LinearLayout
+
+                    <ImageView
+                        android:id="@+id/img_ride_detail_passenger1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        tools:visibility="gone" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_ride_detail_passengers_image"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:gravity="center_vertical"
+                        android:layout_marginTop="12dp"
+                        android:orientation="horizontal"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textView12">
-
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="16dp">
-
-                            <ImageView
-                                android:id="@+id/imageView7"
-                                android:layout_width="40dp"
-                                android:layout_height="40dp"
-                                app:srcCompat="@drawable/baseline_account_circle_24"
-                                app:tint="?attr/colorOnBackground" />
-                        </com.google.android.material.card.MaterialCardView>
-
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="16dp">
-
-                            <ImageView
-                                android:id="@+id/imageView8"
-                                android:layout_width="40dp"
-                                android:layout_height="40dp"
-                                app:srcCompat="@drawable/baseline_account_circle_24"
-                                app:tint="?attr/colorOnBackground" />
-                        </com.google.android.material.card.MaterialCardView>
-
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="16dp">
-
-                            <ImageView
-                                android:id="@+id/imageView9"
-                                android:layout_width="40dp"
-                                android:layout_height="40dp"
-                                app:srcCompat="@drawable/baseline_account_circle_24"
-                                app:tint="?attr/colorOnBackground" />
-                        </com.google.android.material.card.MaterialCardView>
-
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
-
-                            <ImageView
-                                android:id="@+id/imageView11"
-                                android:layout_width="40dp"
-                                android:layout_height="40dp"
-                                app:srcCompat="@drawable/baseline_account_circle_24"
-                                app:tint="?attr/colorOnBackground" />
-                        </com.google.android.material.card.MaterialCardView>
-                    </LinearLayout>
+                        app:layout_constraintTop_toBottomOf="@+id/text_ride_detail_passengers_seats_booked"
+                        tools:listitem="@layout/recycler_item_ride_detail_passenger_image"
+                        tools:visibility="gone" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -287,10 +261,29 @@
 
 
                     <TextView
-                        android:id="@+id/textView13"
+                        android:id="@+id/text_ride_detail_section_ride_details"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Ride details" />
+                        android:text="@string/ride_detail_fragment_section_title_ride_details" />
+
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_ride_detail_timeline"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/text_ride_detail_section_ride_details"
+                        tools:listitem="@layout/timeline_item_ride_location"
+                        tools:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/textView8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Starting time: "
+                        app:layout_constraintTop_toBottomOf="@+id/recycler_ride_detail_timeline" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -328,16 +321,16 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_weight="1"
-                        android:text="Total cost:"
+                        android:text="Total price:"
                         android:textSize="12sp" />
 
                     <TextView
-                        android:id="@+id/textView15"
+                        android:id="@+id/text_ride_detail_estimated_price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_weight="1"
-                        android:text="RM 5"
+                        android:text="@string/ride_detail_fragment_passengers_estimated_price"
                         android:textSize="20sp" />
                 </LinearLayout>
 
@@ -353,5 +346,32 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_ride_detail_loading_modal_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.7"
+            android:foreground="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ProgressBar
+            android:id="@+id/progress_bar_ride_detail_loading"
+            style="@android:style/Widget.Holo.Light.ProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="?attr/colorSurfaceDim"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

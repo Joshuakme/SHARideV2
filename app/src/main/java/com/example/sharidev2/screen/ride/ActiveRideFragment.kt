@@ -13,6 +13,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.sharidev2.R
+import com.example.sharidev2.data.repository.UserLocationRepository
 import com.example.sharidev2.databinding.FragmentActiveRideBinding
 import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.FirebaseClient
@@ -21,7 +22,7 @@ import com.example.sharidev2.utility.GoogleMapUtils
 import com.example.sharidev2.viewmodel.ActiveRideViewModel
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.material.card.MaterialCardView
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
@@ -46,10 +47,14 @@ class ActiveRideFragment : Fragment() {
         // Args
         val activeRideId = arguments?.getString("rideId")
 
-        lifecycleScope.launch {
-//            val activeRide = FirebaseClient.getRideFromRideId(activeRideId)
-//
-//            activeRideViewModel.setActiveRide()
+        lifecycleScope.launch(Dispatchers.Main) {
+            if(activeRideId != null) {
+                val activeRide = FirebaseClient.getRideFromRideId(activeRideId)
+
+                if (activeRide != null) {
+                    activeRideViewModel.setActiveRide(activeRide)
+                }
+            }
         }
 
 

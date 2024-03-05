@@ -44,7 +44,7 @@ class MatchedRideFragment :
         recyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
 
 
-        rideViewModel.rideList.observe(viewLifecycleOwner) {rideList ->
+        rideViewModel.filterRideList.observe(viewLifecycleOwner) {rideList ->
             loading(Constants.UI_DATA_LOADING)
 
             if(currentUser != null && rideList != null && rideList.isNotEmpty()) {
@@ -57,6 +57,7 @@ class MatchedRideFragment :
                 loading(Constants.UI_DATA_FAILED)
             } else if(currentUser == null) {
                 Toast.makeText(requireContext(), "Please login to proceed", Toast.LENGTH_SHORT).show()
+
                 loading(Constants.UI_DATA_FAILED)
             } else {
                 Toast.makeText(requireContext(), "Error loading result", Toast.LENGTH_SHORT).show()

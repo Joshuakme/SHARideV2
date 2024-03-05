@@ -4,8 +4,6 @@ import android.Manifest
 import android.content.ContentValues.TAG
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.graphics.Typeface
-import android.location.Location
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -28,6 +26,7 @@ import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.adapter.SearchRideAdapter
 import com.example.sharidev2.data.model.SearchLocation
+import com.example.sharidev2.data.repository.UserLocationRepository
 import com.example.sharidev2.databinding.FragmentSearchRideBinding
 import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.NetworkUtils
@@ -115,8 +114,10 @@ class SearchRideFragment : Fragment() {
                 charSequence?.toString()?.let { query ->
 
                     var currentLocation: LatLng? = null
-
+                    Log.e("Search Ride Fragment", currentLocationViewModel.currentLocation.value.toString())
                     currentLocationViewModel.currentLocation.observe(viewLifecycleOwner) {
+
+
                         currentLocation = it
 
                         NetworkUtils(requireContext()).showNetworkStatus()

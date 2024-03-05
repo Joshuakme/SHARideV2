@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentDriverRideConfigBinding
+import com.example.sharidev2.viewmodel.CurrentLocationViewModel
 import com.example.sharidev2.viewmodel.SharedCreateRideViewModel
 import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
 import kotlinx.coroutines.Dispatchers
@@ -24,6 +25,7 @@ import java.util.Locale
 class DriverRideConfigFragment : Fragment() {
     private lateinit var binding: FragmentDriverRideConfigBinding
     private val createRideViewModel: SharedCreateRideViewModel by activityViewModels()
+    private val currentLocationViewModel: CurrentLocationViewModel by activityViewModels()
 
     private val dateFormatter = SimpleDateFormat("yyyy MMM dd", Locale.ENGLISH)
     private val timeFormatter = SimpleDateFormat("hh : mm a", Locale.ENGLISH)
@@ -118,8 +120,10 @@ class DriverRideConfigFragment : Fragment() {
         }
 
         createRideBtn.setOnClickListener {
-            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-                createRideViewModel.createRide()
+            currentLocationViewModel.currentLocation.observe(viewLifecycleOwner) {currentLocation ->
+                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                    createRideViewModel.createRide(currentLocation)
+                }
             }
 
             createRideViewModel.createRideStatus.observe(viewLifecycleOwner) {response ->

@@ -14,6 +14,7 @@ import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.Converters
 import com.example.sharidev2.utility.FirebaseClient
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.Dispatchers
@@ -37,6 +38,7 @@ class RideRepository() {
                     val driverUser = FirebaseClient.getUserFromUid(ride.driver.userUid!!)
 
                     ride.driver.user = driverUser
+                    Log.e("Ride Repository", "Create Ride: ${driverUser.displayName}")
 
                     val newChat = createEmptyChat()
                     val newChatHashMap = hashMapOf(
@@ -193,36 +195,36 @@ class RideRepository() {
             try {
                 val rideRef = firestore.collection("ride").document(rideId)
 
-                // Update the document with the new passenger
-                rideRef.update("passengers.${newPassenger.userUid}", newPassenger).await()
+                newPassenger.user = FirebaseClient.getCurrentUser()
 
+                // Add the new passenger to the "passengers" sub-collection
                 rideRef.collection("passengers")
                     .document(newPassenger.userUid!!)
                     .set(newPassenger)
                     .await()
 
-                rideRef.collection("passengers")
-                    .get()
-                    .addOnCompleteListener {task ->
-                        val data = task.result
-                        val passengersCount = data.size()
+                // Get the count of passengers in the "passengers" sub-collection
+                val passengersQuery = rideRef.collection("passengers").get().await()
+                val passengersCount = passengersQuery.size()
 
-                        rideRef.get().addOnCompleteListener {
-                            val data = it.result.data
-                            val vehicle = data?.get("vehicle") as Map<String, Any>
+                // Get the ride data
+                val rideData = rideRef.get().await().data
+                val driver = converters.toDriver(rideData?.get("driver") as Map<String, Any>)
 
-                            val vehicleCapacity = (vehicle["capacity"] as Long).toInt()
-                            // Calculate the available seats
-                            val availableSeats = vehicleCapacity - passengersCount
+                if(driver.vehicle?.capacity != null) {
+                    val vehicleCapacity = driver.vehicle.capacity.minus(1)
 
-                            rideRef.update("availableSeats", availableSeats)
-                                .addOnCompleteListener {
-                                    // Success
-                                }
-                        }
-                    }
+                    // Calculate the available seats
+                    val availableSeats = vehicleCapacity.minus(passengersCount)
 
-                Constants.FIREBASE_REQUEST_SUCCESS
+                    // Update the available seats for the ride
+                    rideRef.update("availableSeats", availableSeats)
+                        .await()
+
+                    Constants.FIREBASE_REQUEST_SUCCESS
+                } else {
+                    Constants.FIREBASE_REQUEST_EXCEPTION
+                }
             } catch (e: Exception) {
                 Log.e("Add Passenger", e.message.toString())
                 Constants.FIREBASE_REQUEST_EXCEPTION
@@ -231,31 +233,47 @@ class RideRepository() {
     }
 
 
-
     // RETRIEVE METHODS
     suspend fun getAllRides(): List<Ride> {
         return withContext(Dispatchers.IO) {
             try{
-                val driverQuerySnapshot = rideCollectionRef
-                    .whereEqualTo("driver.userUid", currentUser?.uid ?: "")
-                    .orderBy("datetime", Query.Direction.DESCENDING)
-                    .get()
-                    .await()
-
-                val passengerQuerySnapshot = rideCollectionRef.whereArrayContains("passengers", currentUser?.uid ?: "")
-                    .get()
-                    .await()
+                if(currentUser?.uid != null) {
+                    val driverQuerySnapshot = rideCollectionRef
+                        .whereEqualTo("driver.userUid", currentUser.uid ?: "")
+                        .orderBy("datetime", Query.Direction.DESCENDING)
+                        .get()
+                        .await()
 
 
-                val driverRideList = createRideListFromQuerySnapshot(driverQuerySnapshot)
-                val passengerRideList = createRideListFromQuerySnapshot(passengerQuerySnapshot)
+                    val passengerQuerySnapshot = firestore.collectionGroup("passengers")
+                        .whereEqualTo("userUid", currentUser.uid)
+                        .get()
+                        .await()
 
-                val rideList = driverRideList + passengerRideList
+                    val driverRideList = createRideListFromQuerySnapshot(driverQuerySnapshot)
+                    val passengerRideList = mutableListOf<Ride>()
+
+                    for (document in passengerQuerySnapshot.documents) {
+                        val rideRef = document.reference.parent.parent
+                        if (rideRef != null) {
+                            val rideSnapshot = rideRef.get().await()
+
+                            val ride = FirebaseClient.createRideFromDocumentSnapshot(rideSnapshot)
+                            if (ride != null) {
+                                passengerRideList.add(ride)
+                            }
+                        }
+                    }
+
+                    val rideList = driverRideList + passengerRideList
 
 
-                Log.e("Get All Rides", "All Rides: " + rideList.size.toString())
+                    Log.e("Get All Rides", "All Rides: " + rideList.size.toString())
 
-                rideList
+                    rideList
+                } else {
+                    emptyList()
+                }
             } catch (e: Exception) {
                 Log.e("Get All Rides", e.message.toString())
                 emptyList()
@@ -269,12 +287,15 @@ class RideRepository() {
             try {
                 if(currentUser != null) {
                     val querySnapshot = firestore.collection("ride")
-                        .whereNotEqualTo("driver.userUid", currentUser.uid)
                         .whereGreaterThanOrEqualTo("availableSeats", 1)
                         .get()
                         .await()
 
-                    val filteredRideList = createRideListFromQuerySnapshot(querySnapshot)
+                    val filteredNotDriverList = createRideListFromQuerySnapshot(querySnapshot)
+
+                    val filteredRideList = filteredNotDriverList.filter {
+                        it.availableSeats >= 1
+                    }
 
                     filteredRideList
                 } else {
@@ -303,87 +324,7 @@ class RideRepository() {
             try {
                 for (document in querySnapshot.documents) {
 
-                    val origin = converters.toSearchLocation(document.get("origin") as Map<String, Any>)
-                    val destination = converters.toSearchLocation(document.get("destination") as Map<String, Any>)
-                    val datetime = document.getTimestamp("datetime")!!
-                    val driver = converters.toDriver(document.get("driver") as Map<String, Any>)
-
-                    // Passenger Sub-Collection
-                    val passengersSnapshot = document.reference.collection("passengers")
-                        .get()
-                        .await()
-                    val passengersMap = mutableMapOf<String, Passenger>()
-
-                    if(!passengersSnapshot.isEmpty && passengersSnapshot != null) {
-                        for(passengerDoc in passengersSnapshot.documents) {
-                            val passengerData: Map<String, Any>? = passengerDoc.data
-
-                            if(passengerData != null) {
-                                passengersMap[passengerDoc.id] = converters.toPassenger(passengerData)
-                            }
-                        }
-                    }
-
-                    val rideStatus = RideStatus.valueOf(document.getString("rideStatus") ?: "")
-                    val startTime = document.getTimestamp("startTime")
-                    val completeTime = document.getTimestamp("completeTime")
-                    val availableSeats = (document.get("availableSeats") as Long).toInt()
-
-                    // Review Sub-Collection
-                    val reviewSnapshot = document.reference.collection("reviews")
-                        .get()
-                        .await()
-                    val reviewsMap = mutableMapOf<String, Review>()
-
-                    if(!reviewSnapshot.isEmpty && reviewSnapshot != null) {
-                        for(reviewDoc in reviewSnapshot.documents) {
-                            val reviewData = reviewDoc.data
-
-                            if(reviewData != null) {
-                                reviewsMap[reviewDoc.id] = converters.toReview(reviewData)
-                            }
-                        }
-                    }
-
-                    // Chat Sub-Collection
-                    //val chat = FirebaseClient.getChatFromChatId(getString("chat") ?: "")
-                    val chat = converters.toChat(document.get("chat") as Map<String, Any>)
-                    val messagesMap = mutableMapOf<String, Message>()
-
-                    val messageSnapshot = document.reference.collection("messages")
-                        .orderBy("timestamp")
-                        .get()
-                        .await()
-
-                    if(!messageSnapshot.isEmpty && messageSnapshot != null) {
-                        for(messageDoc in messageSnapshot.documents) {
-                            val messageData = messageDoc.data
-
-                            if(messageData != null) {
-                                messagesMap[messageDoc.id] = converters.toMessage(messageData)
-                            }
-                        }
-                    }
-                    chat.messages = messagesMap
-
-                    val createdAt = document.getTimestamp("createdAt")
-
-
-                    val ride = Ride(
-                        document.id,
-                        origin,
-                        destination,
-                        datetime,
-                        driver,
-                        passengersMap,
-                        rideStatus,
-                        startTime,
-                        completeTime,
-                        availableSeats,
-                        reviewsMap,
-                        chat,
-                        createdAt
-                    )
+                    val ride = FirebaseClient.createRideFromDocumentSnapshot(document)
 
                     filteredRideList.add(ride)
                 }

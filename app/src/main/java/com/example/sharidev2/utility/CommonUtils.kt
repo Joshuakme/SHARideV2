@@ -14,10 +14,12 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.drawable.VectorDrawable
 import android.location.Location
+import android.net.Uri
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -97,6 +99,15 @@ class CommonUtils {
         vectorDrawable?.draw(canvas)
 
         return BitmapDescriptorFactory.fromBitmap(bitmap)
+    }
+
+    fun getUriFromVectorDrawable(imageView: ImageView): Uri {
+        // Get the resource ID of the vector drawable
+        val resourceId = imageView.context.resources.getIdentifier(
+            imageView.tag as String, "drawable", imageView.context.packageName)
+
+        // Construct a Uri using the resource ID
+        return Uri.parse("android.resource://${imageView.context.packageName}/$resourceId")
     }
 
     fun createMarkerWithCircularImage(context: Context, profilePicture: Bitmap, backgroundColor: Int): BitmapDescriptor {

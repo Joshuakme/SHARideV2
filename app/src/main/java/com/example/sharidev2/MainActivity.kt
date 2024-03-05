@@ -3,11 +3,15 @@ package com.example.sharidev2
 
 import android.Manifest
 import android.app.ActivityManager
+import android.content.ComponentName
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.IBinder
 import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
@@ -20,6 +24,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.example.sharidev2.data.repository.UserLocationRepository
 import com.example.sharidev2.databinding.ActivityMainBinding
 import com.example.sharidev2.service.NetworkService
 import com.example.sharidev2.service.LocationService
@@ -29,7 +34,6 @@ import com.example.sharidev2.utility.FirebaseClient
 import com.example.sharidev2.utility.UserClient
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
@@ -46,6 +50,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var locationPermissionGranted = false
     private var postNotificationPermissionGranted = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -137,9 +142,11 @@ class MainActivity : AppCompatActivity() {
                 if(task.isSuccessful) {
                     val location = task.result
 
-                    val currentLocation = LatLng(location.latitude, location.longitude)
+                    if(location != null) {
+                        val currentLocation = LatLng(location.latitude, location.longitude)
 
-                    currentLocationViewModel.setLocation(currentLocation)
+                        currentLocationViewModel.setLocation(currentLocation)
+                    }
                 }
             }
 
@@ -208,6 +215,7 @@ class MainActivity : AppCompatActivity() {
         return false
     }
 
+
     private fun startLocationService() {
         if (!isLocationServiceRunning()) {
             val serviceIntent = Intent(this, LocationService::class.java)
@@ -259,4 +267,6 @@ class MainActivity : AppCompatActivity() {
             getLocationPermission()
         }
     }
+
+
 }

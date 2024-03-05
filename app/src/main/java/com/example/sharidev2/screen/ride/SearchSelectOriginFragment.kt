@@ -3,14 +3,7 @@ package com.example.sharidev2.screen.ride
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ContentValues
-import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.PorterDuff
-import android.graphics.drawable.VectorDrawable
-import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -24,6 +17,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.data.model.SearchLocation
+import com.example.sharidev2.data.repository.UserLocationRepository
 import com.example.sharidev2.databinding.FragmentSearchSelectOriginBinding
 import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.GoogleMapUtils
@@ -31,13 +25,8 @@ import com.example.sharidev2.viewmodel.CurrentLocationViewModel
 import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptor
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest
@@ -115,7 +104,7 @@ class SearchSelectOriginFragment : Fragment() {
             googleMap.uiSettings.isMapToolbarEnabled = false
 
 
-            currentLocationViewModel.currentLocation.observe(viewLifecycleOwner) {currentLocation ->
+            currentLocationViewModel.currentLocation.observe(viewLifecycleOwner) { currentLocation ->
                 updateMap(originLocation = currentLocation)
 
                 GoogleMapUtils().setupMapListeners(googleMap, currentLocation, myLocationBtn,

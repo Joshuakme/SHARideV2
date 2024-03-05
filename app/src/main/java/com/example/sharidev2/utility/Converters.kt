@@ -81,21 +81,21 @@ class Converters() {
     // USER CONVERTERS
     fun toUser(map: Map<String, Any>): User {
         val uid = map["uid"] as String
-        val displayName = map["displayName"] as String
-        val email = map["email"] as String
-        val phoneNumber = map["phoneNumber"] as String
-        val photoUrl = map["photoUrl"] as String
+        val displayName = map["displayName"] as String?
+        val email = map["email"] as String?
+        val phoneNumber = map["phoneNumber"] as String?
+        val photoUrl = if(map["photoUrl"] != null) Uri.parse(map["photoUrl"] as String) else null
 
         val rideOptionMap = map["rideOption"] as Map<String, String>
-        val driverGender = Gender.valueOf(rideOptionMap["driverGender"] as String)
-        val vehicleType = VehicleType.valueOf(rideOptionMap["vehicleType"] as String)
-        val petFriendly = rideOptionMap["petFriendly"] as Boolean
+        val driverGender = if(rideOptionMap["driverGender"] != null) Gender.valueOf(rideOptionMap["driverGender"] as String) else null
+        val vehicleType = if(rideOptionMap["vehicleType"] != null) VehicleType.valueOf(rideOptionMap["vehicleType"] as String) else null
+        val petFriendly = if(rideOptionMap["petFriendly"] != null) rideOptionMap["petFriendly"] as Boolean else null
         val rideOption = RideOption(driverGender, vehicleType, petFriendly)
 
         val rating = if(map["rating"] != null) map["rating"] as Double else null
         //val savedAddresses = toSearchLocationList(map["savedAddresses"] as List<Map<String, Any>>).toMutableList()
         val savedAddresses = mapOf<String, SearchLocation>()
-        val gender = Gender.valueOf(map["gender"] as String)
+        val gender = if(map["gender"] != null) Gender.valueOf(map["gender"] as String) else null
         val joinedDate = map["joinedDate"] as Timestamp
 
         return User(
@@ -103,7 +103,7 @@ class Converters() {
             displayName,
             email,
             phoneNumber,
-            Uri.parse(photoUrl),
+            photoUrl,
             rideOption,
             rating,
             savedAddresses,
@@ -133,9 +133,8 @@ class Converters() {
             val longitude = locationMap["longitude"] as Double
 
             LatLng(latitude, longitude)
-
         } else {
-            LatLng(0.0, 0.0)
+            null
         }
 
         val status = UserStatus.valueOf((map["status"] as String))
@@ -148,20 +147,21 @@ class Converters() {
             status,
             vehicle
         )
-        return Driver()
     }
 
     fun toPassenger(map: Map<String, Any>): Passenger {
         val userUid = map["userUid"] as String
-        val user = toUser(map["user"] as Map<String, Any>)
+
+        val user = if(map["user"] != null) toUser(map["user"] as Map<String, Any>) else User()
 
         val locationMap = map["location"] as Map<String, Any>?
         val location = if(locationMap != null) {
-            val latitude = (locationMap["latitude"] as Long).toDouble()
-            val longitude = (locationMap["longitude"] as Long).toDouble()
+            val latitude = locationMap["latitude"] as Double
+            val longitude = locationMap["longitude"] as Double
+
             LatLng(latitude, longitude)
         } else {
-            LatLng(0.0, 0.0)
+            null
         }
 
         val status = UserStatus.valueOf((map["status"] as String))

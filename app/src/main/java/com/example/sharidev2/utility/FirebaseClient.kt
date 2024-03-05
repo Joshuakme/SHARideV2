@@ -5,11 +5,15 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
 import com.example.sharidev2.data.model.Chat
+import com.example.sharidev2.data.model.Driver
 import com.example.sharidev2.data.model.Gender
 import com.example.sharidev2.data.model.Message
 import com.example.sharidev2.data.model.MessageType
+import com.example.sharidev2.data.model.Passenger
 import com.example.sharidev2.data.model.Review
+import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.data.model.RideOption
+import com.example.sharidev2.data.model.RideStatus
 import com.example.sharidev2.data.model.User
 import com.example.sharidev2.data.model.Vehicle
 import com.example.sharidev2.data.model.VehicleType
@@ -17,7 +21,9 @@ import com.google.firebase.Timestamp
 import com.google.firebase.auth.AdditionalUserInfo
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.Dispatchers
@@ -45,6 +51,15 @@ object FirebaseClient {
     private val commonUtils = CommonUtils()
 
     // COROUTINES FUNCTIONS
+    suspend fun getCurrentUser(): User? {
+        val currentUser = firebaseAuth.currentUser
+
+        if(currentUser != null) {
+            return getUserFromUid(currentUser.uid)
+        }
+
+        return null
+    }
     suspend fun getUserFromUid(userUid: String): User {
         return withContext(Dispatchers.IO) {
             try {
@@ -55,9 +70,9 @@ object FirebaseClient {
 
                 val uid = user.getString("uid")
                 val displayName = user.getString("displayName")
-                val email = user.getString("email")
+                val email = user.getString("email") ?: ""
                 val phoneNumber = user.getString("phoneNumber")
-                val photoUri = Uri.parse(user.getString("photoUrl"))
+                //val photoUri = Uri.parse(user.getString("photoUrl"))
 
                 val rideOptionMap = user.get("rideOption") as Map<String, String>
                 val driverGender = rideOptionMap["driverGender"]?.let { Gender.valueOf(it) }
@@ -74,7 +89,7 @@ object FirebaseClient {
 
                 val gender = if(user.getString("gender") != null) {
                     Gender.valueOf(user.getString("gender")!!)
-                }else {
+                } else {
                     null
                 }
 
@@ -86,12 +101,11 @@ object FirebaseClient {
                     displayName,
                     email,
                     phoneNumber,
-                    photoUri,
-                    rideOption,
-                    rating,
-                    mapOf(),
-                    gender,
-                    joinedDate
+                    rideOption = rideOption,
+                    rating = rating,
+                    savedAddress = mapOf(),
+                    gender = gender,
+                    joinedDate = joinedDate
                 )
             } catch (e: Exception) {
                 Log.e("Get User From Uid", e.message.toString())
@@ -222,7 +236,7 @@ object FirebaseClient {
         }
     }
 
-    suspend fun getRideFromRideId(rideId: String) {
+    suspend fun getRideFromRideId(rideId: String): Ride? {
         return withContext(Dispatchers.IO) {
             try {
                 val ride = firestore.collection("ride")
@@ -230,10 +244,104 @@ object FirebaseClient {
                     .get()
                     .await()
 
-
+                createRideFromDocumentSnapshot(ride)
             } catch (e: Exception) {
                 Log.e("Get Ride From ID", e.message.toString())
-                return@withContext
+                null
+            }
+        }
+    }
+
+    suspend fun createRideFromDocumentSnapshot(document: DocumentSnapshot): Ride {
+        return withContext(Dispatchers.IO) {
+            try {
+                    val origin = converters.toSearchLocation(document.get("origin") as Map<String, Any>)
+                    val destination = converters.toSearchLocation(document.get("destination") as Map<String, Any>)
+                    val datetime = document.getTimestamp("datetime")!!
+                    val driver = converters.toDriver(document.get("driver") as Map<String, Any>)
+
+                    // Passenger Sub-Collection
+                    val passengersSnapshot = document.reference.collection("passengers")
+                        .get()
+                        .await()
+                    val passengersMap = mutableMapOf<String, Passenger>()
+
+                    if(passengersSnapshot != null && !passengersSnapshot.isEmpty) {
+                        for(passengerDoc in passengersSnapshot.documents) {
+                            val passengerData: Map<String, Any>? = passengerDoc.data
+
+                            if(passengerData != null) {
+                                passengersMap[passengerDoc.id] = converters.toPassenger(passengerData)
+                            }
+                        }
+                    }
+
+                    val rideStatus = RideStatus.valueOf(document.getString("rideStatus") ?: "")
+                    val startTime = document.getTimestamp("startTime")
+                    val completeTime = document.getTimestamp("completeTime")
+                    val availableSeats = (document.get("availableSeats") as Long).toInt()
+
+                    // Review Sub-Collection
+                    val reviewSnapshot = document.reference.collection("reviews")
+                        .get()
+                        .await()
+                    val reviewsMap = mutableMapOf<String, Review>()
+
+                    if(reviewSnapshot != null && !reviewSnapshot.isEmpty) {
+                        for(reviewDoc in reviewSnapshot.documents) {
+                            val reviewData = reviewDoc.data
+
+                            if(reviewData != null) {
+                                reviewsMap[reviewDoc.id] = converters.toReview(reviewData)
+                            }
+                        }
+                    }
+
+                    // Chat Sub-Collection
+                    //val chat = FirebaseClient.getChatFromChatId(getString("chat") ?: "")
+                    val chat = converters.toChat(document.get("chat") as Map<String, Any>)
+                    val messagesMap = mutableMapOf<String, Message>()
+
+                    val messageSnapshot = document.reference.collection("messages")
+                        .orderBy("timestamp")
+                        .get()
+                        .await()
+
+                    if(!messageSnapshot.isEmpty && messageSnapshot != null) {
+                        for(messageDoc in messageSnapshot.documents) {
+                            val messageData = messageDoc.data
+
+                            if(messageData != null) {
+                                messagesMap[messageDoc.id] = converters.toMessage(messageData)
+                            }
+                        }
+                    }
+                    chat.messages = messagesMap
+
+                    val createdAt = document.getTimestamp("createdAt")
+
+
+                    val ride = Ride(
+                        document.id,
+                        origin,
+                        destination,
+                        datetime,
+                        driver,
+                        passengersMap,
+                        rideStatus,
+                        startTime,
+                        completeTime,
+                        availableSeats,
+                        reviewsMap,
+                        chat,
+                        createdAt
+                    )
+
+                ride
+            } catch (e: Exception) {
+                Log.e("Create Ride List From Query Snapshot", e.message.toString())
+
+                Ride()
             }
         }
     }
