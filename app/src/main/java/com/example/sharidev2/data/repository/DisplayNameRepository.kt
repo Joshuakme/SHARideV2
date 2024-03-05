@@ -47,40 +47,6 @@ class DisplayNameRepository(
         }
     }
 
-
-    suspend fun updateDisplayName(newDisplayName: User): Int {
-        return withContext(Dispatchers.IO) {
-            try {
-                val nameUserId = newDisplayName.uid
-
-                val displayNameRef = firestore.collection("user").document(nameUserId?: "")
-                val displayNameSnapshot = displayNameRef.get().await()
-                val userId = displayNameSnapshot.getString("uid")
-
-
-                if(isUserLogin){
-                    if (userId == nameUserId) {
-                        // Update the display name content
-                        displayNameRef.update("displayName", newDisplayName.displayName).await()
-
-
-                        Log.d("UPDATE DISPLAY NAME", "SUCESSFUL")
-
-                        FirebaseUtils.SUCCESS // Update successful
-                    } else {
-                        FirebaseUtils.NOT_BELONG_USER // Contact doesn't belong to the current user
-                    }
-                } else {
-                    FirebaseUtils.USER_NOT_AUTHENTICATED // User not authenticated
-                }
-            } catch (e: Exception) {
-                FirebaseUtils.EXCEPTION // Handle exceptions
-                Log.d("ERROR", e.message.toString())
-            }
-        }
-
-    }
-
     suspend fun fetchDisplayName(userId: String): String? {
         return withContext(Dispatchers.IO) {
             try {
@@ -92,6 +58,42 @@ class DisplayNameRepository(
             }
         }
     }
+
+
+//    suspend fun updateDisplayName(newDisplayName: User): Int {
+//        return withContext(Dispatchers.IO) {
+//            try {
+//                val nameUserId = newDisplayName.uid
+//
+//                val displayNameRef = firestore.collection("user").document(nameUserId?: "")
+//                val displayNameSnapshot = displayNameRef.get().await()
+//                val userId = displayNameSnapshot.getString("uid")
+//
+//
+//                if(isUserLogin){
+//                    if (userId == nameUserId) {
+//                        // Update the display name content
+//                        displayNameRef.update("displayName", newDisplayName.displayName).await()
+//
+//
+//                        Log.d("UPDATE DISPLAY NAME", "SUCESSFUL")
+//
+//                        FirebaseUtils.SUCCESS // Update successful
+//                    } else {
+//                        FirebaseUtils.NOT_BELONG_USER // Contact doesn't belong to the current user
+//                    }
+//                } else {
+//                    FirebaseUtils.USER_NOT_AUTHENTICATED // User not authenticated
+//                }
+//            } catch (e: Exception) {
+//                FirebaseUtils.EXCEPTION // Handle exceptions
+//                Log.d("ERROR", e.message.toString())
+//            }
+//        }
+//
+//    }
+
+
 
 
 

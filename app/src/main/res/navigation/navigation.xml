@@ -102,6 +102,10 @@
         <action
             android:id="@+id/action_personalInformationFragment_to_editDisplayNameFragment"
             app:destination="@id/editDisplayNameFragment" />
+        <action
+            android:id="@+id/action_personalInformationFragment_to_editMobileFragment3"
+            app:destination="@id/editMobileFragment3" />
+
     </fragment>
     <fragment
         android:id="@+id/paymentMethodFragment"
@@ -220,4 +224,13 @@
             android:id="@+id/action_editDisplayNameFragment_to_personalInformationFragment"
             app:destination="@id/personalInformationFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/editMobileFragment3"
+        android:name="com.example.sharidev2.screen.user.EditMobileFragment"
+        android:label="EditMobileFragment" >
+        <action
+            android:id="@+id/action_editMobileFragment3_to_personalInformationFragment"
+            app:destination="@id/personalInformationFragment" />
+    </fragment>
+
 </navigation>

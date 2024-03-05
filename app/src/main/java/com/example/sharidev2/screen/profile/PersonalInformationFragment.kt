@@ -36,22 +36,35 @@ class PersonalInformationFragment : Fragment() {
         // ELEMENT VARIABLES
         val backBtn = binding.imgBtnProfilePersonalInfoNavBack
         val displayName = binding.cardPersonalInfoDisplayName
+        val gender = binding.cardPersonalInfoGender
+        val mobileNumber = binding.cardPersonalInfoMobileNumber
         val driverLicense = binding.cardPersonalInfoDrivingLicense
 
         // Initialize ViewModel
         viewModel = ViewModelProvider(requireActivity()).get(PersonalInfoViewModel::class.java)
 
-        // Fetch display name from Firestore
-        viewModel.fetchDisplayNameFromDatabase()
 
-        // Observe the display name
+
+        // Fetch display name and mobile from Firestore
+        viewModel.fetchDisplayNameFromDatabase()
+        viewModel.fetchMobileFromDatabase()
+
+
+
+        // Observe the display name and mobile
         viewModel.displayName.observe(viewLifecycleOwner) { displayName ->
             binding.textPersonalInfoItemValueDisplayName.text = displayName
         }
 
+        viewModel.mobile.observe(viewLifecycleOwner) { mobile ->
+            binding.textPersonalInfoItemValueMobileNumber.text = "+60" + mobile
+        }
+
+
 
         // LAYOUT SETTINGS
         (activity as MainActivity).setBottomNavVisible(false)
+
 
 
         // NAVIGATION EVENT LISTENERS
@@ -60,14 +73,32 @@ class PersonalInformationFragment : Fragment() {
             findNavController().navigate(R.id.action_personalInformationFragment_to_profileFragment)
         }
 
+        // Personal Information Fragment -> Edit Display Name Fragment
         displayName.setOnClickListener {
             findNavController().navigate(R.id.action_personalInformationFragment_to_editDisplayNameFragment)
         }
 
+        //TODO：
+        // Personal Information Fragment -> Edit Gender Fragment
+        gender.setOnClickListener {
+            //findNavController().navigate(R.id.)
+        }
+
+        // Personal Information Fragment -> Edit Mobile Fragment
+        mobileNumber.setOnClickListener {
+            findNavController().navigate(R.id.action_personalInformationFragment_to_editMobileFragment3)
+        }
+
+        //TODO：
+        // Personal Information Fragment -> Vehicle Documentation Fragment
+        driverLicense.setOnClickListener{
+            //findNavController().navigate(R.id.)
+        }
+
+        // Personal Information Fragment -> Driving License Fragment
         driverLicense.setOnClickListener{
             findNavController().navigate(R.id.action_personalInformationFragment_to_drivingLicenseFragment)
         }
-
 
         return binding.root
     }

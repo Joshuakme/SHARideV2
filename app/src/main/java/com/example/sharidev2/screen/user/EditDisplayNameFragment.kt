@@ -95,7 +95,7 @@ class EditDisplayNameFragment: Fragment() {
             }
 
         } catch (e: Exception) {
-            Log.e("UpdateDisplayName", "Error updating contact: ${e.message}", e)
+            Log.e("UpdateDisplayName", "Error updating display name: ${e.message}", e)
         }
     }
 }
