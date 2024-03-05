@@ -24,12 +24,12 @@
 
         <ImageView
             android:id="@+id/btn_back_emergency_contact"
-            android:layout_width="49dp"
-            android:layout_height="45dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tv_emergency_contact_title"
-            app:layout_constraintHorizontal_bias="0.219"
+            app:layout_constraintHorizontal_bias="0.082"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0"
@@ -37,15 +37,16 @@
 
         <TextView
             android:id="@+id/tv_emergency_contact_title"
-            android:layout_width="274dp"
+            android:layout_width="wrap_content"
             android:layout_height="47dp"
+            android:layout_marginTop="8dp"
             android:fontFamily="@font/robotomedium"
-            android:text="Emergency Contacts"
+            android:text="Emergency Contact"
             android:textSize="@dimen/fs_fragment_title"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.696"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0" />

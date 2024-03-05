@@ -45,19 +45,24 @@ class PersonalInformationFragment : Fragment() {
 
 
 
-        // Fetch display name and mobile from Firestore
+        // Fetch display name, gender and mobile from Firestore
         viewModel.fetchDisplayNameFromDatabase()
         viewModel.fetchMobileFromDatabase()
+        viewModel.fetchGenderFromDatabase()
 
 
 
-        // Observe the display name and mobile
+        // Observe the display name, gender and mobile
         viewModel.displayName.observe(viewLifecycleOwner) { displayName ->
             binding.textPersonalInfoItemValueDisplayName.text = displayName
         }
 
         viewModel.mobile.observe(viewLifecycleOwner) { mobile ->
             binding.textPersonalInfoItemValueMobileNumber.text = "+60" + mobile
+        }
+
+        viewModel.gender.observe(viewLifecycleOwner) { gender ->
+            binding.textPersonalInfoItemValueGender.text = gender
         }
 
 
@@ -78,10 +83,9 @@ class PersonalInformationFragment : Fragment() {
             findNavController().navigate(R.id.action_personalInformationFragment_to_editDisplayNameFragment)
         }
 
-        //TODO：
         // Personal Information Fragment -> Edit Gender Fragment
         gender.setOnClickListener {
-            //findNavController().navigate(R.id.)
+            findNavController().navigate(R.id.action_personalInformationFragment_to_editGenderFragment)
         }
 
         // Personal Information Fragment -> Edit Mobile Fragment

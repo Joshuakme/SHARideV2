@@ -105,6 +105,9 @@
         <action
             android:id="@+id/action_personalInformationFragment_to_editMobileFragment3"
             app:destination="@id/editMobileFragment3" />
+        <action
+            android:id="@+id/action_personalInformationFragment_to_editGenderFragment"
+            app:destination="@id/editGenderFragment" />
 
     </fragment>
     <fragment
@@ -230,6 +233,14 @@
         android:label="EditMobileFragment" >
         <action
             android:id="@+id/action_editMobileFragment3_to_personalInformationFragment"
+            app:destination="@id/personalInformationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editGenderFragment"
+        android:name="com.example.sharidev2.screen.user.EditGenderFragment"
+        android:label="EditGenderFragment" >
+        <action
+            android:id="@+id/action_editGenderFragment_to_personalInformationFragment"
             app:destination="@id/personalInformationFragment" />
     </fragment>
 

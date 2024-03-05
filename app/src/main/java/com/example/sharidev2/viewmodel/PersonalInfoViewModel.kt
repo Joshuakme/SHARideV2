@@ -7,15 +7,18 @@ import androidx.lifecycle.viewModelScope
 import com.example.sharidev2.data.model.User
 import com.example.sharidev2.data.repository.DisplayNameRepository
 import com.example.sharidev2.data.repository.EditMobileRepository
+import com.example.sharidev2.data.repository.GenderRepository
 import com.example.sharidev2.firebase.FirebaseInitializer
 import kotlinx.coroutines.launch
 
 class PersonalInfoViewModel: ViewModel() {    // LiveData for current display name
     private val _displayName = MutableLiveData<String>()
     private val _mobile= MutableLiveData<String>()
+    private val _gender = MutableLiveData<String>()
     private val currentUser = FirebaseInitializer.firebaseAuth.currentUser
     private val displayNameRepository = DisplayNameRepository(FirebaseInitializer.firestore, FirebaseInitializer.firebaseAuth)
     private val mobileRepository = EditMobileRepository(FirebaseInitializer.firestore, FirebaseInitializer.firebaseAuth)
+    private val genderRepository = GenderRepository(FirebaseInitializer.firestore, FirebaseInitializer.firebaseAuth)
 
 
     val displayName: LiveData<String>
@@ -23,6 +26,9 @@ class PersonalInfoViewModel: ViewModel() {    // LiveData for current display na
 
     val mobile: LiveData<String>
         get() = _mobile
+
+    val gender: LiveData<String>
+        get() = _gender
 
     // Function to update the display name
     suspend fun updateDisplayName(newDisplayName: String) {
@@ -51,6 +57,19 @@ class PersonalInfoViewModel: ViewModel() {    // LiveData for current display na
                 val mobile = mobileRepository.fetchMobile(userId)
                 _mobile.value = mobile
             }
+        }
+    }
+
+
+    // Function to update the user gender
+    suspend fun updateGender(newGender: String) {
+        genderRepository.updateGender(newGender)
+    }
+
+    fun fetchGenderFromDatabase() {
+        viewModelScope.launch {
+            val gender = genderRepository.fetchGender()
+            _gender.value = gender
         }
     }
 }
