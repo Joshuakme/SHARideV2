@@ -47,7 +47,16 @@
         android:id="@+id/bookingFragment"
         android:name="com.example.sharidev2.screen.navigation.BookingFragment"
         android:label="fragment_booking"
-        tools:layout="@layout/fragment_booking" />
+        tools:layout="@layout/fragment_booking" >
+        <action
+            android:id="@+id/action_bookingFragment_to_bookingDetailFragment"
+            app:destination="@id/bookingDetailFragment"
+            app:popUpTo="@id/bookingFragment">
+            <argument
+                android:name="ride"
+            app:argType="com.example.sharidev2.data.model.Ride" />
+        </action>
+    </fragment>
     <fragment
         android:id="@+id/chatFragment"
         android:name="com.example.sharidev2.screen.chatroom.ChatFragment"
@@ -186,4 +195,31 @@
             app:destination="@id/bookingFragment"/>
 
     </fragment>
+    <fragment
+        android:id="@+id/bookingDetailFragment"
+        android:name="com.example.sharidev2.screen.ride.BookingDetailFragment"
+        android:label="BookingDetailFragment" >
+        <action
+            android:id="@+id/action_bookingDetailFragment_to_viewBookingRequestsFragment"
+            app:destination="@id/viewBookingRequestsFragment"
+            app:popUpTo="@id/bookingDetailFragment" />
+        <action
+            android:id="@+id/action_bookingDetailFragment_to_activeRideFragment"
+            app:destination="@id/activeRideFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true">
+            <argument
+                android:name="ride"
+                app:argType="com.example.sharidev2.data.model.Ride" />
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/viewBookingRequestsFragment"
+        android:name="com.example.sharidev2.screen.ride.ViewBookingRequestsFragment"
+        android:label="fragment_view_booking_requests"
+        tools:layout="@layout/fragment_view_booking_requests" />
+    <fragment
+        android:id="@+id/activeRideFragment"
+        android:name="com.example.sharidev2.screen.ride.ActiveRideFragment"
+        android:label="ActiveRideFragment" />
 </navigation>

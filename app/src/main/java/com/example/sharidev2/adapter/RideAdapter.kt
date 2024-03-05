@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sharidev2.R
 import com.example.sharidev2.data.model.Ride
-import com.github.vipulasri.timelineview.TimelineView
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -62,7 +61,7 @@ class RideAdapter (
         holder.locationRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         val rideLocationList = listOf(ride.origin.name, ride.destination.name)
 
-        holder.locationRecyclerView.adapter = RideTimeLineAdapter(rideLocationList)
+        holder.locationRecyclerView.adapter = BookingTimeLineAdapter(rideLocationList)
 
         if(ride.driver.vehicle?.capacity != null) {
             holder.vehicleCapacityText.text =  holder.itemView.context.getString(

@@ -11,9 +11,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.sharidev2.R
-import com.example.sharidev2.data.repository.UserLocationRepository
+import com.example.sharidev2.adapter.ActiveRidePassengerImageAdapter
+import com.example.sharidev2.data.model.Passenger
+import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.databinding.FragmentActiveRideBinding
 import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.FirebaseClient
@@ -22,8 +25,6 @@ import com.example.sharidev2.utility.GoogleMapUtils
 import com.example.sharidev2.viewmodel.ActiveRideViewModel
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
 import com.google.android.gms.maps.SupportMapFragment
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 
 class ActiveRideFragment : Fragment() {
@@ -32,6 +33,11 @@ class ActiveRideFragment : Fragment() {
     private val currentLocationViewModel: CurrentLocationViewModel by activityViewModels()
 
     private lateinit var googleMapFragment: SupportMapFragment
+
+    private val passengerList = mutableListOf<Passenger>()
+
+
+    private val googleMapUtils = GoogleMapUtils()
     private val mHandler: Handler = Handler()
     private lateinit var mRunnable: Runnable
     private val LOCATION_UPDATE_INTERVAL = 3000 as Long
@@ -45,16 +51,15 @@ class ActiveRideFragment : Fragment() {
 
 
         // Args
-        val activeRideId = arguments?.getString("rideId")
 
-        lifecycleScope.launch(Dispatchers.Main) {
-            if(activeRideId != null) {
-                val activeRide = FirebaseClient.getRideFromRideId(activeRideId)
+        try {
+            val activeRide = arguments?.get("ride") as Ride
 
-                if (activeRide != null) {
-                    activeRideViewModel.setActiveRide(activeRide)
-                }
+            if(activeRide != null) {
+                activeRideViewModel.setActiveRide(activeRide)
             }
+        } catch (e: Exception) {
+            Log.e("Booking Detail Fragment", e.message.toString())
         }
 
 
@@ -63,7 +68,10 @@ class ActiveRideFragment : Fragment() {
 
 
 
+
+
         setupMap()
+        setupData()
 
         return binding.root
     }
@@ -91,7 +99,7 @@ class ActiveRideFragment : Fragment() {
                 val myLocationBtn = binding.cardActiveRideMyLocationContainer
 
                 googleMapFragment.getMapAsync { googleMap ->
-                    GoogleMapUtils().setupMapListeners(googleMap, currentLocation, myLocationBtn,
+                    googleMapUtils.setupMapListeners(googleMap, currentLocation, myLocationBtn,
                         object : GoogleMapUtils.MyLocationButtonCallback {
                             override fun showMyLocationButton(show: Boolean) {
                                 showMyLocationBtn(show)
@@ -101,6 +109,49 @@ class ActiveRideFragment : Fragment() {
                 }
             }
         }
+
+    }
+
+    private fun setupData() {
+        val driverPhotoImg = binding.imgActiveRideDriverPhoto
+        val rideVehicleModelColor = binding.textActiveRideVehicleModelColor
+        val rideVehiclePlateNumber = binding.textActiveRideVehiclePlateNumber
+        val passengersRecyclerView = binding.recyclerViewActiveRidePassengers
+
+
+        activeRideViewModel.activeRide.observe(viewLifecycleOwner) {activeRide ->
+            if(activeRide != null) {
+                // Driver
+                if(activeRide.driver.user?.photoUrl != null) {
+                    driverPhotoImg.setImageURI(activeRide.driver.user?.photoUrl)
+                }
+
+                // Ride
+                if(activeRide.driver.vehicle != null) {
+                    rideVehicleModelColor.text = "${activeRide.driver.vehicle.model} (${activeRide.driver.vehicle.color})"
+                    rideVehiclePlateNumber.text = activeRide.driver.vehicle.plateNumber
+                }
+
+                // Passengers
+                activeRide.passengers.forEach { (id, passenger) ->
+                    passengerList.add(passenger)
+                }
+                val adapter = ActiveRidePassengerImageAdapter(requireContext(), passengerList,
+                    object: ActiveRidePassengerImageAdapter.OnPassengerImageClickListener {
+                        override fun OnPassengerImageClick(passenger: Passenger) {
+                            if(passenger != null) {
+                                googleMapFragment.getMapAsync {googleMap ->
+                                    googleMapUtils.moveMapCamera(googleMap, passenger.location!!)
+                                }
+                            }
+                        }
+                    })
+                passengersRecyclerView.adapter = adapter
+                passengersRecyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+            }
+        }
+
+
     }
 
     private fun getUserLocation() {
@@ -149,7 +200,7 @@ class ActiveRideFragment : Fragment() {
 //                                        CommonUtils().createMarkerWithCircularImage(requireContext(), bitmap, otherUserColor)
 //                                    }
 
-                                    GoogleMapUtils().addMarker(
+                                    googleMapUtils.addMarker(
                                         googleMap,
                                         location.location,
                                         userIcon

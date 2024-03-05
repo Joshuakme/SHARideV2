@@ -31,7 +31,7 @@
 
                 <!--  Fragment Back Button  -->
                 <ImageButton
-                    android:id="@+id/img_btn_ride_detail_nav_back"
+                    android:id="@+id/img_btn_view_booking_requests_nav_back"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="#00FFFFFF"
@@ -43,7 +43,7 @@
                     app:tint="?attr/colorOnBackground" />
 
                 <TextView
-                    android:id="@+id/text_matched_ride_fragment_title"
+                    android:id="@+id/text_ride_detail_fragment_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"

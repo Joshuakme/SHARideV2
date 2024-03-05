@@ -9,9 +9,12 @@ plugins {
     kotlin("kapt")
 
     // Navigation Safe Args
-    id("androidx.navigation.safeargs")
+    //id("androidx.navigation.safeargs")
+    id("androidx.navigation.safeargs.kotlin")
 
     id("kotlin-parcelize")
+
+
 }
 
 android {

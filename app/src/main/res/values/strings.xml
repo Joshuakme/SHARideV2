@@ -5,6 +5,8 @@
     <string name="share_app_link" translatable="false">joshuakme.github.io/SHARide-Web/</string>
 
 
+    <string name="price" translatable="false">RM %.2f</string>
+
     <!--  FIREBASE COLLECTION  -->
     <string name="firebase_collection_user_location">userLocation</string>
 
@@ -112,6 +114,10 @@
     <string name="booking_tab_item_active">Active</string>
     <string name="booking_tab_item_past">Past</string>
 
+
+    <!--  Booking Detail Fragment  -->
+    <string name="booking_detail_fragment_title_booking_detail">Booking Detail</string>
+    <string name="booking_detail_fragment_distance_hour_min" translatable="false" tools:ignore="ExtraTranslation">%d km - %dh %dmins</string>
 
     <!--  Messages Fragment  -->
     <string name="messages_fragment_title_messages">Messages</string>

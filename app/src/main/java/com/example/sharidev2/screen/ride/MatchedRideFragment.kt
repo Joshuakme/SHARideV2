@@ -63,7 +63,6 @@ class MatchedRideFragment :
                 Toast.makeText(requireContext(), "Error loading result", Toast.LENGTH_SHORT).show()
                 loading(Constants.UI_DATA_FAILED)
             }
-
         }
 
         // On Click Listeners

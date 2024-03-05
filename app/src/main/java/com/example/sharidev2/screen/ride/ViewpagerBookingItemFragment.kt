@@ -8,11 +8,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.sharidev2.R
 import com.example.sharidev2.adapter.BookingAdapter
 import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.databinding.FragmentViewpagerBookingItemBinding
+import com.example.sharidev2.screen.navigation.BookingFragmentDirections
 import com.example.sharidev2.utility.FirebaseClient
 import com.example.sharidev2.viewmodel.RideViewModel
 
@@ -112,8 +114,9 @@ class ViewpagerBookingItemFragment :
     }
 
     override fun onBookingClick(booking: Ride) {
-        TODO("Not yet implemented")
-        Toast.makeText(requireContext(), "Clicked!", Toast.LENGTH_SHORT).show()
+        val action = BookingFragmentDirections.actionBookingFragmentToBookingDetailFragment(booking)
+
+        findNavController().navigate(action)
     }
 
     private fun showLoadingStatusProgressBar(status: Int) {

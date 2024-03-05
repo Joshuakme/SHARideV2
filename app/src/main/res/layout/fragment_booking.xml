@@ -63,7 +63,7 @@
             tools:visibility="gone">
 
             <TextView
-                android:id="@+id/text_booking_title"
+                android:id="@+id/text_booking_active_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_medium"
@@ -74,16 +74,16 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/text_booking_date"
+                android:id="@+id/text_booking_active_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/placeholder_booking_recycler_item_date"
                 android:textColor="@color/system_neutral2_500"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_booking_title" />
+                app:layout_constraintTop_toBottomOf="@+id/text_booking_active_title" />
 
             <TextView
-                android:id="@+id/text_booking_price"
+                android:id="@+id/text_booking_active_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins"
@@ -93,7 +93,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <View
-                android:id="@+id/divider_booking_item"
+                android:id="@+id/divider_booking_active_item"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_marginTop="8dp"
@@ -101,7 +101,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_booking_date" />
+                app:layout_constraintTop_toBottomOf="@+id/text_booking_active_date" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

@@ -1,7 +1,6 @@
 package com.example.sharidev2.adapter
 
 import android.content.Context
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +9,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sharidev2.R
 import com.example.sharidev2.data.model.Ride
-import com.google.firebase.auth.FirebaseUser
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

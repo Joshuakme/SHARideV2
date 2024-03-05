@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/colorSurfaceContainerHigh"
+        android:orientation="vertical"
+        tools:context=".screen.ride.BookingDetailFragment">
+
+        <!--  Top Nav Bar  -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_view_booking_requests_top_nav"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorSurface"
+            android:paddingTop="8dp">
+
+            <!--  Fragment Back Button  -->
+            <ImageButton
+                android:id="@+id/img_btn_view_booking_requests_nav_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/ss_screen_width_margin"
+                android:background="#00FFFFFF"
+                android:scaleX="@dimen/ss_profile_subfragment_nav_icon_scale"
+                android:scaleY="@dimen/ss_profile_subfragment_nav_icon_scale"
+                android:src="@drawable/baseline_arrow_back_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.5"
+                app:tint="?attr/colorOnBackground" />
+
+            <TextView
+                android:id="@+id/text_view_booking_requests_fragment_title_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
+                android:textSize="@dimen/fs_fragment_title"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.5" />
+
+            <View
+                android:id="@+id/view3"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginTop="12dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/img_btn_view_booking_requests_nav_back" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollIndicators="none"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!--  Booking ID  -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_booking_detail_booking_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/ss_screen_width_margin"
+                    android:paddingVertical="12dp">
+
+                    <TextView
+                        android:id="@+id/textView9"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Booking ID"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.5" />
+
+                    <TextView
+                        android:id="@+id/text_booking_detail_booking_id"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="?attr/colorOutline"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.5" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <!--  Driver Detail  -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_booking_detail_driver_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:background="?attr/colorSurface"
+                    android:paddingHorizontal="@dimen/ss_screen_width_margin"
+                    android:paddingVertical="12dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/materialCardView4"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.5">
+
+
+                        <ImageView
+                            android:id="@+id/imageView4"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            app:srcCompat="@drawable/baseline_account_circle_24"
+                            app:tint="?attr/colorOnBackground" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <TextView
+                        android:id="@+id/text_booking_detail_driver_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:text="TextView"
+                        app:layout_constraintStart_toEndOf="@+id/materialCardView4"
+                        tools:layout_editor_absoluteY="8dp" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <!--  Price Detail  -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_booking_detail_price_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:background="?attr/colorSurface"
+                    android:paddingHorizontal="@dimen/ss_screen_width_margin"
+                    android:paddingVertical="12dp">
+
+                    <TextView
+                        android:id="@+id/textView13"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Total"
+                        android:textSize="16sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        tools:layout_editor_absoluteY="12dp" />
+
+                    <TextView
+                        android:id="@+id/text_boking_detail_ride_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView13"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/textView13" />
+
+                    <TextView
+                        android:id="@+id/textView17"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="View details"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView13" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <!--  Google Map Section  -->
+                <fragment
+                    android:id="@+id/map_booking_detail_container"
+                    class="com.google.android.gms.maps.SupportMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:mapId="@string/map_id" />
+
+
+                <!--  Ride Detail  -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_booking_detail_ride_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/colorSurface"
+                    android:paddingHorizontal="@dimen/ss_screen_width_margin"
+                    android:paddingVertical="12dp">
+
+                    <TextView
+                        android:id="@+id/text_booking_detail_distance_hour_min"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_view_booking_detail_timeline"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/text_booking_detail_distance_hour_min"
+                        tools:visibility="gone" />
+
+
+                    <TextView
+                        android:id="@+id/text_booking_detail_view_requests"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:paddingBottom="12dp"
+                        android:text="View requests"
+                        android:textSize="15sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/recycler_view_booking_detail_timeline" />
+
+                    <TextView
+                        android:id="@+id/badge"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:layout_gravity="top|end"
+                        android:background="@drawable/badge_circle"
+                        android:gravity="center"
+                        android:translationX="1dp"
+                        android:translationY="-6dp"
+                        app:layout_constraintStart_toEndOf="@+id/text_booking_detail_view_requests"
+                        app:layout_constraintTop_toTopOf="@+id/text_booking_detail_view_requests" />
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/card_booking_detail_cta_start_btn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        app:cardBackgroundColor="?attr/colorPrimaryContainer"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/text_booking_detail_view_requests"
+                        app:strokeWidth="0dp">
+
+
+                        <TextView
+                            android:id="@+id/textView21"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/poppins_semibold"
+                            android:padding="14dp"
+                            android:text="Start"
+                            android:textColor="?attr/colorOnPrimaryContainer"
+                            android:textSize="14sp" />
+                    </com.google.android.material.card.MaterialCardView>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <!--  Ride Rating  -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_booking_detail_ride_rating"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/colorSurface"
+                    android:paddingHorizontal="@dimen/ss_screen_width_margin"
+                    android:paddingBottom="16dp">
+
+                    <View
+                        android:id="@+id/view4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?android:attr/listDivider"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/textView19"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Ride rating"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/view4"
+                        app:layout_constraintVertical_bias="0.5" />
+
+                    <TextView
+                        android:id="@+id/text_booking_detail_rating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/view4"
+                        app:layout_constraintVertical_bias="0.5" />
+
+                    <ImageView
+                        android:id="@+id/imageView7"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/baseline_star_rate_24"
+                        android:translationY="-1dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/text_booking_detail_rating"
+                        app:layout_constraintEnd_toStartOf="@+id/text_booking_detail_rating"
+                        app:layout_constraintTop_toTopOf="@+id/text_booking_detail_rating"
+                        app:tint="?android:attr/colorPressedHighlight" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+</layout>

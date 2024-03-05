@@ -17,10 +17,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sharidev2.R
 import com.example.sharidev2.adapter.RideDetailPassengerImageAdapter
-import com.example.sharidev2.adapter.RideTimeLineAdapter
+import com.example.sharidev2.adapter.BookingTimeLineAdapter
 import com.example.sharidev2.data.model.Passenger
 import com.example.sharidev2.data.model.Ride
-import com.example.sharidev2.data.repository.UserLocationRepository
 import com.example.sharidev2.databinding.FragmentRideDetailBinding
 import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.Constants
@@ -40,12 +39,6 @@ class RideDetailFragment : Fragment() {
     private val currentLocationViewModel: CurrentLocationViewModel by activityViewModels()
     private val currentUser = FirebaseClient.firebaseAuth.currentUser
 
-        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        // Navigate to the BookingFragment
-        //navController.navigate(R.id.action_rideDetailFragment_to_bookingFragment)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -143,7 +136,7 @@ class RideDetailFragment : Fragment() {
                 // Ride Details
                 val rideList = mutableListOf(ride.origin.name, ride.destination.name)
 
-                val rideAdapter = RideTimeLineAdapter(rideList)
+                val rideAdapter = BookingTimeLineAdapter(rideList)
                 rideDetailsTimelineRecyclerView.adapter = rideAdapter
                 rideDetailsTimelineRecyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
 

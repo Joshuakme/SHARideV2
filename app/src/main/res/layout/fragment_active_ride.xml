@@ -8,19 +8,45 @@
         android:layout_height="match_parent"
         tools:context=".screen.ride.ActiveRideFragment">
 
-        <!--  Google Map Section  -->
+
         <fragment
             android:id="@+id/map_active_ride_container"
             class="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_height="380dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.5"
             app:mapId="@string/map_id" />
+
+        <!--  Fragment Back Button  -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/ss_screen_width_margin"
+            android:layout_marginTop="@dimen/ss_screen_top_margin"
+            app:cardBackgroundColor="?attr/scrimBackground"
+            app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
+            app:contentPadding="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:strokeWidth="0dp">
+
+            <ImageButton
+                android:id="@+id/img_btn_active_ride_nav_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#00000000"
+                android:scaleX="@dimen/ss_profile_subfragment_nav_icon_scale"
+                android:scaleY="@dimen/ss_profile_subfragment_nav_icon_scale"
+                android:src="@drawable/baseline_arrow_back_24"
+
+                app:tint="?attr/colorOutlineVariant" />
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <!--  Google Map Section  -->
 
         <!--  "My Location" Button  -->
         <com.google.android.material.card.MaterialCardView
@@ -33,10 +59,10 @@
             app:cardBackgroundColor="?attr/colorSurface"
             app:cardCornerRadius="10000dp"
             app:cardElevation="1dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/map_active_ride_container"
             app:layout_constraintEnd_toEndOf="parent"
             app:strokeWidth="0dp"
-            tools:visibility="gone">
+            tools:visibility="visible">
 
             <ImageButton
                 android:id="@+id/img_btn_active_ride_my_location"
@@ -49,6 +75,204 @@
                 app:tint="?attr/colorOnSurface" />
 
         </com.google.android.material.card.MaterialCardView>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/map_active_ride_container">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="8dp">
+
+                <!--  Ride Status  -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_active_ride_ride_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/colorSurfaceContainer"
+                    android:paddingHorizontal="@dimen/ss_screen_width_margin"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="16dp">
+
+                    <ImageButton
+                        android:id="@+id/img_btn_active_ride_expand_ride_detail"
+                        android:layout_width="35dp"
+                        android:layout_height="wrap_content"
+                        android:background="#00FFFFFF"
+                        android:scaleX="2.5"
+                        android:scaleY="1.2"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/baseline_keyboard_arrow_up_24"
+                        app:tint="?attr/colorOutline" />
+
+                    <TextView
+                        android:id="@+id/text_active_ride_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="On The Way"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/img_btn_active_ride_expand_ride_detail" />
+
+                    <TextView
+                        android:id="@+id/text_active_ride_estimated_time_distance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="~ %d min \u2022 %d km"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/text_active_ride_status" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <!--  Driver Details  -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_active_ride_driver_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/ss_screen_width_margin"
+                    android:paddingVertical="16dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/card_active_ride_driver_photo"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp">
+
+
+                        <ImageView
+                            android:id="@+id/img_active_ride_driver_photo"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:tint="?attr/colorOnBackground"
+                            app:srcCompat="@drawable/baseline_account_circle_24" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <!--  Vehicle Details  -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_active_ride_vehicle_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="16dp">
+
+                    <View
+                        android:id="@+id/view5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dp"
+                        android:background="?android:attr/listDivider"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/text_active_ride_vehicle_model_color"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/ss_screen_width_margin"
+                        android:layout_marginTop="16dp"
+                        android:fontFamily="@font/poppins_medium"
+                        android:text="TextView"
+                        android:textColor="?attr/colorOnBackground"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/text_active_ride_vehicle_plate_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/ss_screen_width_margin"
+                        android:text="TextView"
+                        android:textColor="?android:attr/textColorHint"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/text_active_ride_vehicle_model_color" />
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/card_active_ride_vehicle_photo1"
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/card_active_ride_vehicle_photo2"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.5"
+                        app:strokeWidth="0dp">
+
+                        <ImageView
+                            android:id="@+id/img_active_ride_vehicle_photo1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:adjustViewBounds="true"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/baa5488_front" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/card_active_ride_vehicle_photo2"
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="@dimen/ss_screen_width_margin"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.5"
+                        app:strokeWidth="0dp">
+
+
+                        <ImageView
+                            android:id="@+id/img_active_ride_vehicle_photo2"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:adjustViewBounds="true"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/baa5488_rear" />
+                    </com.google.android.material.card.MaterialCardView>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <!--  Passengers Details  -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <View
+                        android:id="@+id/view_active_ride_passengers_divider"
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dp"
+                        android:background="?android:attr/listDivider"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_view_active_ride_passengers"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/ss_screen_width_margin"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="@dimen/ss_screen_width_margin"
+                        android:orientation="horizontal"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:visibility="gone" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
+        </ScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
