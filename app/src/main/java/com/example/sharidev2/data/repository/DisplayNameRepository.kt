@@ -1,0 +1,116 @@
+package com.example.sharidev2.data.repository
+
+import android.util.Log
+import com.example.sharidev2.data.model.User
+import com.example.sharidev2.firebase.FirebaseInitializer
+import com.example.sharidev2.utility.FirebaseUtils
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
+
+class DisplayNameRepository(
+    private val firestore: FirebaseFirestore,
+    private val firebaseAuth: FirebaseAuth
+) {
+
+    // Variables
+    private val displayNameRef = firestore.collection("user")
+    private val currentUser = FirebaseInitializer.firebaseAuth.currentUser
+    private val isUserLogin = currentUser != null
+
+
+    suspend fun updateDisplayName(newDisplayName: String): Int {
+        return withContext(Dispatchers.IO) {
+
+            if (currentUser != null) {
+                try {
+                    val documentReference = firestore.collection("user")
+                        .document(currentUser.uid)
+                        .update("displayName", newDisplayName)
+                        .await()
+
+                    return@withContext FirebaseUtils.SUCCESS    // SUCCESS
+                } catch (e: Exception) {
+                    // Handle any exceptions here
+                    e.printStackTrace()
+
+                    return@withContext FirebaseUtils.EXCEPTION
+                }
+            } else {
+
+                return@withContext FirebaseUtils.USER_NOT_AUTHENTICATED
+            }
+        }
+    }
+
+
+    suspend fun updateDisplayName(newDisplayName: User): Int {
+        return withContext(Dispatchers.IO) {
+            try {
+                val nameUserId = newDisplayName.uid
+
+                val displayNameRef = firestore.collection("user").document(nameUserId?: "")
+                val displayNameSnapshot = displayNameRef.get().await()
+                val userId = displayNameSnapshot.getString("uid")
+
+
+                if(isUserLogin){
+                    if (userId == nameUserId) {
+                        // Update the display name content
+                        displayNameRef.update("displayName", newDisplayName.displayName).await()
+
+
+                        Log.d("UPDATE DISPLAY NAME", "SUCESSFUL")
+
+                        FirebaseUtils.SUCCESS // Update successful
+                    } else {
+                        FirebaseUtils.NOT_BELONG_USER // Contact doesn't belong to the current user
+                    }
+                } else {
+                    FirebaseUtils.USER_NOT_AUTHENTICATED // User not authenticated
+                }
+            } catch (e: Exception) {
+                FirebaseUtils.EXCEPTION // Handle exceptions
+                Log.d("ERROR", e.message.toString())
+            }
+        }
+
+    }
+
+    suspend fun fetchDisplayName(userId: String): String? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val displayNameSnapshot = displayNameRef.document(userId).get().await()
+                return@withContext displayNameSnapshot.getString("displayName")
+            } catch (e: Exception) {
+                Log.e("FetchDisplayName", "Error fetching display name: ${e.message}", e)
+                return@withContext null
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+//    fun updateDisplayName(uid: String, newDisplayName: String, callback: (Boolean) -> Unit) {
+//        val userRef = db.collection("users").document(uid)
+//        userRef
+//            .update("displayName", newDisplayName)
+//            .addOnSuccessListener {
+//                callback(true)
+//            }
+//            .addOnFailureListener {
+//                callback(false)
+//            }
+//    }
+}

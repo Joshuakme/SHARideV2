@@ -119,13 +119,13 @@ class EmergencyContactRepository(
                 val contactUserId = newContact.userUid
 
                 val contactRef = firestore.collection("contact").document(contactId?: "")
-                val discussionSnapshot = contactRef.get().await()
-                val userId = discussionSnapshot.getString("userUid")
+                val emergencyContactSnapshot = contactRef.get().await()
+                val userId = emergencyContactSnapshot.getString("userUid")
 
 
                 if(isUserLogin){
                     if (userId == contactUserId) {
-                        // Update the discussion content
+                        // Update the emergency contact content
                         contactRef.update("contactName", newContact.contactName).await()
                         contactRef.update("contactPhone", newContact.contactPhone).await()
 
@@ -158,7 +158,7 @@ class EmergencyContactRepository(
                     val userId = contactSnapshot.getString("userUid")
 
                     if (userId == userUid.uid) {
-                        // Delete the discussion
+                        // Delete the emergency contact
                         contactRef.delete().await()
                         0 // Deletion successful
                     } else {

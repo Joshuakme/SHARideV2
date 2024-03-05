@@ -151,6 +151,18 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="editDisplayNameFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="-230" />
+                            <option name="y" value="-304" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="emergencyContactFragment">
                     <value>
                       <LayoutPositions>
@@ -297,8 +309,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="11" />
-                            <option name="y" value="14" />
+                            <option name="x" value="-181" />
+                            <option name="y" value="8" />
                           </Point>
                         </option>
                         <option name="myPositions">
