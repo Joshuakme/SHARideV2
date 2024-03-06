@@ -1,8 +1,7 @@
 package com.example.sharidev2.data.repository
 
 import android.util.Log
-import com.example.sharidev2.firebase.FirebaseInitializer
-import com.example.sharidev2.utility.FirebaseUtils
+import com.example.sharidev2.utility.Constants
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
@@ -25,10 +24,10 @@ class GenderRepository(
                         .update("gender", newGender)
                         .await()
                 }
-                FirebaseUtils.SUCCESS
+                Constants.FIREBASE_REQUEST_SUCCESS
             } catch (e: Exception) {
                 Log.e("UpdateGender", "Error updating gender: ${e.message}", e)
-                FirebaseUtils.EXCEPTION
+                Constants.FIREBASE_REQUEST_EXCEPTION
             }
         }
     }

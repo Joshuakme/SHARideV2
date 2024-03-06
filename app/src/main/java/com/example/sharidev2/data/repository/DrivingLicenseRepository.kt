@@ -3,7 +3,8 @@ package com.example.sharidev2.data.repository
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
-import com.example.sharidev2.utility.FirebaseUtils
+import com.example.sharidev2.utility.Constants
+
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -74,18 +75,18 @@ class DrivingLicenseRepository(
                         .delete()
                         .await()
 
-                    FirebaseUtils.SUCCESS
+                    Constants.FIREBASE_REQUEST_SUCCESS
                 } catch (e: Exception) {
                     Log.e("Add Driver License", e.message.toString())
-                    FirebaseUtils.EXCEPTION
+                    Constants.FIREBASE_REQUEST_EXCEPTION
                 }
             }
         }
         else if(currentUser == null){
-               return FirebaseUtils.USER_NOT_AUTHENTICATED
+            return Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED
         }
         else {
-            return FirebaseUtils.DATA_NOT_VALID
+            return Constants.FIREBASE_REQUEST_DATA_NOT_VALID
             //Toast.makeText(requireContext(), "Please select both front and back driving license images", Toast.LENGTH_SHORT).show()
         }
     }

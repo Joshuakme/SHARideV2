@@ -201,6 +201,7 @@
             app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="true" />
     </fragment>
+
     <fragment
         android:id="@+id/rideDetailFragment"
         android:name="com.example.sharidev2.screen.ride.RideDetailFragment"
@@ -238,4 +239,67 @@
         android:id="@+id/activeRideFragment"
         android:name="com.example.sharidev2.screen.ride.ActiveRideFragment"
         android:label="ActiveRideFragment" />
+
+    <fragment
+        android:id="@+id/emergencyContactFragment"
+        android:name="com.example.sharidev2.screen.emergency.EmergencyContactFragment"
+        android:label="EmergencyContactFragment" >
+        <action
+            android:id="@+id/action_emergencyContactFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_emergencyContactFragment_to_addContactFragment"
+            app:destination="@id/addContactFragment" />
+        <action
+            android:id="@+id/action_emergencyContactFragment_to_editContactFragment"
+            app:destination="@id/editContactFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addContactFragment"
+        android:name="com.example.sharidev2.screen.emergency.AddContactFragment"
+        android:label="AddContactFragment" >
+        <action
+            android:id="@+id/action_addContactFragment_to_emergencyContactFragment"
+            app:destination="@id/emergencyContactFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editContactFragment"
+        android:name="com.example.sharidev2.screen.emergency.EditContactFragment"
+        android:label="EditContactFragment" >
+        <action
+            android:id="@+id/action_editContactFragment_to_emergencyContactFragment"
+            app:destination="@id/emergencyContactFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/drivingLicenseFragment"
+        android:name="DrivingLicenseFragment"
+        android:label="DrivingLicenseFragment" >
+        <action
+            android:id="@+id/action_drivingLicenseFragment_to_personalInformationFragment"
+            app:destination="@id/personalInformationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editDisplayNameFragment"
+        android:name="com.example.sharidev2.screen.user.EditDisplayNameFragment"
+        android:label="EditDisplayNameFragment" >
+        <action
+            android:id="@+id/action_editDisplayNameFragment_to_personalInformationFragment"
+            app:destination="@id/personalInformationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editMobileFragment3"
+        android:name="com.example.sharidev2.screen.user.EditMobileFragment"
+        android:label="EditMobileFragment" >
+        <action
+            android:id="@+id/action_editMobileFragment3_to_personalInformationFragment"
+            app:destination="@id/personalInformationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editGenderFragment"
+        android:name="com.example.sharidev2.screen.user.EditGenderFragment"
+        android:label="EditGenderFragment" >
+        <action
+            android:id="@+id/action_editGenderFragment_to_personalInformationFragment"
+            app:destination="@id/personalInformationFragment" />
+    </fragment>
 </navigation>

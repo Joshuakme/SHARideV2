@@ -33,7 +33,7 @@
                 android:id="@+id/tv_edit_emergency_contact_title"
                 android:layout_width="274dp"
                 android:layout_height="47dp"
-                android:fontFamily="@font/robotomedium"
+                android:fontFamily="@font/poppins_medium"
                 android:gravity="center"
                 android:text="Edit Emergency Contact"
                 android:textSize="@dimen/fs_fragment_title"

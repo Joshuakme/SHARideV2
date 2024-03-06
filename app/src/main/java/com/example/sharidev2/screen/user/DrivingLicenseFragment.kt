@@ -29,8 +29,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentDrivingLicenseBinding
-import com.example.sharidev2.firebase.FirebaseInitializer
-import com.example.sharidev2.utility.FirebaseUtils
+import com.example.sharidev2.utility.Constants
+import com.example.sharidev2.utility.FirebaseClient
 import com.example.sharidev2.viewmodel.LicenseUploadViewModel
 import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.Dispatchers
@@ -47,7 +47,7 @@ class DrivingLicenseFragment : Fragment() {
     private val licenseUploadViewModel: LicenseUploadViewModel by viewModels()
     private lateinit var takePictureLauncher: ActivityResultLauncher<Uri>
 
-    private val auth = FirebaseInitializer.firebaseAuth
+    private val auth = FirebaseClient.firebaseAuth
     private val currentUser = auth.currentUser
 
     private lateinit var licenseFrontImageView: ImageView
@@ -268,7 +268,7 @@ class DrivingLicenseFragment : Fragment() {
             val response = licenseUploadViewModel.addImagesToDB()
 
             when(response) {
-                FirebaseUtils.SUCCESS -> {
+                Constants.FIREBASE_REQUEST_SUCCESS -> {
                     isLoading(false)
 
                     Toast.makeText(
@@ -278,17 +278,17 @@ class DrivingLicenseFragment : Fragment() {
                     ).show()
                 }
 
-                FirebaseUtils.USER_NOT_AUTHENTICATED ->{
+                Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED ->{
                     isLoading(false)
                     Toast.makeText(requireContext(), "User not authenticated. Please log in again.",Toast.LENGTH_SHORT).show()
                 }
 
-                FirebaseUtils.NOT_BELONG_USER ->{
+                Constants.FIREBASE_REQUEST_NOT_BELONG_USER ->{
                     isLoading(false)
                     Toast.makeText(requireContext(), "Please log in your account",Toast.LENGTH_SHORT).show()
                 }
 
-                FirebaseUtils.DATA_NOT_VALID ->{
+                Constants.FIREBASE_REQUEST_DATA_NOT_VALID ->{
                     isLoading(false)
                     Toast.makeText(requireContext(), "Please take your front and back driving license by image",Toast.LENGTH_SHORT).show()
                 }

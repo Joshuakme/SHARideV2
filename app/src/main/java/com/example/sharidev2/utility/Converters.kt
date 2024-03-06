@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.Log
 import com.example.sharidev2.data.model.Chat
+import com.example.sharidev2.data.model.Contact
 import com.example.sharidev2.data.model.Driver
 import com.example.sharidev2.data.model.Gender
 import com.example.sharidev2.data.model.Message
@@ -336,4 +337,21 @@ class Converters() {
 
         return prices.toMap() // Convert to immutable map
     }
+
+
+    // CONTACT CONVERTERS
+    fun toContact(map: Map<String, Any>): Contact {
+        val contactId = map["contactId"] as String
+        val contactName = map["contactName"] as String
+        val contactPhone = map["contactPhone"] as String
+        val userUid = map["userUid"] as String
+
+        return Contact(
+            contactId = contactId,
+            contactName = contactName,
+            contactPhone = contactPhone,
+            userUid = userUid
+        )
+    }
+
 }

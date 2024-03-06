@@ -13,7 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.sharidev2.R
 import com.example.sharidev2.data.model.Contact
 import com.example.sharidev2.databinding.FragmentAddContactBinding
-import com.example.sharidev2.utility.FirebaseUtils
+import com.example.sharidev2.utility.Constants
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.Dispatchers
@@ -53,13 +53,13 @@ class AddContactFragment : Fragment() {
 
                 lifecycleScope.launch(Dispatchers.Main){
                     when(respond) {
-                        FirebaseUtils.SUCCESS -> {
+                        Constants.FIREBASE_REQUEST_SUCCESS -> {
                             Toast.makeText(requireContext(), "Contact Added", Toast.LENGTH_SHORT).show()
                         }
 
-                        FirebaseUtils.NOT_BELONG_USER,
-                        FirebaseUtils.USER_NOT_AUTHENTICATED,
-                        FirebaseUtils.EXCEPTION -> {
+                        Constants.FIREBASE_REQUEST_NOT_BELONG_USER,
+                        Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED,
+                        Constants.FIREBASE_REQUEST_EXCEPTION -> {
                             Toast.makeText(requireContext(), "Failed to add contact", Toast.LENGTH_SHORT).show()
                         }
                     }

@@ -31,7 +31,7 @@
                 android:id="@+id/tv_vehicle_doc"
                 android:layout_width="274dp"
                 android:layout_height="47dp"
-                android:fontFamily="@font/robotomedium"
+                android:fontFamily="@font/poppins_medium"
                 android:text="Vehicle Documentations"
                 android:textAlignment="center"
                 android:textSize="@dimen/fs_fragment_title"
