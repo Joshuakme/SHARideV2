@@ -42,7 +42,7 @@ class PersonalInformationFragment : Fragment() {
         val driverLicense = binding.cardPersonalInfoDrivingLicense
 
         // Initialize ViewModel
-        viewModel = ViewModelProvider(requireActivity()).get(PersonalInfoViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity())[PersonalInfoViewModel::class.java]
 
 
 
@@ -59,7 +59,7 @@ class PersonalInformationFragment : Fragment() {
         }
 
         viewModel.mobile.observe(viewLifecycleOwner) { mobile ->
-            binding.textPersonalInfoItemValueMobileNumber.text = "+60" + mobile
+            binding.textPersonalInfoItemValueMobileNumber.text = "+60 " + mobile
         }
 
         viewModel.gender.observe(viewLifecycleOwner) { gender ->
