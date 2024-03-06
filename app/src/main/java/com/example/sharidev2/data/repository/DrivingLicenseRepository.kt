@@ -22,12 +22,16 @@ class DrivingLicenseRepository() {
 
     private val currentUser = firebaseAuth.currentUser
     private val storageRef = firebaseStorage.reference
+    private val storagePath = "images/${currentUser?.uid}"
 
     suspend fun addDriverLicense(frontImageUri: Uri?, backImageUri: Uri?): Int {
         if (frontImageUri != null && backImageUri != null && currentUser != null) {
             return withContext(Dispatchers.IO) {
                 try {
-                    val frontFileRef = storageRef.child("images/${UUID.randomUUID()}")
+
+                    val imgRandomName = UUID.randomUUID()
+
+                    val frontFileRef = firebaseStorage.reference.child("${storagePath}/$imgRandomName")
 
 
                     val fileSnapshot = frontFileRef.putFile(frontImageUri).await()
@@ -36,7 +40,7 @@ class DrivingLicenseRepository() {
 
                     val frontFileUrl = frontUri.toString()
 
-                    val backFileRef = storageRef.child("images/${UUID.randomUUID()}")
+                    val backFileRef = firebaseStorage.reference.child("${storagePath}/$imgRandomName")
 
                     val backTaskSnapshot = backFileRef.putFile(backImageUri).await()
 

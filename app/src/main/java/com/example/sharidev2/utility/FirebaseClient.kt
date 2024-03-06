@@ -1,9 +1,13 @@
 package com.example.sharidev2.utility
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
+import android.widget.ImageView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.sharidev2.data.model.Chat
 import com.example.sharidev2.data.model.Gender
 import com.example.sharidev2.data.model.Message
@@ -440,4 +444,13 @@ object FirebaseClient {
             onFailure(e)
         }
     }
+
+
+    fun setProfilePic(context: Context, imageUri: Uri, imageView: ImageView) {
+        Glide.with(context)
+            .load(imageUri)
+            .apply(RequestOptions.circleCropTransform())
+            .into(imageView)
+    }
+
 }

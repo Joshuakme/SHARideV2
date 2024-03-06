@@ -112,6 +112,10 @@ dependencies {
     implementation("org.slf4j:slf4j-simple:1.7.25")
     implementation("com.android.volley:volley:1.2.0")
 
+    //Image Picker for Profile Picture
+    implementation ("com.github.dhaval2404:imagepicker:2.1")
+
+
     // Viewpager 2
     implementation("androidx.viewpager2:viewpager2:1.0.0")
 
