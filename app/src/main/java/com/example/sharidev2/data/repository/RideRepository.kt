@@ -1,51 +1,70 @@
 package com.example.sharidev2.data.repository
 
 import android.util.Log
+import com.example.sharidev2.data.model.Chat
+import com.example.sharidev2.data.model.Message
+import com.example.sharidev2.data.model.MessageType
+import com.example.sharidev2.data.model.Passenger
+import com.example.sharidev2.data.model.Review
 import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.data.model.RideStatus
-import com.example.sharidev2.data.model.UserStatus
+import com.example.sharidev2.data.model.User
+import com.example.sharidev2.data.model.Vehicle
+import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.Converters
-import com.example.sharidev2.utility.FirebaseUtils
+import com.example.sharidev2.utility.FirebaseClient
 import com.google.firebase.Timestamp
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FieldPath
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 
-class RideRepository(
-    private val firestore: FirebaseFirestore,
-    firebaseAuth: FirebaseAuth,
-    private val firebaseUtils: FirebaseUtils
-) {
-    private val currentUser = firebaseAuth.currentUser
+class RideRepository() {
+    // Firebase Instances
+    private val firestore = FirebaseClient.firestore
+    private val rideCollectionRef = firestore.collection("ride")
+
+    private val currentUser = FirebaseClient.firebaseAuth.currentUser
     private val converters = Converters()
+
 
     suspend fun createRide(ride: Ride, callback: CreateRideCallback) {
         return withContext(Dispatchers.IO) {
             try {
                 if (currentUser != null) {
+                    val driverUser = FirebaseClient.getUserFromUid(ride.driver.userUid!!)
+
+                    ride.driver.user = driverUser
+                    Log.e("Ride Repository", "Create Ride: ${driverUser.displayName}")
+
+                    val newChat = createEmptyChat()
+                    val newChatHashMap = hashMapOf(
+                        "chatId" to newChat.chatId,
+                        "members" to newChat.members,
+                        "lastMessage" to newChat.lastMessage,
+                        "timestamp" to newChat.timestamp
+                    )
+
                     val newRide = hashMapOf(
                         "origin" to ride.origin,
                         "destination" to ride.destination,
                         "datetime" to ride.datetime,
-                        "driver" to currentUser.uid,
-                        "passengers" to ride.passengers,
+                        "driver" to ride.driver,
                         "rideStatus" to ride.rideStatus,
-                        "driverStatus" to ride.driverStatus,
-                        "passengersStatus" to ride.passengersStatus,
                         "startTime" to ride.startTime,
                         "completeTime" to ride.completeTime,
-                        "vehicle" to ride.vehicle.vehicleID,
                         "availableSeats" to ride.availableSeats,
-                        "price" to ride.price,
-                        "reviews" to ride.reviews,
-                        "chat" to ride.chat
+                        "chat" to newChatHashMap
                     )
 
-                    firestore.collection("ride").document().set(newRide)
+                    val rideCollectionRef = firestore.collection("ride")
+                    val rideId = rideCollectionRef.document().id
+
+                    rideCollectionRef.document(rideId)
+                        .set(newRide)
                         .addOnSuccessListener {
                             // Write was successful!
                             callback.onCreateSuccess()
@@ -55,33 +74,206 @@ class RideRepository(
                             callback.onCreateFailure(e)
                         }
 
+                    // Passengers Sub-Collection
+                    for(passenger in ride.passengers) {
+                        rideCollectionRef.document(rideId)
+                            .collection("passengers")
+                            .document(passenger.key)
+                            .set(ride.passengers.values)
+                            .await()
+                    }
+
+                    // Reviews Sub-Collection
+                    for(review in ride.reviews) {
+                        rideCollectionRef.document(rideId)
+                            .collection("reviews")
+                            .document()
+                            .set(review)
+                            .await()
+                    }
+
+                    // Message Sub-Collection
+                    val messageId = rideCollectionRef.document(rideId)
+                                        .collection("messages")
+                                        .document().id
+
+                    rideCollectionRef.document(rideId)
+                        .collection("messages")
+                        .document(messageId)
+                        .set(newChat.messages!!)
+                        .await()
+
                 } else {
                     // User not logged in yet
-                    Log.e("HAIYAA", "User is not logged in yet")
+                    Log.e("Create Ride : HAIYAA", "User is not logged in yet")
                 }
             } catch(e: Exception) {
-                Log.e("KENAPA??", e.message.toString())
+                Log.e("Create Ride : KENAPA??", e.message.toString())
+            }
+        }
+    }
+
+    private suspend fun createEmptyChat(): Chat {
+        return withContext(Dispatchers.IO) {
+            try{
+                val chatId = firestore.collection("chat").document().id
+
+                val messages = mutableMapOf<String, Message>()
+
+                val messageId = firestore.collection("chat").document(chatId).collection("message").document().id
+
+                val welcomeChatMessage = "Welcome to SHARide! Start you chat here."
+
+                messages[messageId] = Message(
+                    messageId,
+                    "Admin",
+                    welcomeChatMessage,
+                    Timestamp.now(),
+                    attachmentURL = null,
+                    emptyList(),
+                    MessageType.Text
+                )
+
+                val chatHashMap = hashMapOf(
+                    "chatId" to chatId,
+                    "members" to listOf(currentUser?.uid!!),
+                    "lastMessage" to welcomeChatMessage,
+                    "timestamp" to Timestamp.now(),
+                )
+
+                val chat = Chat(
+                    chatId = chatId,
+                    members = listOf(currentUser?.uid!!),
+                    lastMessage = welcomeChatMessage,
+                    timestamp = Timestamp.now(),
+                    messages = messages
+                )
+
+                firestore.collection("chat").document(chatId)
+                    .set(chatHashMap)
+                    .await()
+
+
+                // Messages Sub-collection
+                firestore.collection("chat").document(chatId)
+                    .collection("messages")
+                    .document(messageId)
+                    .set(messages)
+                    .await()
+
+                chat
+            }
+            catch (e: Exception) {
+                Log.e("Create Chat", e.message.toString())
+                Chat()
+            }
+        }
+    }
+
+    private suspend fun addMessageToChat(chatId: String, newMessage: Message) {
+        return withContext(Dispatchers.IO) {
+            try{
+                firestore.collection("chat")
+                    .document(chatId)
+                    .collection("message")
+                    .add(newMessage)
+                    .await()
+
+                firestore.collection("chat")
+                    .document(chatId)
+                    .update("lastMessage", newMessage.text)
+                    .await()
+
+            } catch (e: Exception) {
+                Log.e("Add Message To Chat", e.message.toString())
+            }
+        }
+    }
+
+    suspend fun addPassenger(newPassenger: Passenger, rideId: String): Int {
+        return withContext(Dispatchers.IO) {
+            try {
+                val rideRef = firestore.collection("ride").document(rideId)
+
+                newPassenger.user = FirebaseClient.getCurrentUser()
+
+                // Add the new passenger to the "passengers" sub-collection
+                rideRef.collection("passengers")
+                    .document(newPassenger.userUid!!)
+                    .set(newPassenger)
+                    .await()
+
+                // Get the count of passengers in the "passengers" sub-collection
+                val passengersQuery = rideRef.collection("passengers").get().await()
+                val passengersCount = passengersQuery.size()
+
+                // Get the ride data
+                val rideData = rideRef.get().await().data
+                val driver = converters.toDriver(rideData?.get("driver") as Map<String, Any>)
+
+                if(driver.vehicle?.capacity != null) {
+                    val vehicleCapacity = driver.vehicle.capacity.minus(1)
+
+                    // Calculate the available seats
+                    val availableSeats = vehicleCapacity.minus(passengersCount)
+
+                    // Update the available seats for the ride
+                    rideRef.update("availableSeats", availableSeats)
+                        .await()
+
+                    Constants.FIREBASE_REQUEST_SUCCESS
+                } else {
+                    Constants.FIREBASE_REQUEST_EXCEPTION
+                }
+            } catch (e: Exception) {
+                Log.e("Add Passenger", e.message.toString())
+                Constants.FIREBASE_REQUEST_EXCEPTION
             }
         }
     }
 
 
-    // RETRIEVE
+    // RETRIEVE METHODS
     suspend fun getAllRides(): List<Ride> {
         return withContext(Dispatchers.IO) {
             try{
-                val querySnapshot = firestore.collection("ride")
-                    .orderBy("datetime")
-                    .get()
-                    .await()
+                if(currentUser?.uid != null) {
+                    val driverQuerySnapshot = rideCollectionRef
+                        .whereEqualTo("driver.userUid", currentUser.uid ?: "")
+                        .orderBy("datetime", Query.Direction.DESCENDING)
+                        .get()
+                        .await()
 
-                // Destructure object retrieve from firebase and convert to List<Ride>
-                val rideList = createRideListFromQuerySnapshot(querySnapshot)
-                //emptyList()
-                Log.e("Get All Rides", "All Rides: " + querySnapshot.size().toString())
-                Log.e("Get All Rides", "Ride List: " + rideList.size.toString())
 
-                rideList
+                    val passengerQuerySnapshot = firestore.collectionGroup("passengers")
+                        .whereEqualTo("userUid", currentUser.uid)
+                        .get()
+                        .await()
+
+                    val driverRideList = createRideListFromQuerySnapshot(driverQuerySnapshot)
+                    val passengerRideList = mutableListOf<Ride>()
+
+                    for (document in passengerQuerySnapshot.documents) {
+                        val rideRef = document.reference.parent.parent
+                        if (rideRef != null) {
+                            val rideSnapshot = rideRef.get().await()
+
+                            val ride = FirebaseClient.createRideFromDocumentSnapshot(rideSnapshot)
+                            if (ride != null) {
+                                passengerRideList.add(ride)
+                            }
+                        }
+                    }
+
+                    val rideList = driverRideList + passengerRideList
+
+
+                    Log.e("Get All Rides", "All Rides: " + rideList.size.toString())
+
+                    rideList
+                } else {
+                    emptyList()
+                }
             } catch (e: Exception) {
                 Log.e("Get All Rides", e.message.toString())
                 emptyList()
@@ -89,19 +281,21 @@ class RideRepository(
         }
     }
 
-    suspend fun getFilterDriverRideList(date: Timestamp): List<Ride> {
+
+    suspend fun getPassengerRideList(): List<Ride> {
         return withContext(Dispatchers.Main) {
             try {
                 if(currentUser != null) {
                     val querySnapshot = firestore.collection("ride")
-                        .whereEqualTo("date", date)
-                        .whereNotEqualTo("driver", currentUser.uid)
                         .whereGreaterThanOrEqualTo("availableSeats", 1)
                         .get()
                         .await()
 
-                    //val filteredRideList = createRideListFromQuerySnapshot(querySnapshot)
-                    val filteredRideList = emptyList<Ride>()
+                    val filteredNotDriverList = createRideListFromQuerySnapshot(querySnapshot)
+
+                    val filteredRideList = filteredNotDriverList.filter {
+                        it.availableSeats >= 1
+                    }
 
                     filteredRideList
                 } else {
@@ -109,13 +303,17 @@ class RideRepository(
                     emptyList()
                 }
             } catch (e: Exception) {
-                Log.e("Filter Driver Ride", e.message.toString())
+                Log.e("Get Passenger Ride", e.message.toString())
                 emptyList()
             }
         }
     }
 
 
+    // UPDATE FUNCTIONS
+    suspend fun updatePassenger(oldPassengerUid: String, newPassenger: Passenger) {
+
+    }
 
 
     // HELPER METHODS
@@ -125,51 +323,17 @@ class RideRepository(
         return withContext(Dispatchers.IO) {
             try {
                 for (document in querySnapshot.documents) {
-                    document.apply {
-                        val origin = converters.toSearchLocation(get("origin") as Map<String, Any>)
-                        val destination = converters.toSearchLocation(get("destination") as Map<String, Any>)
-                        val datetime = getTimestamp("datetime") ?: Timestamp.now()
-                        val driver = firebaseUtils.getUserFromUid(getString("driver") ?: "")
-                        val passengers = converters.toPassengerList(get("passengers") as List<Map<String, Any>>).toMutableList()
-                        val rideStatus = RideStatus.valueOf(getString("rideStatus") ?: "")
-                        val driverStatus = UserStatus.valueOf(getString("driverStatus") ?: "")
-                        val passengersStatus = converters.toPassengersStatus(get("passengersStatus") as Map<String, String>)
-                        val startTime = getTimestamp("startTime")
-                        val completeTime = getTimestamp("completeTime")
-                        val vehicle = firebaseUtils.getVehicleFromId(getString("vehicle") ?: "")
-                        val availableSeats = (get("availableSeats") as Long).toInt()
-                        val price = get("price") as Map<String, Double>
-                        val reviews = converters.toReviewList(get("reviews") as List<Map<String, Any>>)
-                        val chat = firebaseUtils.getChatFromChatId(getString("chat") ?: "")
 
+                    val ride = FirebaseClient.createRideFromDocumentSnapshot(document)
 
-                        val ride = Ride(
-                            this.id,
-                            origin,
-                            destination,
-                            datetime,
-                            driver,
-                            passengers,
-                            rideStatus,
-                            driverStatus,
-                            passengersStatus,
-                            startTime,
-                            completeTime,
-                            vehicle,
-                            availableSeats,
-                            price,
-                            reviews,
-                            chat
-                        )
-
-                        filteredRideList.add(ride)
-                    }
+                    filteredRideList.add(ride)
                 }
+
                 filteredRideList.toList()
             } catch (e: Exception) {
                 Log.e("Create Ride List From Query Snapshot", e.message.toString())
 
-                emptyList<Ride>()
+                emptyList()
             }
         }
     }

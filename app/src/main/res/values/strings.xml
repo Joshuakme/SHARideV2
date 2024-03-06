@@ -4,6 +4,13 @@
     <string name="map_id" translatable="false">ed88a81f472d4f02</string>
     <string name="share_app_link" translatable="false">joshuakme.github.io/SHARide-Web/</string>
 
+
+    <string name="price" translatable="false">RM %.2f</string>
+
+    <!--  FIREBASE COLLECTION  -->
+    <string name="firebase_collection_user_location">userLocation</string>
+
+
     <!--  *******  -->
     <!--  GENERAL  -->
     <!--  *******  -->
@@ -74,7 +81,17 @@
     <string name="ride_detail_config_fragment_section_title_schedule_date_time_reminder">*Current date time will be selected if leave blank</string>
     <string name="ride_detail_config_fragment_cta_button_find_ride">Find Ride</string>
     <string name="ride_detail_config_fragment_cta_button_create_ride">Create Ride</string>
-    <string name="ride_detail_config_fragment_section_title_vehicle">Vehicle</string>
+
+
+    <!--  Matched Ride Fragment  -->
+    <string name="matched_ride_fragment_title_matching_result">Matching Result</string>
+    <string name="matched_ride_fragment_searching_for_ride">Searching For Ride...</string>
+    <string name="matched_ride_fragment_vehicle_capacity">%d Seats</string>
+    <string name="matched_ride_fragment_ride_available_seats">%d seats left</string>
+    <string name="matched_ride_fragment_ride_found_result_number">We found %d drivers for you</string>
+    <string name="matched_ride_fragment_ride_result_error">Oops! There is no ride matches your requirement</string>
+    <string name="matched_ride_fragment_ride_result_error_cta">Create your own ride</string>
+
 
     <!--  Driver Create Ride Fragment  -->
     <string name="driver_create_ride_fragment_title_create_new_ride">Create New Ride</string>
@@ -88,11 +105,27 @@
     <string name="driver_ride_config_fragment_passenger_capacity_value">%d pax</string>
 
 
+    <!--  Ride Detail Fragment  -->
+    <string name="ride_detail_fragment_title_ride_detail">Ride Detail</string>
+    <string name="ride_detail_fragment_section_title_driver_details">Driver details</string>
+    <string name="ride_detail_fragment_section_title_ride_details">Ride details</string>
+    <string name="ride_detail_fragment_driver_rating">%.1f (%d reviews)</string>
+    <string name="ride_detail_fragment_passengers_seat_booked">%d/%d seats booked</string>
+    <string name="ride_detail_fragment_passengers_estimated_price">RM %.2f</string>
+
+
     <!--  Booking Fragment  -->
     <string name="booking_fragment_title_booking">Booking</string>
     <string name="booking_section_title_recent">Recent</string>
     <string name="booking_error_loading">Sorry, no booking found!</string>
     <string name="booking_item_price">RM %.2f</string>
+    <string name="booking_tab_item_active">Active</string>
+    <string name="booking_tab_item_past">Past</string>
+
+
+    <!--  Booking Detail Fragment  -->
+    <string name="booking_detail_fragment_title_booking_detail">Booking Detail</string>
+    <string name="booking_detail_fragment_distance_hour_min" translatable="false" tools:ignore="ExtraTranslation">%d km - %dh %dmins</string>
 
     <!--  Messages Fragment  -->
     <string name="messages_fragment_title_messages">Messages</string>
@@ -193,8 +226,8 @@
     <string name="placeholder_home_share_this_app_link">https://sharide.com/share-link</string>
 
 
-    <string name="placeholder_booking_recycler_item_title">Ride to The Exchange TRX</string>
-    <string name="placeholder_booking_recycler_item_date">30 Nov, 11:30</string>
+    <string name="placeholder_booking_recycler_item_title">The Exchange TRX</string>
+    <string name="placeholder_booking_recycler_item_date">30 Nov, 11:30 am</string>
     <string name="placeholder_booking_recycler_item_price">RM 7.00</string>
 
     <string name="placeholder_messages_chat_username">Ali</string>

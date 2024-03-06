@@ -10,9 +10,12 @@ plugins {
     kotlin("kapt")
 
     // Navigation Safe Args
-    id("androidx.navigation.safeargs")
+    //id("androidx.navigation.safeargs")
+    id("androidx.navigation.safeargs.kotlin")
 
     id("kotlin-parcelize")
+
+
 }
 
 android {
@@ -61,9 +64,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     implementation("androidx.annotation:annotation:1.7.1")
-    implementation("com.google.firebase:firebase-storage-ktx:20.3.0")
-    implementation("com.google.firebase:firebase-database:20.3.0")
-    implementation("com.google.firebase:firebase-firestore-ktx:24.10.0")
     implementation("androidx.core:core-i18n:1.0.0-alpha01")
     implementation("androidx.compose.ui:ui-android:1.6.2")
     testImplementation("junit:junit:4.13.2")
@@ -79,6 +79,8 @@ dependencies {
     implementation("com.google.firebase:firebase-database-ktx:20.3.0")
     implementation("com.google.firebase:firebase-auth")                     // Dependency for the Firebase Authentication library
     implementation("com.google.android.gms:play-services-auth:20.7.0")      // Dependency for the Google Play services library and specify its version
+    implementation("com.google.firebase:firebase-firestore-ktx:24.10.0")
+    implementation("com.google.firebase:firebase-storage")
 
     // Navigation
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.6")
@@ -93,27 +95,28 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:18.0.0")
     implementation("com.google.android.libraries.places:places:2.4.0")
     implementation("com.android.volley:volley:1.2.0")
+    implementation("com.google.maps.android:android-maps-utils:1.3.1")
 
 
     // Viewpager 2
     implementation("androidx.viewpager2:viewpager2:1.0.0")
 
-    // Date Time Picker
-    implementation("com.wdullaer:materialdatetimepicker:4.2.3")
-
-    implementation("com.github.swnishan:materialdatetimepicker:1.0.0")
-
-    // Room Database
-    val room_version = "2.6.1"
-    implementation("androidx.room:room-runtime:$room_version")
-    annotationProcessor("androidx.room:room-compiler:$room_version")
-    implementation("androidx.room:room-ktx:$room_version")
-    kapt("androidx.room:room-compiler:$room_version")
-
     // Gson
     implementation("com.google.code.gson:gson:2.8.8")
 
-    // Glide
+    // Timeline
+    implementation("com.github.vipulasri:timelineview:1.1.5")
+
+    // Retrofit for making HTTP requests
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+
+    // Gson converter for JSON serialization/deserialization
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    // OkHttp logging interceptor for logging HTTP requests and responses
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.1")
+
+       // Glide
     implementation("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 }

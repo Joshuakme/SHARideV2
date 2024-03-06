@@ -2,47 +2,55 @@ package com.example.sharidev2
 
 
 import android.Manifest
+import android.app.ActivityManager
+import android.content.ComponentName
+import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.content.pm.PackageManager
-import android.location.Address
-import android.location.Geocoder
+import android.os.Build
 import android.os.Bundle
-import android.os.Looper
+import android.os.IBinder
 import android.util.Log
 import android.view.View
-import androidx.activity.result.contract.ActivityResultContracts
+import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.example.sharidev2.data.repository.UserLocationRepository
 import com.example.sharidev2.databinding.ActivityMainBinding
-import com.example.sharidev2.service.ConnectivityService
+import com.example.sharidev2.service.NetworkService
+import com.example.sharidev2.service.LocationService
+import com.example.sharidev2.utility.Constants.Companion.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
+import com.example.sharidev2.utility.Constants.Companion.PERMISSIONS_REQUEST_POST_NOTIFICATION
+import com.example.sharidev2.utility.FirebaseClient
+import com.example.sharidev2.utility.UserClient
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import android.location.Location
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
-import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.io.IOException
-import java.util.Locale
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var bottomNavContainer: LinearLayout
 
     private val currentLocationViewModel: CurrentLocationViewModel by viewModels()
+
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private var locationPermissionGranted = false
+    private var postNotificationPermissionGranted = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,13 +65,28 @@ class MainActivity : AppCompatActivity() {
 
         bottomNav.setupWithNavController(navController)
 
-
         Places.initialize(applicationContext, "AIzaSyBTPyaUpFhz9GMIpFq40zi9cZlCeZZZtQc")
 
-        getCurrentLocation()
+        lifecycleScope.launch(Dispatchers.IO) {
+            UserClient.setCurrentUser(FirebaseClient.firebaseAuth.currentUser?.uid ?: "")
+        }
+
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        if(locationPermissionGranted) {
+            getLastKnownLocation()
+        } else {
+            getLocationPermission()
+        }
+
+        if(postNotificationPermissionGranted) {
+            // Do nothing
+        } else {
+            getPostNotificationPermission()
+        }
 
         // Check Network Connection
-        startService(Intent(this, ConnectivityService::class.java))
+        startNetworkService()
 
 
 //        if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
@@ -99,60 +122,9 @@ class MainActivity : AppCompatActivity() {
         bottomNavContainer.translationY = 0f
     }
 
-    private fun getCurrentLocation() {
 
-        val requestLocationPermissionLauncher =
-            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-                if (isGranted) {
-                    // Permission is granted. Proceed with location updates.
-                    requestLocationUpdates()
-                } else {
-                    // Permission is denied. Handle accordingly.
-                }
-            }
-
-        // Check and request location permission
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            // Permission is already granted. Proceed with location updates.
-            requestLocationUpdates()
-        } else {
-            // Request location permission
-            requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-        }
-    }
-
-    private fun requestLocationUpdates() {
-        // Initialize FusedLocationProviderClient
-        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
-        val locationRequest = LocationRequest.create().apply {
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            interval = 10000 // Update location every 10 seconds (adjust as needed)
-        }
-
-        val locationCallback = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult) {
-                super.onLocationResult(locationResult)
-
-                // Get the latest location from the result
-                val latestLocation = locationResult.lastLocation
-
-
-                // Now you have the latest current location (latitude and longitude)
-                // You can use it in your autocomplete request or any other use case
-                val currentLocation = LatLng(latestLocation.latitude, latestLocation.longitude)
-                currentLocationViewModel.setLocation(currentLocation)
-
-                // If you only need one location update, you can remove the callback after obtaining the location.
-                fusedLocationClient.removeLocationUpdates(this)
-            }
-        }
-
-        // Request location updates
+    private fun getLastKnownLocation() {
+        // If no permission granted
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -161,16 +133,139 @@ class MainActivity : AppCompatActivity() {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+            Toast.makeText(applicationContext, "Location permission denied", Toast.LENGTH_SHORT).show()
             return
         }
-        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
+
+        fusedLocationClient.lastLocation
+            .addOnCompleteListener {task ->
+                if(task.isSuccessful) {
+                    val location = task.result
+
+                    if(location != null) {
+                        val currentLocation = LatLng(location.latitude, location.longitude)
+
+                        currentLocationViewModel.setLocation(currentLocation)
+                    }
+                }
+            }
+
+        startLocationService()
+    }
+
+
+    private fun getLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this.applicationContext,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED) {
+            locationPermissionGranted = true;
+
+            getLastKnownLocation();
+        } else {
+            ActivityCompat.requestPermissions(this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
+    }
+
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        when(requestCode) {
+            PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION -> {
+                if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    locationPermissionGranted = true
+                } else {
+                    //Toast.makeText(applicationContext, "Location permission denied", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            PERMISSIONS_REQUEST_POST_NOTIFICATION -> {
+                if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    postNotificationPermissionGranted = true
+                } else {
+                    // Do nothing
+                }
+            }
+        }
+    }
+
+    private fun startNetworkService() {
+        if(!isNetworkServiceRunning()) {
+            val serviceIntent = Intent(this, NetworkService::class.java)
+
+            startService(serviceIntent)
+        }
+    }
+
+    private fun isNetworkServiceRunning(): Boolean {
+        val manager = getSystemService(ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+            if ("com.example.sharidev2.service.NetworkService" == service.service.className) {
+                Log.d(TAG, "isNetworkServiceRunning: network service is already running.")
+                return true
+            }
+        }
+        Log.d(TAG, "isNetworkServiceRunning: network service is not running.")
+        return false
+    }
+
+
+    private fun startLocationService() {
+        if (!isLocationServiceRunning()) {
+            val serviceIntent = Intent(this, LocationService::class.java)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                if(postNotificationPermissionGranted) {
+                    startForegroundService(serviceIntent)
+                } else {
+                    getPostNotificationPermission()
+                }
+            } else {
+                startService(serviceIntent)
+            }
+        }
+    }
+
+    private fun isLocationServiceRunning(): Boolean {
+        val manager = getSystemService(ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+            if ("com.example.sharidev2.service.LocationService" == service.service.className) {
+                Log.d(TAG, "isLocationServiceRunning: location service is already running.")
+                return true
+            }
+        }
+        Log.d(TAG, "isLocationServiceRunning: location service is not running.")
+        return false
+    }
+
+
+    private fun getPostNotificationPermission() {
+        if (ContextCompat.checkSelfPermission(this.applicationContext,
+                Manifest.permission.POST_NOTIFICATIONS)
+            == PackageManager.PERMISSION_GRANTED) {
+            postNotificationPermissionGranted = true
+            // do nothing
+        } else {
+            ActivityCompat.requestPermissions(this,
+                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                PERMISSIONS_REQUEST_POST_NOTIFICATION)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if(locationPermissionGranted) {
+            getLastKnownLocation()
+        } else {
+            getLocationPermission()
+        }
     }
 
 

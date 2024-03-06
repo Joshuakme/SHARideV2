@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.sharidev2.R
 import com.example.sharidev2.adapter.SearchRideAdapter
 import com.example.sharidev2.data.model.SearchLocation
+import com.example.sharidev2.data.repository.UserLocationRepository
 import com.example.sharidev2.databinding.FragmentDriverCreateRideBinding
 import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.GoogleMapUtils
@@ -31,8 +32,6 @@ import com.example.sharidev2.utility.NetworkUtils
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
 import com.example.sharidev2.viewmodel.SharedCreateRideViewModel
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
@@ -229,6 +228,8 @@ class DriverCreateRideFragment : Fragment() {
 
     @SuppressLint("MissingPermission")
     private fun setupMap() {
+        val myLocationBtn = binding.cardDriverCreateRideMyLocationContainer
+
         // Setup Google Map
         mapFragment.getMapAsync {googleMap ->
             // Map Settings
@@ -237,20 +238,17 @@ class DriverCreateRideFragment : Fragment() {
             googleMap.uiSettings.isMapToolbarEnabled = false
 
 
-            val fusedLocationProviderClient = FusedLocationProviderClient(requireContext())
 
             // Draw marker
-            CommonUtils().getDeviceCurrentLocation(fusedLocationProviderClient,
-                onLocationResult = { currentLocation ->
-                        updateMap(originLocation = currentLocation)
-                },
-                onLocationError = {
-                    // Handle the case where there's an error getting the device location
-                    // Toast.makeText(requireContext(), "Error getting device location", Toast.LENGTH_SHORT).show()
-                }
-            )
-
-            setupMapListeners(googleMap, fusedLocationProviderClient)
+            currentLocationViewModel.currentLocation.observe(viewLifecycleOwner) { origin ->
+                updateMap(originLocation = origin)
+                GoogleMapUtils().setupMapListeners(googleMap, origin, myLocationBtn,
+                    object: GoogleMapUtils.MyLocationButtonCallback {
+                        override fun showMyLocationButton(show: Boolean) {
+                            showMyLocationBtn(show)
+                        }
+                    })
+            }
         }
     }
 
@@ -361,59 +359,7 @@ class DriverCreateRideFragment : Fragment() {
     }
 
     // GOOGLE MAP RELATED METHODS
-    private fun setupMapListeners(
-        googleMap: GoogleMap,
-        fusedLocationProviderClient: FusedLocationProviderClient
-    ) {
-        val myLocationBtn = binding.cardDriverCreateRideMyLocationContainer
 
-        googleMap.setOnCameraMoveListener {
-            handleCameraMove(googleMap, fusedLocationProviderClient)
-            true
-        }
-
-        myLocationBtn.setOnClickListener {
-            handleMyLocationButtonClick(googleMap, fusedLocationProviderClient)
-            true
-        }
-    }
-
-
-    private fun handleCameraMove(
-        googleMap: GoogleMap,
-        fusedLocationProviderClient: FusedLocationProviderClient
-    ) {
-        CommonUtils().getDeviceCurrentLocation(
-            fusedLocationProviderClient,
-            onLocationResult = { currentLocation ->
-                val currentCameraPosition = googleMap.cameraPosition.target
-
-                if (!GoogleMapUtils().isMapOnCurrentLocation(currentCameraPosition, currentLocation)) {
-                    showMyLocationButton(true)
-                } else {
-                    showMyLocationButton(false)
-                }
-            },
-            onLocationError = {
-                // Toast.makeText(requireContext(), "Error getting device location", Toast.LENGTH_SHORT).show()
-            }
-        )
-    }
-
-    private fun handleMyLocationButtonClick(
-        googleMap: GoogleMap,
-        fusedLocationProviderClient: FusedLocationProviderClient
-    ) {
-        CommonUtils().getDeviceCurrentLocation(
-            fusedLocationProviderClient,
-            onLocationResult = { currentLocation ->
-                GoogleMapUtils().moveMapCamera(googleMap, currentLocation)
-            },
-            onLocationError = {
-                // Toast.makeText(requireContext(), "Error getting device location", Toast.LENGTH_SHORT).show()
-            }
-        )
-    }
 
 
     private fun updateMap(originLocation: LatLng? = null) {
@@ -445,12 +391,12 @@ class DriverCreateRideFragment : Fragment() {
                 }
 
                 googleMapUtils.updateMapZoomAndCamera(requireContext(), googleMap, origin, destination)
-                googleMapUtils.drawRoute(googleMap, origin, destination)
+                //googleMapUtils.drawRoute(googleMap, origin, destination)
             }
         }
     }
 
-    private fun showMyLocationButton(show: Boolean) {
+    private fun showMyLocationBtn(show: Boolean) {
         val myLocationBtn = binding.cardDriverCreateRideMyLocationContainer
 
         myLocationBtn.visibility = if (show) View.VISIBLE else View.GONE

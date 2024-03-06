@@ -80,7 +80,7 @@
             tools:visibility="gone">
 
             <ImageButton
-                android:id="@+id/img_btn_search_select_origin_my_location"
+                android:id="@+id/img_btn_driver_create_ride_my_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="#00FFFFFF"

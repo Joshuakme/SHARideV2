@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/ll_ride_item_booking_destination_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/card_ride_driver_icon"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.github.vipulasri.timelineview.TimelineView
+            android:id="@+id/timeline_ride_item_booking_location"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:nestedScrollingEnabled="false"
+            app:endLineColor="?attr/colorOutline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:lineOrientation="vertical"
+            app:lineStyle="normal"
+            app:lineWidth="1dp"
+            app:marker="@drawable/ic_hollow_circle"
+            app:markerSize="12dp"
+            app:startLineColor="?attr/colorOutline" />
+
+        <TextView
+            android:id="@+id/text_timeline_booking_location_name"
+            android:layout_width="match_parent"
+            android:layout_height="28dp"
+            android:layout_marginStart="16dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/poppins"
+            android:gravity="left|center_vertical"
+            android:lines="1"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text="@string/placeholder_booking_recycler_item_title" />
+
+    </LinearLayout>
+
+</LinearLayout>

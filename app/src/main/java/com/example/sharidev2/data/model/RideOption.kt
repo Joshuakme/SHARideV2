@@ -7,5 +7,5 @@ import kotlinx.parcelize.Parcelize
 data class RideOption(
     val driverGender: Gender? = null,
     val vehicleType: VehicleType? = null,
-    val petFriendly: Boolean? = false,
+    val petFriendly: Boolean? = null,
 ) : Parcelable

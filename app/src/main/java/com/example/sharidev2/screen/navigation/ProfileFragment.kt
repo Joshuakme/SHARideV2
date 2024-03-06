@@ -1,28 +1,23 @@
 package com.example.sharidev2.screen.navigation
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentProfileBinding
-import com.example.sharidev2.firebase.FirebaseInitializer
-import com.example.sharidev2.utility.LoadingDialogFragment
-import com.example.sharidev2.viewmodel.LoginViewModel
-import com.google.firebase.auth.FirebaseAuth
+import com.example.sharidev2.utility.FirebaseClient
 
 
 class ProfileFragment : Fragment() {
     // Variables Init
     private lateinit var binding : FragmentProfileBinding
-    private val auth = FirebaseInitializer.firebaseAuth
+    private val auth = FirebaseClient.firebaseAuth
 
 
     override fun onCreateView(

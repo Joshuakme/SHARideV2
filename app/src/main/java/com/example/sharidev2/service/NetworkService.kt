@@ -9,7 +9,7 @@ import android.net.NetworkCapabilities
 import android.os.IBinder
 import com.example.sharidev2.utility.NetworkUtils
 
-class ConnectivityService : Service() {
+class NetworkService : Service() {
 
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onCapabilitiesChanged(
@@ -37,7 +37,7 @@ class ConnectivityService : Service() {
             getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         connectivityManager.registerDefaultNetworkCallback(networkCallback)
 
-        return START_STICKY
+        return START_NOT_STICKY
     }
 
 //    override fun onDestroy() {

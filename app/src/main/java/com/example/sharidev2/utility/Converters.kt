@@ -1,14 +1,12 @@
 package com.example.sharidev2.utility
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import androidx.room.TypeConverter
-import com.example.sharidev2.data.model.Address
+import android.util.Log
 import com.example.sharidev2.data.model.Chat
-import com.example.sharidev2.data.model.Contact
+import com.example.sharidev2.data.model.Driver
 import com.example.sharidev2.data.model.Gender
 import com.example.sharidev2.data.model.Message
 import com.example.sharidev2.data.model.MessageType
@@ -21,14 +19,9 @@ import com.example.sharidev2.data.model.UserStatus
 import com.example.sharidev2.data.model.Vehicle
 import com.example.sharidev2.data.model.VehicleType
 import com.google.android.gms.maps.model.LatLng
-import com.google.common.reflect.TypeToken
 import com.google.firebase.Timestamp
 import com.google.gson.Gson
-import java.io.ByteArrayOutputStream
-import java.lang.reflect.Type
-import java.time.LocalDate
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
+import kotlin.reflect.typeOf
 
 
 class Converters() {
@@ -88,20 +81,21 @@ class Converters() {
     // USER CONVERTERS
     fun toUser(map: Map<String, Any>): User {
         val uid = map["uid"] as String
-        val displayName = map["displayName"] as String
-        val email = map["email"] as String
-        val phoneNumber = map["phoneNumber"] as String
-        val photoUrl = map["photoUrl"] as String
+        val displayName = map["displayName"] as String?
+        val email = map["email"] as String?
+        val phoneNumber = map["phoneNumber"] as String?
+        val photoUrl = if(map["photoUrl"] != null) Uri.parse(map["photoUrl"] as String) else null
 
         val rideOptionMap = map["rideOption"] as Map<String, String>
-        val driverGender = Gender.valueOf(rideOptionMap["driverGender"] as String)
-        val vehicleType = VehicleType.valueOf(rideOptionMap["vehicleType"] as String)
-        val petFriendly = rideOptionMap["petFriendly"] as Boolean
+        val driverGender = if(rideOptionMap["driverGender"] != null) Gender.valueOf(rideOptionMap["driverGender"] as String) else null
+        val vehicleType = if(rideOptionMap["vehicleType"] != null) VehicleType.valueOf(rideOptionMap["vehicleType"] as String) else null
+        val petFriendly = if(rideOptionMap["petFriendly"] != null) rideOptionMap["petFriendly"] as Boolean else null
         val rideOption = RideOption(driverGender, vehicleType, petFriendly)
 
-        val rating = map["rating"] as Float
-        val savedAddresses = toSearchLocationList(map["savedAddresses"] as List<Map<String, Any>>).toMutableList()
-        val gender = Gender.valueOf(map["gender"] as String)
+        val rating = if(map["rating"] != null) map["rating"] as Double else null
+        //val savedAddresses = toSearchLocationList(map["savedAddresses"] as List<Map<String, Any>>).toMutableList()
+        val savedAddresses = mapOf<String, SearchLocation>()
+        val gender = if(map["gender"] != null) Gender.valueOf(map["gender"] as String) else null
         val joinedDate = map["joinedDate"] as Timestamp
 
         return User(
@@ -109,7 +103,7 @@ class Converters() {
             displayName,
             email,
             phoneNumber,
-            Uri.parse(photoUrl),
+            photoUrl,
             rideOption,
             rating,
             savedAddresses,
@@ -128,27 +122,61 @@ class Converters() {
         return userList
     }
 
-    fun toPassenger(map: Map<String, Any>): Passenger {
+    fun toDriver(map: Map<String, Any>): Driver {
+        val userUid = map["userUid"] as String
 
-        val userId = map["userId"] as String
-        val locationMap = map["location"] as Map<String, Any>
-        val latitude = (locationMap["lattitude"] as Long).toDouble()
-        val longitude = (locationMap["longitude"] as Long).toDouble()
-        val location = LatLng(latitude, longitude)
+        val driverUser = toUser(map["user"] as Map<String, Any>)
 
-        return Passenger(userId, location)
-    }
+        val locationMap = map["location"] as Map<String, Any>?
+        val location = if(locationMap != null) {
+            val latitude = locationMap["latitude"] as Double
+            val longitude = locationMap["longitude"] as Double
 
-    fun toPassengerList(mapList: List<Map<String, Any>>): List<Passenger> {
-
-        val passengerList = mutableListOf<Passenger>()
-
-        for(map in mapList) {
-            passengerList.add(toPassenger(map))
+            LatLng(latitude, longitude)
+        } else {
+            null
         }
 
-        return passengerList
+        val status = UserStatus.valueOf((map["status"] as String))
+        val vehicle = toVehicle(map["vehicle"] as Map<String, Any>)
+
+        return Driver(
+            userUid,
+            driverUser,
+            location,
+            status,
+            vehicle
+        )
     }
+
+    fun toPassenger(map: Map<String, Any>): Passenger {
+        val userUid = map["userUid"] as String
+
+        val user = if(map["user"] != null) toUser(map["user"] as Map<String, Any>) else User()
+
+        val locationMap = map["location"] as Map<String, Any>?
+        val location = if(locationMap != null) {
+            val latitude = locationMap["latitude"] as Double
+            val longitude = locationMap["longitude"] as Double
+
+            LatLng(latitude, longitude)
+        } else {
+            null
+        }
+
+        val status = UserStatus.valueOf((map["status"] as String))
+        val ridePrice = (map["price"] as Long?)?.toDouble()
+
+        return Passenger(
+            userUid,
+            user,
+            location,
+            status,
+            ridePrice
+        )
+    }
+
+
 
     // PHOTOS CONVERTERS
     fun toUriList(photoUrlList: List<String>): List<Uri> {
@@ -185,7 +213,9 @@ class Converters() {
         val reviewList = mutableListOf<Review>()
 
         for(map in mapList) {
-           reviewList.add(toReview(map))
+            if(map != null) {
+                reviewList.add(toReview(map))
+            }
         }
 
         return reviewList
@@ -207,7 +237,7 @@ class Converters() {
             photos.add(Uri.parse(photo))
         }
 
-        val capacity = map["capacity"] as Int
+        val capacity = (map["capacity"] as Long).toInt()
 
         return Vehicle(
             vehicleID,
@@ -221,6 +251,21 @@ class Converters() {
         )
     }
 
+
+    // CHAT CONVERTERS
+    fun toChat(map: Map<String, Any>): Chat {
+        val chatId = map["chatId"] as String
+        val members = map["members"] as List<String>
+        val lastMessage = map["lastMessage"] as String
+        val timestamp = map["timestamp"] as Timestamp
+
+        return Chat(
+            chatId,
+            members,
+            lastMessage,
+            timestamp
+        )
+    }
 
     // MESSAGE CONVERTERS
     fun toMessage(map: Map<String, Any>): Message {
@@ -258,231 +303,37 @@ class Converters() {
     // PASSENGER STATUS
     fun toPassengersStatus(map: Map<String, String>): Map<String, UserStatus> {
         val passengerStatuses: MutableMap<String, UserStatus> = mutableMapOf()
-        for (entry in map) {
-            val userId = entry.key
-            val statusString = entry.value
+        if(map.isNotEmpty()) {
+            for (entry in map) {
+                val userId = entry.key
+                val statusString = entry.value
 
-            // Convert string status to UserStatus enum
-            val userStatus = UserStatus.valueOf(statusString)
+                // Convert string status to UserStatus enum
+                val userStatus = UserStatus.valueOf(statusString)
 
-            // Add to the map using userId as key and converted UserStatus as value
-            passengerStatuses[userId] = userStatus
+                // Add to the map using userId as key and converted UserStatus as value
+                passengerStatuses[userId] = userStatus
+            }
         }
         return passengerStatuses.toMap() // Convert to immutable map
     }
 
 
-    // CONTACT CONVERTERS
-    fun toContact(map: Map<String, Any>): Contact {
-        val contactId = map["contactId"] as String
-        val contactName = map["contactName"] as String
-        val contactPhone = map["contactPhone"] as String
-        val userUid = map["userUid"] as String
+    // PRICE CONVERTERS
+    fun toPrice(map: Map<String, Long>): Map<String, Double> {
+        val prices: MutableMap<String, Double> = mutableMapOf()
 
-        return Contact(
-            contactId = contactId,
-            contactName = contactName,
-            contactPhone = contactPhone,
-            userUid = userUid
-        )
-    }
+        if(map.isNotEmpty()) {
+            for (entry in map) {
+                val userId = entry.key
+                val price = entry.value.toDouble()
 
 
-
-    // DATE & TIME Converters
-    @TypeConverter
-    fun fromLocalDate(date: LocalDate?): String? {
-        return date?.format(DateTimeFormatter.ISO_LOCAL_DATE)
-    }
-
-    @TypeConverter
-    fun toLocalDate(dateString: String?): LocalDate? {
-        return dateString?.let {
-            LocalDate.parse(it, DateTimeFormatter.ISO_LOCAL_DATE)
+                // Add to the map using userId as key and converted UserStatus as value
+                prices[userId] = price
+            }
         }
-    }
 
-    // LocalTime converters
-    @TypeConverter
-    fun fromLocalTime(time: LocalTime?): String? {
-        return time?.format(DateTimeFormatter.ISO_LOCAL_TIME)
-    }
-
-    @TypeConverter
-    fun toLocalTime(timeString: String?): LocalTime? {
-        return timeString?.let {
-            LocalTime.parse(it, DateTimeFormatter.ISO_LOCAL_TIME)
-        }
-    }
-
-
-    // LOCATION converters
-    @TypeConverter
-    fun fromSearchLocation(searchLocation: SearchLocation?): String? {
-        return searchLocation?.let { Gson().toJson(it) }
-    }
-
-    @TypeConverter
-    fun toSearchLocation(value: String?): SearchLocation? {
-        val type = object : TypeToken<SearchLocation>() {}.type
-        return value?.let { Gson().fromJson(it, type) }
-    }
-
-    @TypeConverter
-    fun fromLatLng(latLng: LatLng?): String? {
-        return latLng?.let { Gson().toJson(it) }
-    }
-
-    @TypeConverter
-    fun toLatLng(value: String?): LatLng? {
-        return value?.let { Gson().fromJson(it, LatLng::class.java) }
-    }
-
-
-    // User converters
-    @TypeConverter
-    fun fromUser(user: User?): String? {
-        return gson.toJson(user)
-    }
-
-    @TypeConverter
-    fun toUser(userString: String?): User? {
-        return gson.fromJson(userString, User::class.java)
-    }
-
-    // Address converters
-    @TypeConverter
-    fun fromAddressList(addressList: MutableList<Address>?): String? {
-        return gson.toJson(addressList)
-    }
-
-    @TypeConverter
-    fun toAddressList(addressListString: String?): MutableList<Address>? {
-        val type: Type = object : TypeToken<MutableList<Address>?>() {}.type
-        return gson.fromJson(addressListString, type)
-    }
-
-    // Gender converters
-    @TypeConverter
-    fun fromGender(gender: Gender?): String? {
-        return gender?.name
-    }
-
-    @TypeConverter
-    fun toGender(genderString: String?): Gender? {
-        return genderString?.let { Gender.valueOf(it) }
-    }
-
-    // Chat converters
-    @TypeConverter
-    fun fromChat(chat: Chat?): String? {
-        return gson.toJson(chat)
-    }
-
-    @TypeConverter
-    fun toChat(chatString: String?): Chat? {
-        return gson.fromJson(chatString, Chat::class.java)
-    }
-
-    // List<String> converters
-    @TypeConverter
-    fun fromStringList(stringList: List<String>?): String? {
-        return gson.toJson(stringList)
-    }
-
-    @TypeConverter
-    fun toStringList(stringListString: String?): List<String>? {
-        val type = object : TypeToken<List<String>?>() {}.type
-        return gson.fromJson(stringListString, type)
-    }
-
-    // MutableList<Message> converters
-    @TypeConverter
-    fun fromMessageList(messageList: MutableList<Message>?): String? {
-        return gson.toJson(messageList)
-    }
-
-    @TypeConverter
-    fun toMessageList(messageListString: String?): MutableList<Message>? {
-        val type = object : TypeToken<MutableList<Message>?>() {}.type
-        return gson.fromJson(messageListString, type)
-    }
-
-
-
-    // UserStatus converters
-    @TypeConverter
-    fun fromUserStatus(userStatus: UserStatus?): String? {
-        return userStatus?.name
-    }
-
-    @TypeConverter
-    fun toUserStatus(userStatusString: String?): UserStatus? {
-        return userStatusString?.let { UserStatus.valueOf(it) }
-    }
-
-    // MutableList<User> converters
-    @TypeConverter
-    fun fromUserList(userList: MutableList<User>?): String? {
-        return gson.toJson(userList)
-    }
-
-    @TypeConverter
-    fun toUserList(userListString: String?): MutableList<User>? {
-        val type = object : TypeToken<MutableList<User>?>() {}.type
-        return gson.fromJson(userListString, type)
-    }
-
-    // Review converters
-    @TypeConverter
-    fun fromReviewList(reviewList: List<Review>?): String? {
-        return gson.toJson(reviewList)
-    }
-
-    @TypeConverter
-    fun toReviewList(reviewListString: String?): List<Review>? {
-        val type: Type = object : TypeToken<List<Review>?>() {}.type
-        return gson.fromJson(reviewListString, type)
-    }
-
-    @TypeConverter
-    fun fromVehicle(vehicle: Vehicle): String {
-        val gson = Gson()
-        return gson.toJson(vehicle)
-    }
-
-    @TypeConverter
-    fun fromVehicleType(vehicleType: VehicleType): String {
-        return vehicleType.name
-    }
-
-    @TypeConverter
-    fun toVehicleType(value: String): VehicleType {
-        return enumValueOf(value)
-    }
-
-    @TypeConverter
-    fun fromBitmapList(bitmapList: List<Bitmap>?): String {
-        val gson = Gson()
-        return gson.toJson(bitmapList)
-    }
-
-    @TypeConverter
-    fun toBitmapList(value: String): List<Bitmap> {
-        val gson = Gson()
-        val type: Type = object : TypeToken<List<Bitmap>>() {}.type
-        return gson.fromJson(value, type)
-    }
-
-    @TypeConverter
-    fun fromBitmap(bitmap: Bitmap): ByteArray {
-        val outputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-        return outputStream.toByteArray()
-    }
-
-    @TypeConverter
-    fun toBitmap(byteArray: ByteArray): Bitmap {
-        return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+        return prices.toMap() // Convert to immutable map
     }
 }

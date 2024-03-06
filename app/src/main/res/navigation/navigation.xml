@@ -50,7 +50,16 @@
         android:id="@+id/bookingFragment"
         android:name="com.example.sharidev2.screen.navigation.BookingFragment"
         android:label="fragment_booking"
-        tools:layout="@layout/fragment_booking" />
+        tools:layout="@layout/fragment_booking" >
+        <action
+            android:id="@+id/action_bookingFragment_to_bookingDetailFragment"
+            app:destination="@id/bookingDetailFragment"
+            app:popUpTo="@id/bookingFragment">
+            <argument
+                android:name="ride"
+            app:argType="com.example.sharidev2.data.model.Ride" />
+        </action>
+    </fragment>
     <fragment
         android:id="@+id/chatFragment"
         android:name="com.example.sharidev2.screen.chatroom.ChatFragment"
@@ -150,7 +159,8 @@
             app:destination="@id/searchSelectOriginFragment" />
         <action
             android:id="@+id/action_rideDetailConfigurationFragment_to_matchedRideFragment"
-            app:destination="@id/matchedRideFragment" />
+            app:destination="@id/matchedRideFragment"
+            app:popUpTo="@id/rideDetailConfigurationFragment" />
     </fragment>
     <fragment
         android:id="@+id/matchedRideFragment"
@@ -160,6 +170,14 @@
         <action
             android:id="@+id/action_matchedRideFragment_to_rideDetailConfigurationFragment"
             app:destination="@id/rideDetailConfigurationFragment" />
+        <action
+            android:id="@+id/action_matchedRideFragment_to_rideDetailFragment"
+            app:destination="@id/rideDetailFragment"
+            app:popUpTo="@id/matchedRideFragment">
+            <argument
+                android:name="rideId"
+                app:argType="string" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/driverCreateRideFragment"
@@ -175,73 +193,49 @@
         android:label="DriverRideConfigFragment" >
         <action
             android:id="@+id/action_driverRideConfigFragment_to_driverCreateRideFragment"
-            app:destination="@id/driverCreateRideFragment" />
+            app:destination="@id/driverCreateRideFragment"
+            app:launchSingleTop="false" />
         <action
             android:id="@+id/action_driverRideConfigFragment_to_bookingFragment"
             app:destination="@id/bookingFragment"
+            app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
-        android:id="@+id/emergencyContactFragment"
-        android:name="com.example.sharidev2.screen.emergency.EmergencyContactFragment"
-        android:label="EmergencyContactFragment" >
+        android:id="@+id/rideDetailFragment"
+        android:name="com.example.sharidev2.screen.ride.RideDetailFragment"
+        android:label="fragment_ride_detail"
+        tools:layout="@layout/fragment_ride_detail" >
         <action
-            android:id="@+id/action_emergencyContactFragment_to_profileFragment"
-            app:destination="@id/profileFragment" />
-        <action
-            android:id="@+id/action_emergencyContactFragment_to_addContactFragment"
-            app:destination="@id/addContactFragment" />
-        <action
-            android:id="@+id/action_emergencyContactFragment_to_editContactFragment"
-            app:destination="@id/editContactFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/addContactFragment"
-        android:name="com.example.sharidev2.screen.emergency.AddContactFragment"
-        android:label="AddContactFragment" >
-        <action
-            android:id="@+id/action_addContactFragment_to_emergencyContactFragment"
-            app:destination="@id/emergencyContactFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/editContactFragment"
-        android:name="com.example.sharidev2.screen.emergency.EditContactFragment"
-        android:label="EditContactFragment" >
-        <action
-            android:id="@+id/action_editContactFragment_to_emergencyContactFragment"
-            app:destination="@id/emergencyContactFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/drivingLicenseFragment"
-        android:name="DrivingLicenseFragment"
-        android:label="DrivingLicenseFragment" >
-        <action
-            android:id="@+id/action_drivingLicenseFragment_to_personalInformationFragment"
-            app:destination="@id/personalInformationFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/editDisplayNameFragment"
-        android:name="com.example.sharidev2.screen.user.EditDisplayNameFragment"
-        android:label="EditDisplayNameFragment" >
-        <action
-            android:id="@+id/action_editDisplayNameFragment_to_personalInformationFragment"
-            app:destination="@id/personalInformationFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/editMobileFragment3"
-        android:name="com.example.sharidev2.screen.user.EditMobileFragment"
-        android:label="EditMobileFragment" >
-        <action
-            android:id="@+id/action_editMobileFragment3_to_personalInformationFragment"
-            app:destination="@id/personalInformationFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/editGenderFragment"
-        android:name="com.example.sharidev2.screen.user.EditGenderFragment"
-        android:label="EditGenderFragment" >
-        <action
-            android:id="@+id/action_editGenderFragment_to_personalInformationFragment"
-            app:destination="@id/personalInformationFragment" />
-    </fragment>
+            android:id="@+id/action_rideDetailFragment_to_bookingFragment"
+            app:destination="@id/bookingFragment"/>
 
+    </fragment>
+    <fragment
+        android:id="@+id/bookingDetailFragment"
+        android:name="com.example.sharidev2.screen.ride.BookingDetailFragment"
+        android:label="BookingDetailFragment" >
+        <action
+            android:id="@+id/action_bookingDetailFragment_to_viewBookingRequestsFragment"
+            app:destination="@id/viewBookingRequestsFragment"
+            app:popUpTo="@id/bookingDetailFragment" />
+        <action
+            android:id="@+id/action_bookingDetailFragment_to_activeRideFragment"
+            app:destination="@id/activeRideFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true">
+            <argument
+                android:name="ride"
+                app:argType="com.example.sharidev2.data.model.Ride" />
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/viewBookingRequestsFragment"
+        android:name="com.example.sharidev2.screen.ride.ViewBookingRequestsFragment"
+        android:label="fragment_view_booking_requests"
+        tools:layout="@layout/fragment_view_booking_requests" />
+    <fragment
+        android:id="@+id/activeRideFragment"
+        android:name="com.example.sharidev2.screen.ride.ActiveRideFragment"
+        android:label="ActiveRideFragment" />
 </navigation>

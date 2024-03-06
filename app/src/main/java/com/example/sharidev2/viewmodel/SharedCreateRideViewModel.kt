@@ -5,14 +5,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.sharidev2.data.model.Driver
 import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.data.model.SearchLocation
-import com.example.sharidev2.data.model.User
 import com.example.sharidev2.data.model.Vehicle
 import com.example.sharidev2.data.repository.RideRepository
-import com.example.sharidev2.firebase.FirebaseInitializer
+import com.example.sharidev2.data.repository.UserLocationRepository
+import com.example.sharidev2.utility.FirebaseClient
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.Timestamp
-import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -21,11 +22,8 @@ class SharedCreateRideViewModel(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     // Repository
-    private val rideRepository = RideRepository(
-        FirebaseInitializer.firestore,
-        FirebaseInitializer.firebaseAuth,
-        FirebaseInitializer.firebaseUtils
-    )
+    private val rideRepository = RideRepository()
+    private val currentLocationRepo = UserLocationRepository()
 
     // DATA KEY CONSTANT
     private val ORIGIN_KEY = "origin"
@@ -108,29 +106,43 @@ class SharedCreateRideViewModel(
 
 
     // Create Ride
-    suspend fun createRide() {
-        val newCreatedRide = Ride(
-            origin = origin.value!!,
-            destination = destination.value!!,
-            datetime = rideDateTime.value!!,
-            driver = FirebaseInitializer.firebaseAuth.currentUser?.let { User.fromFirebaseUser(it) }
-                ?: User(),
-            vehicle = vehicle.value!!,
-            availableSeats = capacity.value!!
-        )
+    suspend fun createRide(currentLocation: LatLng) {
+        val currentUser = FirebaseClient.firebaseAuth.currentUser
 
-        viewModelScope.launch(Dispatchers.Main) {
-            rideRepository.createRide(newCreatedRide, object : RideRepository.CreateRideCallback {
-                override fun onCreateSuccess() {
-                    setCreateRideStatus(CREATE_RIDE_SUCCESS)
-                }
+        if(currentUser != null) {
+            Log.e("Shared Create Ride ViewModel",
+                "Current Location: $currentLocation"
+            )
+            Log.e("Shared Create Ride ViewModel", "Current User ID: " + currentUser.uid)
 
-                override fun onCreateFailure(error: Throwable) {
-                    Log.e("Create Ride", error.message.toString())
+            val newCreatedRide = Ride(
+                origin = origin.value!!,
+                destination = destination.value!!,
+                datetime = rideDateTime.value!!,
+                driver = Driver(
+                    userUid = currentUser.uid,
+                    location = currentLocation,
+                    vehicle = vehicle.value!!
+                ),
+                availableSeats = capacity.value!!,
+                createdAt = Timestamp.now()
+            )
 
-                    setCreateRideStatus(CREATE_RIDE_FAILED)
-                }
-            })
+            viewModelScope.launch(Dispatchers.Main) {
+                rideRepository.createRide(newCreatedRide, object : RideRepository.CreateRideCallback {
+                    override fun onCreateSuccess() {
+                        setCreateRideStatus(CREATE_RIDE_SUCCESS)
+                    }
+
+                    override fun onCreateFailure(error: Throwable) {
+                        Log.e("Create Ride", error.message.toString())
+
+                        setCreateRideStatus(CREATE_RIDE_FAILED)
+                    }
+                })
+            }
+        } else {
+            setCreateRideStatus(CREATE_RIDE_FAILED)
         }
     }
 

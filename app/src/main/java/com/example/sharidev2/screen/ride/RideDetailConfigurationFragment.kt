@@ -13,25 +13,14 @@ import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentRideDetailConfigurationBinding
 import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
-import com.google.firebase.Timestamp
-import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
-import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
-import com.wdullaer.materialdatetimepicker.time.Timepoint
-import java.sql.Time
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.ZoneOffset
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
 
-class RideDetailConfigurationFragment :
-    Fragment(),
-    DatePickerDialog.OnDateSetListener,
-    TimePickerDialog.OnTimeSetListener {
+class RideDetailConfigurationFragment : Fragment(){
     private lateinit var binding: FragmentRideDetailConfigurationBinding
     private val searchRideViewModel by activityViewModels<SharedSearchRideViewModel>()
     private val calendar: Calendar = Calendar.getInstance()
@@ -159,56 +148,7 @@ class RideDetailConfigurationFragment :
         dialogFragment.show(childFragmentManager, dialogFragment.tag)
     }
 
-    private fun showDatePickerDialog() {
-        val datePickerDialog = DatePickerDialog.newInstance(
-            this,
-            calendar.get(Calendar.YEAR),  // Initial year selection
-            calendar.get(Calendar.MONTH),  // Initial month selection
-            calendar.get(Calendar.DAY_OF_MONTH) // Inital day selection
-        )
 
-        datePickerDialog.version = DatePickerDialog.Version.VERSION_2
-        datePickerDialog.minDate = calendar
-        datePickerDialog.maxDate = getLastDayOfYear(calendar)
-        datePickerDialog.isThemeDark = true
-
-
-        datePickerDialog.show(childFragmentManager, "Datepickerdialog")
-    }
-
-    private fun showTimePickerDialog() {
-        val currentDate = searchRideViewModel.rideDateTime.value ?: Timestamp.now()
-
-        val timePickerDialog = TimePickerDialog.newInstance(
-            this,
-            calendar.get(Calendar.HOUR_OF_DAY),
-            calendar.get(Calendar.MINUTE),
-            false
-        )
-
-        timePickerDialog.setTimeInterval(1, 5)
-
-        if (currentDate == Timestamp.now()) {
-            timePickerDialog.setMinTime(Timepoint(Calendar.HOUR_OF_DAY, Calendar.MINUTE))
-        }
-
-        timePickerDialog.show(childFragmentManager, "Timepickerdialog")
-    }
-
-    override fun onDateSet(view: DatePickerDialog?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
-        selectedDate = Date(year, monthOfYear + 1, dayOfMonth)
-
-        val selectedTimestamp = Timestamp(selectedDate)
-
-
-        searchRideViewModel.setRideDateTime(selectedTimestamp)
-    }
-
-    override fun onTimeSet(view: TimePickerDialog?, hourOfDay: Int, minute: Int, second: Int) {
-        val selectedTime = Time(hourOfDay, minute, 0)
-
-       // searchRideViewModel.setRideDateTime(selectedDate.time)
-    }
 
     private fun getLastDayOfYear(calendar: Calendar): Calendar {
         // Create a copy of the calendar to avoid modifying the original

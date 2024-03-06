@@ -6,7 +6,6 @@ import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +20,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
-import com.example.sharidev2.adapter.RidePagerAdapter
+import com.example.sharidev2.data.repository.UserLocationRepository
 import com.example.sharidev2.databinding.FragmentHomeBinding
 import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
@@ -51,8 +50,6 @@ class HomeFragment : Fragment() {
 
 
         // ELEMENT VARIABLES
-//        val tabLayout: TabLayout = binding.tabHomeMainMenu
-//        val viewPager: ViewPager2 = binding.viewPagerHomeMainMenu
         val homeNestedScrollView = binding.nsvFragmentHome
         val welcomeHomeText = binding.textHomeWelcomeUser
         val searchBarBtn = binding.cardHomeSearchBar
@@ -70,11 +67,13 @@ class HomeFragment : Fragment() {
         welcomeHomeText.text = getString(R.string.home_fragment_welcome_user, user?.displayName ?: "back")
 
 
-        currentLocationViewModel.currentLocation.observe(viewLifecycleOwner) {currentLocation ->
-            fetchAreaFromLocation(Location(LocationManager.GPS_PROVIDER).apply {
-                latitude = currentLocation.latitude
-                longitude = currentLocation.longitude
-            })
+        currentLocationViewModel.currentLocation.observe(viewLifecycleOwner) { currentLocation ->
+            if(currentLocation != null) {
+                fetchAreaFromLocation(Location(LocationManager.GPS_PROVIDER).apply {
+                    latitude = currentLocation.latitude
+                    longitude = currentLocation.longitude
+                })
+            }
         }
 
 
@@ -89,7 +88,6 @@ class HomeFragment : Fragment() {
             constraintSet.clone(constraintLayout)
 
             if(scrollY > 0) {   // Scroll down
-                Log.e("SCROLL DI MANA", "Scrolling down")
                 constraintSet.connect(activityFragmentContainer.id, ConstraintSet.BOTTOM, constraintLayout.id, ConstraintSet.BOTTOM)
             } else {
                 constraintSet.connect(activityFragmentContainer.id, ConstraintSet.BOTTOM, bottomNavContainer.id, ConstraintSet.TOP)
@@ -128,43 +126,9 @@ class HomeFragment : Fragment() {
             startActivity(shareIntent)
         }
 
-
-        // Set up adapter
-        val pagerAdapter = RidePagerAdapter(this)
-//        viewPager.adapter = pagerAdapter
-//
-//        // Set up mediator
-//        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-//            when (position) {
-//                0 -> {
-//                    tab.text = "Find Ride"
-//                    tab.customView = null  // Reset custom view
-//                    tab.view?.minimumWidth = 0  // Reset minimum width
-//                    tab.view?.layoutParams = LinearLayout.LayoutParams(
-//                        LinearLayout.LayoutParams.WRAP_CONTENT,
-//                        LinearLayout.LayoutParams.MATCH_PARENT
-//                    )
-//                }
-//                1 -> {
-//                    tab.text = "Offer Ride"
-//                    tab.customView = null  // Reset custom view
-//                    tab.view?.minimumWidth = 0  // Reset minimum width
-//                    tab.view?.layoutParams = LinearLayout.LayoutParams(
-//                        LinearLayout.LayoutParams.WRAP_CONTENT,
-//                        LinearLayout.LayoutParams.MATCH_PARENT
-//                    )
-//                }
-//            }
-//        }.attach()
-//
-//
-//        // Select the default tab (e.g., the first tab)
-//        tabLayout.getTabAt(0)?.select()
-
-
-
         return binding.root
     }
+
 
     private fun fetchAreaFromLocation(location: Location) {
         val areaText = binding.textHomeWelcomeUserArea

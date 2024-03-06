@@ -4,22 +4,60 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp">
+    android:layout_marginBottom="8dp"
+    android:clickable="true"
+    android:paddingTop="8dp">
 
     <TextView
         android:id="@+id/text_booking_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="false"
+        android:contextClickable="false"
+        android:ellipsize="end"
         android:fontFamily="@font/poppins_medium"
+        android:gravity="start|center_vertical"
+        android:singleLine="true"
         android:text="@string/placeholder_booking_recycler_item_title"
-        android:textSize="16sp"
+        android:textSize="15sp"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_max="280dp" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_booking_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="8dp"
+        android:clickable="false"
+        android:clipChildren="false"
+        android:translationY="-1dp"
+        app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
+        app:layout_constraintBottom_toBottomOf="@+id/text_booking_title"
+        app:layout_constraintStart_toEndOf="@+id/text_booking_title"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/text_booking_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:contextClickable="false"
+            android:gravity="center"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="Driver"
+            android:textSize="12sp" />
+    </com.google.android.material.card.MaterialCardView>
 
     <TextView
         android:id="@+id/text_booking_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="false"
+        android:contextClickable="false"
         android:text="@string/placeholder_booking_recycler_item_date"
         android:textColor="@color/system_neutral2_500"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,8 +67,11 @@
         android:id="@+id/text_booking_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="false"
+        android:contextClickable="false"
         android:fontFamily="@font/poppins"
         android:text="@string/placeholder_booking_recycler_item_price"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -40,6 +81,8 @@
         android:layout_height="1dp"
         android:layout_marginTop="8dp"
         android:background="?android:attr/listDivider"
+        android:clickable="false"
+        android:contextClickable="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

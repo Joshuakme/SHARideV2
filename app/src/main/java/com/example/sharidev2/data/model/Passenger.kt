@@ -2,7 +2,10 @@ package com.example.sharidev2.data.model
 
 import com.google.android.gms.maps.model.LatLng
 
-data class Passenger(
-    val userId: String? = null,
-    val location: LatLng? = null // Location of the passenger
-)
+data class Passenger (
+    override val userUid: String? = null,
+    override var user: User? = null,
+    override val location: LatLng? = null,
+    override val status: UserStatus = UserStatus.REQUESTED,
+    val ridePrice: Double? = null
+): RideParticipant(userUid, user, location, status)
