@@ -56,7 +56,11 @@ class PersonalnformationRepository {
 
                 val profilePic = profilePicDoc.getString("photoUrl")
 
-                Uri.parse(profilePic)
+                if(profilePic != null) {
+                    Uri.parse(profilePic)
+                } else {
+                    null
+                }
             } else {
                 null
             }

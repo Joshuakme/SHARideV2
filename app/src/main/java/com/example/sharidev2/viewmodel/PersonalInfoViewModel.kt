@@ -65,7 +65,7 @@ class PersonalInfoViewModel: ViewModel() {    // LiveData for current display na
 
     init {
         viewModelScope.launch(Dispatchers.Main) {
-            val profilePicUri = personalnformationRepository.getProfilePic()
+            val profilePicUri = personalInfoRepository.getProfilePic()
 
             if(profilePicUri != null){
                 setSelectedImageUri(profilePicUri)
@@ -99,8 +99,10 @@ class PersonalInfoViewModel: ViewModel() {    // LiveData for current display na
 
 
         // Updates the display name of the user in the repository
-        suspend fun updateDisplayName(newDisplayName: String) {
-            displayNameRepository.updateDisplayName(newDisplayName)
+        fun updateDisplayName(newDisplayName: String) {
+            viewModelScope.launch {
+                displayNameRepository.updateDisplayName(newDisplayName)
+            }
         }
 
         //Fetches the display name of the current user from the database and updates the LiveData
