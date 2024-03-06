@@ -65,7 +65,8 @@ class MainActivity : AppCompatActivity() {
 
         bottomNav.setupWithNavController(navController)
 
-        Places.initialize(applicationContext, "AIzaSyBTPyaUpFhz9GMIpFq40zi9cZlCeZZZtQc")
+
+        Places.initialize(applicationContext, getString(R.string.google_api_key))
 
         lifecycleScope.launch(Dispatchers.IO) {
             UserClient.setCurrentUser(FirebaseClient.firebaseAuth.currentUser?.uid ?: "")

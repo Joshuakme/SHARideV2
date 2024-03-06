@@ -16,14 +16,15 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
-import com.example.sharidev2.data.repository.UserLocationRepository
 import com.example.sharidev2.databinding.FragmentHomeBinding
 import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
+import com.example.sharidev2.viewmodel.PersonalInfoViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers
@@ -36,6 +37,7 @@ class HomeFragment : Fragment() {
     // Variables Init
     private lateinit var binding: FragmentHomeBinding
     private val currentLocationViewModel: CurrentLocationViewModel by activityViewModels()
+    private val personalInfoViewModel: PersonalInfoViewModel by viewModels()
 
     private val auth = FirebaseAuth.getInstance()
 
@@ -58,13 +60,19 @@ class HomeFragment : Fragment() {
         val shareThisAppShareBtn = binding.btnHomeShareThisAppShare
 
         // AUTH VARIABLES
-        val user = auth.currentUser
+        val currentUser = auth.currentUser
 
 
         // LAYOUT SETTINGS
         (activity as MainActivity).setBottomNavVisible(true)
         (activity as MainActivity).resetBottomNavPosition()
-        welcomeHomeText.text = getString(R.string.home_fragment_welcome_user, user?.displayName ?: "back")
+
+        if(currentUser != null) {
+
+        }
+        welcomeHomeText.text = getString(R.string.home_fragment_welcome_user, currentUser?.displayName ?: "back")
+
+
 
 
         currentLocationViewModel.currentLocation.observe(viewLifecycleOwner) { currentLocation ->

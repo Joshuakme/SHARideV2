@@ -24,7 +24,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.sharidev2.R
 import com.example.sharidev2.adapter.SearchRideAdapter
 import com.example.sharidev2.data.model.SearchLocation
-import com.example.sharidev2.data.repository.UserLocationRepository
 import com.example.sharidev2.databinding.FragmentDriverCreateRideBinding
 import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.GoogleMapUtils
@@ -372,8 +371,8 @@ class DriverCreateRideFragment : Fragment() {
         val destinationColor = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorError)
 
         mapFragment.getMapAsync { googleMap ->
-            val originLocationIcon = CommonUtils().getBitmapFromVector(requireContext(), originColor)
-            val destinationLocationIcon = CommonUtils().getBitmapFromVector(requireContext(), destinationColor)
+            val originLocationIcon = CommonUtils().getLocationBitmapFromVector(requireContext(), originColor)
+            val destinationLocationIcon = CommonUtils().getLocationBitmapFromVector(requireContext(), destinationColor)
 
             googleMap.setOnMapLoadedCallback {
                 googleMap.clear()   // Clear previous markers

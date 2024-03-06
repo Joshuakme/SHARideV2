@@ -1,6 +1,7 @@
 package com.example.sharidev2.data.model
 
 import android.os.Parcelable
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.Timestamp
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
@@ -10,6 +11,7 @@ data class Ride (
     val id: String? = null,
     val origin: SearchLocation = SearchLocation(),
     val destination: SearchLocation = SearchLocation(),
+    val waypoints: Map<String, SearchLocation>? = mapOf(),
     val datetime: Timestamp = Timestamp.now(),
     val driver: @RawValue Driver = Driver(),
     val passengers: @RawValue Map<String, Passenger> = mapOf(),

@@ -1,18 +1,28 @@
 package com.example.sharidev2.screen.ride
 
+import android.Manifest
 import android.content.ContentValues.TAG
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.example.sharidev2.R
 import com.example.sharidev2.adapter.ActiveRidePassengerImageAdapter
 import com.example.sharidev2.data.model.Passenger
@@ -24,16 +34,22 @@ import com.example.sharidev2.utility.FirebaseClient.convertFirebaseImageToBitmap
 import com.example.sharidev2.utility.GoogleMapUtils
 import com.example.sharidev2.viewmodel.ActiveRideViewModel
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.Polyline
 
 
-class ActiveRideFragment : Fragment() {
+class ActiveRideFragment() :
+    Fragment(),
+    GoogleMap.OnPolylineClickListener {
     private lateinit var binding: FragmentActiveRideBinding
     private val activeRideViewModel: ActiveRideViewModel by viewModels()
     private val currentLocationViewModel: CurrentLocationViewModel by activityViewModels()
 
     private lateinit var googleMapFragment: SupportMapFragment
 
+    private val currentUser = FirebaseClient.firebaseAuth.currentUser
     private val passengerList = mutableListOf<Passenger>()
 
 
@@ -94,11 +110,25 @@ class ActiveRideFragment : Fragment() {
 
     private fun setupMap() {
 
-        currentLocationViewModel.currentLocation.observe(viewLifecycleOwner) { currentLocation ->
-            if (currentLocation != null) {
-                val myLocationBtn = binding.cardActiveRideMyLocationContainer
+        googleMapFragment.getMapAsync { googleMap ->
+            if (ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+            } else {
+                googleMap.isMyLocationEnabled = true
+                googleMap.uiSettings.isMyLocationButtonEnabled = false
+                googleMap.uiSettings.isMapToolbarEnabled = false
+            }
 
-                googleMapFragment.getMapAsync { googleMap ->
+            currentLocationViewModel.currentLocation.observe(viewLifecycleOwner) { currentLocation ->
+                if (currentLocation != null) {
+                    val myLocationBtn = binding.cardActiveRideMyLocationContainer
+
                     googleMapUtils.setupMapListeners(googleMap, currentLocation, myLocationBtn,
                         object : GoogleMapUtils.MyLocationButtonCallback {
                             override fun showMyLocationButton(show: Boolean) {
@@ -108,8 +138,89 @@ class ActiveRideFragment : Fragment() {
                     )
                 }
             }
-        }
 
+            // Add User Markers into map
+            activeRideViewModel.activeRide.observe(viewLifecycleOwner) {activeRide ->
+                if(activeRide != null) {
+                    // Origin
+                    val typedValue = TypedValue()
+                    context?.theme?.resolveAttribute(com.google.android.material.R.attr.colorPrimary, typedValue, true)
+                    val colorPrimary = typedValue.data
+
+                    GoogleMapUtils().addMarker(
+                        googleMap,
+                        activeRide.origin.geolocation!!,
+                        CommonUtils().getLocationBitmapFromVector(requireContext(), colorPrimary)
+                    )
+
+                    // Destination
+                    context?.theme?.resolveAttribute(com.google.android.material.R.attr.colorError, typedValue, true)
+                    val colorError = typedValue.data
+
+                    GoogleMapUtils().addMarker(
+                        googleMap,
+                        activeRide.destination!!.geolocation!!,
+                        CommonUtils().getLocationBitmapFromVector(requireContext(), colorError)
+                    )
+
+
+                    if(currentUser != null) {
+                        // Driver
+                        if( activeRide.driver.location != null) {
+                            // Resolve the attribute to get the color value programmatically
+                            context?.theme?.resolveAttribute(com.google.android.material.R.attr.colorPrimaryDark, typedValue, true)
+                            val colorPrimaryDark = typedValue.data
+
+                            val icon = CommonUtils().getLocationBitmapFromVector(requireContext(), colorPrimaryDark)
+                            GoogleMapUtils().addMarker(googleMap, activeRide.driver.location, icon)
+                        }
+
+
+                        // Passengers
+                        activeRide.passengers.forEach() {(s, passenger) ->
+                            if(passenger?.location != null) {
+                                val icon = CommonUtils().getLocationBitmapFromVector(requireContext(), Color.BLUE)
+
+                                // Add a marker to the map
+                                if(passenger.userUid == currentUser.uid) {
+
+                                }
+
+                                GoogleMapUtils().addMarker(googleMap, passenger.location, icon)
+                                GoogleMapUtils().moveMapCamera(googleMap, passenger.location)
+
+                                Glide.with(requireContext())
+                                    .asBitmap()
+                                    .load(passenger.user?.photoUrl) // Replace profilePictureUrl with the actual URL
+                                    .into(object : CustomTarget<Bitmap>() {
+                                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                                            // Set the loaded bitmap as the marker image
+//                                        val markerView: View = LayoutInflater.from(context).inflate(R.layout.marker_custom_layout, null)
+//                                        markerView.findViewById<ImageView>(R.id.image_marker).setImageBitmap(resource)
+//
+//                                        // Convert the marker view to a BitmapDescriptor
+//                                        val icon = BitmapDescriptorFactory.fromBitmap(CommonUtils().createDrawableFromView(requireContext(), markerView))
+
+//                                        GoogleMapUtils().addMarker(googleMap, passenger.location, icon)
+                                        }
+
+                                        override fun onLoadCleared(placeholder: Drawable?) {
+                                            // Handle resource clearing if needed
+                                        }
+                                    })
+                            }
+                        }
+                    }
+
+                    GoogleMapUtils().calculateDirections(
+                        requireContext(),
+                        googleMap,
+                        activeRide.origin.geolocation!!,
+                        activeRide.destination.geolocation!!
+                    )
+                }
+            }
+        }
     }
 
     private fun setupData() {
@@ -230,5 +341,9 @@ class ActiveRideFragment : Fragment() {
         super.onResume()
 
         startUserLocationsRunnable()
+    }
+
+    override fun onPolylineClick(p0: Polyline) {
+        TODO("Not yet implemented")
     }
 }

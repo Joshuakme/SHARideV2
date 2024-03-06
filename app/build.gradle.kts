@@ -14,8 +14,6 @@ plugins {
     id("androidx.navigation.safeargs.kotlin")
 
     id("kotlin-parcelize")
-
-
 }
 
 android {
@@ -51,6 +49,21 @@ android {
     buildFeatures {
         dataBinding = true
         viewBinding = true
+    }
+
+    secrets {
+        // Optionally specify a different file name containing your secrets.
+        // The plugin defaults to "local.properties"
+        propertiesFileName = "secrets.properties"
+
+        // A properties file containing default secret values. This file can be
+        // checked in version control.
+        defaultPropertiesFileName = "local.defaults.properties"
+
+        // Configure which keys should be ignored by the plugin by providing regular expressions.
+        // "sdk.dir" is ignored by default.
+        ignoreList.add("keyToIgnore") // Ignore the key "keyToIgnore"
+        ignoreList.add("sdk.*")       // Ignore all keys matching the regexp "sdk.*"
     }
 }
 
@@ -94,9 +107,10 @@ dependencies {
     implementation("com.google.android.gms:play-services-places:17.0.0")
     implementation("com.google.android.gms:play-services-location:18.0.0")
     implementation("com.google.android.libraries.places:places:2.4.0")
-    implementation("com.android.volley:volley:1.2.0")
     implementation("com.google.maps.android:android-maps-utils:1.3.1")
-
+    implementation("com.google.maps:google-maps-services:2.2.0")
+    implementation("org.slf4j:slf4j-simple:1.7.25")
+    implementation("com.android.volley:volley:1.2.0")
 
     // Viewpager 2
     implementation("androidx.viewpager2:viewpager2:1.0.0")
@@ -116,8 +130,7 @@ dependencies {
     // OkHttp logging interceptor for logging HTTP requests and responses
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.1")
 
-       // Glide
+   // Glide
     implementation("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 }
-android.buildFeatures.buildConfig true

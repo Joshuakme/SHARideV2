@@ -9,10 +9,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
-class EditMobileRepository(
-    private val firestore: FirebaseFirestore,
-    private val firebaseAuth: FirebaseAuth
-) {
+class EditMobileRepository() {
+    private val firestore = FirebaseClient.firestore
+    private val firebaseAuth = FirebaseClient.firebaseAuth
 
     // Variables
     private val mobileRef = firestore.collection("user")

@@ -2,6 +2,7 @@
     <string name="app_name">SHARideV2</string>
     <string name="web_client_id">178112270595-mbkueg137033n1edkrmd2ocepfk6b2ig.apps.googleusercontent.com</string>
     <string name="map_id" translatable="false">ed88a81f472d4f02</string>
+    <string name="google_api_key" translatable="false">AIzaSyCfsP1xX9W9IMQ7JJdusjltI9G6X3ODLA0</string>
     <string name="share_app_link" translatable="false">joshuakme.github.io/SHARide-Web/</string>
 
 
@@ -21,7 +22,7 @@
     <string name="screen_title_profile">Profile</string>
 
     <!--  Home Fragment  -->
-    <string name="home_fragment_welcome_user">Welcome %s</string>
+    <string name="home_fragment_welcome_user">Welcome %s!</string>
     <string name="home_fragment_welcome_user_area">Unknown location</string>
     <string name="home_fragment_pick_up_location">Origin location</string>
 

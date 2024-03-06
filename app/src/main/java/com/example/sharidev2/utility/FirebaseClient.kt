@@ -13,6 +13,7 @@ import com.example.sharidev2.data.model.Review
 import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.data.model.RideOption
 import com.example.sharidev2.data.model.RideStatus
+import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.data.model.User
 import com.example.sharidev2.data.model.Vehicle
 import com.example.sharidev2.data.model.VehicleType
@@ -255,6 +256,24 @@ object FirebaseClient {
             try {
                     val origin = converters.toSearchLocation(document.get("origin") as Map<String, Any>)
                     val destination = converters.toSearchLocation(document.get("destination") as Map<String, Any>)
+
+                    // Waypoints Sub-Collection
+                    val waypointsSnapshot = document.reference.collection("waypoints")
+                        .get()
+                        .await()
+                    val waypointsMap = mutableMapOf<String, SearchLocation>()
+
+                    if(waypointsSnapshot != null && !waypointsSnapshot.isEmpty) {
+                        for(waypointDoc in waypointsSnapshot.documents) {
+                            val waypointData: Map<String, Any>? = waypointDoc.data
+
+                            if(waypointData != null) {
+                                waypointsMap[waypointDoc.id] = converters.toSearchLocation(waypointData)
+                            }
+                        }
+                    }
+
+
                     val datetime = document.getTimestamp("datetime")!!
                     val driver = converters.toDriver(document.get("driver") as Map<String, Any>)
 
@@ -323,6 +342,7 @@ object FirebaseClient {
                         document.id,
                         origin,
                         destination,
+                        waypointsMap,
                         datetime,
                         driver,
                         passengersMap,

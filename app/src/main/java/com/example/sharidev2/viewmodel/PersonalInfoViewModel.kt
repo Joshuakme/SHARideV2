@@ -9,20 +9,23 @@ import com.example.sharidev2.data.repository.DisplayNameRepository
 import com.example.sharidev2.data.repository.EditMobileRepository
 import com.example.sharidev2.data.repository.GenderRepository
 import com.example.sharidev2.utility.FirebaseClient
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class PersonalInfoViewModel: ViewModel() {    // LiveData for current display name
-    val firestore = FirebaseClient.firestore
-    val firebaaseAuth = FirebaseClient.firebaseAuth
+    private val displayNameRepository = DisplayNameRepository()
+    private val mobileRepository = EditMobileRepository()
+    private val genderRepository = GenderRepository()
+
+    private val firebaaseAuth = FirebaseClient.firebaseAuth
 
 
+    // DATA
     private val _displayName = MutableLiveData<String>()
     private val _mobile= MutableLiveData<String>()
     private val _gender = MutableLiveData<String>()
     private val currentUser = firebaaseAuth.currentUser
-    private val displayNameRepository = DisplayNameRepository(firestore, firebaaseAuth)
-    private val mobileRepository = EditMobileRepository(firestore, firebaaseAuth)
-    private val genderRepository = GenderRepository(firestore, firebaaseAuth)
+
 
 
     val displayName: LiveData<String>
@@ -35,8 +38,12 @@ class PersonalInfoViewModel: ViewModel() {    // LiveData for current display na
         get() = _gender
 
     // Function to update the display name
-    suspend fun updateDisplayName(newDisplayName: String) {
-        displayNameRepository.updateDisplayName(newDisplayName)
+    fun updateDisplayName(newDisplayName: String) {
+        _displayName.value = newDisplayName
+
+        viewModelScope.launch(Dispatchers.IO) {
+            displayNameRepository.updateDisplayName(newDisplayName)
+        }
     }
 
 

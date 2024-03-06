@@ -7,11 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentProfileBinding
 import com.example.sharidev2.utility.FirebaseClient
+import com.example.sharidev2.viewmodel.PersonalInfoViewModel
 
 
 class ProfileFragment : Fragment() {
@@ -37,14 +39,21 @@ class ProfileFragment : Fragment() {
         val logoutBtn = binding.cardProfileLogoutBtn
 
         // AUTH VARIABLES
-        val user = auth.currentUser
+        val currentUser = auth.currentUser
 
         // LAYOUT SETTINGS
         (activity as MainActivity).setBottomNavVisible(true)
         (activity as MainActivity).resetBottomNavPosition()
-        profileNameText.text = user?.displayName ?: getString(R.string.profile_log_in)
-        profileUserIdText.visibility = if(user == null) View.GONE else View.VISIBLE
-        profileUserIdText.text = "@${user?.displayName}"
+
+
+        if(currentUser != null) {
+            profileNameText.text = currentUser.displayName ?: getString(R.string.profile_log_in)
+            profileUserIdText.text = "@${currentUser.displayName!!.lowercase()}"
+        }
+
+
+
+        profileUserIdText.visibility = if(currentUser == null) View.GONE else View.VISIBLE
 
 
         // Check if user is logged in and navigate to respective screen

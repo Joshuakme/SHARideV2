@@ -1,13 +1,9 @@
 package com.example.sharidev2.utility
 
-import android.app.Activity
-import android.app.ActivityManager
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.PorterDuff
@@ -15,19 +11,16 @@ import android.graphics.PorterDuffXfermode
 import android.graphics.drawable.VectorDrawable
 import android.location.Location
 import android.net.Uri
-import android.util.Log
+import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.sharidev2.R
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
 import java.util.Calendar
 
 class CommonUtils {
@@ -77,7 +70,7 @@ class CommonUtils {
         return typedValue.data
     }
 
-    fun getBitmapFromVector(context: Context, color: Int): BitmapDescriptor {
+    fun getLocationBitmapFromVector(context: Context, color: Int): BitmapDescriptor {
         val SCALE_FACTOR = 1.0f
 
         // Create a VectorDrawable from the default marker resource
@@ -141,6 +134,16 @@ class CommonUtils {
 
         // Convert the composite bitmap to a BitmapDescriptor
         return BitmapDescriptorFactory.fromBitmap(backgroundBitmap)
+    }
+
+    fun createDrawableFromView(context: Context, view: View): Bitmap {
+        val displayMetrics = context.resources.displayMetrics
+        view.measure(displayMetrics.widthPixels, displayMetrics.heightPixels)
+        view.layout(0, 0, displayMetrics.widthPixels, displayMetrics.heightPixels)
+        val bitmap = Bitmap.createBitmap(view.measuredWidth, view.measuredHeight, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        view.draw(canvas)
+        return bitmap
     }
 
 
