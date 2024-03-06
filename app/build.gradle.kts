@@ -97,6 +97,9 @@ dependencies {
     implementation("com.android.volley:volley:1.2.0")
     implementation("com.google.maps.android:android-maps-utils:1.3.1")
 
+    //Image Picker for Profile Picture
+    implementation ("com.github.dhaval2404:imagepicker:2.1")
+
 
     // Viewpager 2
     implementation("androidx.viewpager2:viewpager2:1.0.0")
@@ -118,6 +121,7 @@ dependencies {
 
        // Glide
     implementation("com.github.bumptech.glide:glide:4.12.0")
+    implementation("com.github.bumptech.glide:glide:4.15.1")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 }
 android.buildFeatures.buildConfig true

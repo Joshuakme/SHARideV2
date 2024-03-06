@@ -25,6 +25,7 @@ class EmergencyContactRepository(
     private val isUserLogin = currentUser != null
 
 
+
     suspend fun addContact(contact: Contact): Int {
         return withContext(Dispatchers.IO) {
             val currentUser = Firebase.auth.currentUser

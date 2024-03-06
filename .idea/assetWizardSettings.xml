@@ -8,47 +8,6 @@
             <PersistentState />
           </value>
         </entry>
-<<<<<<< HEAD
-        <entry key="vectorWizard">
-          <value>
-            <PersistentState>
-              <option name="children">
-                <map>
-                  <entry key="vectorAssetStep">
-                    <value>
-                      <PersistentState>
-                        <option name="children">
-                          <map>
-                            <entry key="clipartAsset">
-                              <value>
-                                <PersistentState>
-                                  <option name="values">
-                                    <map>
-                                      <entry key="url" value="file:/$PROJECT_DIR$/../../../Joshua%20Koh/AppData/Local/Android/Sdk/icons/material/materialicons/hourglass_empty/baseline_hourglass_empty_24.xml" />
-                                    </map>
-                                  </option>
-                                </PersistentState>
-                              </value>
-                            </entry>
-                          </map>
-                        </option>
-                        <option name="values">
-                          <map>
-                            <entry key="autoMirrored" value="true" />
-                            <entry key="outputName" value="baseline_hourglass_empty_24" />
-                            <entry key="sourceFile" value="F:\Download\vehicle_type_vector\suv_512.svg" />
-                          </map>
-                        </option>
-                      </PersistentState>
-                    </value>
-                  </entry>
-                </map>
-              </option>
-            </PersistentState>
-          </value>
-        </entry>
-=======
->>>>>>> main
       </map>
     </option>
   </component>

@@ -11,14 +11,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
-class DisplayNameRepository(
-    private val firestore: FirebaseFirestore,
-    private val firebaseAuth: FirebaseAuth
-) {
+class DisplayNameRepository() {
+    private val firestore = FirebaseClient.firestore
+    private val firebaseAuth = FirebaseClient.firebaseAuth
 
     // Variables
     private val displayNameRef = firestore.collection("user")
-    private val currentUser = FirebaseClient.firebaseAuth.currentUser
+    private val currentUser = firebaseAuth.currentUser
     private val isUserLogin = currentUser != null
 
 
