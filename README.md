@@ -13,4 +13,4 @@ SHARide, your travel companion in Malaysia, revolutionizes commuting. Combat tra
 
 ## Authors
 1. [Joshua Koh](https://github.com/Joshuakme)
-2. [Shia Chai Fen]()
+2. [Shia Chai Fen](https://github.com/Tiffany72)

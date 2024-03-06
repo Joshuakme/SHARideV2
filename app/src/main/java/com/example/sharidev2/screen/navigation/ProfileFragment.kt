@@ -83,10 +83,9 @@ class ProfileFragment : Fragment() {
 
         // Profile Fragment -> Emergency Contact Fragment
         emergencyContactBtn.setOnClickListener {
-            // TODO: Set up nav graph (emergency contact)
-            // findNavController().navigate(R.id.action_profileFragment_to_personalInformationFragment)
-        }
 
+            findNavController().navigate(R.id.action_profileFragment_to_emergencyContactFragment)
+        }
 
         // Log out
         logoutBtn.setOnClickListener {
@@ -100,5 +99,4 @@ class ProfileFragment : Fragment() {
 
         return binding.root
     }
-
 }

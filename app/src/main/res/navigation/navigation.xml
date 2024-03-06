@@ -42,6 +42,9 @@
         <action
             android:id="@+id/action_profileFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_emergencyContactFragment"
+            app:destination="@id/emergencyContactFragment" />
     </fragment>
     <fragment
         android:id="@+id/bookingFragment"
@@ -102,6 +105,19 @@
         <action
             android:id="@+id/action_personalInformationFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_personalInformationFragment_to_drivingLicenseFragment"
+            app:destination="@id/drivingLicenseFragment" />
+        <action
+            android:id="@+id/action_personalInformationFragment_to_editDisplayNameFragment"
+            app:destination="@id/editDisplayNameFragment" />
+        <action
+            android:id="@+id/action_personalInformationFragment_to_editMobileFragment3"
+            app:destination="@id/editMobileFragment3" />
+        <action
+            android:id="@+id/action_personalInformationFragment_to_editGenderFragment"
+            app:destination="@id/editGenderFragment" />
+
     </fragment>
     <fragment
         android:id="@+id/paymentMethodFragment"

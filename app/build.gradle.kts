@@ -6,6 +6,7 @@ plugins {
     // Add the Google services Gradle plugin
     id("com.google.gms.google-services")
 
+
     kotlin("kapt")
 
     // Navigation Safe Args
@@ -64,10 +65,10 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     implementation("androidx.annotation:annotation:1.7.1")
     implementation("androidx.core:core-i18n:1.0.0-alpha01")
+    implementation("androidx.compose.ui:ui-android:1.6.2")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-
 
     // Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
@@ -96,6 +97,7 @@ dependencies {
     implementation("com.android.volley:volley:1.2.0")
     implementation("com.google.maps.android:android-maps-utils:1.3.1")
 
+
     // Viewpager 2
     implementation("androidx.viewpager2:viewpager2:1.0.0")
 
@@ -113,4 +115,9 @@ dependencies {
 
     // OkHttp logging interceptor for logging HTTP requests and responses
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.1")
+
+       // Glide
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 }
+android.buildFeatures.buildConfig true

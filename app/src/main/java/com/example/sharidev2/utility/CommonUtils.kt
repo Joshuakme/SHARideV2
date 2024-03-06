@@ -196,6 +196,18 @@ class CommonUtils {
         Toast.makeText(context, "Link copied to clipboard", Toast.LENGTH_SHORT).show()
     }
 
+    fun copyLinkToClipboard(context: Context, textToCopy: String) {
+        // Get ClipboardManager
+        val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
+        // Create a ClipData object
+        val clipData = ClipData.newPlainText("URL", textToCopy)
+
+        // Set the ClipData object to the clipboard
+        clipboardManager.setPrimaryClip(clipData)
+        Toast.makeText(context, "Link copied to clipboard", Toast.LENGTH_SHORT).show()
+    }
+
     fun closeKeyboard(view: View, context: Context) {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)

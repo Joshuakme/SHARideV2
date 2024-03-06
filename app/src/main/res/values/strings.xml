@@ -24,6 +24,7 @@
     <string name="home_fragment_welcome_user">Welcome %s</string>
     <string name="home_fragment_welcome_user_area">Unknown location</string>
     <string name="home_fragment_pick_up_location">Origin location</string>
+
     <string name="home_fragment_destination_location">Destination location</string>
     <string name="home_fragment_date_time">Date &amp; Time</string>
     <string name="home_fragment_select_more">More</string>
@@ -33,12 +34,18 @@
     <string name="home_fragment_offer_ride_vehicle">Vehicle</string>
     <string name="home_fragment_search_hint">Enter destination or starting point</string>
     <string name="home_section_recent_rides_title">Recent rides</string>
+
+    <string name="home_section_categories_rides_title">Categories</string>
+
+    <!--  Home: Search Fragment  -->
+
     <string name="home_section_nearby_rides_title">Nearby Rides</string>
     <string name="home_section_share_this_app_title">Share this app</string>
 
     <!--  Home: Search Fragment  -->
     <string name="search_fragment_now">Now</string>
     <string name="search_fragment_schedule">Schedule</string>
+
     <string name="search_fragment_change_role_to_driver">Driver</string>
     <string name="search_fragment_change_role_to_passenger">Passenger</string>
     <string-array name="malaysia_state_array">
@@ -56,6 +63,7 @@
         <item>Selangor</item>
         <item>Terengganu</item>
     </string-array>
+
     <string name="search_fragment_search_result_place_distance_address">%.2fkm \u200B \u2022 \u200B %s</string>
     <string name="search_fragment_search_result_place_distance_address_0km">%dkm \u200B \u2022 \u200B %s</string>
     <string name="search_fragment_choose_origin_location">Choose This Origin</string>
@@ -153,6 +161,8 @@
     <string name="personal_information_item_title_gender">Gender</string>
     <string name="personal_information_item_title_mobile_number">Mobile Number</string>
 
+    <string name="personal_information_item_title_vehicle_doc">Vehicle Documentation</string>
+    <string name="personal_information_item_title_driving_license">Driving License</string>
 
     <!--  Profile Fragment: Payment Method Fragment  -->
     <string name="personal_information_title_payment_method">Payment Method</string>
@@ -162,17 +172,51 @@
     <string name="login_fragment_title_login_in_to_sharide">Log in to SHARide</string>
     <string name="login_fragment_btn_login_with_google">Continue With Google</string>
     <string name="login_fragment_btn_login_with_mobile_number">Continue With Mobile Number</string>
+
     <string name="login_fragment_input_country_code">+%d</string>
+
     <string name="login_fragment_input_mobile_number_hint">Enter phone number</string>
     <string name="login_fragment_input_verify_code_hint">Enter verification code</string>
     <string name="login_fragment_btn_verify_code_resend_countdown">Resend(%1$d)</string>
     <string name="login_fragment_btn_verify_code_resend">Resend</string>
     <string name="login_fragment_divider_or">OR</string>
     <string name="login_fragment_btn_login">Log in</string>
+
     <string name="login_fragment_btn_get_otp">Get OTP</string>
     <string name="login_fragment_no_account">Not yet have an account? </string>
     <string name="login_fragment_btn_sign_up">Sign up</string>
     <string name="login_fragment_bottom_dialog_title">Select Country</string>
+
+
+    <!--  Edit Personal Information -->
+    <string name="edit_username_fragment_message_set_username">Please set 2 - 24 characters, excluding invalid characters such as ! @ / ?</string>
+    <string name="edit_user_mobile_fragment_text">Phone Number</string>
+    <string name="edit_username_fragment_allowed_characters">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_.</string>
+
+
+    <!--  EmergencyContact Fragment -->
+    <string name="message_add_emergency_contact" translatable="false">Add up to 3 Emergency Contacts who will be notified via SMS anytime you require an emergency assistance during a ride </string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome!"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+
+    <!--  Vehicle Fragment: Vehicle Type  -->
+    <string-array name="name">
+        <item>SUV</item>
+        <item>Hatchback</item>
+        <item>Crossover</item>
+        <item>Sedan</item>
+        <item>Coupe</item>
+        <item>Minivan</item>
+        <item>Pickup Truck</item>
+    </string-array>
 
 
     <!--  Placeholder  -->

@@ -13,6 +13,7 @@ import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+
 class DriverVehicleRepository() {
     private val firestore = FirebaseClient.firestore
 
