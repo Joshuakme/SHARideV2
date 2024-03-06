@@ -3,8 +3,8 @@ package com.example.sharidev2.data.repository
 
 import android.util.Log
 import com.example.sharidev2.data.model.Contact
+import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.Converters
-import com.example.sharidev2.utility.FirebaseUtils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -42,16 +42,16 @@ class EmergencyContactRepository(
                     documentReference.update("contactId", contactId).await()
 
 
-                    return@withContext FirebaseUtils.SUCCESS    // SUCCESS
+                    return@withContext Constants.FIREBASE_REQUEST_SUCCESS    // SUCCESS
                 } catch (e: Exception) {
                     // Handle any exceptions here
                     e.printStackTrace()
 
-                    return@withContext FirebaseUtils.EXCEPTION
+                    return@withContext Constants.FIREBASE_REQUEST_EXCEPTION
                 }
             } else {
 
-                return@withContext FirebaseUtils.USER_NOT_AUTHENTICATED
+                return@withContext Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED
             }
         }
     }
@@ -131,15 +131,15 @@ class EmergencyContactRepository(
 
                         Log.d("UPDATE CONTACT", "SUCESSFUL")
 
-                        FirebaseUtils.SUCCESS // Update successful
+                        Constants.FIREBASE_REQUEST_SUCCESS // Update successful
                     } else {
-                        FirebaseUtils.NOT_BELONG_USER // Contact doesn't belong to the current user
+                        Constants.FIREBASE_REQUEST_NOT_BELONG_USER // Contact doesn't belong to the current user
                     }
                 } else {
-                    FirebaseUtils.USER_NOT_AUTHENTICATED // User not authenticated
+                    Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED // User not authenticated
                 }
             } catch (e: Exception) {
-                FirebaseUtils.EXCEPTION // Handle exceptions
+                Constants.FIREBASE_REQUEST_EXCEPTION // Handle exceptions
                 Log.d("PROBLEMMMM", e.message.toString())
             }
         }

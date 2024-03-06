@@ -80,7 +80,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")                     // Dependency for the Firebase Authentication library
     implementation("com.google.android.gms:play-services-auth:20.7.0")      // Dependency for the Google Play services library and specify its version
     implementation("com.google.firebase:firebase-firestore-ktx:24.10.0")
-    implementation("com.google.firebase:firebase-storage")
+    implementation("com.google.firebase:firebase-storage-ktx:20.3.0")
 
     // Navigation
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.6")

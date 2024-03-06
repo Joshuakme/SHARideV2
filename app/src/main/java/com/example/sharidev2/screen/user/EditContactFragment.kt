@@ -25,8 +25,8 @@ import com.example.sharidev2.R
 import com.example.sharidev2.data.model.Contact
 import com.example.sharidev2.data.repository.EmergencyContactRepository
 import com.example.sharidev2.databinding.FragmentEditContactBinding
-import com.example.sharidev2.firebase.FirebaseInitializer
-import com.example.sharidev2.utility.FirebaseUtils
+import com.example.sharidev2.utility.Constants
+import com.example.sharidev2.utility.FirebaseClient
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -199,16 +199,16 @@ class EditContactFragment : Fragment() {
                 val isDeleted = viewModel.deleteContact(contact.contactId!!)
 
                 when(isDeleted) {
-                    FirebaseUtils.SUCCESS -> {
+                    Constants.FIREBASE_REQUEST_SUCCESS -> {
                         // Deletion successful
                         Toast.makeText(context, "Contact Deleted", Toast.LENGTH_SHORT).show()
 
                         findNavController().navigate(R.id.action_editContactFragment_to_emergencyContactFragment)
                     }
 
-                    FirebaseUtils.NOT_BELONG_USER,
-                    FirebaseUtils.USER_NOT_AUTHENTICATED,
-                    FirebaseUtils.EXCEPTION -> {
+                    Constants.FIREBASE_REQUEST_NOT_BELONG_USER,
+                    Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED,
+                    Constants.FIREBASE_REQUEST_EXCEPTION -> {
                         // Contact doesn't belong to the current user
                         Toast.makeText(context, "Failed to remove contact", Toast.LENGTH_SHORT).show()
                         Log.e("Delete Contact", isDeleted.toString())
@@ -233,7 +233,7 @@ class EditContactFragment : Fragment() {
         val contactPhoneNo = binding.inputEditEmergencyPhoneNo
 
         try {
-            val newContact = Contact(contact.contactId, contactName.text.toString(), contactPhoneNo.text.toString(), FirebaseInitializer.firebaseAuth.currentUser?.uid)
+            val newContact = Contact(contact.contactId, contactName.text.toString(), contactPhoneNo.text.toString(), FirebaseClient.firebaseAuth.currentUser?.uid)
             val updateContact = viewModel.updateContact(newContact)
             Log.d("UpdateContact", "Update successful: $updateContact")
 

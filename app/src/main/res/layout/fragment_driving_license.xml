@@ -34,7 +34,7 @@
                 android:fontFamily="@font/poppins_medium"
                 android:text="Driving License"
                 android:textAlignment="center"
-                android:textSize="@dimen/mdtp_year_label_text_size"
+                android:textSize="22dp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

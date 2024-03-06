@@ -6,17 +6,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.sharidev2.data.repository.DriverVehicleRepository
 import com.example.sharidev2.data.repository.DrivingLicenseRepository
-import com.example.sharidev2.firebase.FirebaseInitializer
+import com.example.sharidev2.utility.FirebaseClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class LicenseUploadViewModel : ViewModel() {
     private val repository = DrivingLicenseRepository(
-        FirebaseInitializer.firestore,
-        FirebaseInitializer.firebaseAuth,
-        FirebaseInitializer.firebaseStorage
+        FirebaseClient.firestore,
+        FirebaseClient.firebaseAuth,
+        FirebaseClient.firebaseStorage
     )
 
     private val _frontImageUri = MutableLiveData<Uri?>()

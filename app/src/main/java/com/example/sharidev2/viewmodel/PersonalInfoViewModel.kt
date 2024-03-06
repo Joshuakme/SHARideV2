@@ -8,17 +8,21 @@ import com.example.sharidev2.data.model.User
 import com.example.sharidev2.data.repository.DisplayNameRepository
 import com.example.sharidev2.data.repository.EditMobileRepository
 import com.example.sharidev2.data.repository.GenderRepository
-import com.example.sharidev2.firebase.FirebaseInitializer
+import com.example.sharidev2.utility.FirebaseClient
 import kotlinx.coroutines.launch
 
 class PersonalInfoViewModel: ViewModel() {    // LiveData for current display name
+    val firestore = FirebaseClient.firestore
+    val firebaaseAuth = FirebaseClient.firebaseAuth
+
+
     private val _displayName = MutableLiveData<String>()
     private val _mobile= MutableLiveData<String>()
     private val _gender = MutableLiveData<String>()
-    private val currentUser = FirebaseInitializer.firebaseAuth.currentUser
-    private val displayNameRepository = DisplayNameRepository(FirebaseInitializer.firestore, FirebaseInitializer.firebaseAuth)
-    private val mobileRepository = EditMobileRepository(FirebaseInitializer.firestore, FirebaseInitializer.firebaseAuth)
-    private val genderRepository = GenderRepository(FirebaseInitializer.firestore, FirebaseInitializer.firebaseAuth)
+    private val currentUser = firebaaseAuth.currentUser
+    private val displayNameRepository = DisplayNameRepository(firestore, firebaaseAuth)
+    private val mobileRepository = EditMobileRepository(firestore, firebaaseAuth)
+    private val genderRepository = GenderRepository(firestore, firebaaseAuth)
 
 
     val displayName: LiveData<String>
@@ -40,7 +44,7 @@ class PersonalInfoViewModel: ViewModel() {    // LiveData for current display na
         currentUser?.uid?.let { userId ->
             viewModelScope.launch {
                 val displayName = displayNameRepository.fetchDisplayName(userId)
-                _displayName.value = displayName
+                _displayName.value = displayName?: ""
             }
         }
     }
@@ -73,7 +77,7 @@ class PersonalInfoViewModel: ViewModel() {    // LiveData for current display na
         currentUser?.uid?.let { userId ->
             viewModelScope.launch {
                 val mobile = mobileRepository.fetchMobile(userId)
-                _mobile.value = mobile
+                _mobile.value = mobile ?: ""
             }
         }
     }
@@ -87,7 +91,7 @@ class PersonalInfoViewModel: ViewModel() {    // LiveData for current display na
     fun fetchGenderFromDatabase() {
         viewModelScope.launch {
             val gender = genderRepository.fetchGender()
-            _gender.value = gender
+            _gender.value = gender?: ""
         }
     }
 }

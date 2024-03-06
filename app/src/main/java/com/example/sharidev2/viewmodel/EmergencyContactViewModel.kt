@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sharidev2.data.model.Contact
 import com.example.sharidev2.data.repository.EmergencyContactRepository
-import com.example.sharidev2.firebase.FirebaseInitializer
+import com.example.sharidev2.utility.FirebaseClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -12,8 +12,8 @@ import kotlinx.coroutines.launch
 class EmergencyContactViewModel(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val repository = EmergencyContactRepository(FirebaseInitializer.firestore, FirebaseInitializer.firebaseAuth)
-    private val currentUser = FirebaseInitializer.firebaseAuth.currentUser
+    private val repository = EmergencyContactRepository(FirebaseClient.firestore, FirebaseClient.firebaseAuth)
+    private val currentUser = FirebaseClient.firebaseAuth.currentUser
 
     // DATA KEY CONSTANT
     private val CONTACT_LIST_KEY = "contact_list"

@@ -14,7 +14,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.sharidev2.R
 import com.example.sharidev2.data.model.User
 import com.example.sharidev2.databinding.FragmentEditDisplayNameBinding
-import com.example.sharidev2.firebase.FirebaseInitializer
 import com.example.sharidev2.viewmodel.PersonalInfoViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

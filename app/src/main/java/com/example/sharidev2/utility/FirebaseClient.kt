@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
 import com.example.sharidev2.data.model.Chat
-import com.example.sharidev2.data.model.Driver
 import com.example.sharidev2.data.model.Gender
 import com.example.sharidev2.data.model.Message
 import com.example.sharidev2.data.model.MessageType
@@ -23,7 +22,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.Dispatchers

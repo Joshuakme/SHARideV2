@@ -1,9 +1,8 @@
 package com.example.sharidev2.data.repository
 
 import android.util.Log
-import com.example.sharidev2.data.model.User
-import com.example.sharidev2.firebase.FirebaseInitializer
-import com.example.sharidev2.utility.FirebaseUtils
+import com.example.sharidev2.utility.Constants
+import com.example.sharidev2.utility.FirebaseClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
@@ -17,7 +16,7 @@ class EditMobileRepository(
 
     // Variables
     private val mobileRef = firestore.collection("user")
-    private val currentUser = FirebaseInitializer.firebaseAuth.currentUser
+    private val currentUser = FirebaseClient.firebaseAuth.currentUser
     private val isUserLogin = currentUser != null
 
 
@@ -31,16 +30,16 @@ class EditMobileRepository(
                         .update("phoneNumber", newMobile)
                         .await()
 
-                    return@withContext FirebaseUtils.SUCCESS    // SUCCESS
+                    return@withContext Constants.FIREBASE_REQUEST_SUCCESS    // SUCCESS
                 } catch (e: Exception) {
                     // Handle any exceptions here
                     e.printStackTrace()
 
-                    return@withContext FirebaseUtils.EXCEPTION
+                    return@withContext Constants.FIREBASE_REQUEST_EXCEPTION
                 }
             } else {
 
-                return@withContext FirebaseUtils.USER_NOT_AUTHENTICATED
+                return@withContext Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED
             }
         }
     }

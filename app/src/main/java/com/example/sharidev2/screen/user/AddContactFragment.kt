@@ -2,18 +2,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.sharidev2.R
 import com.example.sharidev2.adapter.ContactAdapter
 import com.example.sharidev2.data.model.Contact
-import com.example.sharidev2.data.repository.EmergencyContactRepository
 import com.example.sharidev2.databinding.FragmentAddContactBinding
-import com.example.sharidev2.utility.FirebaseUtils
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class AddContactFragment : Fragment() {
     private lateinit var binding: FragmentAddContactBinding
