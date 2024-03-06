@@ -99,6 +99,16 @@
         <action
             android:id="@+id/action_personalInformationFragment_to_drivingLicenseFragment"
             app:destination="@id/drivingLicenseFragment" />
+        <action
+            android:id="@+id/action_personalInformationFragment_to_editDisplayNameFragment"
+            app:destination="@id/editDisplayNameFragment" />
+        <action
+            android:id="@+id/action_personalInformationFragment_to_editMobileFragment3"
+            app:destination="@id/editMobileFragment3" />
+        <action
+            android:id="@+id/action_personalInformationFragment_to_editGenderFragment"
+            app:destination="@id/editGenderFragment" />
+
     </fragment>
     <fragment
         android:id="@+id/paymentMethodFragment"
@@ -209,4 +219,29 @@
             android:id="@+id/action_drivingLicenseFragment_to_personalInformationFragment"
             app:destination="@id/personalInformationFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/editDisplayNameFragment"
+        android:name="com.example.sharidev2.screen.user.EditDisplayNameFragment"
+        android:label="EditDisplayNameFragment" >
+        <action
+            android:id="@+id/action_editDisplayNameFragment_to_personalInformationFragment"
+            app:destination="@id/personalInformationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editMobileFragment3"
+        android:name="com.example.sharidev2.screen.user.EditMobileFragment"
+        android:label="EditMobileFragment" >
+        <action
+            android:id="@+id/action_editMobileFragment3_to_personalInformationFragment"
+            app:destination="@id/personalInformationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editGenderFragment"
+        android:name="com.example.sharidev2.screen.user.EditGenderFragment"
+        android:label="EditGenderFragment" >
+        <action
+            android:id="@+id/action_editGenderFragment_to_personalInformationFragment"
+            app:destination="@id/personalInformationFragment" />
+    </fragment>
+
 </navigation>
