@@ -83,6 +83,8 @@ class RideUtils {
             return null
         }
 
+        // TODO: Check datetime && rideOption
+
         // 1. Check for perfect origin and destination match
         if((ride.origin.placeId == searchRide.origin.placeId) &&
             (ride.destination.placeId == searchRide.destination.placeId)
@@ -154,21 +156,6 @@ class RideUtils {
         return 0.0 // Replace with your actual calculation
     }
 
-    // Function to check if a point is on the way from origin to destination
-    fun isOnWay(origin: LatLng, destination: LatLng, passengerOrigin: LatLng): Boolean {
-        val driverOriginVector = latLngToVector(origin)
-        val passengerOriginVector = latLngToVector(passengerOrigin)
-        val destinationVector = latLngToVector(destination)
-
-        val directionVector = destinationVector.subtract(driverOriginVector)
-
-        val passengerOriginDiffVector = passengerOriginVector.subtract(driverOriginVector)
-
-        val dotProduct = directionVector.dot(passengerOriginDiffVector)// Passenger's origin is likely in the opposite direction or nearly perpendicular
-
-        // Passenger's origin is likely in the same general direction as destination
-        return dotProduct > 0
-    }
 
     private fun calculateDistanceInKm(origin: LatLng, destination: LatLng): Double {
         // Radius of the Earth in kilometers
@@ -200,17 +187,6 @@ class RideUtils {
         return distance
     }
 
-
-
-
-    fun latLngToVector(location: LatLng): Vector3D {
-        val latitude = Math.toRadians(location.latitude)
-        val longitude = Math.toRadians(location.longitude)
-        val x = cos(latitude) * cos(longitude)
-        val y = cos(latitude) * sin(longitude)
-        val z = sin(latitude)
-        return Vector3D(x, y, z)
-    }
 
 
     // Function to calculate the bearing between two LatLng points
@@ -247,10 +223,6 @@ class RideUtils {
         val originDistanceDifferenceInKm = calculateDistanceInKm(rideOrigin, passengerOrigin)
         val destinationDistanceDifferenceInKm = calculateDistanceInKm(rideDestination, passengerDestination)
 
-
-        Log.e("RideUtils: isWithinRoute", "differenceOriginInDistance: $originDistanceDifferenceInKm")
-        Log.e("RideUtils: isWithinRoute", "differenceDestinationInDistance: $destinationDistanceDifferenceInKm")
-        Log.e("RideUtils: isWithinRoute", "differenceInBearing: $differenceInBearing")
 
         // Check if the difference in bearing falls within the desired range
         val threshold = 75 // 75-degree range on either side

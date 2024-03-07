@@ -10,11 +10,13 @@ import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.Converters
 import com.example.sharidev2.utility.FirebaseClient
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.util.Calendar
 
 
 class RideRepository() {
@@ -289,7 +291,9 @@ class RideRepository() {
                     val filteredNotDriverList = createRideListFromQuerySnapshot(querySnapshot)
 
                     val filteredRideList = filteredNotDriverList.filter {
-                        it.availableSeats >= 1
+                        (it.driver.userUid != currentUser.uid) &&
+                        (it.availableSeats >= 1) &&
+                        (it.datetime > Timestamp.now())
                     }
 
                     filteredRideList

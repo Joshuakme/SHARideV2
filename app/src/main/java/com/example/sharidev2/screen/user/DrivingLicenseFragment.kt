@@ -113,7 +113,7 @@ class DrivingLicenseFragment : Fragment() {
                         .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Disable disk caching
                         .into(licenseBackImageView)
                 } else {
-                    licenseBackImageView?.setImageURI(uri)
+                    licenseBackImageView.setImageURI(uri)
                 }
             } else {
                 Log.e("Driver License View Model", "KOPI AIS KOSONG")

@@ -1,15 +1,23 @@
 package com.example.sharidev2.adapter
 
+import android.content.Context
+import android.graphics.ColorFilter
+import android.graphics.PorterDuff
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.example.sharidev2.R
 import com.example.sharidev2.data.model.SearchLocation
+import com.example.sharidev2.utility.CommonUtils
 
 class RideDetailPassengerImageAdapter(
+    private val context: Context,
     private var passengerImgList: List<Uri>,
 ): RecyclerView.Adapter<RideDetailPassengerImageAdapter.ViewHolder>() {
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -33,7 +41,18 @@ class RideDetailPassengerImageAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val passengerImg = passengerImgList[position]
 
-        holder.passengerImg.setImageURI(passengerImg)
+        if(CommonUtils().isUrl(passengerImg.toString())) {
+            Glide.with(context)
+                .load(passengerImg.toString())
+                .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Disable disk caching
+                .into(holder.passengerImg)
+        } else {
+            holder.passengerImg.setImageURI(passengerImg)
+
+            val colorOutline = CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorOutline)
+            holder.passengerImg.setColorFilter(colorOutline)
+        }
+
     }
 
     override fun getItemCount(): Int {

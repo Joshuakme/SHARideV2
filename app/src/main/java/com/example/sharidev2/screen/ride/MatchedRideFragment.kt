@@ -26,7 +26,6 @@ class MatchedRideFragment :
     Fragment(),
     RideAdapter.OnRideClickListener {
     private lateinit var binding: FragmentMatchedRideBinding
-    private val rideViewModel: RideViewModel by viewModels()
     private val searchRideViewModel: SharedSearchRideViewModel by activityViewModels()
     private val currentUser = FirebaseClient.firebaseAuth.currentUser
 

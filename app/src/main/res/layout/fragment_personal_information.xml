@@ -60,6 +60,8 @@
                     android:id="@+id/img_personal_info_user_pic"
                     android:layout_width="@dimen/ss_profile_personal_info_pic_size"
                     android:layout_height="@dimen/ss_profile_personal_info_pic_size"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
                     app:srcCompat="@drawable/baseline_account_circle_24" />
             </com.google.android.material.card.MaterialCardView>
 

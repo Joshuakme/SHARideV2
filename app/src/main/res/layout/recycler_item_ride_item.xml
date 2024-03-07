@@ -33,10 +33,9 @@
                     android:id="@+id/img_ride_driver_icon"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:scaleType="fitCenter"
+                    android:scaleType="centerCrop"
                     app:layout_constraintStart_toStartOf="parent"
                     app:srcCompat="@drawable/baseline_account_circle_24"
-                    app:tint="?attr/colorOnBackground"
                     tools:layout_editor_absoluteY="8dp" />
             </com.google.android.material.card.MaterialCardView>
 

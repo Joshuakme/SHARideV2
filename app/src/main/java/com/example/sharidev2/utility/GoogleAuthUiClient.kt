@@ -50,7 +50,7 @@ class GoogleAuthUiClient(
                     User(
                         uid = uid,
                         displayName = displayName,
-                        photoUrl = photoUrl
+                        photoUri = photoUrl
                     )
                 },
             errorMessage = null
@@ -79,7 +79,7 @@ class GoogleAuthUiClient(
     @RequiresApi(Build.VERSION_CODES.O)
     fun getSignedInUser(): User? = auth.currentUser?.run {
         User(
-            uid, displayName, photoUrl = photoUrl
+            uid, displayName, photoUri = photoUrl
         )
     }
 

@@ -22,6 +22,8 @@ import com.example.sharidev2.data.model.VehicleType
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.Timestamp
 import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlin.reflect.typeOf
 
 
@@ -123,10 +125,11 @@ class Converters() {
         return userList
     }
 
-    fun toDriver(map: Map<String, Any>): Driver {
+    suspend fun toDriver(map: Map<String, Any>): Driver {
         val userUid = map["userUid"] as String
 
-        val driverUser = toUser(map["user"] as Map<String, Any>)
+//        val driverUser = toUser(map["user"] as Map<String, Any>)
+        val driverUser = FirebaseClient.getUserFromUid(userUid)
 
         val locationMap = map["location"] as Map<String, Any>?
         val location = if(locationMap != null) {
@@ -150,10 +153,11 @@ class Converters() {
         )
     }
 
-    fun toPassenger(map: Map<String, Any>): Passenger {
+    suspend fun toPassenger(map: Map<String, Any>): Passenger {
         val userUid = map["userUid"] as String
 
-        val user = if(map["user"] != null) toUser(map["user"] as Map<String, Any>) else User()
+//        val user = if(map["user"] != null) toUser(map["user"] as Map<String, Any>) else User()
+        val user = FirebaseClient.getUserFromUid(userUid)
 
         val locationMap = map["location"] as Map<String, Any>?
         val location = if(locationMap != null) {

@@ -36,7 +36,6 @@ import com.example.sharidev2.viewmodel.ActiveRideViewModel
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.Polyline
 
 
@@ -191,7 +190,7 @@ class ActiveRideFragment() :
 
                                 Glide.with(requireContext())
                                     .asBitmap()
-                                    .load(passenger.user?.photoUrl) // Replace profilePictureUrl with the actual URL
+                                    .load(passenger.user?.photoUri) // Replace profilePictureUrl with the actual URL
                                     .into(object : CustomTarget<Bitmap>() {
                                         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                                             // Set the loaded bitmap as the marker image
@@ -233,8 +232,8 @@ class ActiveRideFragment() :
         activeRideViewModel.activeRide.observe(viewLifecycleOwner) {activeRide ->
             if(activeRide != null) {
                 // Driver
-                if(activeRide.driver.user?.photoUrl != null) {
-                    driverPhotoImg.setImageURI(activeRide.driver.user?.photoUrl)
+                if(activeRide.driver.user?.photoUri != null) {
+                    driverPhotoImg.setImageURI(activeRide.driver.user?.photoUri)
                 }
 
                 // Ride
@@ -285,7 +284,7 @@ class ActiveRideFragment() :
 
                             val firebaseStorage = FirebaseClient.firebaseStorage
                             val storageRef =
-                                firebaseStorage.reference.child(location.user?.photoUrl.toString())
+                                firebaseStorage.reference.child(location.user?.photoUri.toString())
 
 
                             convertFirebaseImageToBitmap(storageRef,

@@ -24,6 +24,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.bumptech.glide.annotation.GlideModule
 import com.example.sharidev2.data.repository.UserLocationRepository
 import com.example.sharidev2.databinding.ActivityMainBinding
 import com.example.sharidev2.service.NetworkService

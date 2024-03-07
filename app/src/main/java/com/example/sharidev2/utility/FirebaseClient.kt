@@ -75,7 +75,13 @@ object FirebaseClient {
                 val displayName = user.getString("displayName")
                 val email = user.getString("email") ?: ""
                 val phoneNumber = user.getString("phoneNumber")
-                //val photoUri = Uri.parse(user.getString("photoUrl"))
+
+                val photoUri = if(user.getString("photoUrl") != null) {
+                    Uri.parse(user.getString("photoUrl"))
+                } else {
+                    null
+                }
+
 
                 val rideOptionMap = user.get("rideOption") as Map<String, String>
                 val driverGender = rideOptionMap["driverGender"]?.let { Gender.valueOf(it) }
@@ -100,10 +106,11 @@ object FirebaseClient {
 
 
                 return@withContext User(
-                    uid,
-                    displayName,
-                    email,
-                    phoneNumber,
+                    uid = uid,
+                    displayName = displayName,
+                    email = email,
+                    phoneNumber = phoneNumber,
+                    photoUri = photoUri,
                     rideOption = rideOption,
                     rating = rating,
                     savedAddress = mapOf(),

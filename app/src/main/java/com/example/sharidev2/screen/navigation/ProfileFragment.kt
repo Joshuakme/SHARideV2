@@ -7,11 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentProfileBinding
+import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.FirebaseClient
 import com.example.sharidev2.viewmodel.PersonalInfoViewModel
 
@@ -21,6 +27,7 @@ class ProfileFragment : Fragment() {
     private lateinit var binding : FragmentProfileBinding
     private val auth = FirebaseClient.firebaseAuth
 
+    private val personalInformationViewModel: PersonalInfoViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,6 +39,7 @@ class ProfileFragment : Fragment() {
         // ELEMENT VARIABLES
         val profileNameText = binding.textProfileDisplayName
         val profileUserIdText = binding.textProfileUserId
+        val profilePic = binding.imageProfile
         val personalInfoBtn = binding.cardPersonalInfo
         val paymentMethodBtn = binding.cardPaymentMethod
         val addressesBtn = binding.cardAddresses
@@ -56,7 +64,20 @@ class ProfileFragment : Fragment() {
         profileUserIdText.visibility = if(currentUser == null) View.GONE else View.VISIBLE
 
 
-        // Check if user is logged in and navigate to respective screen
+
+        personalInformationViewModel.selectedImageUri.observe(viewLifecycleOwner){ uri ->
+            // Update front image view
+            if(uri != null) {
+                if (CommonUtils().isUrl(uri.toString())) {
+                    Glide.with(requireContext())
+                        .load(uri.toString())
+                        .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Disable disk caching
+                        .into(profilePic)
+                } else {
+                    profilePic.setImageURI(uri)
+                }
+            }
+        }
 
 
 

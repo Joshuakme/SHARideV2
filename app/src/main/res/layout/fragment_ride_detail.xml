@@ -31,7 +31,7 @@
 
                 <!--  Fragment Back Button  -->
                 <ImageButton
-                    android:id="@+id/img_btn_view_booking_requests_nav_back"
+                    android:id="@+id/img_btn_ride_detail_nav_back"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="#00FFFFFF"
@@ -78,7 +78,9 @@
                         android:id="@+id/textView7"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_medium"
                         android:text="@string/ride_detail_fragment_section_title_driver_details"
+                        android:textColor="?attr/colorOutline"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -99,12 +101,13 @@
 
                             <ImageView
                                 android:id="@+id/img_ride_detail_driver"
-                                android:layout_width="40dp"
-                                android:layout_height="40dp"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:adjustViewBounds="true"
+                                android:scaleType="centerCrop"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/textView7"
-                                app:srcCompat="@drawable/baseline_account_circle_24"
-                                app:tint="?attr/colorOnBackground" />
+                                app:srcCompat="@drawable/baseline_account_circle_24" />
 
                         </com.google.android.material.card.MaterialCardView>
 
@@ -120,10 +123,9 @@
 
                             <TextView
                                 android:id="@+id/text_ride_detail_driver_name"
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="16dp"
-                                android:text="Derek"
                                 android:textSize="16sp"
                                 app:layout_constraintStart_toEndOf="@+id/img_ride_detail_driver"
                                 app:layout_constraintTop_toTopOf="@+id/img_ride_detail_driver" />
@@ -133,7 +135,6 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="16dp"
-                                android:text="+60 12**89"
                                 android:textColor="?attr/colorOutline"
                                 app:layout_constraintStart_toEndOf="@+id/img_ride_detail_driver"
                                 app:layout_constraintTop_toBottomOf="@+id/text_ride_detail_driver_name" />
@@ -142,7 +143,7 @@
 
                         <com.google.android.material.card.MaterialCardView
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             app:cardBackgroundColor="#00FFFFFF"
                             app:layout_constraintBottom_toBottomOf="@+id/linearLayout2"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -152,27 +153,42 @@
 
                             <LinearLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent">
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
 
-                                <ImageView
-                                    android:id="@+id/imageView5"
-                                    android:layout_width="wrap_content"
+                                <LinearLayout
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:src="@drawable/baseline_star_rate_24"
-                                    app:tint="?android:attr/colorPressedHighlight"
-                                    tools:layout_editor_absoluteX="250dp" />
+                                    android:orientation="horizontal">
+
+                                    <ImageView
+                                        android:id="@+id/imageView5"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:src="@drawable/baseline_star_rate_24"
+                                        app:tint="?android:attr/colorPressedHighlight"
+                                        tools:layout_editor_absoluteX="250dp" />
+
+                                    <TextView
+                                        android:id="@+id/text_ride_detail_driver_rating"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center_vertical"
+                                        android:layout_marginStart="4dp"
+                                        android:gravity="center_vertical"
+                                        android:lines="1"
+                                        android:maxLines="1"
+                                        android:singleLine="true"
+                                        android:text="@string/ride_detail_fragment_driver_rating"
+                                        android:translationY="2dp" />
+                                </LinearLayout>
 
                                 <TextView
-                                    android:id="@+id/text_ride_detail_driver_rating"
+                                    android:id="@+id/text_ride_detail_driver_rating_review"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="match_parent"
-                                    android:layout_gravity="center_vertical"
-                                    android:gravity="center_vertical"
-                                    android:lines="1"
-                                    android:maxLines="1"
-                                    android:singleLine="true"
-                                    android:text="@string/ride_detail_fragment_driver_rating"
-                                    android:translationY="2dp" />
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="TextView" />
 
                             </LinearLayout>
                         </com.google.android.material.card.MaterialCardView>
@@ -204,7 +220,9 @@
                         android:id="@+id/textView11"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_medium"
                         android:text="Passengers details"
+                        android:textColor="?attr/colorOutline"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -213,7 +231,7 @@
                         android:id="@+id/text_ride_detail_passengers_seats_booked"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
+                        android:layout_marginTop="12dp"
                         android:layout_weight="1"
                         android:text="@string/ride_detail_fragment_passengers_seat_booked"
                         app:layout_constraintTop_toBottomOf="@+id/textView11" />
@@ -264,26 +282,81 @@
                         android:id="@+id/text_ride_detail_section_ride_details"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/ride_detail_fragment_section_title_ride_details" />
+                        android:fontFamily="@font/poppins_medium"
+                        android:text="@string/ride_detail_fragment_section_title_ride_details"
+                        android:textColor="?attr/colorOutline"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recycler_ride_detail_timeline"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="12dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/text_ride_detail_section_ride_details"
                         tools:listitem="@layout/timeline_item_ride_location"
                         tools:visibility="gone" />
 
                     <TextView
-                        android:id="@+id/textView8"
+                        android:id="@+id/text_ride_detail_ride_date_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:text="Starting time: "
+                        android:text="@string/ride_detail_fragment_ride_detail_date"
+                        android:textColor="?android:attr/textColorHint"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/recycler_ride_detail_timeline" />
+
+                    <TextView
+                        android:id="@+id/text_ride_detail_ride_date"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/text_ride_detail_ride_date_title"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/text_ride_detail_ride_date_title"
+                        app:layout_constraintTop_toTopOf="@+id/text_ride_detail_ride_date_title" />
+
+                    <TextView
+                        android:id="@+id/text_ride_detail_starting_time_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/ride_detail_fragment_ride_detail_starting_time"
+                        android:textColor="?android:attr/textColorHint"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/text_ride_detail_ride_date_title" />
+
+                    <TextView
+                        android:id="@+id/text_ride_detail_starting_time"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/text_ride_detail_starting_time_title"
+                        app:layout_constraintTop_toTopOf="@+id/text_ride_detail_starting_time_title" />
+
+                    <TextView
+                        android:id="@+id/text_ride_detail_vehicle_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/ride_detail_fragment_ride_detail_vehicle"
+                        android:textColor="?android:attr/textColorHint"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/text_ride_detail_starting_time_title" />
+
+                    <TextView
+                        android:id="@+id/text_ride_detail_vehicle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/text_ride_detail_vehicle_title"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/text_ride_detail_vehicle_title"
+                        app:layout_constraintTop_toTopOf="@+id/text_ride_detail_vehicle_title" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 

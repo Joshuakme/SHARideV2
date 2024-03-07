@@ -114,7 +114,6 @@ class SearchRideFragment : Fragment() {
                 charSequence?.toString()?.let { query ->
 
                     var currentLocation: LatLng? = null
-                    Log.e("Search Ride Fragment", currentLocationViewModel.currentLocation.value.toString())
                     currentLocationViewModel.currentLocation.observe(viewLifecycleOwner) {
 
 
@@ -304,9 +303,6 @@ class SearchRideFragment : Fragment() {
                     ).show()
                 }
         } else {
-//            val request = buildOriginCurrentPlaceRequest()
-
-//            findNearestPlace(request, currentLocation)
 
             val request = buildOriginAutocompleteRequestWithLocation(autocompleteToken, currentLocation)
 

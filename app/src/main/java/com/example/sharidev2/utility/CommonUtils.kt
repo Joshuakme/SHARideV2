@@ -11,7 +11,6 @@ import android.graphics.PorterDuffXfermode
 import android.graphics.drawable.VectorDrawable
 import android.location.Location
 import android.net.Uri
-import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -21,7 +20,14 @@ import androidx.core.content.ContextCompat
 import com.example.sharidev2.R
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.firebase.Timestamp
+import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 class CommonUtils {
     fun calculateDistance(
@@ -35,6 +41,37 @@ class CommonUtils {
         return result[0]
     }
 
+    companion object {
+        private const val dateFormat = "yyyy MMM dd"
+        private const val timeFormat = "hh : mm a"
+
+        fun formatDate(date: Timestamp): String {
+            return formatFirebaseTimestamp(date, dateFormat)
+        }
+
+        fun formatTime(time: Timestamp): String {
+            return formatFirebaseTimestamp(time, timeFormat)
+        }
+
+        private fun formatFirebaseTimestamp(timestamp: com.google.firebase.Timestamp, pattern: String): String {
+            val instant = Instant.ofEpochMilli(timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000)
+            val formatter = DateTimeFormatter.ofPattern(pattern).withZone(ZoneId.systemDefault())
+            return formatter.format(instant)
+        }
+    }
+
+
+
+    fun isToday(timestamp: com.google.firebase.Timestamp): Boolean {
+        val calendar = Calendar.getInstance()
+        val currentDate = calendar.time
+        val firebaseDate = timestamp.toDate()
+
+        // Compare year, month, and day of month
+        return calendar.get(Calendar.YEAR) == firebaseDate.year + 1900 &&
+                calendar.get(Calendar.MONTH) == firebaseDate.month &&
+                calendar.get(Calendar.DAY_OF_MONTH) == firebaseDate.date
+    }
 
     // Function to generate a random string of specified length
     fun generateRandomString(length: Int): String {
@@ -59,6 +96,10 @@ class CommonUtils {
         calendar.add(Calendar.YEAR, 1)
 
         return calendar
+    }
+
+    fun isUrl(imagePath: String): Boolean {
+        return imagePath.startsWith("http://") || imagePath.startsWith("https://")
     }
 
 

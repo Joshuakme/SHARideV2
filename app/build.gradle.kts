@@ -115,7 +115,6 @@ dependencies {
     //Image Picker for Profile Picture
     implementation ("com.github.dhaval2404:imagepicker:2.1")
 
-
     // Viewpager 2
     implementation("androidx.viewpager2:viewpager2:1.0.0")
 
@@ -136,5 +135,5 @@ dependencies {
 
    // Glide
     implementation("com.github.bumptech.glide:glide:4.12.0")
-    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
+    kapt("com.github.bumptech.glide:compiler:4.12.0")
 }
