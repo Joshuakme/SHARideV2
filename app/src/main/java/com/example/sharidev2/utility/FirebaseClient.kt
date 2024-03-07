@@ -258,108 +258,108 @@ object FirebaseClient {
     suspend fun createRideFromDocumentSnapshot(document: DocumentSnapshot): Ride {
         return withContext(Dispatchers.IO) {
             try {
-                    val origin = converters.toSearchLocation(document.get("origin") as Map<String, Any>)
-                    val destination = converters.toSearchLocation(document.get("destination") as Map<String, Any>)
+                val origin = converters.toSearchLocation(document.get("origin") as Map<String, Any>)
+                val destination = converters.toSearchLocation(document.get("destination") as Map<String, Any>)
 
-                    // Waypoints Sub-Collection
-                    val waypointsSnapshot = document.reference.collection("waypoints")
-                        .get()
-                        .await()
-                    val waypointsMap = mutableMapOf<String, SearchLocation>()
+                // Waypoints Sub-Collection
+                val waypointsSnapshot = document.reference.collection("waypoints")
+                    .get()
+                    .await()
+                val waypointsMap = mutableMapOf<String, SearchLocation>()
 
-                    if(waypointsSnapshot != null && !waypointsSnapshot.isEmpty) {
-                        for(waypointDoc in waypointsSnapshot.documents) {
-                            val waypointData: Map<String, Any>? = waypointDoc.data
+                if(waypointsSnapshot != null && !waypointsSnapshot.isEmpty) {
+                    for(waypointDoc in waypointsSnapshot.documents) {
+                        val waypointData: Map<String, Any>? = waypointDoc.data
 
-                            if(waypointData != null) {
-                                waypointsMap[waypointDoc.id] = converters.toSearchLocation(waypointData)
-                            }
+                        if(waypointData != null) {
+                            waypointsMap[waypointDoc.id] = converters.toSearchLocation(waypointData)
                         }
                     }
+                }
 
 
-                    val datetime = document.getTimestamp("datetime")!!
-                    val driver = converters.toDriver(document.get("driver") as Map<String, Any>)
+                val datetime = document.getTimestamp("datetime")!!
+                val driver = converters.toDriver(document.get("driver") as Map<String, Any>)
 
-                    // Passenger Sub-Collection
-                    val passengersSnapshot = document.reference.collection("passengers")
-                        .get()
-                        .await()
-                    val passengersMap = mutableMapOf<String, Passenger>()
+                // Passenger Sub-Collection
+                val passengersSnapshot = document.reference.collection("passengers")
+                    .get()
+                    .await()
+                val passengersMap = mutableMapOf<String, Passenger>()
 
-                    if(passengersSnapshot != null && !passengersSnapshot.isEmpty) {
-                        for(passengerDoc in passengersSnapshot.documents) {
-                            val passengerData: Map<String, Any>? = passengerDoc.data
+                if(passengersSnapshot != null && !passengersSnapshot.isEmpty) {
+                    for(passengerDoc in passengersSnapshot.documents) {
+                        val passengerData: Map<String, Any>? = passengerDoc.data
 
-                            if(passengerData != null) {
-                                passengersMap[passengerDoc.id] = converters.toPassenger(passengerData)
-                            }
+                        if(passengerData != null) {
+                            passengersMap[passengerDoc.id] = converters.toPassenger(passengerData)
                         }
                     }
+                }
 
-                    val rideStatus = RideStatus.valueOf(document.getString("rideStatus") ?: "")
-                    val startTime = document.getTimestamp("startTime")
-                    val completeTime = document.getTimestamp("completeTime")
-                    val availableSeats = (document.get("availableSeats") as Long).toInt()
+                val rideStatus = RideStatus.valueOf(document.getString("rideStatus") ?: "")
+                val startTime = document.getTimestamp("startTime")
+                val completeTime = document.getTimestamp("completeTime")
+                val availableSeats = (document.get("availableSeats") as Long).toInt()
 
-                    // Review Sub-Collection
-                    val reviewSnapshot = document.reference.collection("reviews")
-                        .get()
-                        .await()
-                    val reviewsMap = mutableMapOf<String, Review>()
+                // Review Sub-Collection
+                val reviewSnapshot = document.reference.collection("reviews")
+                    .get()
+                    .await()
+                val reviewsMap = mutableMapOf<String, Review>()
 
-                    if(reviewSnapshot != null && !reviewSnapshot.isEmpty) {
-                        for(reviewDoc in reviewSnapshot.documents) {
-                            val reviewData = reviewDoc.data
+                if(reviewSnapshot != null && !reviewSnapshot.isEmpty) {
+                    for(reviewDoc in reviewSnapshot.documents) {
+                        val reviewData = reviewDoc.data
 
-                            if(reviewData != null) {
-                                reviewsMap[reviewDoc.id] = converters.toReview(reviewData)
-                            }
+                        if(reviewData != null) {
+                            reviewsMap[reviewDoc.id] = converters.toReview(reviewData)
                         }
                     }
+                }
 
-                    // Chat Sub-Collection
-                    //val chat = FirebaseClient.getChatFromChatId(getString("chat") ?: "")
-                    val chat = converters.toChat(document.get("chat") as Map<String, Any>)
-                    val messagesMap = mutableMapOf<String, Message>()
+                // Chat Sub-Collection
+                //val chat = FirebaseClient.getChatFromChatId(getString("chat") ?: "")
+                val chat = converters.toChat(document.get("chat") as Map<String, Any>)
+                val messagesMap = mutableMapOf<String, Message>()
 
-                    val messageSnapshot = document.reference.collection("messages")
-                        .orderBy("timestamp")
-                        .get()
-                        .await()
+                val messageSnapshot = document.reference.collection("messages")
+                    .orderBy("timestamp")
+                    .get()
+                    .await()
 
-                    if(!messageSnapshot.isEmpty && messageSnapshot != null) {
-                        for(messageDoc in messageSnapshot.documents) {
-                            val messageData = messageDoc.data
+                if(!messageSnapshot.isEmpty && messageSnapshot != null) {
+                    for(messageDoc in messageSnapshot.documents) {
+                        val messageData = messageDoc.data
 
-                            if(messageData != null) {
-                                messagesMap[messageDoc.id] = converters.toMessage(messageData)
-                            }
+                        if(messageData != null) {
+                            messagesMap[messageDoc.id] = converters.toMessage(messageData)
                         }
                     }
-                    chat.messages = messagesMap
+                }
+                chat.messages = messagesMap
 
-                    val createdAt = document.getTimestamp("createdAt")
+                val createdAt = document.getTimestamp("createdAt")
 
 
-                    val ride = Ride(
-                        document.id,
-                        origin,
-                        destination,
-                        waypointsMap,
-                        datetime,
-                        driver,
-                        passengersMap,
-                        rideStatus,
-                        startTime,
-                        completeTime,
-                        availableSeats,
-                        reviewsMap,
-                        chat,
-                        createdAt
-                    )
+                val ride = Ride(
+                    document.id,
+                    origin,
+                    destination,
+                    waypointsMap,
+                    datetime,
+                    driver,
+                    passengersMap,
+                    rideStatus,
+                    startTime,
+                    completeTime,
+                    availableSeats,
+                    reviewsMap,
+                    chat,
+                    createdAt
+                )
 
-                ride
+               ride
             } catch (e: Exception) {
                 Log.e("Create Ride List From Query Snapshot", e.message.toString())
 

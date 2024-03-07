@@ -165,6 +165,18 @@ class Converters() {
             null
         }
 
+//        val origin = if(map["origin"] as Map<String, Any> != null) {
+//            toSearchLocation(map["origin"] as Map<String, Any>)
+//        } else {
+//            null
+//        }
+//
+//        val destination = if(map["destination"] as Map<String, Any> != null) {
+//            toSearchLocation(map["destination"] as Map<String, Any>)
+//        } else {
+//            null
+//        }
+
         val status = UserStatus.valueOf((map["status"] as String))
         val ridePrice = (map["price"] as Long?)?.toDouble()
 
@@ -172,6 +184,7 @@ class Converters() {
             userUid,
             user,
             location,
+            null,null,
             status,
             ridePrice
         )

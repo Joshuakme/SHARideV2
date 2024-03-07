@@ -76,7 +76,7 @@ class BookingDetailFragment : Fragment() {
 
             ride.passengers.forEach { (s, passenger) ->
                 if(passenger.ridePrice != null) {
-                    totalPrice += passenger.ridePrice
+                    totalPrice += passenger.ridePrice!!
                 }
             }
             totalPrice

@@ -151,9 +151,9 @@
     </fragment>
     <fragment
         android:id="@+id/rideDetailConfigurationFragment"
-        android:name="com.example.sharidev2.screen.ride.RideDetailConfigurationFragment"
+        android:name="com.example.sharidev2.screen.ride.SearchRideDetailConfigurationFragment"
         android:label="fragment_ride_detail_configuration"
-        tools:layout="@layout/fragment_ride_detail_configuration" >
+        tools:layout="@layout/fragment_search_ride_detail_configuration" >
         <action
             android:id="@+id/action_rideDetailConfigurationFragment_to_searchSelectOriginFragment"
             app:destination="@id/searchSelectOriginFragment" />

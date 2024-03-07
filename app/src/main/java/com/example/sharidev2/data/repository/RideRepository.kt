@@ -5,16 +5,11 @@ import com.example.sharidev2.data.model.Chat
 import com.example.sharidev2.data.model.Message
 import com.example.sharidev2.data.model.MessageType
 import com.example.sharidev2.data.model.Passenger
-import com.example.sharidev2.data.model.Review
 import com.example.sharidev2.data.model.Ride
-import com.example.sharidev2.data.model.RideStatus
-import com.example.sharidev2.data.model.User
-import com.example.sharidev2.data.model.Vehicle
 import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.Converters
 import com.example.sharidev2.utility.FirebaseClient
 import com.google.firebase.Timestamp
-import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.Dispatchers
@@ -282,7 +277,7 @@ class RideRepository() {
     }
 
 
-    suspend fun getPassengerRideList(): List<Ride> {
+    suspend fun getAvailableRideList(): List<Ride> {
         return withContext(Dispatchers.Main) {
             try {
                 if(currentUser != null) {
