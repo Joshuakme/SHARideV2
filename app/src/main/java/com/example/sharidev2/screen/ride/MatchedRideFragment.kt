@@ -46,27 +46,6 @@ class MatchedRideFragment :
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
 
-//
-//        rideViewModel.filterRideList.observe(viewLifecycleOwner) {rideList ->
-//            loading(Constants.UI_DATA_LOADING)
-//
-//            if(currentUser != null && rideList != null && rideList.isNotEmpty()) {
-//                resultNumText.text = getString(R.string.matched_ride_fragment_ride_found_result_number, rideList.size)
-//
-//                adapter = RideAdapter(requireContext(), rideList, this)
-//                recyclerView.adapter = adapter
-//                loading(Constants.UI_DATA_SUCCESS)
-//            } else if (rideList == null || rideList.isEmpty()) {
-//                loading(Constants.UI_DATA_FAILED)
-//            } else if(currentUser == null) {
-//                Toast.makeText(requireContext(), "Please login to proceed", Toast.LENGTH_SHORT).show()
-//
-//                loading(Constants.UI_DATA_FAILED)
-//            } else {
-//                Toast.makeText(requireContext(), "Error loading result", Toast.LENGTH_SHORT).show()
-//                loading(Constants.UI_DATA_FAILED)
-//            }
-//        }
 
         val searchResult = searchRideViewModel.searchRide()
 
@@ -101,11 +80,17 @@ class MatchedRideFragment :
 
     private fun setupOnClickListeners() {
         val backBtn = binding.imgBtnMatchedRideNavBack
+        val createRideBtnText = binding.textMatchedRideErrorCta
 
         // NAVIGATION
         // Matched Ride Fragment -> Ride Detail Configuration Fragment
         backBtn.setOnClickListener {
             findNavController().navigate(R.id.action_matchedRideFragment_to_rideDetailConfigurationFragment)
+        }
+
+        // Matched Ride Fragment -> Driver Create Ride Fragment
+        createRideBtnText.setOnClickListener {
+            findNavController().navigate(R.id.action_matchedRideFragment_to_driverCreateRideFragment)
         }
     }
 

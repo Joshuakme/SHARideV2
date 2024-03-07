@@ -178,6 +178,10 @@
                 android:name="rideId"
                 app:argType="string" />
         </action>
+        <action
+            android:id="@+id/action_matchedRideFragment_to_driverCreateRideFragment"
+            app:destination="@id/driverCreateRideFragment"
+            app:popUpTo="@id/matchedRideFragment" />
     </fragment>
     <fragment
         android:id="@+id/driverCreateRideFragment"
