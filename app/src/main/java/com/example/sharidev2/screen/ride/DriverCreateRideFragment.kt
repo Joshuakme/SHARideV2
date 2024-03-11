@@ -84,7 +84,7 @@ class DriverCreateRideFragment : Fragment() {
 
         // LAYOUT SETTINGS
         setupMap()
-        if(createRideViewModel.origin.value == null) {
+        if(createRideViewModel.origin.value?.placeId == null) {
             performOriginCurrentPlaceRequest()      // Get current location
         }
 
@@ -109,7 +109,7 @@ class DriverCreateRideFragment : Fragment() {
         // NAVIGATION EVENT LISTENERS
         // Driver Add Ride Fragment -> Search Fragment
         backBtn.setOnClickListener {
-            findNavController().popBackStack()
+            findNavController().navigateUp()
         }
 
         // Driver Add Ride Fragment -> Driver Ride Config Fragment

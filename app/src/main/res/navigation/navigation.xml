@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_homeFragment_to_searchFragment"
             app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_bookingFragment"
+            app:destination="@id/bookingFragment" />
     </fragment>
     <fragment
         android:id="@+id/messagesFragment"
@@ -59,6 +62,9 @@
                 android:name="ride"
             app:argType="com.example.sharidev2.data.model.Ride" />
         </action>
+        <action
+            android:id="@+id/action_bookingFragment_to_homeFragment2"
+            app:destination="@id/homeFragment" />
     </fragment>
     <fragment
         android:id="@+id/chatFragment"
@@ -213,7 +219,9 @@
         tools:layout="@layout/fragment_ride_detail" >
         <action
             android:id="@+id/action_rideDetailFragment_to_bookingFragment"
-            app:destination="@id/bookingFragment"/>
+            app:destination="@id/bookingFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true" />
 
     </fragment>
     <fragment

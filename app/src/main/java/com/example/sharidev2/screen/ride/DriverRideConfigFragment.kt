@@ -12,6 +12,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentDriverRideConfigBinding
+import com.example.sharidev2.utility.CommonUtils
+import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
 import com.example.sharidev2.viewmodel.SharedCreateRideViewModel
 import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
@@ -49,7 +51,7 @@ class DriverRideConfigFragment : Fragment() {
 
         // EVENT LISTENERS
         backBtn.setOnClickListener {
-            findNavController().popBackStack()
+            findNavController().navigateUp()
         }
 
 
@@ -96,8 +98,10 @@ class DriverRideConfigFragment : Fragment() {
         }
 
         createRideViewModel.rideDateTime.observe(viewLifecycleOwner) {rideDate ->
-            rideDateSpinnerText.text =  dateFormatter.format(rideDate.toDate())
-            rideTimeSpinnerText.text = timeFormatter.format(rideDate.toDate())
+            rideDateSpinnerText.text = CommonUtils.formatDate(rideDate)
+            rideTimeSpinnerText.text = CommonUtils.formatTime(rideDate)
+//            rideDateSpinnerText.text =  dateFormatter.format(rideDate.toDate())
+//            rideTimeSpinnerText.text = timeFormatter.format(rideDate.toDate())
         }
 
 
@@ -122,31 +126,28 @@ class DriverRideConfigFragment : Fragment() {
         createRideBtn.setOnClickListener {
             currentLocationViewModel.currentLocation.observe(viewLifecycleOwner) {currentLocation ->
                 viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-                    createRideViewModel.createRide(currentLocation)
+//                    createRideViewModel.createRide(currentLocation)
+                    createRideViewModel.setCreateRideStatus(Constants.UI_DATA_SUCCESS)
                 }
             }
 
             createRideViewModel.createRideStatus.observe(viewLifecycleOwner) {response ->
-                // RIDE STATUS
-                val CREATE_RIDE_PENDING = 0
-                val CREATE_RIDE_SUCCESS = 1
-                val CREATE_RIDE_FAILED = -1
 
                 when(response) {
-                    CREATE_RIDE_PENDING -> {
+                    Constants.UI_DATA_LOADING -> {
                         createRideBtnCtaText.visibility = View.INVISIBLE
                         createRideBtnLoadingProgressBar.visibility = View.VISIBLE
                     }
-                    CREATE_RIDE_SUCCESS -> {
+                    Constants.UI_DATA_SUCCESS -> {
                         createRideBtnCtaText.visibility = View.VISIBLE
                         createRideBtnLoadingProgressBar.visibility = View.GONE
 
                         createRideViewModel.resetData()
 
-                        findNavController().navigate(R.id.action_driverRideConfigFragment_to_bookingFragment)
+                        findNavController().popBackStack(R.id.homeFragment, false)
                         Toast.makeText(requireContext(), "Ride created successfully!", Toast.LENGTH_SHORT).show()
                     }
-                    CREATE_RIDE_FAILED -> {
+                    Constants.UI_DATA_FAILED -> {
                         createRideBtnCtaText.visibility = View.INVISIBLE
                         createRideBtnLoadingProgressBar.visibility = View.VISIBLE
                         Toast.makeText(requireContext(), "Ride created failed!", Toast.LENGTH_SHORT).show()

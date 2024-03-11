@@ -11,7 +11,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class SearchLocation(
-    val placeId: String = "",
+    val placeId: String? = null,
     val name: String = "",
     val distanceMetersFromOrigin: Int = 0,
     val detailAddress: String = "",

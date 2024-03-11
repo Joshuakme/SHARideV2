@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.fragment.findNavController
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.adapter.BookingPagerAdapter

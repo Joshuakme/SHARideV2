@@ -17,7 +17,7 @@ class Constants {
         val FIREBASE_REQUEST_DATA_NOT_VALID = 1004
 
 
-        // UI DATA LOADING
+        // UI DATA LOADING STATUS
         val UI_DATA_LOADING = 2000
         val UI_DATA_SUCCESS = 2001
         val UI_DATA_FAILED = 2002
