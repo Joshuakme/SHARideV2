@@ -11,6 +11,7 @@ import com.example.sharidev2.data.model.User
 import com.example.sharidev2.data.model.UserLocation
 import com.example.sharidev2.data.repository.ActiveRideRepository
 import com.example.sharidev2.utility.FirebaseClient
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.Timestamp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -103,6 +104,14 @@ class ActiveRideViewModel(
         }
     }
 
+
+    fun addRoutePathList(routePathList: MutableList<MutableList<LatLng>>) {
+        if(activeRide.value?.id != null) {
+            viewModelScope.launch(Dispatchers.IO) {
+                activeRideRepository.addRoutePathList(activeRide.value!!.id!!, routePathList)
+            }
+        }
+    }
 
     fun startRide() {
         val timestamp = Timestamp.now()

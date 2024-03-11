@@ -7,6 +7,7 @@ import com.example.sharidev2.data.model.RideParticipant
 import com.example.sharidev2.data.model.UserLocation
 import com.example.sharidev2.utility.FirebaseClient
 import com.example.sharidev2.utility.UserClient
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -20,6 +21,30 @@ class ActiveRideRepository {
     private val currentUser = UserClient.currentUser()
     private val rideCollectionRef = firestore.collection("ride")
 
+
+    // CREATE
+    suspend fun addRoutePathList(rideId: String, routePathList: MutableList<MutableList<LatLng>>) {
+        withContext(Dispatchers.IO) {
+            try {
+                for(routePath in routePathList) {
+                    val map = hashMapOf(
+                        "route" to routePath,
+                        "selected" to false
+                    )
+
+                    rideCollectionRef
+                        .document(rideId)
+                        .collection("routes")
+                        .add(map)
+                        .await()
+                }
+
+            }
+            catch (e: Exception) {
+                Log.e("Add Route Path List", e.message.toString())
+            }
+        }
+    }
 
     // RETRIEVE
     suspend fun getRideDriver(rideId: String): Driver {
@@ -115,6 +140,7 @@ class ActiveRideRepository {
             }
         }
     }
+
 
 
 

@@ -262,7 +262,7 @@ object FirebaseClient {
         }
     }
 
-    suspend fun createRideFromDocumentSnapshot(document: DocumentSnapshot): Ride {
+    suspend fun createRideFromDocumentSnapshot(document: DocumentSnapshot): Ride? {
         return withContext(Dispatchers.IO) {
             try {
                 val origin = converters.toSearchLocation(document.get("origin") as Map<String, Any>)
@@ -346,7 +346,7 @@ object FirebaseClient {
                 }
                 chat.messages = messagesMap
 
-                val createdAt = document.getTimestamp("createdAt")
+                val createdAt = document.getTimestamp("createdAt")!!
 
 
                 val ride = Ride(
@@ -363,14 +363,14 @@ object FirebaseClient {
                     availableSeats,
                     reviewsMap,
                     chat,
-                    createdAt
+                    createdAt = createdAt
                 )
 
                ride
             } catch (e: Exception) {
                 Log.e("Create Ride List From Query Snapshot", e.message.toString())
 
-                Ride()
+                null
             }
         }
     }

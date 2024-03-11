@@ -67,6 +67,18 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="bookingDetailPassengerFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="-282" />
+                            <option name="y" value="-846" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="bookingFragment">
                     <value>
                       <LayoutPositions>
@@ -79,6 +91,11 @@
                         <option name="myPositions">
                           <map>
                             <entry key="action_bookingFragment_to_bookingDetailFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_bookingFragment_to_homeFragment2">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -303,6 +320,11 @@
                         </option>
                         <option name="myPositions">
                           <map>
+                            <entry key="action_homeFragment_to_bookingFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="action_homeFragment_to_searchFragment">
                               <value>
                                 <LayoutPositions />

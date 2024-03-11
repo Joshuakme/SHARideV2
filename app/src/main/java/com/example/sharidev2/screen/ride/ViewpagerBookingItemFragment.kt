@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.sharidev2.R
@@ -114,9 +115,15 @@ class ViewpagerBookingItemFragment :
     }
 
     override fun onBookingClick(booking: Ride) {
-        val action = BookingFragmentDirections.actionBookingFragmentToBookingDetailFragment(booking)
+        if(currentUser!= null) {
+            val action = if(booking.driver.userUid == currentUser.uid) {
+                BookingFragmentDirections.actionBookingFragmentToBookingDetailFragment(booking)
+            } else {
+                BookingFragmentDirections.actionBookingFragmentToBookingDetailPassengerFragment(booking)
+            }
 
-        findNavController().navigate(action)
+            findNavController().navigate(action)
+        }
     }
 
     private fun showLoadingStatusProgressBar(status: Int) {
@@ -145,5 +152,4 @@ class ViewpagerBookingItemFragment :
             }
         }
     }
-
 }

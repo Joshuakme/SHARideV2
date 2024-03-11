@@ -54,7 +54,8 @@ class RideRepository() {
                         "startTime" to ride.startTime,
                         "completeTime" to ride.completeTime,
                         "availableSeats" to ride.availableSeats,
-                        "chat" to newChatHashMap
+                        "chat" to newChatHashMap,
+                        "createdAt" to ride.createdAt
                     )
 
                     val rideCollectionRef = firestore.collection("ride")
@@ -325,7 +326,10 @@ class RideRepository() {
 
                     val ride = FirebaseClient.createRideFromDocumentSnapshot(document)
 
-                    filteredRideList.add(ride)
+                    if(ride != null) {
+                        filteredRideList.add(ride)
+                    }
+
                 }
 
                 filteredRideList.toList()

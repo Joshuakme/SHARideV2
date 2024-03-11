@@ -126,8 +126,7 @@ class DriverRideConfigFragment : Fragment() {
         createRideBtn.setOnClickListener {
             currentLocationViewModel.currentLocation.observe(viewLifecycleOwner) {currentLocation ->
                 viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-//                    createRideViewModel.createRide(currentLocation)
-                    createRideViewModel.setCreateRideStatus(Constants.UI_DATA_SUCCESS)
+                    createRideViewModel.createRide(currentLocation)
                 }
             }
 

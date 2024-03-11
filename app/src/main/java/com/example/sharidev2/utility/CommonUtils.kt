@@ -21,13 +21,10 @@ import com.example.sharidev2.R
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.firebase.Timestamp
-import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
-import java.util.Date
-import java.util.Locale
 
 class CommonUtils {
     fun calculateDistance(
@@ -42,8 +39,14 @@ class CommonUtils {
     }
 
     companion object {
+        private const val datetimeFormat = "dd MMM yyyy, hh:mm a"
         private const val dateFormat = "yyyy MMM dd"
         private const val timeFormat = "hh : mm a"
+
+
+        fun formatDateTime(date: Timestamp): String {
+            return formatFirebaseTimestamp(date, datetimeFormat)
+        }
 
         fun formatDate(date: Timestamp): String {
             return formatFirebaseTimestamp(date, dateFormat)
@@ -58,6 +61,25 @@ class CommonUtils {
             val formatter = DateTimeFormatter.ofPattern(pattern).withZone(ZoneId.systemDefault())
             return formatter.format(instant)
         }
+
+        fun formatHiddenPhoneNumber(phoneNumber: String): String {
+            // Check if the phone number has at least 4 characters
+            if (phoneNumber.length < 9) {
+                return "" // Return the original number if it's too short
+            }
+
+            // Get the first two and last two characters of the phone number
+            val firstTwoDigits = phoneNumber.take(2)
+            val lastTwoDigits = phoneNumber.takeLast(2)
+
+            // Replace all characters between the first two and last two with two asterisks
+            val hiddenDigits = "****"
+
+            // Combine the formatted number
+            val formattedPhoneNumber = "+60 $firstTwoDigits$hiddenDigits$lastTwoDigits"
+
+            return formattedPhoneNumber
+        }
     }
 
 
@@ -71,6 +93,15 @@ class CommonUtils {
         return calendar.get(Calendar.YEAR) == firebaseDate.year + 1900 &&
                 calendar.get(Calendar.MONTH) == firebaseDate.month &&
                 calendar.get(Calendar.DAY_OF_MONTH) == firebaseDate.date
+    }
+
+    fun calculateTimestampDurationInSeconds(startTime: Timestamp, endTime: Timestamp): Long {
+        val startTimeMillis: Long = startTime.toDate().time
+        val endTimeMillis: Long = endTime.toDate().time
+
+        val durationTimeMillis = endTimeMillis - startTimeMillis
+
+        return durationTimeMillis / 1000    // in Seconds
     }
 
     // Function to generate a random string of specified length
@@ -190,42 +221,6 @@ class CommonUtils {
 
 
 
-    /*
-    fun getDeviceCurrentLocation(
-        fusedLocationProviderClient: FusedLocationProviderClient,
-        onLocationResult: (LatLng) -> Unit,
-        onLocationError: () -> Unit
-    ) {
-        /*
-         * Get the best and most recent location of the device, which may be null in rare
-         * cases when a location is not available.
-         */
-        try {
-            val locationResult = fusedLocationProviderClient.lastLocation
-            locationResult.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val lastKnownLocation = task.result
-                    if (lastKnownLocation != null) {
-                        val latLng = LatLng(lastKnownLocation.latitude, lastKnownLocation.longitude)
-
-                        onLocationResult.invoke(latLng)
-                    } else {
-                        // Handle the case where lastKnownLocation is null
-                        onLocationError.invoke()
-                    }
-                } else {
-                    // Handle the case where the task is not successful
-                    onLocationError.invoke()
-                    Log.d(ContentValues.TAG, "Current location is null. Using defaults.")
-                }
-            }
-        } catch (e: SecurityException) {
-            // Handle the case where a SecurityException occurs
-            onLocationError.invoke()
-            Log.e("Exception: %s", e.message, e)
-        }
-    }
-*/
 
 
     fun copyLinkToClipboard(context: Context, textToCopy: String) {

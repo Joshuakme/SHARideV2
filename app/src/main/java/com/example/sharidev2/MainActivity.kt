@@ -263,20 +263,4 @@ class MainActivity : AppCompatActivity() {
             getLocationPermission()
         }
     }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-
-        Toast.makeText(applicationContext, "Back Button is pressed", Toast.LENGTH_SHORT).show()
-        val navHostFragment = supportFragmentManager.findFragmentById(binding.fragmentContainerMain.id) as NavHostFragment
-        val navController = navHostFragment.navController
-
-        val currentFragment = navHostFragment.childFragmentManager.primaryNavigationFragment
-        if(navController.popBackStack(R.id.bookingFragment, true)) {
-            Toast.makeText(applicationContext, "Booking Fragment: Back Button is pressed", Toast.LENGTH_SHORT).show()
-            Toast.makeText(applicationContext, "Booking Back!", Toast.LENGTH_SHORT).show()
-            //navController.navigate(R.id.action_bookingFragment_to_homeFragment2)
-        }
-
-    }
 }

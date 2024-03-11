@@ -1,8 +1,11 @@
 package com.example.sharidev2.data.model
 
 import android.net.Uri
+import android.os.Parcelable
 import com.google.firebase.Timestamp
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class User(
     val uid: String? = null,
     val displayName: String? = null,
@@ -14,6 +17,4 @@ data class User(
     val savedAddress: Map<String, SearchLocation>? = mapOf(),
     val gender: Gender ?= null,
     val joinedDate: Timestamp? = null
-) {
-
-}
+) : Parcelable

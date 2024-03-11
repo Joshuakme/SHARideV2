@@ -2,13 +2,8 @@ package com.example.sharidev2.utility
 
 import android.content.ContentValues.TAG
 import android.content.Context
-import android.graphics.Color
 import android.location.Location
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
-import android.util.TypedValue
-import androidx.core.content.ContextCompat
 import com.example.sharidev2.R
 import com.example.sharidev2.data.model.DirectionsResponse
 import com.example.sharidev2.data.model.Route
@@ -18,8 +13,6 @@ import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.Polyline
-import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.card.MaterialCardView
 import com.google.maps.DirectionsApiRequest
 import com.google.maps.GeoApiContext
@@ -149,12 +142,11 @@ class GoogleMapUtils {
 //        })
 //    }
 
-    fun calculateDirections(context: Context, googleMap: GoogleMap, origin: LatLng, destination: LatLng) {
+    fun calculateDirections(context: Context, origin: LatLng, destination: LatLng, callback: (DirectionsResult?) -> Unit) {
         val geoApiContext = GeoApiContext.Builder()
             .apiKey(context.getString(R.string.google_api_key))
             .build()
 
-        Log.d("GoogleMapUtils: Calculate Directions", "calculateDirections: calculating directions.")
 
         val directions = DirectionsApiRequest(geoApiContext)
         directions.alternatives(true)
@@ -164,6 +156,7 @@ class GoogleMapUtils {
                 origin.longitude
             )
         )
+
         directions.destination(
             com.google.maps.model.LatLng(
                 destination.latitude,
@@ -171,28 +164,20 @@ class GoogleMapUtils {
             )
         ).setCallback(object : PendingResult.Callback<DirectionsResult?> {
             override fun onResult(result: DirectionsResult?) {
-                if (result != null) {
-                    addPolylinesToMap(context, googleMap, result)
-
-                    Log.d(TAG, "calculateDirections: routes: " + result.routes[0].toString())
-                    Log.d(TAG, "calculateDirections: duration: " + result.routes[0].legs[0].duration)
-                    Log.d(TAG, "calculateDirections: distance: " + result.routes[0].legs[0].distance)
-                    Log.d(
-                        TAG,
-                        "calculateDirections: geocodedWayPoints: " + result.geocodedWaypoints[0].toString()
-                    )
-                }
+               callback(result)
             }
 
             override fun onFailure(e: Throwable?) {
                 Log.e("GoogleMapUtils: Calculate Directions", e?.message.toString())
+                callback(null)
             }
         })
     }
 
 
-    fun addPolylinesToMap(context: Context, googleMap: GoogleMap, result: DirectionsResult) {
-        Handler(Looper.getMainLooper()).post(Runnable {
+    fun getRoutePathList(result: DirectionsResult): MutableList<MutableList<LatLng>> {
+        val routesPathList = mutableListOf<MutableList<LatLng>>()
+
             Log.d(TAG, "run: result routes: " + result.routes.size)
             for (route in result.routes) {
                 Log.d(TAG, "run: leg: " + route.legs[0].toString())
@@ -207,18 +192,22 @@ class GoogleMapUtils {
                             latLng.lng
                         )
                     )
+                    Log.e("GoogleMapUtils: Polyline", "Lat: ${latLng.lat}, Lng: ${latLng.lng}")
                 }
 
-                val polyline: Polyline = googleMap.addPolyline(PolylineOptions().addAll(newDecodedPath))
-
-                val typedValue = TypedValue()
-                context.theme?.resolveAttribute(com.google.android.material.R.attr.colorSecondary, typedValue, true)
-                val colorSecondary = typedValue.data
-
-                polyline.color = Color.DKGRAY
-                polyline.isClickable = true
+                routesPathList.add(newDecodedPath)
+//                val polyline: Polyline = googleMap.addPolyline(PolylineOptions().addAll(newDecodedPath))
+//
+//
+//
+//                val typedValue = TypedValue()
+//                context.theme?.resolveAttribute(com.google.android.material.R.attr.colorSecondary, typedValue, true)
+//                val colorSecondary = typedValue.data
+//
+//                polyline.color = Color.DKGRAY
+//                polyline.isClickable = true
             }
-        })
+     return routesPathList
     }
 
 

@@ -107,7 +107,7 @@ class RideDetailFragment : Fragment() {
                     }
 
                     driverNameText.text = ride.driver.user?.displayName
-                    driverPhoneNumberText.text = formatPhoneNumber(ride.driver.user?.phoneNumber ?: "")
+                    driverPhoneNumberText.text = CommonUtils.formatHiddenPhoneNumber(ride.driver.user?.phoneNumber ?: "")
                     driverRatingText.text = getString(R.string.ride_detail_fragment_driver_rating, ride.driver.user?.rating?.toDouble() ?: 0.0)
                     driverRatingReviewText.text = getString(R.string.ride_detail_fragment_driver_rating_review, 0)
                 }
@@ -243,24 +243,5 @@ class RideDetailFragment : Fragment() {
                 null
             }
         }
-    }
-
-    fun formatPhoneNumber(phoneNumber: String): String {
-        // Check if the phone number has at least 4 characters
-        if (phoneNumber.length < 9) {
-            return "phoneNumber" // Return the original number if it's too short
-        }
-
-        // Get the first two and last two characters of the phone number
-        val firstTwoDigits = phoneNumber.take(2)
-        val lastTwoDigits = phoneNumber.takeLast(2)
-
-        // Replace all characters between the first two and last two with two asterisks
-        val hiddenDigits = "****"
-
-        // Combine the formatted number
-        val formattedPhoneNumber = "+60 $firstTwoDigits$hiddenDigits$lastTwoDigits"
-
-        return formattedPhoneNumber
     }
 }

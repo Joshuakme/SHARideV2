@@ -8,16 +8,19 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -26,6 +29,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.example.sharidev2.R
 import com.example.sharidev2.adapter.ActiveRidePassengerImageAdapter
 import com.example.sharidev2.data.model.Passenger
+import com.example.sharidev2.data.model.PolylineData
 import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.databinding.FragmentActiveRideBinding
 import com.example.sharidev2.utility.CommonUtils
@@ -36,12 +40,15 @@ import com.example.sharidev2.viewmodel.ActiveRideViewModel
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Polyline
+import com.google.android.gms.maps.model.PolylineOptions
+import com.google.maps.internal.PolylineEncoding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
-class ActiveRideFragment() :
-    Fragment(),
-    GoogleMap.OnPolylineClickListener {
+class ActiveRideFragment: Fragment() {
     private lateinit var binding: FragmentActiveRideBinding
     private val activeRideViewModel: ActiveRideViewModel by viewModels()
     private val currentLocationViewModel: CurrentLocationViewModel by activityViewModels()
@@ -50,6 +57,7 @@ class ActiveRideFragment() :
 
     private val currentUser = FirebaseClient.firebaseAuth.currentUser
     private val passengerList = mutableListOf<Passenger>()
+    private  val polylineList = mutableListOf<PolylineData>()
 
 
     private val googleMapUtils = GoogleMapUtils()
@@ -213,10 +221,63 @@ class ActiveRideFragment() :
 
                     GoogleMapUtils().calculateDirections(
                         requireContext(),
-                        googleMap,
                         activeRide.origin.geolocation!!,
                         activeRide.destination.geolocation!!
-                    )
+                    ) {result ->
+                        if (result != null) {
+                            Handler(Looper.getMainLooper()).post {
+                                if(polylineList.isNotEmpty()) {
+                                    for(polylineData in polylineList) {
+                                        polylineData.polyline.remove()
+                                    }
+                                    polylineList.clear()
+                                }
+                                val routePathsList = mutableListOf<MutableList<LatLng>>()
+
+                                for (route in result.routes) {
+                                    val decodedPath =
+                                        PolylineEncoding.decode(route.overviewPolyline.encodedPath)
+                                    val newDecodedPath = mutableListOf<LatLng>()
+
+                                    for (latLng in decodedPath) {
+                                        newDecodedPath.add(LatLng(latLng.lat, latLng.lng))
+                                        Log.e(
+                                            "GoogleMapUtils: Polyline",
+                                            "Lat: ${latLng.lat}, Lng: ${latLng.lng}"
+                                        )
+                                    }
+
+
+                                    val polyline: Polyline = googleMap.addPolyline(
+                                        PolylineOptions().addAll(newDecodedPath).clickable(true)
+                                    )
+
+
+                                    polylineList.add(PolylineData(polyline, route.legs[0]))
+                                    routePathsList.add(newDecodedPath)
+                                }
+
+
+                                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                                    activeRideViewModel.addRoutePathList(routePathsList)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            googleMap.setOnPolylineClickListener {
+                val colorSecondary = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorSecondary)
+
+                for (polylineData in polylineList) {
+                    if (it.id == polylineData.polyline.id) {
+                        polylineData.polyline.color = colorSecondary
+                        polylineData.polyline.zIndex = 1f
+                    } else {
+                        polylineData.polyline.color = Color.DKGRAY
+                        polylineData.polyline.zIndex = 0f
+                    }
                 }
             }
         }
@@ -340,9 +401,5 @@ class ActiveRideFragment() :
         super.onResume()
 
         startUserLocationsRunnable()
-    }
-
-    override fun onPolylineClick(p0: Polyline) {
-        TODO("Not yet implemented")
     }
 }

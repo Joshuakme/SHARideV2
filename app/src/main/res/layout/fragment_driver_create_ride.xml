@@ -41,7 +41,7 @@
                 style="@style/text_fragment_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:fontFamily="@font/poppins"
                 android:gravity="center"
                 android:text="@string/driver_create_ride_fragment_title_create_new_ride"
