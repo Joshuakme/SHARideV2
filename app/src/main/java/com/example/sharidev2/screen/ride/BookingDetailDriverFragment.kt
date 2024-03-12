@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +18,11 @@ import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.databinding.FragmentBookingDetailDriverBinding
 import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.FirebaseClient
+import com.example.sharidev2.utility.GoogleMapUtils
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.PolygonOptions
+import com.google.android.gms.maps.model.Polyline
+import com.google.android.gms.maps.model.PolylineOptions
 
 
 class BookingDetailDriverFragment : Fragment() {
@@ -60,16 +66,19 @@ class BookingDetailDriverFragment : Fragment() {
 
 
     private fun setupTextData() {
+        val bookingDateTimeText = binding.textBookingDetailDriverFragmentTitleDate
         val bookingIdText = binding.textBookingDetailBookingId
         val driverNameText = binding.textBookingDetailDriverName
         val driverPhoneNumberText = binding.textBookingDetailDriverPhoneNumber
         val ridePriceText = binding.textBokingDetailRidePrice
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map_booking_detail_driver_container) as SupportMapFragment
         val rideDistanceHourMinText = binding.textBookingDetailDistanceHourMin
         val rideTimelineRecyclerView = binding.recyclerViewBookingDetailTimeline
         val ratingText = binding.textBookingDetailRating
 
 
         // Booking
+        bookingDateTimeText.text = CommonUtils.formatDateTime(ride.datetime)
         bookingIdText.text = ride.id
 
         // Driver
@@ -89,6 +98,40 @@ class BookingDetailDriverFragment : Fragment() {
 
 
         // Map
+        mapFragment.getMapAsync { googleMap ->
+            googleMap.uiSettings.let {
+                it.isMapToolbarEnabled = false
+                it.isMyLocationButtonEnabled = false
+                it.isZoomControlsEnabled = false
+                it.isTiltGesturesEnabled = false
+                it.isCompassEnabled = false
+                it.isScrollGesturesEnabled = false
+                it.isScrollGesturesEnabledDuringRotateOrZoom = false
+                it.isIndoorLevelPickerEnabled = false
+                it.isRotateGesturesEnabled = false
+                it.isZoomGesturesEnabled = false
+            }
+            // Disable marker onclick event
+            googleMap.setOnMarkerClickListener {
+                true
+            }
+
+            Toast.makeText(requireContext(), ride.completedRoute?.isEmpty().toString(), Toast.LENGTH_SHORT).show()
+
+            if(ride.completedRoute != null && ride.completedRoute!!.isNotEmpty()) {
+                val polyline = googleMap.addPolyline(PolylineOptions().addAll(ride.completedRoute!!).clickable(false))
+                polyline.color = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorOnSurfaceInverse)
+            }
+
+            val originColor = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorPrimaryInverse)
+            val destinationColor = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorErrorContainer)
+            val originIcon = CommonUtils().getLocationBitmapFromVector(requireContext(), originColor)
+            val destinationIcon = CommonUtils().getLocationBitmapFromVector(requireContext(), destinationColor)
+
+            GoogleMapUtils().addMarker(googleMap, ride.origin.geolocation!!, originIcon)
+            GoogleMapUtils().addMarker(googleMap, ride.destination.geolocation!!, destinationIcon)
+            GoogleMapUtils().updateMapZoomAndCamera(requireContext(), googleMap, ride.origin.geolocation, ride.destination.geolocation)
+        }
 
 
         // Ride Details

@@ -371,4 +371,19 @@ class Converters() {
         )
     }
 
+
+    // LATLNG CONVERTERS
+    fun toLatLng(list: List<Map<String, Any>>): MutableList<LatLng> {
+        val latLngList = mutableListOf<LatLng>()
+
+        for(latlngMap in list) {
+            latlngMap
+            val latitute = latlngMap["latitude"] as Double
+            val longitude = latlngMap["longitude"] as Double
+
+            latLngList.add(LatLng(latitute, longitude))
+        }
+
+        return latLngList
+    }
 }

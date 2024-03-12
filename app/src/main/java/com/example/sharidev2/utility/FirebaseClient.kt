@@ -21,6 +21,7 @@ import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.data.model.User
 import com.example.sharidev2.data.model.Vehicle
 import com.example.sharidev2.data.model.VehicleType
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.AdditionalUserInfo
 import com.google.firebase.auth.FirebaseAuth
@@ -346,6 +347,26 @@ object FirebaseClient {
                 }
                 chat.messages = messagesMap
 
+                // Completed Route Sub-Collection
+                val routesSnapshot = document.reference.collection("routes")
+                    .get()
+                    .await()
+
+                Log.e("FirebaseClient CreateSnapshot", "${document.id} : " + routesSnapshot.size().toString())
+                var completedRoute: MutableList<LatLng>? = null
+                if(!routesSnapshot.isEmpty && routesSnapshot != null) {
+                    completedRoute = mutableListOf()
+                    for(routeDoc in routesSnapshot.documents) {
+                        val routeData = routeDoc.data
+
+                        if(routeData != null) {
+                            if(routeData["selected"] as Boolean)
+                                Log.e("FirebaseClient CreateSnapshot", "${document.id} : ${routeDoc.id}")
+                                completedRoute = converters.toLatLng(routeData["route"] as List<Map<String, Any>>)
+                        }
+                    }
+                }
+
                 val createdAt = document.getTimestamp("createdAt")!!
 
 
@@ -363,6 +384,7 @@ object FirebaseClient {
                     availableSeats,
                     reviewsMap,
                     chat,
+                    completedRoute,
                     createdAt = createdAt
                 )
 

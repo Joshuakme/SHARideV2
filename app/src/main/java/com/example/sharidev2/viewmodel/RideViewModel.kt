@@ -76,6 +76,4 @@ class RideViewModel(
         ACTIVE,
         PAST
     }
-
-
 }

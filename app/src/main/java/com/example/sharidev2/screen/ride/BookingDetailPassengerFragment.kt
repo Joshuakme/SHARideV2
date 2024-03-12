@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,6 +20,9 @@ import com.example.sharidev2.data.model.Ride.Companion.write
 import com.example.sharidev2.databinding.FragmentBookingDetailPassengerBinding
 import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.FirebaseClient
+import com.example.sharidev2.utility.GoogleMapUtils
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.PolygonOptions
 
 
 class BookingDetailPassengerFragment : Fragment() {
@@ -69,6 +73,7 @@ class BookingDetailPassengerFragment : Fragment() {
         val driverNameText = binding.textBookingDetailPassengerDriverName
         val driverPhoneNumberText = binding.textBookingDetailPassengerDriverPhoneNumber
         val ridePriceText = binding.textBokingDetailPassengerRidePrice
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map_booking_detail_passenger_container) as SupportMapFragment
         val rideDistanceHourMinText = binding.textBookingDetailPassengerDistanceHourMin
         val rideTimelineRecyclerView = binding.recyclerViewBookingPassengerDetailTimeline
         val ratingText = binding.textBookingDetailRating
@@ -90,6 +95,36 @@ class BookingDetailPassengerFragment : Fragment() {
 
 
         // Map
+        mapFragment.getMapAsync { googleMap ->
+            googleMap.uiSettings.let {
+                it.isMapToolbarEnabled = false
+                it.isMyLocationButtonEnabled = false
+                it.isZoomControlsEnabled = false
+                it.isTiltGesturesEnabled = false
+                it.isCompassEnabled = false
+                it.isScrollGesturesEnabled = false
+                it.isScrollGesturesEnabledDuringRotateOrZoom = false
+                it.isIndoorLevelPickerEnabled = false
+                it.isRotateGesturesEnabled = false
+                it.isZoomGesturesEnabled = false
+            }
+
+            Toast.makeText(requireContext(), ride.completedRoute?.isEmpty().toString(), Toast.LENGTH_SHORT).show()
+
+            if(ride.completedRoute != null && ride.completedRoute!!.isNotEmpty()) {
+                googleMap.addPolygon(PolygonOptions().addAll(ride.completedRoute!!).clickable(false))
+            }
+
+            val originColor = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorPrimary)
+            val destinationColor = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorError)
+            val originIcon = CommonUtils().getLocationBitmapFromVector(requireContext(), originColor)
+            val destinationIcon = CommonUtils().getLocationBitmapFromVector(requireContext(), destinationColor)
+
+            GoogleMapUtils().addMarker(googleMap, ride.origin.geolocation!!, originIcon)
+            GoogleMapUtils().addMarker(googleMap, ride.destination.geolocation!!, destinationIcon)
+            GoogleMapUtils().updateMapZoomAndCamera(requireContext(), googleMap, ride.origin.geolocation, ride.destination.geolocation)
+
+        }
 
 
         // Ride Details

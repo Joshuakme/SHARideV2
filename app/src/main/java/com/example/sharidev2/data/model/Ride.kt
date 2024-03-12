@@ -2,6 +2,7 @@ package com.example.sharidev2.data.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Polyline
 import com.google.firebase.Timestamp
 import kotlinx.parcelize.Parceler
@@ -21,9 +22,9 @@ data class Ride (
     val startTime: Timestamp? = null,
     val completeTime: Timestamp? = null,
     val availableSeats: Int = 0,
-    val reviews:  MutableMap<String, Review> = mutableMapOf(),
+    val reviews: MutableMap<String, Review> = mutableMapOf(),
     val chat:  Chat? = Chat(),
-    val completedRoute: com.example.sharidev2.data.model.Polyline? = null,
+    val completedRoute: MutableList<LatLng>? = null,
     val createdAt: Timestamp
 ) : Parcelable {
     companion object : Parceler<Ride> {
@@ -61,8 +62,18 @@ data class Ride (
             parcel.readInt(),
             parcel.readHashMap(Review::class.java.classLoader) as MutableMap<String, Review>,
             parcel.readParcelable(Chat::class.java.classLoader),
-            parcel.readParcelable(com.example.sharidev2.data.model.Polyline::class.java.classLoader),
+            parcel.readParcelable(LatLng::class.java.classLoader),
             parcel.readSerializable() as Timestamp
         )
+    }
+}
+
+private fun Parcel.writeParcelable(completedRoute: MutableList<LatLng>?, flags: Int) {
+// Write the size of the list to the Parcel
+    writeInt(completedRoute?.size ?: -1)
+    // Write each LatLng object individually into the Parcel
+    completedRoute?.forEach { latLng ->
+        writeDouble(latLng.latitude)
+        writeDouble(latLng.longitude)
     }
 }

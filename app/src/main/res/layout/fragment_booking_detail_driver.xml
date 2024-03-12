@@ -35,10 +35,12 @@
                 app:tint="?attr/colorOnBackground" />
 
             <TextView
-                android:id="@+id/text_view_booking_requests_fragment_title_date"
+                android:id="@+id/text_booking_detail_driver_fragment_title_date"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginStart="62dp"
+                android:layout_marginEnd="62dp"
                 android:gravity="center_horizontal"
                 android:textSize="@dimen/fs_fragment_title"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -200,7 +202,7 @@
 
                 <!--  Google Map Section  -->
                 <fragment
-                    android:id="@+id/map_booking_detail_passenger_container"
+                    android:id="@+id/map_booking_detail_driver_container"
                     class="com.google.android.gms.maps.SupportMapFragment"
                     android:layout_width="match_parent"
                     android:layout_height="250dp"

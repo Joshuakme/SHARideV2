@@ -34,8 +34,6 @@ class ActiveRideViewModel(
 
     // INTERNAL DATA MEMBERS
     val activeRide: LiveData<Ride> = savedStateHandle.getLiveData(ACTIVE_RIDE_KEY)
-    val activeRideDriver: LiveData<Driver> = savedStateHandle.getLiveData(ACTIVE_RIDE_DRIVER_KEY)
-    val activeRidePassengers: LiveData<List<Passenger>> = savedStateHandle.getLiveData(ACTIVE_RIDE_PASSENGERS_KEY)
     val activeRideUserLocationList: LiveData<List<UserLocation>> = savedStateHandle.getLiveData(ACTIVE_RIDE_PASSENGERS_KEY)
     val activeRideCurrentUserId: LiveData<String> = savedStateHandle.getLiveData(ACTIVE_RIDE_CURRENT_USER_KEY)
     val activeRideCurrentUserRole: LiveData<String> = savedStateHandle.getLiveData(ACTIVE_RIDE_CURRENT_USER_ROLE_KEY)
@@ -44,6 +42,20 @@ class ActiveRideViewModel(
     // SETTER in SavedStateHandle
     fun setActiveRide(newActiveRide: Ride) {
         savedStateHandle[ACTIVE_RIDE_KEY] = newActiveRide
+
+        if(currentUser != null) {
+            if(newActiveRide.driver.userUid == currentUser.uid) {
+                setActiveRideCurrentUserRole("driver")
+            } else {
+                for(passenger in newActiveRide.passengers){
+                    if(passenger != null) {
+                        if(passenger.key == currentUser.uid) {
+                            setActiveRideCurrentUserRole("passenger")
+                        }
+                    }
+                }
+            }
+        }
     }
 
     fun setActiveRideDriver(newActiveRideDriver: Driver) {
