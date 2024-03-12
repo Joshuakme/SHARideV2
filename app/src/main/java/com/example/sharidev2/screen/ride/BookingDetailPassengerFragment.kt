@@ -23,6 +23,7 @@ import com.example.sharidev2.utility.FirebaseClient
 import com.example.sharidev2.utility.GoogleMapUtils
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.PolygonOptions
+import com.google.android.gms.maps.model.PolylineOptions
 
 
 class BookingDetailPassengerFragment : Fragment() {
@@ -108,22 +109,26 @@ class BookingDetailPassengerFragment : Fragment() {
                 it.isRotateGesturesEnabled = false
                 it.isZoomGesturesEnabled = false
             }
+            // Disable marker onclick event
+            googleMap.setOnMarkerClickListener {
+                true
+            }
 
             Toast.makeText(requireContext(), ride.completedRoute?.isEmpty().toString(), Toast.LENGTH_SHORT).show()
 
             if(ride.completedRoute != null && ride.completedRoute!!.isNotEmpty()) {
-                googleMap.addPolygon(PolygonOptions().addAll(ride.completedRoute!!).clickable(false))
+                val polyline = googleMap.addPolyline(PolylineOptions().addAll(ride.completedRoute!!).clickable(false))
+                polyline.color = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorOnSurfaceInverse)
             }
 
-            val originColor = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorPrimary)
-            val destinationColor = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorError)
+            val originColor = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorPrimaryInverse)
+            val destinationColor = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorErrorContainer)
             val originIcon = CommonUtils().getLocationBitmapFromVector(requireContext(), originColor)
             val destinationIcon = CommonUtils().getLocationBitmapFromVector(requireContext(), destinationColor)
 
             GoogleMapUtils().addMarker(googleMap, ride.origin.geolocation!!, originIcon)
             GoogleMapUtils().addMarker(googleMap, ride.destination.geolocation!!, destinationIcon)
             GoogleMapUtils().updateMapZoomAndCamera(requireContext(), googleMap, ride.origin.geolocation, ride.destination.geolocation)
-
         }
 
 
