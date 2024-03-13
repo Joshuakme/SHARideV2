@@ -1,5 +1,8 @@
 package com.example.sharidev2.screen.ride
 
+import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -63,11 +66,10 @@ class DriverRideConfigFragment : Fragment() {
         val originText = binding.textDriverRideConfigOrigin
         val destinationText = binding.textDriverRideConfigDestination
         val vehicleSpinnerText = binding.textDriverRideConfigSpinnerVehicle
+        val passengerCapacitySpinner = binding.spinnerDriverRideConfigRideCapacity
         val passengerCapacitySpinnerText = binding.textDriverRideConfigSpinnerRideCapacity
         val rideDateSpinnerText = binding.textDriverRideConfigSpinnerScheduleDate
         val rideTimeSpinnerText = binding.textDriverRideConfigSpinnerScheduleTime
-
-
 
 
 
@@ -79,18 +81,27 @@ class DriverRideConfigFragment : Fragment() {
             destinationText.text = destination.name
         }
 
+
+        if(!createRideViewModel.vehicle.isInitialized) {
+            Toast.makeText(requireContext(), "Vehicle Not Init!", Toast.LENGTH_SHORT).show()
+
+            vehicleSpinnerText.text = " - "
+            passengerCapacitySpinnerText.text = " - "
+
+            passengerCapacitySpinner.isEnabled = false
+            passengerCapacitySpinner.isClickable = false
+
+            // Set disabled color
+            disableCapacitySpinner(true)
+        }
+
         createRideViewModel.vehicle.observe(viewLifecycleOwner) {vehicle ->
-            val passengerCapacitySpinner = binding.spinnerDriverRideConfigRideCapacity
+            vehicleSpinnerText.text = vehicle.plateNumber
 
-            if(vehicle != null) {
-                vehicleSpinnerText.text = vehicle.plateNumber
+            passengerCapacitySpinner.isEnabled = true
+            passengerCapacitySpinner.isClickable = true
 
-                passengerCapacitySpinner.isEnabled = true
-                passengerCapacitySpinner.isClickable = true
-            } else {
-                passengerCapacitySpinner.isEnabled = false
-                passengerCapacitySpinner.isClickable = false
-            }
+            disableCapacitySpinner(false)
         }
 
         createRideViewModel.capacity.observe(viewLifecycleOwner) {capacity ->
@@ -166,5 +177,24 @@ class DriverRideConfigFragment : Fragment() {
     private fun showPassengerCapacityDialog() {
         val dialogFragment = PassengerCapacityBottomDialogFragment()
         dialogFragment.show(childFragmentManager, dialogFragment.tag)
+    }
+
+    private fun disableCapacitySpinner(disable: Boolean) {
+        val passengerCapacitySpinnerText = binding.textDriverRideConfigSpinnerRideCapacity
+        val chooseCapacityImageButton = binding.imgBtnDriverRideConfigSpinnerChooseRideCapacity
+
+        if(disable) {
+            passengerCapacitySpinnerText.setTextColor(CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorSurfaceVariant))
+            chooseCapacityImageButton.colorFilter = PorterDuffColorFilter(
+                CommonUtils().getAndroidThemeColor(requireContext(), com.google.android.material.R.attr.colorSurfaceVariant),
+                PorterDuff.Mode.MULTIPLY
+            )
+        } else {
+            passengerCapacitySpinnerText.setTextColor(CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorOnSurface))
+            chooseCapacityImageButton.colorFilter = PorterDuffColorFilter(
+                CommonUtils().getAndroidThemeColor(requireContext(), com.google.android.material.R.attr.colorOnSurface),
+                PorterDuff.Mode.MULTIPLY
+            )
+        }
     }
 }

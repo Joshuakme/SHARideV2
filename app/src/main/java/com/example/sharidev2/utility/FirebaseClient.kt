@@ -360,9 +360,10 @@ object FirebaseClient {
                         val routeData = routeDoc.data
 
                         if(routeData != null) {
-                            if(routeData["selected"] as Boolean)
+                            if(routeData["selected"] as Boolean) {
                                 Log.e("FirebaseClient CreateSnapshot", "${document.id} : ${routeDoc.id}")
                                 completedRoute = converters.toLatLng(routeData["route"] as List<Map<String, Any>>)
+                            }
                         }
                     }
                 }

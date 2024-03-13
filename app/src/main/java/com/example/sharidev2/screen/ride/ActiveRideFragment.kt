@@ -222,7 +222,8 @@ class ActiveRideFragment: Fragment() {
                     GoogleMapUtils().calculateDirections(
                         requireContext(),
                         activeRide.origin.geolocation!!,
-                        activeRide.destination.geolocation!!
+                        activeRide.destination.geolocation!!,
+                        true
                     ) {result ->
                         if (result != null) {
                             Handler(Looper.getMainLooper()).post {

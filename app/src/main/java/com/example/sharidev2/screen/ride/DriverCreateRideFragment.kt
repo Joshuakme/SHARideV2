@@ -5,6 +5,8 @@ import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -18,11 +20,13 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sharidev2.R
 import com.example.sharidev2.adapter.SearchRideAdapter
+import com.example.sharidev2.data.model.PolylineData
 import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.databinding.FragmentDriverCreateRideBinding
 import com.example.sharidev2.utility.CommonUtils
@@ -33,6 +37,8 @@ import com.example.sharidev2.viewmodel.SharedCreateRideViewModel
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Polyline
+import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
@@ -42,6 +48,9 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest
 import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.maps.internal.PolylineEncoding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class DriverCreateRideFragment : Fragment() {
@@ -115,6 +124,7 @@ class DriverCreateRideFragment : Fragment() {
         // Driver Add Ride Fragment -> Driver Ride Config Fragment
         nextBtn.setOnClickListener {
             findNavController().navigate(R.id.action_driverCreateRideFragment_to_driverRideConfigFragment)
+            createRideViewModel.saveRoutePath()
         }
 
 
@@ -376,6 +386,10 @@ class DriverCreateRideFragment : Fragment() {
 
             googleMap.setOnMapLoadedCallback {
                 googleMap.clear()   // Clear previous markers
+                // Disable marker onclick event
+                googleMap.setOnMarkerClickListener {
+                    true
+                }
 
                 // Add origin marker
                 originLocation?.let {
@@ -390,7 +404,45 @@ class DriverCreateRideFragment : Fragment() {
                 }
 
                 googleMapUtils.updateMapZoomAndCamera(requireContext(), googleMap, origin, destination)
-                //googleMapUtils.drawRoute(googleMap, origin, destination)
+
+
+                // Draw Route
+                if(origin != null && destination != null) {
+                    createRideViewModel.rideRoute.observe(viewLifecycleOwner) {rideRoute ->
+                        if(rideRoute != null) {
+                            val polyline: Polyline = googleMap.addPolyline(PolylineOptions().addAll(rideRoute))
+                            polyline.color = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorOnSurfaceInverse)
+                        } else {
+                            googleMapUtils.calculateDirections(
+                                requireContext(),
+                                origin,
+                                destination,
+                                false,
+                            ) {result ->
+                                if(result != null) {
+                                    Handler(Looper.getMainLooper()).post {
+                                        for (route in result.routes) {
+                                            val decodedPath =
+                                                PolylineEncoding.decode(route.overviewPolyline.encodedPath)
+                                            val newDecodedPath = mutableListOf<LatLng>()
+
+                                            for (latLng in decodedPath) {
+                                                newDecodedPath.add(LatLng(latLng.lat, latLng.lng))
+                                            }
+
+                                            val polyline: Polyline = googleMap.addPolyline(
+                                                PolylineOptions().addAll(newDecodedPath).clickable(true)
+                                            )
+                                            polyline.color = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorOnSurfaceInverse)
+
+                                            createRideViewModel.setRoutePath(newDecodedPath)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }

@@ -138,8 +138,19 @@ class CommonUtils {
     fun getThemeColor(context: Context, themeColorId: Int): Int {
         val typedValue = TypedValue()
         // Resolve the attribute to get the color value programmatically
-        context?.theme?.resolveAttribute(themeColorId, typedValue, true)
+        context.theme?.resolveAttribute(themeColorId, typedValue, true)
+
         return typedValue.data
+    }
+
+    fun getAndroidThemeColor(context: Context, themeColorId: Int): Int {
+        val attrs = intArrayOf(themeColorId)
+        val typedArray = context.obtainStyledAttributes(attrs)
+        try {
+            return typedArray.getColor(0, 0)
+        } finally {
+            typedArray.recycle()
+        }
     }
 
     fun getLocationBitmapFromVector(context: Context, color: Int): BitmapDescriptor {

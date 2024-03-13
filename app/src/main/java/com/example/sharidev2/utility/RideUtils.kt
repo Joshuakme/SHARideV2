@@ -7,7 +7,6 @@ import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.data.model.SearchRide
 import com.example.sharidev2.data.model.User
-import com.example.sharidev2.data.model.Vector3D
 import com.google.firebase.Timestamp
 import com.google.android.gms.maps.model.LatLng
 import java.util.concurrent.TimeUnit

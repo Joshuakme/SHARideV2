@@ -6,9 +6,11 @@ import com.example.sharidev2.data.model.Message
 import com.example.sharidev2.data.model.MessageType
 import com.example.sharidev2.data.model.Passenger
 import com.example.sharidev2.data.model.Ride
+import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.Converters
 import com.example.sharidev2.utility.FirebaseClient
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.Query
@@ -23,11 +25,16 @@ class RideRepository() {
     // Firebase Instances
     private val firestore = FirebaseClient.firestore
     private val rideCollectionRef = firestore.collection("ride")
+    private val routeCollectionRef = firestore.collection("route")
 
     private val currentUser = FirebaseClient.firebaseAuth.currentUser
     private val converters = Converters()
 
+    // Data Variables
+    private val routeList = mutableListOf<MutableList<LatLng>>()
 
+
+    // CREATE METHODS
     suspend fun createRide(ride: Ride, callback: CreateRideCallback) {
         return withContext(Dispatchers.IO) {
             try {
@@ -230,6 +237,32 @@ class RideRepository() {
         }
     }
 
+    suspend fun addRoutePath(origin: SearchLocation, destination: SearchLocation, routePath: MutableList<LatLng>): Int {
+        return withContext(Dispatchers.IO) {
+            try {
+                if(getRideRoute(origin.name, destination.name) != null) {
+                    Constants.FIREBASE_REQUEST_DATA_NOT_VALID
+                } else {
+                    val map = hashMapOf(
+                        "origin" to origin.name,
+                        "destination" to destination.name,
+                        "route" to routePath
+                    )
+
+                    routeCollectionRef
+                        .document()
+                        .set(map)
+                        .await()
+
+                    Constants.FIREBASE_REQUEST_SUCCESS
+                }
+            } catch (e: Exception) {
+                Log.e("Add Route Path", e.message.toString())
+                Constants.FIREBASE_REQUEST_EXCEPTION
+            }
+        }
+    }
+
 
     // RETRIEVE METHODS
     suspend fun getAllRides(): List<Ride> {
@@ -305,6 +338,39 @@ class RideRepository() {
             } catch (e: Exception) {
                 Log.e("Get Passenger Ride", e.message.toString())
                 emptyList()
+            }
+        }
+    }
+
+
+
+
+    suspend fun getRideRoute(originName: String, destinationName: String): MutableList<LatLng>? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val querySnapshot = routeCollectionRef
+                    .whereEqualTo("origin", originName)
+                    .whereEqualTo("destination", destinationName)
+                    .limit(1)
+                    .get()
+                    .await()
+
+
+                if (!querySnapshot.isEmpty) {
+                    val routeData = querySnapshot.documents.first().data
+
+                    if(routeData != null) {
+                        converters.toLatLng(routeData["route"] as List<Map<String, Any>>)
+                    } else {
+                        null
+                    }
+
+                } else {
+                    null
+                }
+            } catch (e: Exception) {
+                Log.e("Get Route Path", e.message.toString())
+                null
             }
         }
     }

@@ -142,14 +142,14 @@ class GoogleMapUtils {
 //        })
 //    }
 
-    fun calculateDirections(context: Context, origin: LatLng, destination: LatLng, callback: (DirectionsResult?) -> Unit) {
+    fun calculateDirections(context: Context, origin: LatLng, destination: LatLng, alternativeRoute: Boolean, callback: (DirectionsResult?) -> Unit) {
         val geoApiContext = GeoApiContext.Builder()
             .apiKey(context.getString(R.string.google_api_key))
             .build()
 
 
         val directions = DirectionsApiRequest(geoApiContext)
-        directions.alternatives(true)
+        directions.alternatives(alternativeRoute)
         directions.origin(
             com.google.maps.model.LatLng(
                 origin.latitude,
@@ -172,42 +172,6 @@ class GoogleMapUtils {
                 callback(null)
             }
         })
-    }
-
-
-    fun getRoutePathList(result: DirectionsResult): MutableList<MutableList<LatLng>> {
-        val routesPathList = mutableListOf<MutableList<LatLng>>()
-
-            Log.d(TAG, "run: result routes: " + result.routes.size)
-            for (route in result.routes) {
-                Log.d(TAG, "run: leg: " + route.legs[0].toString())
-                val decodedPath = PolylineEncoding.decode(route.overviewPolyline.encodedPath)
-                val newDecodedPath: MutableList<LatLng> = ArrayList()
-
-                // This loops through all the LatLng coordinates of ONE polyline.
-                for (latLng in decodedPath) {
-                    newDecodedPath.add(
-                        LatLng(
-                            latLng.lat,
-                            latLng.lng
-                        )
-                    )
-                    Log.e("GoogleMapUtils: Polyline", "Lat: ${latLng.lat}, Lng: ${latLng.lng}")
-                }
-
-                routesPathList.add(newDecodedPath)
-//                val polyline: Polyline = googleMap.addPolyline(PolylineOptions().addAll(newDecodedPath))
-//
-//
-//
-//                val typedValue = TypedValue()
-//                context.theme?.resolveAttribute(com.google.android.material.R.attr.colorSecondary, typedValue, true)
-//                val colorSecondary = typedValue.data
-//
-//                polyline.color = Color.DKGRAY
-//                polyline.isClickable = true
-            }
-     return routesPathList
     }
 
 

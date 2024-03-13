@@ -114,8 +114,6 @@ class BookingDetailPassengerFragment : Fragment() {
                 true
             }
 
-            Toast.makeText(requireContext(), ride.completedRoute?.isEmpty().toString(), Toast.LENGTH_SHORT).show()
-
             if(ride.completedRoute != null && ride.completedRoute!!.isNotEmpty()) {
                 val polyline = googleMap.addPolyline(PolylineOptions().addAll(ride.completedRoute!!).clickable(false))
                 polyline.color = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorOnSurfaceInverse)

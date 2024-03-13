@@ -9,6 +9,7 @@ import com.example.sharidev2.data.model.Driver
 import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.data.model.Vehicle
+import com.example.sharidev2.data.repository.DriverVehicleRepository
 import com.example.sharidev2.data.repository.RideRepository
 import com.example.sharidev2.data.repository.UserLocationRepository
 import com.example.sharidev2.utility.Constants
@@ -24,14 +25,18 @@ class SharedCreateRideViewModel(
 ) : ViewModel() {
     // Repository
     private val rideRepository = RideRepository()
-    private val currentLocationRepo = UserLocationRepository()
+    private val driverVehicleRepository = DriverVehicleRepository()
+
+    // ViewModel
+    private val vehicleViewModel = DriverVehicleViewModel()
 
     // DATA KEY CONSTANT
     private val ORIGIN_KEY = "origin"
     private val DESTINATION_KEY = "destination"
     private val VEHICLE_KEY = "vehicle"
     private val PASSENGER_CAPACITY_KEY = "passenger_capacity"
-    private val RIDE_DATE_TIME_KEY = "ride_date"
+    private val RIDE_DATE_TIME_KEY = "ride_date_time"
+    private val RIDE_ROUTE_KEY = "ride_route"
     private val CREATE_RIDE_STATUS_KEY = "create_ride_status"
 
 
@@ -52,14 +57,32 @@ class SharedCreateRideViewModel(
     // Ride Date Time
     val rideDateTime: LiveData<Timestamp> = savedStateHandle.getLiveData(RIDE_DATE_TIME_KEY)
 
+    // Ride Date Time
+    val rideRoute: LiveData<MutableList<LatLng>> = savedStateHandle.getLiveData(RIDE_ROUTE_KEY)
+
     // Create Ride Status
     val createRideStatus: LiveData<Int> = savedStateHandle.getLiveData(CREATE_RIDE_STATUS_KEY)
 
 
     // CONSTRUCTOR
     init {
+        Log.e("Shared Create Ride ViewModel", "Init Shared Create Ride ViewModel")
         if (rideDateTime.value == null) {
             setRideDateTime(Timestamp.now())
+        }
+
+        if(vehicle.value == null) {
+            viewModelScope.launch {
+                try {
+                    val vehicleList = driverVehicleRepository.getDriverVehicleList()
+
+                    if(vehicleList.isNotEmpty()) {
+                        setVehicle(vehicleList[0])
+                    }
+                } catch (e: Exception) {
+                    Log.e("Shared Create Ride ViewModel", e.message.toString())
+                }
+            }
         }
 
         setCreateRideStatus(Constants.UI_DATA_LOADING)
@@ -75,6 +98,16 @@ class SharedCreateRideViewModel(
     // Destination Location
     fun setDestination(newDestination: SearchLocation) {
         savedStateHandle[DESTINATION_KEY] = newDestination
+
+        if(origin.value?.name != null && destination.value?.name != null) {
+            viewModelScope.launch(Dispatchers.Main) {
+                val route = rideRepository.getRideRoute(origin.value!!.name, destination.value!!.name)
+
+                if(route != null) {
+                    setRideRoute(route)
+                }
+            }
+        }
     }
 
     // Vehicle
@@ -96,9 +129,28 @@ class SharedCreateRideViewModel(
         savedStateHandle[RIDE_DATE_TIME_KEY] = newRideDateTime
     }
 
+    // Ride Route
+    fun setRideRoute(newRideRoute: MutableList<LatLng>) {
+        savedStateHandle[RIDE_ROUTE_KEY] = newRideRoute
+    }
+
     // Create Ride Status
     fun setCreateRideStatus(response: Int) {
         savedStateHandle[CREATE_RIDE_STATUS_KEY] = response
+    }
+
+    // Create Ride Route
+    fun setRoutePath(routePath: MutableList<LatLng>) {
+        savedStateHandle[RIDE_ROUTE_KEY] = routePath
+    }
+
+    // Save Ride Route
+    fun saveRoutePath() {
+        if(origin.value != null && destination.value != null && rideRoute.value != null) {
+            viewModelScope.launch(Dispatchers.IO) {
+                rideRepository.addRoutePath(origin.value!!, destination.value!!, rideRoute.value!!)
+            }
+        }
     }
 
 
