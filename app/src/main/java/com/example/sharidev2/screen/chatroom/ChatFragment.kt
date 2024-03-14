@@ -3,27 +3,36 @@ package com.example.sharidev2.screen.chatroom
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.adapter.ChatAdapter
+import com.example.sharidev2.adapter.MessageAdapter
+import com.example.sharidev2.data.model.Chat
 import com.example.sharidev2.databinding.FragmentChatBinding
 import com.example.sharidev2.data.model.Message
 import com.example.sharidev2.data.model.MessageType
+import com.example.sharidev2.data.model.Ride
+import com.example.sharidev2.viewmodel.ChatViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
-
+import kotlinx.coroutines.launch
 
 
 class ChatFragment : Fragment() {
     // Global Variables Init
     private lateinit var binding: FragmentChatBinding
-    private val chatMessageList: MutableList<Message> = getMessageChat()
+    //private val chatMessageList: MutableList<Message> = getMessageChat()
+    private val chatViewModel: ChatViewModel by viewModels()
+    private lateinit var chat: Chat
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,6 +40,14 @@ class ChatFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
          binding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat, container, false)
+
+
+        // DATA
+        try {
+            chat = arguments?.get("chat")!! as Chat
+        } catch (e: Exception) {
+            Log.e("Single Chat Fragment", e.message.toString())
+        }
 
 
         // ELEMENTS
@@ -45,9 +62,13 @@ class ChatFragment : Fragment() {
         (activity as MainActivity).setBottomNavVisible(false)
 
         // Set Up RecyclerView
-        val chatAdapter = ChatAdapter(chatMessageList)
-        chatMessagesRecyclerView.layoutManager = LinearLayoutManager(context)
-        chatMessagesRecyclerView.adapter = chatAdapter
+        if(chat != null) {
+            val chatAdapter = MessageAdapter(chat.messages!!.toList())
+            chatMessagesRecyclerView.layoutManager = LinearLayoutManager(context)
+            chatMessagesRecyclerView.adapter = chatAdapter
+        }
+
+
 
 
         // EVENT LISTENERS
@@ -91,9 +112,12 @@ class ChatFragment : Fragment() {
         chatSendButton.setOnClickListener {
             val message = chatTextInput.text.toString()
 
-            val newMessage = Message("m3", "s3", message, readBy = emptyList(), messageType = MessageType.Text)
+            val newMessage = Message(text = message)
 
-            chatMessageList.add(newMessage)
+            lifecycleScope.launch {
+                chatViewModel.addMessageToChat(chat.chatId!!, newMessage)
+            }
+
 
             chatTextInput.text.clear()
         }
@@ -103,22 +127,4 @@ class ChatFragment : Fragment() {
     }
 
 
-    private fun getMessageChat(): MutableList<Message> {
-        return mutableListOf(
-            Message(
-                    "m1",
-                    "s1",
-                    "Hi, I'm ALi. Nice to meet you.",
-                    readBy = listOf<String>(),
-                    messageType = MessageType.Text
-                ),
-            Message(
-                "m2",
-                "s2",
-                "Yooo",
-                readBy = listOf<String>(),
-                messageType = MessageType.Text
-            ),
-        )
-    }
 }

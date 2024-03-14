@@ -2,6 +2,7 @@ package com.example.sharidev2.data.repository
 
 import android.util.Log
 import com.example.sharidev2.data.model.Chat
+import com.example.sharidev2.data.model.ChatStatus
 import com.example.sharidev2.data.model.Message
 import com.example.sharidev2.data.model.MessageType
 import com.example.sharidev2.data.model.Passenger
@@ -19,6 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.util.Calendar
+import java.util.UUID
 
 
 class RideRepository() {
@@ -44,7 +46,11 @@ class RideRepository() {
                     ride.driver.user = driverUser
                     Log.e("Ride Repository", "Create Ride: ${driverUser.displayName}")
 
-                    val newChat = createEmptyChat()
+                    val rideId = rideCollectionRef.document().id
+
+                    val newChat = createEmptyChat(rideId)
+
+
                     val newChatHashMap = hashMapOf(
                         "chatId" to newChat.chatId,
                         "members" to newChat.members,
@@ -57,16 +63,17 @@ class RideRepository() {
                         "destination" to ride.destination,
                         "datetime" to ride.datetime,
                         "driver" to ride.driver,
+                        "passengers" to ride.passengers,
                         "rideStatus" to ride.rideStatus,
                         "startTime" to ride.startTime,
                         "completeTime" to ride.completeTime,
                         "availableSeats" to ride.availableSeats,
+                        "reviews" to ride.reviews,
                         "chat" to newChatHashMap,
                         "createdAt" to ride.createdAt
                     )
 
-                    val rideCollectionRef = firestore.collection("ride")
-                    val rideId = rideCollectionRef.document().id
+
 
                     rideCollectionRef.document(rideId)
                         .set(newRide)
@@ -80,22 +87,22 @@ class RideRepository() {
                         }
 
                     // Passengers Sub-Collection
-                    for(passenger in ride.passengers) {
-                        rideCollectionRef.document(rideId)
-                            .collection("passengers")
-                            .document(passenger.key)
-                            .set(ride.passengers.values)
-                            .await()
-                    }
+//                    for(passenger in ride.passengers) {
+//                        rideCollectionRef.document(rideId)
+//                            .collection("passengers")
+//                            .document(passenger.key)
+//                            .set(ride.passengers.values)
+//                            .await()
+//                    }
 
                     // Reviews Sub-Collection
-                    for(review in ride.reviews) {
-                        rideCollectionRef.document(rideId)
-                            .collection("reviews")
-                            .document()
-                            .set(review)
-                            .await()
-                    }
+//                    for(review in ride.reviews) {
+//                        rideCollectionRef.document(rideId)
+//                            .collection("reviews")
+//                            .document()
+//                            .set(review)
+//                            .await()
+//                    }
 
                     // Message Sub-Collection
                     val messageId = rideCollectionRef.document(rideId)
@@ -118,53 +125,66 @@ class RideRepository() {
         }
     }
 
-    private suspend fun createEmptyChat(): Chat {
+    private suspend fun createEmptyChat(rideId: String): Chat {
         return withContext(Dispatchers.IO) {
             try{
                 val chatId = firestore.collection("chat").document().id
 
-                val messages = mutableMapOf<String, Message>()
+                val messages = mutableListOf<Message>()
+                val messagesMap = mutableListOf<HashMap<String, Any?>>()
+                val welcomeChatMessage = "Welcome to SHARide! Start your chat here."
 
-                val messageId = firestore.collection("chat").document(chatId).collection("message").document().id
+                val now = Timestamp.now()
 
-                val welcomeChatMessage = "Welcome to SHARide! Start you chat here."
-
-                messages[messageId] = Message(
-                    messageId,
+                val wlcMessage = Message(
+                    UUID.randomUUID().toString(),
                     "Admin",
                     welcomeChatMessage,
-                    Timestamp.now(),
+                    now,
                     attachmentURL = null,
                     emptyList(),
                     MessageType.Text
+                )
+
+                messages.add(
+                    wlcMessage
+                )
+
+                messagesMap.add(
+                    hashMapOf(
+                        "messageId" to wlcMessage.messageId,
+                        "senderId" to wlcMessage.senderId,
+                        "text" to wlcMessage.text,
+                        "timestamp" to now,
+                        "readBy" to wlcMessage.readBy,
+                        "attachmentURL" to wlcMessage.attachmentURL,
+                        "messageType" to wlcMessage.messageType,
+                    )
                 )
 
                 val chatHashMap = hashMapOf(
                     "chatId" to chatId,
                     "members" to listOf(currentUser?.uid!!),
                     "lastMessage" to welcomeChatMessage,
-                    "timestamp" to Timestamp.now(),
+                    "timestamp" to now,
+                    "messages" to messagesMap,
+                    "rideId" to rideId,
+                    "chatStatus" to ChatStatus.ACTIVE
                 )
 
                 val chat = Chat(
-                    chatId = chatId,
-                    members = listOf(currentUser?.uid!!),
-                    lastMessage = welcomeChatMessage,
-                    timestamp = Timestamp.now(),
-                    messages = messages
+                    chatId,
+                    listOf(currentUser.uid),
+                    welcomeChatMessage,
+                    now,
+                    messages,
+                    rideId
                 )
 
                 firestore.collection("chat").document(chatId)
                     .set(chatHashMap)
                     .await()
 
-
-                // Messages Sub-collection
-                firestore.collection("chat").document(chatId)
-                    .collection("messages")
-                    .document(messageId)
-                    .set(messages)
-                    .await()
 
                 chat
             }
@@ -175,25 +195,6 @@ class RideRepository() {
         }
     }
 
-    private suspend fun addMessageToChat(chatId: String, newMessage: Message) {
-        return withContext(Dispatchers.IO) {
-            try{
-                firestore.collection("chat")
-                    .document(chatId)
-                    .collection("message")
-                    .add(newMessage)
-                    .await()
-
-                firestore.collection("chat")
-                    .document(chatId)
-                    .update("lastMessage", newMessage.text)
-                    .await()
-
-            } catch (e: Exception) {
-                Log.e("Add Message To Chat", e.message.toString())
-            }
-        }
-    }
 
     suspend fun addPassenger(newPassenger: Passenger, rideId: String): Int {
         return withContext(Dispatchers.IO) {

@@ -24,7 +24,11 @@
         tools:layout="@layout/fragment_messages" >
         <action
             android:id="@+id/action_messagesFragment_to_chatFragment"
-            app:destination="@id/chatFragment" />
+            app:destination="@id/chatFragment">
+            <argument
+                android:name="chat"
+                app:argType="com.example.sharidev2.data.model.Chat" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -60,7 +64,7 @@
             app:popUpTo="@id/bookingFragment">
             <argument
                 android:name="ride"
-            app:argType="com.example.sharidev2.data.model.Ride" />
+                app:argType="com.example.sharidev2.data.model.Ride" />
         </action>
         <action
             android:id="@+id/action_bookingFragment_to_homeFragment2"

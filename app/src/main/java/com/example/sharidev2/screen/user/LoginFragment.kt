@@ -321,6 +321,7 @@ class LoginFragment : Fragment() {
 
                 override fun onVerificationFailed(e: FirebaseException) {
                     getOtpLoading(false)
+                    Log.e("Login Fragment", e.message.toString())
                     Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
                 }
 
@@ -364,7 +365,6 @@ class LoginFragment : Fragment() {
                 if (task.isSuccessful) {
                     loginLoading(false)
 
-                    // TODO: save the phone number to firebase database
 
                     CoroutineScope(Dispatchers.Main).launch {
                         // Call assignUserDefaultInfo from within the coroutine

@@ -91,7 +91,12 @@ object FirebaseClient {
 
                 val rideOption = RideOption(driverGender, vehicleType, petFriendly)
 
-                val rating = (user.get("rating") as Long).toDouble()
+                val rating = if(user.get("rating") != null) {
+                    (user.get("rating") as Long).toDouble()
+                } else {
+                    null
+                }
+
 
 //                val savedAddresses =
 //                    converters.toSearchLocationList(user.get("savedAddress") as List<Map<String, Any>>)
@@ -164,15 +169,15 @@ object FirebaseClient {
         }
     }
 
-    suspend fun getChatFromChatId(chatId: String): Chat {
+    suspend fun getChatFromChatId(chatId: String): Chat? {
         return withContext(Dispatchers.IO) {  // Use Dispatchers.IO for network calls
             val chatRef = firestore.collection("chat").document(chatId)
 
             val chatData = try {
-                chatRef.get().await().data ?: return@withContext Chat() // Handle missing document
+                chatRef.get().await().data ?: return@withContext null // Handle missing document
             } catch (e: Exception) {
                 Log.e("Get Chat From ChatId", e.message.toString())
-                return@withContext Chat()
+                return@withContext null
             }
 
             val chatId = chatRef.id
@@ -180,27 +185,27 @@ object FirebaseClient {
             val lastMessage = chatData["lastMessage"] as? String ?: ""
             val timestamp = chatData["timestamp"] as? Timestamp
             val typingUsers = chatData["typingUsers"] as? List<String> ?: emptyList()
-            val messageMap = mutableMapOf<String,  Message>()
+            val messages = chatData["messages"] as List<Map<String, Any>>
+            val rideId = chatData["rideId"] as String
 
+            val messageList = mutableListOf<Message>()
             // Retrieve messages with proper suspend handling
             try {
-                val messagesRef =
-                    firestore.collection("chat").document(chatId).collection("messages")
-                val messageDocs = messagesRef.get().await()
-                messageDocs.forEach { messageDoc ->
-                    val messageData = messageDoc.data ?: return@forEach
-                    val message = Message(
-                        messageId = messageDoc.id,
-                        senderId = messageData["senderId"] as? String ?: "",
-                        text = messageData["text"] as? String ?: "",
-                        timestamp = messageData["timestamp"] as? Timestamp,
-                        attachmentURL = messageData["attachmentURL"] as? String,
-                        readBy = messageData["readBy"] as? List<String> ?: emptyList(),
-                        messageType = MessageType.valueOf(
-                            messageData["messageType"] as? String ?: ""
+                if(messages != null) {
+                    messages.forEach { messageMap ->
+                        val message = Message(
+                            messageId = messageMap["messageId"] as? String ?: "",
+                            senderId = messageMap["senderId"] as? String ?: "",
+                            text = messageMap["text"] as? String ?: "",
+                            timestamp = messageMap["timestamp"] as? Timestamp,
+                            attachmentURL = messageMap["attachmentURL"] as? String,
+                            readBy = messageMap["readBy"] as? List<String> ?: emptyList(),
+                            messageType = MessageType.valueOf(
+                                messageMap["messageType"] as? String ?: ""
+                            )
                         )
-                    )
-                    messageMap[messageDoc.id] = message
+                        messageList.add(message)
+                    }
                 }
             } catch (e: Exception) {
                 Log.e("Get Chat From ChatId (Messages)", e.message.toString())
@@ -211,7 +216,8 @@ object FirebaseClient {
                 members,
                 lastMessage,
                 timestamp,
-                messageMap
+                messageList,
+                rideId
             )
         }
     }
@@ -329,23 +335,8 @@ object FirebaseClient {
                 // Chat Sub-Collection
                 //val chat = FirebaseClient.getChatFromChatId(getString("chat") ?: "")
                 val chat = converters.toChat(document.get("chat") as Map<String, Any>)
-                val messagesMap = mutableMapOf<String, Message>()
 
-                val messageSnapshot = document.reference.collection("messages")
-                    .orderBy("timestamp")
-                    .get()
-                    .await()
 
-                if(!messageSnapshot.isEmpty && messageSnapshot != null) {
-                    for(messageDoc in messageSnapshot.documents) {
-                        val messageData = messageDoc.data
-
-                        if(messageData != null) {
-                            messagesMap[messageDoc.id] = converters.toMessage(messageData)
-                        }
-                    }
-                }
-                chat.messages = messagesMap
 
                 // Completed Route Sub-Collection
                 val routesSnapshot = document.reference.collection("routes")

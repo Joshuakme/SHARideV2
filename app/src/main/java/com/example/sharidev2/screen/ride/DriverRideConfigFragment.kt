@@ -83,8 +83,6 @@ class DriverRideConfigFragment : Fragment() {
 
 
         if(!createRideViewModel.vehicle.isInitialized) {
-            Toast.makeText(requireContext(), "Vehicle Not Init!", Toast.LENGTH_SHORT).show()
-
             vehicleSpinnerText.text = " - "
             passengerCapacitySpinnerText.text = " - "
 
@@ -184,16 +182,20 @@ class DriverRideConfigFragment : Fragment() {
         val chooseCapacityImageButton = binding.imgBtnDriverRideConfigSpinnerChooseRideCapacity
 
         if(disable) {
-            passengerCapacitySpinnerText.setTextColor(CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorSurfaceVariant))
-            chooseCapacityImageButton.colorFilter = PorterDuffColorFilter(
-                CommonUtils().getAndroidThemeColor(requireContext(), com.google.android.material.R.attr.colorSurfaceVariant),
-                PorterDuff.Mode.MULTIPLY
+            passengerCapacitySpinnerText.setTextColor(CommonUtils().getAndroidThemeColor(requireContext(), android.R.attr.textColorHint))
+            chooseCapacityImageButton.setColorFilter(
+                CommonUtils().getAndroidThemeColor(requireContext(),
+                    com.google.android.material.R.attr.colorSurfaceVariant),
+                PorterDuff.Mode.SRC_IN
             )
         } else {
-            passengerCapacitySpinnerText.setTextColor(CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorOnSurface))
-            chooseCapacityImageButton.colorFilter = PorterDuffColorFilter(
-                CommonUtils().getAndroidThemeColor(requireContext(), com.google.android.material.R.attr.colorOnSurface),
-                PorterDuff.Mode.MULTIPLY
+            passengerCapacitySpinnerText.setTextColor(CommonUtils().getAndroidThemeColor(requireContext(),
+                com.google.android.material.R.attr.colorOnSurface))
+
+            chooseCapacityImageButton.setColorFilter(
+                CommonUtils().getAndroidThemeColor(requireContext(),
+                    com.google.android.material.R.attr.colorOnSurface),
+                PorterDuff.Mode.SRC_IN
             )
         }
     }

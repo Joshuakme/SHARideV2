@@ -286,13 +286,13 @@ class Converters() {
     }
 
     // MESSAGE CONVERTERS
-    fun toMessage(map: Map<String, Any>): Message {
+    private fun toMessage(map: Map<String, Any>): Message {
         val messageId = map["messageId"] as String
         val senderID = map["senderId"] as String
         val text = map["text"] as String
         val timestamp = map["timestamp"] as Timestamp
-        val attachmentURL = map["attachmentURL"] as String
-        val readBy = map["messageId"] as List<String>
+        val attachmentURL = map["attachmentURL"] as String?
+        val readBy = map["readBy"] as List<String>?: emptyList()
         val messageType = MessageType.valueOf(map["messageType"] as String)
 
         return Message(

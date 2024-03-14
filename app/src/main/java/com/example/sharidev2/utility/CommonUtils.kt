@@ -52,8 +52,16 @@ class CommonUtils {
             return formatFirebaseTimestamp(date, dateFormat)
         }
 
+        fun formatDate(date: Timestamp, format: String): String {
+            return formatFirebaseTimestamp(date, format)
+        }
+
         fun formatTime(time: Timestamp): String {
             return formatFirebaseTimestamp(time, timeFormat)
+        }
+
+        fun formatTime(time: Timestamp, format: String): String {
+            return formatFirebaseTimestamp(time, format)
         }
 
         private fun formatFirebaseTimestamp(timestamp: com.google.firebase.Timestamp, pattern: String): String {
@@ -87,6 +95,18 @@ class CommonUtils {
     fun isToday(timestamp: com.google.firebase.Timestamp): Boolean {
         val calendar = Calendar.getInstance()
         val currentDate = calendar.time
+        val firebaseDate = timestamp.toDate()
+
+        // Compare year, month, and day of month
+        return calendar.get(Calendar.YEAR) == firebaseDate.year + 1900 &&
+                calendar.get(Calendar.MONTH) == firebaseDate.month &&
+                calendar.get(Calendar.DAY_OF_MONTH) == firebaseDate.date
+    }
+
+    fun isYesterday(timestamp: com.google.firebase.Timestamp): Boolean {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DAY_OF_MONTH, -1) // Subtract one day to get yesterday's date
+        val yesterdayDate = calendar.time
         val firebaseDate = timestamp.toDate()
 
         // Compare year, month, and day of month

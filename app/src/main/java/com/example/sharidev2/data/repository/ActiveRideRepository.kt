@@ -18,7 +18,7 @@ class ActiveRideRepository {
     // Firebase Instances
     private val firestore = FirebaseClient.firestore
 
-    private val currentUser = UserClient.currentUser()
+    private val currentUser = FirebaseClient.firebaseAuth.currentUser
     private val rideCollectionRef = firestore.collection("ride")
 
 

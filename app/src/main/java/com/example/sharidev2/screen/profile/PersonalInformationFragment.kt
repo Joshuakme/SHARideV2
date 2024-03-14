@@ -122,7 +122,7 @@ class PersonalInformationFragment : Fragment() {
         }
 
         viewModel.mobile.observe(viewLifecycleOwner) { mobile ->
-            binding.textPersonalInfoItemValueMobileNumber.text = "+60 " + mobile
+            binding.textPersonalInfoItemValueMobileNumber.text = formatPhoneNumberWithCountryCode(mobile)
         }
 
         viewModel.gender.observe(viewLifecycleOwner) { gender ->
@@ -203,5 +203,13 @@ class PersonalInformationFragment : Fragment() {
 
     fun isUri(imagePath: String): Boolean {
         return !isUrl(imagePath) // Assume that if it's not a URL, it's a URI
+    }
+
+
+    fun formatPhoneNumberWithCountryCode(phoneNumber: String): String {
+        val part1 = phoneNumber.substring(0, 3)
+        val part2 = phoneNumber.substring(3)
+
+        return "$part1 $part2"
     }
 }

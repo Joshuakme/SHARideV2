@@ -10,5 +10,7 @@ data class Chat (
     val members: List<String>? = null,
     val lastMessage: String? = null,
     val timestamp: Timestamp? = null,
-    var messages: MutableMap<String, Message>? = mutableMapOf()
+    var messages: MutableList<Message>? = mutableListOf(),
+    val rideId: String? = null,
+    var chatStatus: ChatStatus = ChatStatus.ACTIVE
 ) : Parcelable
