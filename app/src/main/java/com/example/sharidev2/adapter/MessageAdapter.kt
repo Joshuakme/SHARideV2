@@ -56,7 +56,7 @@ class MessageAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         // Bind data to views in the message item
         val message = messageList[position]
-        val currentDateLabel = getMessageDateLabel(message.timestamp!!)
+        val currentDateLabel = formatMessageDate(message.timestamp!!)
 
         val previousSender: String? = if (position > 0) messageList[position - 1].senderId else null
         val currentSender: String = message.senderId!!
@@ -68,7 +68,7 @@ class MessageAdapter(
             val viewHolder = holder
 
             if (lastDisplayedDateLabel != currentDateLabel) {
-                viewHolder.messageDateTitle.text = formatMessageDate(message.timestamp)
+                viewHolder.messageDateTitle.text = currentDateLabel
                 viewHolder.messageDateTitle.visibility = View.VISIBLE
 
                 lastDisplayedDateLabel = currentDateLabel
@@ -105,7 +105,7 @@ class MessageAdapter(
 
             // Check Date Label Visibility
             if (lastDisplayedDateLabel != currentDateLabel) {
-                viewHolder.messageDateTitle.text = formatMessageDate(message.timestamp)
+                viewHolder.messageDateTitle.text = currentDateLabel
                 viewHolder.messageDateTitle.visibility = View.VISIBLE
 
                 lastDisplayedDateLabel = currentDateLabel
@@ -215,21 +215,9 @@ class MessageAdapter(
             "Today"
         } else if(CommonUtils().isYesterday(date)) {
             "Yesterday"
-        }
-        else {
+        } else {
             CommonUtils.formatDate(date, "yyyy/MM/dd")
         }
     }
 
-    fun getMessageDateLabel(timestamp: Timestamp): String {
-
-        return when {
-            CommonUtils().isToday(timestamp) ->
-                "Today"
-
-            CommonUtils().isYesterday(timestamp) ->
-                "Yesterday"
-            else -> SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(timestamp.toDate())
-        }
-    }
 }

@@ -70,9 +70,11 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="24dp"
+                        android:layout_marginEnd="32dp"
                         android:layoutDirection="ltr"
                         android:orientation="vertical"
                         app:layout_constraintBottom_toBottomOf="@+id/card_profile_section_profile_image"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/card_profile_section_profile_image"
                         app:layout_constraintTop_toTopOf="@+id/card_profile_section_profile_image">
 
@@ -84,19 +86,20 @@
                             android:contentDescription="@string/placeholder_profile_user_display_name"
                             android:fontFamily="@font/poppins_semibold"
                             android:includeFontPadding="false"
-                            android:text="@string/placeholder_profile_user_display_name"
                             android:textColor="?attr/colorOnPrimary"
                             android:textSize="24sp" />
 
                         <TextView
                             android:id="@+id/text_profile_user_id"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:contentDescription="@string/placeholder_profile_user_userid"
+                            android:ellipsize="end"
                             android:fontFamily="@font/poppins"
                             android:includeFontPadding="false"
-                            android:text="@string/placeholder_profile_user_userid"
+                            android:maxEms="10"
+                            android:singleLine="true"
                             android:textColor="?android:attr/textColorSecondaryInverse"
                             android:textSize="14sp" />
                     </LinearLayout>

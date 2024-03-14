@@ -72,10 +72,13 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:paddingTop="8dp"
+            android:paddingBottom="8dp"
             app:layout_constraintBottom_toTopOf="@+id/ll_chat_bottom_nav"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ll_chat_nav" />
+            app:layout_constraintTop_toBottomOf="@+id/ll_chat_nav"
+            app:layout_constraintVertical_bias="0.0" />
 
         <LinearLayout
             android:id="@+id/ll_chat_bottom_nav"
@@ -89,7 +92,7 @@
             android:paddingTop="@dimen/ss_messages_chat_bottom_nav_height_padding"
             android:paddingEnd="@dimen/ss_messages_chat_bottom_nav_horizontal_padding"
             android:paddingBottom="@dimen/ss_messages_chat_bottom_nav_height_padding"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/cl_layout_messages_chat_attachment_container"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
@@ -157,17 +160,274 @@
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
-        <TableLayout
-            android:id="@+id/table_layout_messages_chat_attachment_container"
+        <!--  Chat: Attachment Option  -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_layout_messages_chat_attachment_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:background="?attr/colorSurfaceContainer"
+            android:paddingVertical="16dp"
             android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="parent"
             tools:visibility="gone">
 
-        </TableLayout>
+            <!--  Chat: Attachment Option Row 1  -->
+            <LinearLayout
+                android:id="@+id/linearLayout4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/ss_screen_width_margin"
+                android:layout_marginEnd="@dimen/ss_screen_width_margin"
+                android:gravity="fill_horizontal"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <!--  Chat: Attachment Option: Current Location  -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_chat_attachment_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="#00FFFFFF"
+                    app:strokeWidth="0dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <!--  Chat: Attachment Option: Option Icon  -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="55dp"
+                            android:layout_height="55dp"
+                            app:cardBackgroundColor="?attr/colorSurfaceDim"
+                            app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
+                            app:strokeWidth="0dp">
+
+                            <ImageView
+                                android:id="@+id/imageView8"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:padding="8dp"
+                                app:srcCompat="@drawable/baseline_location_on_24"
+                                app:tint="?attr/colorOnSurface" />
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <TextView
+                            android:id="@+id/textView8"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Location"
+                            android:textColor="?android:attr/textColorHint"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!--  Chat: Attachment Option: Album  -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_chat_attachment_album"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="#00FFFFFF"
+                    app:strokeWidth="0dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <!--  Chat: Attachment Option: Option Icon  -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="55dp"
+                            android:layout_height="55dp"
+                            app:cardBackgroundColor="?attr/colorSurfaceDim"
+                            app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
+                            app:strokeWidth="0dp">
+
+                            <ImageView
+                                android:id="@+id/imageView9"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:padding="10dp"
+                                app:srcCompat="@drawable/baseline_photo_24"
+                                app:tint="?attr/colorOnSurface" />
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <TextView
+                            android:id="@+id/textView9"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Album"
+                            android:textColor="?android:attr/textColorHint"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <!--  Chat: Attachment Option: Coming Soon1  -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_chat_attachment_coming_soon1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:visibility="invisible"
+                    app:strokeWidth="0dp"
+                    tools:visibility="invisible">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <!--  Chat: Attachment Option: Option Icon  -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="55dp"
+                            android:layout_height="55dp"
+                            app:cardBackgroundColor="?attr/colorSurfaceContainer"
+                            app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
+                            app:strokeWidth="0dp">
+
+                            <ImageView
+                                android:id="@+id/imageView10"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:padding="8dp"
+                                app:srcCompat="@drawable/baseline_location_on_24"
+                                app:tint="?attr/colorOnSurface" />
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <TextView
+                            android:id="@+id/textView10"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Location"
+                            android:textColor="?android:attr/textColorHint"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <!--  Chat: Attachment Option: Coming Soon2  -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_chat_attachment_coming_soon2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:visibility="invisible"
+                    app:strokeWidth="0dp"
+                    tools:visibility="invisible">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <!--  Chat: Attachment Option: Option Icon  -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="55dp"
+                            android:layout_height="55dp"
+                            app:cardBackgroundColor="?attr/colorSurfaceContainer"
+                            app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
+                            app:strokeWidth="0dp">
+
+                            <ImageView
+                                android:id="@+id/imageView11"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:padding="8dp"
+                                app:srcCompat="@drawable/baseline_location_on_24"
+                                app:tint="?attr/colorOnSurface" />
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <TextView
+                            android:id="@+id/textView11"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Location"
+                            android:textColor="?android:attr/textColorHint"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+
+            <!--  Chat: Attachment Option Row 2  -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/ss_screen_width_margin"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="@dimen/ss_screen_width_margin"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
+
+                <!--  Chat: Attachment Option: Coming Soon3  -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_chat_attachment_coming_soon3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:visibility="invisible"
+                    app:strokeWidth="0dp"
+                    tools:visibility="invisible">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <!--  Chat: Attachment Option: Option Icon  -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="55dp"
+                            android:layout_height="55dp"
+                            app:cardBackgroundColor="?attr/colorSurfaceContainer"
+                            app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
+                            app:strokeWidth="0dp">
+
+                            <ImageView
+                                android:id="@+id/imageView12"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:padding="8dp"
+                                app:srcCompat="@drawable/baseline_location_on_24"
+                                app:tint="?attr/colorOnSurface" />
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <TextView
+                            android:id="@+id/textView12"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Location"
+                            android:textColor="?android:attr/textColorHint"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

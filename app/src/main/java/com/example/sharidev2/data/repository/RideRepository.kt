@@ -43,6 +43,7 @@ class RideRepository() {
             try {
                 if (currentUser != null) {
                     val driverUser = FirebaseClient.getUserFromUid(ride.driver.userUid!!)
+                    val adminUser = FirebaseClient.getUserFromUid("admin")
 
 
                     ride.driver.user = driverUser
@@ -50,7 +51,7 @@ class RideRepository() {
 
                     val rideId = rideCollectionRef.document().id
 
-                    val newChat = createEmptyChat(rideId, "Ride to ${ride.destination.name}", currentUser.photoUrl)
+                    val newChat = createEmptyChat(rideId, "Ride to ${ride.destination.name}", adminUser.photoUri)
 
 
                     val newChatHashMap = hashMapOf(
@@ -133,59 +134,34 @@ class RideRepository() {
                 val chatId = firestore.collection("chat").document().id
 
                 val messages = mutableListOf<Message>()
-                val messagesMap = mutableListOf<HashMap<String, Any?>>()
                 val welcomeChatMessage = "Welcome to SHARide! Start your chat here."
 
                 val now = Timestamp.now()
 
-                val wlcMessage = Message(
-                    UUID.randomUUID().toString(),
-                    "admin",
-                    "Admin",
-                    welcomeChatMessage,
-                    now,
-                    attachmentURL = null,
-                    emptyList(),
-                    MessageType.Text,
-                    if(photoUri != null) photoUri else null
-                )
-
                 messages.add(
-                    wlcMessage
-                )
-
-                messagesMap.add(
-                    hashMapOf(
-                        "messageId" to wlcMessage.messageId,
-                        "senderId" to wlcMessage.senderId,
-                        "text" to wlcMessage.text,
-                        "timestamp" to now,
-                        "readBy" to wlcMessage.readBy,
-                        "attachmentURL" to wlcMessage.attachmentURL,
-                        "messageType" to wlcMessage.messageType,
+                    Message(
+                        UUID.randomUUID().toString(),
+                        "admin",
+                        "Admin",
+                        welcomeChatMessage,
+                        now,
+                        attachmentURL = null,
+                        emptyList(),
+                        MessageType.Text,
+                        if(photoUri != null) photoUri else null
                     )
-                )
-
-                val chatHashMap = hashMapOf(
-                    "chatId" to chatId,
-                    "chatTitle" to rideName,
-                    "members" to listOf(currentUser?.uid!!),
-                    "lastMessage" to welcomeChatMessage,
-                    "timestamp" to now,
-                    "messages" to messagesMap,
-                    "rideId" to rideId,
-                    "chatStatus" to ChatStatus.ACTIVE
                 )
 
                 val chat = Chat(
                     chatId,
                     rideName,
-                    listOf(currentUser.uid),
+                    listOf(currentUser!!.uid),
                     welcomeChatMessage,
                     now,
                     messages,
                     rideId
                 )
+                val chatHashMap = converters.toChatHashMap(chat)
 
                 firestore.collection("chat").document(chatId)
                     .set(chatHashMap)

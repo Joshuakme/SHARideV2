@@ -1,5 +1,6 @@
 package com.example.sharidev2.screen.navigation
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +29,8 @@ class MessagesFragment : Fragment() {
     private val chatViewModel: ChatViewModel by viewModels()
     private val currentUser = FirebaseClient.firebaseAuth.currentUser
 
+    private lateinit var context: Context
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -35,6 +38,15 @@ class MessagesFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding =  DataBindingUtil.inflate(inflater, R.layout.fragment_messages, container, false)
+
+
+        if(isAdded) {
+            context = requireContext()
+        } else {
+            if (activity != null) {
+                context = requireActivity().applicationContext
+            }
+        }
 
 
         // ELEMENT VARIABLES
@@ -62,7 +74,7 @@ class MessagesFragment : Fragment() {
                         })
 
                         chatsRecyclerView.adapter = adapter
-                        chatsRecyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+                        chatsRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 
                         loadingMessages(Constants.UI_DATA_SUCCESS)
                     } else {

@@ -323,6 +323,26 @@ class Converters() {
         )
     }
 
+
+    fun toChatHashMap(chat: Chat): HashMap<String, Any?> {
+        val messageMapList = mutableListOf<HashMap<String, Any?>>()
+
+        for(message in chat.messages!!) {
+            messageMapList.add(toMessageHashmap(message))
+        }
+
+        return hashMapOf(
+            "chatId" to chat.chatId,
+            "chatTitle" to chat.chatTitle,
+            "members" to chat.members,
+            "lastMessage" to chat.lastMessage,
+            "timestamp" to chat.timestamp,
+            "messages" to messageMapList,
+            "rideId" to chat.rideId,
+            "chatStatus" to chat.chatStatus,
+        )
+    }
+
     fun toChatHashMap(chat: Chat, lastMessage: String): HashMap<String, Any?> {
         return hashMapOf(
             "chatId" to chat.chatId,
@@ -375,6 +395,34 @@ class Converters() {
         }
 
         return messageList
+    }
+
+    fun toMessageHashmap(message: Message): HashMap<String, Any?> {
+        return hashMapOf(
+            "messageId" to message.messageId,
+            "senderId" to message.senderId,
+            "senderName" to message.senderName,
+            "text" to message.text,
+            "timestamp" to Timestamp.now(),
+            "readBy" to message.readBy,
+            "attachmentURL" to message.attachmentURL,
+            "messageType" to message.messageType,
+            "photoUrl" to message.photoUrl
+        )
+    }
+
+    fun toMessageListHashmap(message: Message): HashMap<String, Any?> {
+        return hashMapOf(
+            "messageId" to message.messageId,
+            "senderId" to message.senderId,
+            "senderName" to message.senderName,
+            "text" to message.text,
+            "timestamp" to Timestamp.now(),
+            "readBy" to message.readBy,
+            "attachmentURL" to message.attachmentURL,
+            "messageType" to message.messageType,
+            "photoUrl" to message.photoUrl
+        )
     }
 
 

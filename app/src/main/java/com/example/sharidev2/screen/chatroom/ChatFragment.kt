@@ -1,8 +1,6 @@
 package com.example.sharidev2.screen.chatroom
 
 import android.content.Context
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -16,19 +14,16 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
-import com.example.sharidev2.adapter.ChatAdapter
 import com.example.sharidev2.adapter.MessageAdapter
 import com.example.sharidev2.data.model.Chat
 import com.example.sharidev2.databinding.FragmentChatBinding
 import com.example.sharidev2.data.model.Message
-import com.example.sharidev2.data.model.MessageType
-import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.viewmodel.ChatViewModel
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.launch
 
 
@@ -37,8 +32,12 @@ class ChatFragment : Fragment() {
     private lateinit var binding: FragmentChatBinding
     private val chatViewModel: ChatViewModel by viewModels()
     private lateinit var chat: Chat
+    private var messageAdapter: MessageAdapter? = null
 
+    private lateinit var view: View
     private lateinit var context: Context
+
+    private var expandAttachment: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,6 +54,7 @@ class ChatFragment : Fragment() {
                 context = requireActivity().applicationContext
             }
         }
+        view = binding.root
 
         // DATA
         try {
@@ -68,6 +68,7 @@ class ChatFragment : Fragment() {
         val navBackButton = binding.imgBtnChatBack
         val chatTitle = binding.textChatTitle
         val chatMessagesRecyclerView = binding.recyclerViewChatMessages
+        val chatMoreOptionBtn = binding.imgBtnMessagesChatMoreOption
         val chatTextInput = binding.editTextMessagesChatInput
         val chatSendButton = binding.cardChatSendBtn
         val chatTextInputContainer = binding.llChatBottomNav
@@ -83,12 +84,16 @@ class ChatFragment : Fragment() {
             chatViewModel.startListeningForChatUpdates(chat.chatId!!, object: (Chat?) -> Unit {
                 override fun invoke(latestChat: Chat?) {
                     if(latestChat != null) {
+                        chatViewModel.setActiveChat(latestChat)
                         chatTitle.text = latestChat.chatTitle
 
                         // Set Up RecyclerView
-                        val chatAdapter = MessageAdapter(requireContext(), latestChat.messages!!.toList())
+                        messageAdapter = MessageAdapter(context, latestChat.messages!!.toList())
                         chatMessagesRecyclerView.layoutManager = LinearLayoutManager(context)
-                        chatMessagesRecyclerView.adapter = chatAdapter
+                        chatMessagesRecyclerView.adapter = messageAdapter
+                        chatMessagesRecyclerView.scrollToPosition(messageAdapter!!.itemCount-1)
+
+                        // TODO: Set Unread Badge
                     } else {
                         findNavController().popBackStack()
                     }
@@ -98,10 +103,25 @@ class ChatFragment : Fragment() {
 
 
         // EVENT LISTENERS
+        chatMessagesRecyclerView.viewTreeObserver.addOnGlobalLayoutListener {
+            val heightDiff = chatMessagesRecyclerView.rootView.height - chatMessagesRecyclerView.height
+            if (heightDiff > 100) { // Adjust this threshold as needed
+                // Keyboard is visible
+                if(messageAdapter != null) {
+                    // When user pop up keyboard, scroll recycler view to bottom
+                    chatMessagesRecyclerView.scrollToPosition(messageAdapter!!.itemCount-1)
+                }
+            } else {
+                // Keyboard is hidden
+
+            }
+        }
+
         // Navigate back to Messages Fragment
         navBackButton.setOnClickListener {
             findNavController().popBackStack()
         }
+
 
         // Chat Text Input Height Adjust
         chatTextInput.addTextChangedListener(object : TextWatcher {
@@ -142,6 +162,12 @@ class ChatFragment : Fragment() {
         })
 
 
+
+        // Attachment (More Option) Button
+        chatMoreOptionBtn.setOnClickListener {
+            expandAttachmentDrawer(!expandAttachment)
+        }
+
         chatSendButton.setOnClickListener {
 
             val message = chatTextInput.text.toString()
@@ -162,13 +188,15 @@ class ChatFragment : Fragment() {
 
 
     private fun loadingSendMessage(status: Int) {
+
         val chatTextInput = binding.editTextMessagesChatInput
         val chatSendButtonIcon = binding.imgBtnMessagesChatSend
         val chatSendButtonLoading = binding.progressBarChatSendLoading
 
         when(status) {
             Constants.UI_DATA_LOADING -> {
-                enableSendButton(false)
+                loadingSendButton()
+
                 chatSendButtonIcon.visibility = View.GONE
                 chatSendButtonLoading.visibility = View.VISIBLE
             }
@@ -185,7 +213,6 @@ class ChatFragment : Fragment() {
 
     private fun enableSendButton(enable: Boolean) {
         val chatSendButton = binding.cardChatSendBtn
-        val chatSendButtonIcon = binding.imgBtnMessagesChatSend
 
         if(enable) {
             chatSendButton.isEnabled = true
@@ -197,6 +224,39 @@ class ChatFragment : Fragment() {
             chatSendButton.isClickable = false
 
             chatSendButton.visibility = View.GONE
+        }
+    }
+
+    private fun loadingSendButton() {
+        val chatSendButton = binding.cardChatSendBtn
+
+        chatSendButton.isEnabled = false
+        chatSendButton.isClickable = false
+        chatSendButton.visibility = View.VISIBLE
+    }
+
+    private fun expandAttachmentDrawer(expand: Boolean) {
+        expandAttachment = expand
+
+        val chatMoreOptionBtn = binding.imgBtnMessagesChatMoreOption
+        val chatAttachmentContainer = binding.clLayoutMessagesChatAttachmentContainer
+        val chatTextInput = binding.editTextMessagesChatInput
+
+
+        if(expand) {
+            val keyboardDrawable = context.getDrawable(R.drawable.baseline_keyboard_24)
+            chatMoreOptionBtn.setImageDrawable(keyboardDrawable)
+
+            chatAttachmentContainer.visibility = View.VISIBLE
+
+            CommonUtils().closeKeyboard(chatTextInput.rootView, context)
+        } else {
+            val plusDrawable = context.getDrawable(R.drawable.baseline_add_24)
+            chatMoreOptionBtn.setImageDrawable(plusDrawable)
+
+            chatAttachmentContainer.visibility = View.GONE
+
+            CommonUtils().openKeyboard(chatTextInput, context)
         }
     }
 }

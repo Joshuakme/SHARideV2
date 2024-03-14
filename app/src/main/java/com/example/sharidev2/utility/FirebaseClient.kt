@@ -297,21 +297,21 @@ object FirebaseClient {
                 val datetime = document.getTimestamp("datetime")!!
                 val driver = converters.toDriver(document.get("driver") as Map<String, Any>)
 
-                    // Passenger Sub-Collection
-                    val passengersSnapshot = document.reference.collection("passengers")
-                        .get()
-                        .await()
-                    val passengersMap = mutableMapOf<String, Passenger>()
+                // Passenger Sub-Collection
+                val passengersSnapshot = document.reference.collection("passengers")
+                    .get()
+                    .await()
+                val passengersMap = mutableMapOf<String, Passenger>()
 
-                    if(passengersSnapshot != null && !passengersSnapshot.isEmpty) {
-                        for(passengerDoc in passengersSnapshot.documents) {
-                            val passengerData: Map<String, Any>? = passengerDoc.data
+                if(passengersSnapshot != null && !passengersSnapshot.isEmpty) {
+                    for(passengerDoc in passengersSnapshot.documents) {
+                        val passengerData: Map<String, Any>? = passengerDoc.data
 
-                            if(passengerData != null) {
-                                passengersMap[passengerDoc.id] = converters.toPassenger(passengerData)
-                            }
+                        if(passengerData != null) {
+                            passengersMap[passengerDoc.id] = converters.toPassenger(passengerData)
                         }
                     }
+                }
 
                 val rideStatus = RideStatus.valueOf(document.getString("rideStatus") ?: "")
                 val startTime = document.getTimestamp("startTime")

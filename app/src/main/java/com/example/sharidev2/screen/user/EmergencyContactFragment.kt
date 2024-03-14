@@ -14,6 +14,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.adapter.ContactAdapter
 import com.example.sharidev2.databinding.FragmentEmergencyContactBinding
@@ -37,6 +38,11 @@ class EmergencyContactFragment : Fragment(),
         val emergencyContactProgressBar = binding.progressBarEmergencyContact
         val emergencyContactsRecyclerView = binding.recyclerViewEmergencyContacts
         var adapter: ContactAdapter
+
+
+        // LAYOUT SETTINGS
+        (activity as MainActivity).setBottomNavVisible(false)
+
 
         // Observe the LiveData from the ViewModel
         viewModel.emergencyContactList.observe(viewLifecycleOwner) { emergencyContactList ->

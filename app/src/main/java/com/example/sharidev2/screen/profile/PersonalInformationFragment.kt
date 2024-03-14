@@ -23,6 +23,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentPersonalInformationBinding
+import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.FirebaseClient
 import com.example.sharidev2.viewmodel.PersonalInfoViewModel
 import com.github.dhaval2404.imagepicker.ImagePicker
@@ -83,6 +84,7 @@ class PersonalInformationFragment : Fragment() {
         // ELEMENT VARIABLES
         val backBtn = binding.imgBtnProfilePersonalInfoNavBack
         val displayName = binding.cardPersonalInfoDisplayName
+        val userId = binding.textPersonalInfoItemValueUserId
         val gender = binding.cardPersonalInfoGender
         val mobileNumber = binding.cardPersonalInfoMobileNumber
         val driverLicense = binding.cardPersonalInfoDrivingLicense
@@ -130,7 +132,7 @@ class PersonalInformationFragment : Fragment() {
             binding.textPersonalInfoItemValueGender.text = gender
         }
 
-        binding.textPersonalInfoItemValueUserId.text = FirebaseAuth.getInstance().currentUser?.uid
+        userId.text = FirebaseAuth.getInstance().currentUser?.uid
 
 
 
@@ -158,6 +160,9 @@ class PersonalInformationFragment : Fragment() {
         }
 
 
+        userId.setOnClickListener {
+            CommonUtils().copyLinkToClipboard(requireContext(), userId.text.toString())
+        }
 
         // Observe the selected image URI and update the ImageView when it changes
         viewModel.selectedImageUri.observe(viewLifecycleOwner) { uri ->

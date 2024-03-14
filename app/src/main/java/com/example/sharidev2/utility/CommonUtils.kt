@@ -14,6 +14,7 @@ import android.net.Uri
 import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -269,5 +270,13 @@ class CommonUtils {
     }
 
 
+    fun openKeyboard(view: View, context: Context) {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+    }
 
+    fun openKeyboard(editText: EditText, context: Context) {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(editText.rootView, InputMethodManager.SHOW_IMPLICIT)
+    }
 }
