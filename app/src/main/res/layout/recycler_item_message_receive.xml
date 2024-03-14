@@ -32,8 +32,8 @@
         app:layout_constraintTop_toBottomOf="@+id/text_message_receive_timestamp_title">
 
         <com.google.android.material.card.MaterialCardView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_marginEnd="8dp"
             app:cardCornerRadius="100000dp"
             app:strokeWidth="0dp">
@@ -41,10 +41,10 @@
 
             <ImageView
                 android:id="@+id/img_message_receive_user"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/baseline_account_circle_24"
-                app:tint="?attr/colorOnBackground" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/baseline_account_circle_24" />
         </com.google.android.material.card.MaterialCardView>
 
 
@@ -54,33 +54,48 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
+            android:clipToPadding="true"
             app:cardBackgroundColor="?attr/colorSurfaceContainerHigh"
             app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
-            app:contentPaddingTop="8dp"
             app:strokeWidth="0dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:clipChildren="true"
+                android:clipToPadding="true"
                 android:paddingStart="12dp"
-                android:paddingEnd="12dp">
+                android:paddingTop="4dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="6dp">
+
+                <TextView
+                    android:id="@+id/text_message_item_receive_username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textColor="?attr/colorOutline"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/text_message_receive"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="8dp"
                     android:includeFontPadding="true"
                     android:maxEms="13"
                     android:maxLines="8"
                     android:minEms="1"
                     android:paddingStart="1dp"
-                    android:paddingBottom="6dp"
+                    android:paddingBottom="4dp"
                     android:text="awjdn anwd kanud na k   wn   k d a   wj dn   k a  j n  d k ja wn wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/text_message_receive_time"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_message_item_receive_username"
                     app:layout_constraintWidth_min="wrap"
                     app:layout_wrapBehaviorInParent="included" />
 
@@ -91,7 +106,7 @@
                     android:text="5: 00"
                     android:textColor="?android:attr/textColorHint"
                     android:textSize="11sp"
-                    android:translationY="4dp"
+                    android:translationY="2dp"
                     app:layout_constraintBottom_toBottomOf="@+id/text_message_receive"
                     app:layout_constraintEnd_toEndOf="parent" />
 

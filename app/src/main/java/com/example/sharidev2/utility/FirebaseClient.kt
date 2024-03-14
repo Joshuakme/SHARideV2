@@ -181,6 +181,7 @@ object FirebaseClient {
             }
 
             val chatId = chatRef.id
+            val chatTitle = chatData["chatTitle"] as? String ?: ""
             val members = chatData["members"] as? List<String> ?: emptyList()
             val lastMessage = chatData["lastMessage"] as? String ?: ""
             val timestamp = chatData["timestamp"] as? Timestamp
@@ -213,6 +214,7 @@ object FirebaseClient {
 
             return@withContext Chat(
                 chatId,
+                chatTitle,
                 members,
                 lastMessage,
                 timestamp,

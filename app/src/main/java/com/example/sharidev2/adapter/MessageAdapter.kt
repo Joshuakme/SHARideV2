@@ -1,14 +1,18 @@
 package com.example.sharidev2.adapter
 
 import android.content.Context
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.view.marginTop
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
+import com.example.sharidev2.GlideApp
 import com.example.sharidev2.R
 import com.example.sharidev2.data.model.Message
 import com.example.sharidev2.utility.CommonUtils
@@ -16,7 +20,6 @@ import com.example.sharidev2.utility.Converters
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
@@ -24,10 +27,10 @@ import java.util.concurrent.TimeUnit
 class MessageAdapter(
     private val context: Context,
     private val messageList: List<Message>
-) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-        private var lastDisplayedDateLabel: String? = null
+    private var lastDisplayedDateLabel: String? = null
+    private var lastDisplayedUsernameLabel: String? = null
 
 
     private val ITEM_RECEIVE = 1
@@ -62,7 +65,7 @@ class MessageAdapter(
 
         if(holder is SentViewHolder) {
             // render sent message
-            val viewHolder = holder as SentViewHolder
+            val viewHolder = holder
 
             if (lastDisplayedDateLabel != currentDateLabel) {
                 viewHolder.messageDateTitle.text = formatMessageDate(message.timestamp)
@@ -100,6 +103,7 @@ class MessageAdapter(
             // render received message
             val viewHolder = holder as ReceivedViewHolder
 
+            // Check Date Label Visibility
             if (lastDisplayedDateLabel != currentDateLabel) {
                 viewHolder.messageDateTitle.text = formatMessageDate(message.timestamp)
                 viewHolder.messageDateTitle.visibility = View.VISIBLE
@@ -107,6 +111,57 @@ class MessageAdapter(
                 lastDisplayedDateLabel = currentDateLabel
             } else {
                 viewHolder.messageDateTitle.visibility = View.GONE
+            }
+
+            // Check if same sender and adjust UI
+            if(isSameSender) {
+                // adjust margin between message item
+                val layoutParams = viewHolder.messageItemLL.layoutParams as ViewGroup.MarginLayoutParams
+                layoutParams.setMargins(
+                    layoutParams.leftMargin,
+                    Converters().toPixel(context, 4f),
+                    layoutParams.rightMargin,
+                    layoutParams.bottomMargin
+                )
+                viewHolder.messageItemLL.layoutParams = layoutParams
+
+
+                // Check user profile image visibility
+                viewHolder.messageUserImg.visibility = View.INVISIBLE
+                // Check message username visibility
+                viewHolder.messageItemUsername.visibility = View.GONE
+            } else {
+                // Adjust margin between message item
+                val layoutParams = viewHolder.messageItemLL.layoutParams as ViewGroup.MarginLayoutParams
+                layoutParams.setMargins(
+                    layoutParams.leftMargin,
+                    Converters().toPixel(context, 16f),
+                    layoutParams.rightMargin,
+                    layoutParams.bottomMargin
+                )
+                viewHolder.messageItemLL.layoutParams = layoutParams
+
+
+                // Check user profile image visibility
+                if(message.photoUrl != null) {
+                    GlideApp.with(context)
+                        .load(message.photoUrl)
+                        .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.AUTOMATIC)) // Disable disk caching
+                        .into(viewHolder.messageUserImg)
+
+                    viewHolder.messageUserImg.clearColorFilter()
+                } else {
+                    val defaultUserImg = context.getDrawable(R.drawable.baseline_account_circle_24)
+                    defaultUserImg!!.colorFilter = PorterDuffColorFilter(
+                        CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorOnBackground),
+                        PorterDuff.Mode.SRC_IN
+                    )
+                    viewHolder.messageUserImg.setImageDrawable(defaultUserImg)
+                }
+                viewHolder.messageUserImg.visibility = View.VISIBLE
+                // Check message username visibility
+                viewHolder.messageItemUsername.text = message.senderName
+                viewHolder.messageItemUsername.visibility = View.VISIBLE
             }
 
 
@@ -139,11 +194,12 @@ class MessageAdapter(
     }
 
     class ReceivedViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val messageItemLL = itemView.findViewById<LinearLayout>(R.id.ll_message_item_receive)
-        val messageUserImg = itemView.findViewById<ImageView>(R.id.img_message_receive_user)
-        val messageDateTitle = itemView.findViewById<TextView>(R.id.text_message_receive_timestamp_title)
-        val receivedMessage = itemView.findViewById<TextView>(R.id.text_message_receive)
-        val messageTime = itemView.findViewById<TextView>(R.id.text_message_receive_time)
+        val messageItemUsername: TextView = itemView.findViewById(R.id.text_message_item_receive_username)
+        val messageItemLL: LinearLayout = itemView.findViewById(R.id.ll_message_item_receive)
+        val messageUserImg: ImageView = itemView.findViewById(R.id.img_message_receive_user)
+        val messageDateTitle: TextView = itemView.findViewById(R.id.text_message_receive_timestamp_title)
+        val receivedMessage: TextView = itemView.findViewById(R.id.text_message_receive)
+        val messageTime: TextView = itemView.findViewById(R.id.text_message_receive_time)
     }
 
 

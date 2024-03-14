@@ -28,8 +28,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/ss_messages_chat_nav_back_right_padding"
                 android:background="#00FFFFFF"
-                android:scaleX="@dimen/ss_fragment_nav_icon_scale"
-                android:scaleY="@dimen/ss_fragment_nav_icon_scale"
                 android:src="@drawable/baseline_arrow_back_24"
                 app:tint="?attr/colorOnPrimary" />
 
@@ -38,8 +36,10 @@
                 android:layout_width="@dimen/ss_messages_chat_nav_user_pic"
                 android:layout_height="@dimen/ss_messages_chat_nav_user_pic"
                 android:layout_marginEnd="@dimen/ss_messages_chat_nav_user_pic_right_padding"
+                android:visibility="gone"
                 app:cardBackgroundColor="#00FFFFFF"
-                app:strokeWidth="0dp">
+                app:strokeWidth="0dp"
+                tools:visibility="gone">
 
                 <ImageView
                     android:id="@+id/img_chat_nav_user_profile"
@@ -51,13 +51,18 @@
             </com.google.android.material.card.MaterialCardView>
 
             <TextView
-                android:id="@+id/text_chat_nav_user_name"
-                android:layout_width="wrap_content"
+                android:id="@+id/text_chat_title"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:ellipsize="end"
                 android:fontFamily="@font/poppins_medium"
-                android:text="@string/placeholder_messages_chat_username"
+                android:gravity="center_vertical"
+                android:singleLine="true"
                 android:textColor="?attr/colorOnPrimary"
-                android:textSize="@dimen/fs_messages_chat_nav_username" />
+                android:textSize="17sp"
+                android:translationY="2dp"
+                tools:text="Ride to xxx" />
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -104,6 +109,7 @@
                 android:id="@+id/edit_text_messages_chat_input"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/ss_messages_chat_bottom_nav_item_width_margin"
                 android:layout_weight="1"
                 android:autofillHints="@string/messages_messages_chat_input_hint"
                 android:background="@drawable/background_rounded"
@@ -118,17 +124,18 @@
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_chat_send_btn"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/ss_messages_chat_bottom_nav_item_width_margin"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
                 app:cardBackgroundColor="?attr/colorPrimary"
                 app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
                 app:contentPadding="7dp"
-                app:strokeWidth="0dp">
+                app:strokeWidth="0dp"
+                tools:visibility="gone">
 
                 <ImageButton
                     android:id="@+id/img_btn_messages_chat_send"
-                    android:layout_width="28dp"
-                    android:layout_height="match_parent"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:backgroundTint="#00FFFFFF"
                     android:clickable="false"
                     android:contextClickable="false"
@@ -139,12 +146,13 @@
                 <ProgressBar
                     android:id="@+id/progress_bar_chat_send_loading"
                     style="?android:attr/progressBarStyle"
-                    android:layout_width="30dp"
-                    android:layout_height="match_parent"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:clickable="false"
                     android:contextClickable="false"
                     android:indeterminateTint="?attr/colorOnSurfaceInverse"
                     android:longClickable="false"
+                    android:visibility="gone"
                     tools:visibility="gone" />
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>

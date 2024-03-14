@@ -4,12 +4,13 @@ import android.util.Log
 import com.example.sharidev2.data.model.Chat
 import com.example.sharidev2.data.model.ChatStatus
 import com.example.sharidev2.data.model.Message
+import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.Converters
 import com.example.sharidev2.utility.FirebaseClient
-import com.example.sharidev2.utility.UserClient
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -30,20 +31,14 @@ class ChatRepository {
             try {
                 if(currentUser != null) {
                     message.senderId = currentUser.uid
+                    message.senderName = currentUser.displayName
+                    message.photoUrl = currentUser.photoUrl
 
                     if(oldChat.messages != null) {
                         oldChat.messages!!.add(message)
                     }
 
-
-                    val chatHashMap = hashMapOf(
-                        "chatId" to oldChat.chatId,
-                        "members" to oldChat.members,
-                        "lastMessage" to message.text,
-                        "messages" to oldChat.messages,
-                        "rideId" to oldChat.rideId,
-                        "chatStatus" to oldChat.chatStatus
-                    )
+                    val chatHashMap = converters.toChatHashMap(oldChat, message.text)
 
 
                     chatCollectionRef.document(chatId)
@@ -71,20 +66,13 @@ class ChatRepository {
                 if(currentUser != null) {
                     val chatQuerySnapshot = chatCollectionRef
                         .whereArrayContains("members", currentUser.uid)
+                        .orderBy("timestamp", Query.Direction.DESCENDING)
                         .get()
                         .await()
 
                     for(document in chatQuerySnapshot.documents) {
 
-                        val chat = Chat(
-                            chatId = document.getString("chatId"),
-                            members = document.get("members") as List<String>,
-                            lastMessage = document.getString("lastMessage"),
-                            timestamp = document.getTimestamp("timestamp"),
-                            messages = converters.toMessageList(document.get("messages") as List<Map<String, Any>>).toMutableList(),
-                            rideId = document.getString("rideId"),
-                            chatStatus = ChatStatus.valueOf(document.getString("chatStatus")!!)
-                        )
+                        val chat = converters.toChatFull(document)
 
                         chatList.add(chat)
                     }
@@ -100,7 +88,7 @@ class ChatRepository {
         }
     }
 
-    fun listenForUserChatsUpdates(userUid: String, listener: (List<Chat>) -> Unit): ListenerRegistration {
+    fun listenForUserChatListUpdates(userUid: String, listener: (List<Chat>) -> Unit): ListenerRegistration {
         val userChatsRef = chatCollectionRef.whereArrayContains("members", userUid)
 
         return userChatsRef.addSnapshotListener { snapshots, error ->
@@ -113,15 +101,7 @@ class ChatRepository {
                 val chatData = snapshot.data
 
                 if (chatData != null) {
-                    Chat(
-                        chatId = snapshot.id,
-                        members = chatData["members"] as List<String>,
-                        lastMessage = chatData["lastMessage"] as String,
-                        timestamp = chatData["timestamp"] as Timestamp,
-                        messages = converters.toMessageList(chatData["messages"] as List<Map<String, Any>>).toMutableList(),
-                        rideId = chatData["rideId"] as String,
-                        chatStatus = ChatStatus.valueOf(chatData["chatStatus"] as String)
-                    )
+                    converters.toChatFull(chatData)
                 } else {
                     null
                 }
@@ -131,4 +111,27 @@ class ChatRepository {
         }
     }
 
+    fun listenForChatUpdates(chatId: String, listener: (Chat?) -> Unit): ListenerRegistration {
+        val userChatsRef = chatCollectionRef.document(chatId)
+
+        return userChatsRef.addSnapshotListener { snapshots, error ->
+            if (error != null) {
+                // Handle error
+                return@addSnapshotListener
+            }
+
+
+            if(snapshots != null) {
+                val chatData = snapshots.data
+
+                val chat = if (chatData != null) {
+                    converters.toChatFull(chatData)
+                } else {
+                    null
+                }
+
+                listener(chat)
+            }
+        }
+    }
 }

@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.TypedValue
 import com.example.sharidev2.data.model.Chat
+import com.example.sharidev2.data.model.ChatStatus
 import com.example.sharidev2.data.model.Contact
 import com.example.sharidev2.data.model.Driver
 import com.example.sharidev2.data.model.Gender
@@ -23,6 +24,7 @@ import com.example.sharidev2.data.model.VehicleDoc
 import com.example.sharidev2.data.model.VehicleType
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.gson.Gson
 
 
@@ -272,36 +274,95 @@ class Converters() {
     // CHAT CONVERTERS
     fun toChat(map: Map<String, Any>): Chat {
         val chatId = map["chatId"] as String
+        val chatTitle = map["chatTitle"] as String
         val members = map["members"] as List<String>
         val lastMessage = map["lastMessage"] as String
         val timestamp = map["timestamp"] as Timestamp
 
         return Chat(
             chatId,
+            chatTitle,
             members,
             lastMessage,
             timestamp
         )
     }
 
+    fun toChatFull(map: Map<String, Any>): Chat {
+        val chatId = map["chatId"] as String
+        val chatTitle = map["chatTitle"] as String
+        val members = map["members"] as List<String>
+        val lastMessage = map["lastMessage"] as String
+        val timestamp = map["timestamp"] as Timestamp
+        val messages = toMessageList(map["messages"] as List<Map<String, Any>>).toMutableList()
+        val rideId = map["rideId"] as String
+        val chatStatus = ChatStatus.valueOf(map["chatStatus"] as String)
+
+        return Chat(
+            chatId,
+            chatTitle,
+            members,
+            lastMessage,
+            timestamp,
+            messages,
+            rideId,
+            chatStatus
+        )
+    }
+
+    fun toChatFull(document: DocumentSnapshot): Chat {
+        return Chat(
+            chatId = document.getString("chatId"),
+            chatTitle = document.getString("chatTitle"),
+            members = document.get("members") as List<String>,
+            lastMessage = document.getString("lastMessage"),
+            timestamp = document.getTimestamp("timestamp"),
+            messages =toMessageList(document.get("messages") as List<Map<String, Any>>).toMutableList(),
+            rideId = document.getString("rideId"),
+            chatStatus = ChatStatus.valueOf(document.getString("chatStatus")!!)
+        )
+    }
+
+    fun toChatHashMap(chat: Chat, lastMessage: String): HashMap<String, Any?> {
+        return hashMapOf(
+            "chatId" to chat.chatId,
+            "members" to chat.members,
+            "lastMessage" to lastMessage,
+            "messages" to chat.messages,
+            "rideId" to chat.rideId,
+            "chatStatus" to chat.chatStatus
+        )
+    }
+
+
     // MESSAGE CONVERTERS
     private fun toMessage(map: Map<String, Any>): Message {
         val messageId = map["messageId"] as String
         val senderID = map["senderId"] as String
+        val senderName = map["senderName"] as String
         val text = map["text"] as String
         val timestamp = map["timestamp"] as Timestamp
         val attachmentURL = map["attachmentURL"] as String?
         val readBy = map["readBy"] as List<String>
         val messageType = MessageType.valueOf(map["messageType"] as String)
 
+        val photoUrl = if(map["photoUrl"] != null) {
+            Uri.parse(map["photoUrl"] as String)
+        } else {
+            null
+        }
+
+
         return Message(
             messageId,
             senderID,
+            senderName,
             text,
             timestamp,
             attachmentURL,
             readBy,
-            messageType
+            messageType,
+            photoUrl
         )
     }
 

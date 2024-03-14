@@ -1,5 +1,6 @@
 package com.example.sharidev2.data.repository
 
+import android.net.Uri
 import android.util.Log
 import com.example.sharidev2.data.model.Chat
 import com.example.sharidev2.data.model.ChatStatus
@@ -43,12 +44,13 @@ class RideRepository() {
                 if (currentUser != null) {
                     val driverUser = FirebaseClient.getUserFromUid(ride.driver.userUid!!)
 
+
                     ride.driver.user = driverUser
                     Log.e("Ride Repository", "Create Ride: ${driverUser.displayName}")
 
                     val rideId = rideCollectionRef.document().id
 
-                    val newChat = createEmptyChat(rideId)
+                    val newChat = createEmptyChat(rideId, "Ride to ${ride.destination.name}", currentUser.photoUrl)
 
 
                     val newChatHashMap = hashMapOf(
@@ -125,7 +127,7 @@ class RideRepository() {
         }
     }
 
-    private suspend fun createEmptyChat(rideId: String): Chat {
+    private suspend fun createEmptyChat(rideId: String, rideName: String, photoUri: Uri?): Chat {
         return withContext(Dispatchers.IO) {
             try{
                 val chatId = firestore.collection("chat").document().id
@@ -138,12 +140,14 @@ class RideRepository() {
 
                 val wlcMessage = Message(
                     UUID.randomUUID().toString(),
+                    "admin",
                     "Admin",
                     welcomeChatMessage,
                     now,
                     attachmentURL = null,
                     emptyList(),
-                    MessageType.Text
+                    MessageType.Text,
+                    if(photoUri != null) photoUri else null
                 )
 
                 messages.add(
@@ -164,6 +168,7 @@ class RideRepository() {
 
                 val chatHashMap = hashMapOf(
                     "chatId" to chatId,
+                    "chatTitle" to rideName,
                     "members" to listOf(currentUser?.uid!!),
                     "lastMessage" to welcomeChatMessage,
                     "timestamp" to now,
@@ -174,6 +179,7 @@ class RideRepository() {
 
                 val chat = Chat(
                     chatId,
+                    rideName,
                     listOf(currentUser.uid),
                     welcomeChatMessage,
                     now,
@@ -199,7 +205,7 @@ class RideRepository() {
     suspend fun addPassenger(newPassenger: Passenger, rideId: String): Int {
         return withContext(Dispatchers.IO) {
             try {
-                val rideRef = firestore.collection("ride").document(rideId)
+                val rideRef = rideCollectionRef.document(rideId)
 
                 newPassenger.user = FirebaseClient.getCurrentUser()
 
@@ -216,6 +222,33 @@ class RideRepository() {
                 // Get the ride data
                 val rideData = rideRef.get().await().data
                 val driver = converters.toDriver(rideData?.get("driver") as Map<String, Any>)
+
+                // Add user into chatroom
+                val chatRef = firestore.collection("chat")
+
+                val chatQuerySnapshot = chatRef
+                                        .whereEqualTo("rideId", rideId)
+                                        .get()
+                                        .await()
+
+                if(!chatQuerySnapshot.isEmpty) {
+                    val chatDoc = chatQuerySnapshot.documents[1]
+                    val chatId = chatDoc.id
+
+                    val chatDocSnapshot = chatRef.
+                    document(chatId)
+                        .get()
+                        .await()
+
+                    val chatData = chatDocSnapshot.data
+
+                    if(chatData != null) {
+                        val chatMemberList = (chatData["members"] as List<String>).toMutableList()
+
+                        chatMemberList.add(currentUser!!.uid)
+                    }
+                }
+
 
                 if(driver.vehicle?.capacity != null) {
                     val vehicleCapacity = driver.vehicle.capacity.minus(1)

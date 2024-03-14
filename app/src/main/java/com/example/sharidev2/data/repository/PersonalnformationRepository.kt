@@ -4,6 +4,7 @@ import android.net.Uri
 import android.util.Log
 import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.FirebaseClient
+import com.google.firebase.auth.UserProfileChangeRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -21,6 +22,7 @@ class PersonalnformationRepository {
         return withContext(Dispatchers.IO) {
             if(currentUser != null) {
                 try {
+                    // Save to Firebase Storage
                     val imgRandomName = UUID.randomUUID()
                     // storage = /images/userUid/randomName
                     val userFileStorageRef = firebaseStorage.reference.child("${storagePath}/$imgRandomName")
@@ -33,6 +35,15 @@ class PersonalnformationRepository {
                         .document(currentUser.uid)
                         .update("photoUrl", imgDownloadUrl)
                         .await()
+
+
+                    // Save to FireAuth User
+                    val profileImgUpdate = UserProfileChangeRequest.Builder()
+                        .setPhotoUri(imgDownloadUrl)
+                        .build()
+
+                    currentUser.updateProfile(profileImgUpdate).await()
+
 
                     Constants.FIREBASE_REQUEST_SUCCESS
                 } catch (e: Exception) {

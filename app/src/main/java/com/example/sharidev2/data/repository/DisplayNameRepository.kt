@@ -1,7 +1,9 @@
 package com.example.sharidev2.data.repository
 
 import android.util.Log
+import com.example.sharidev2.data.model.Message
 import com.example.sharidev2.utility.Constants
+import com.example.sharidev2.utility.Converters
 import com.example.sharidev2.utility.FirebaseClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
@@ -38,6 +40,26 @@ class DisplayNameRepository() {
                         .build()
 
                     firebaseAuth.currentUser!!.updateProfile(profileUpdates).await()
+
+                    // Chat User
+                    val chatCollectionRef = firestore.collection("chat")
+                    val chatDocSnapshot = chatCollectionRef.get().await()
+
+                    for(document in chatDocSnapshot.documents) {
+                        val chatData = document.data
+
+                        if(chatData != null) {
+                            val messageList = Converters().toMessageList(chatData["messages"] as List<Map<String, Any>>).toMutableList()
+
+                            for(message in messageList) {
+                                if(message.senderId == currentUser.uid) {
+                                    message.senderName = newDisplayName
+                                }
+                            }
+
+                            document.reference.update("messages", messageList)
+                        }
+                    }
 
                     return@withContext Constants.FIREBASE_REQUEST_SUCCESS // SUCCESS
                 } catch (e: Exception) {

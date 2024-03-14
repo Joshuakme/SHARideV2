@@ -51,7 +51,7 @@ class ChatAdapter(
         val chat = chatList[position]
 
 
-        holder.chatTitle.text = chat.members?.get(0) ?: ""
+        holder.chatTitle.text = chat.chatTitle
         holder.chatLastMessage.text = chat.lastMessage
         holder.chatDate.text = formatChatDate(chat.messages?.last()?.timestamp?: Timestamp.now())
         holder.chatNewMessageBadgeText.visibility =  View.GONE
