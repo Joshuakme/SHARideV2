@@ -13,37 +13,36 @@
             android:id="@+id/cl_add_emergency_contact_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/ss_home_nav_top_padding">
+            android:layout_marginTop="@dimen/ss_screen_top_margin">
 
-            <ImageButton
-                android:id="@+id/btn_back_contact_detail"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginStart="24dp"
-                android:contentDescription="ignore"
+            <ImageView
+                android:id="@+id/btn_back_add_contact"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/tv_add_emergency_contact_title"
-                app:layout_constraintHorizontal_bias="0.219"
+
+                app:layout_constraintHorizontal_bias="0.042"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0"
+                app:layout_constraintVertical_bias="0.454"
                 app:srcCompat="@drawable/baseline_arrow_back_24" />
 
             <TextView
                 android:id="@+id/tv_add_emergency_contact_title"
                 android:layout_width="274dp"
                 android:layout_height="47dp"
+                android:fontFamily="@font/poppins_medium"
+                android:gravity="center"
                 android:text="Add Emergency Contact"
-                android:textAlignment="center"
                 android:textSize="@dimen/fs_fragment_title"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.614"
+                app:layout_constraintHorizontal_bias="0.452"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintVertical_bias="1.0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
