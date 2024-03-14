@@ -38,7 +38,6 @@ class EditContactFragment : Fragment() {
     private lateinit var binding: FragmentEditContactBinding
     private lateinit var contact: Contact
     private val viewModel: EmergencyContactViewModel by viewModels()
-    // TODO: Move data dealing in viewmodel, only call repository in viewmodel
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -52,7 +51,7 @@ class EditContactFragment : Fragment() {
         //NAVIGATION EVENT LISTENERS
         //Enter Emergency Contact Details -> Emergency Contact Fragment
         backContactBtn.setOnClickListener{
-            findNavController().navigate(R.id.action_editContactFragment_to_emergencyContactFragment)
+            findNavController().popBackStack()
         }
 
 
@@ -67,7 +66,7 @@ class EditContactFragment : Fragment() {
             val userUid = it.userUid
 
 
-             contact = Contact(
+            contact = Contact(
                 contactId,
                 contactName,
                 contactPhone,
@@ -139,9 +138,7 @@ class EditContactFragment : Fragment() {
                     contactPhoneNo.setText(formattedText)
                     contactPhoneNo.setSelection(formattedText.length)
                 }
-
             }
-
         })
 
 
@@ -156,13 +153,12 @@ class EditContactFragment : Fragment() {
         updateContactButton.setOnClickListener {
             val completePhoneNumber = "0"+contactPhoneNo.text.toString().replace(" ", "")
 
-            if(completePhoneNumber.length == 10 || completePhoneNumber.length == 11) {
+            if(contactName.text!!.isNotBlank() && (completePhoneNumber.length == 10 || completePhoneNumber.length == 11)) {
                 // Able to Save the Edited Emergency Contact
                 viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
                     updateContact()
-
                 }
-                Toast.makeText(requireContext(), "Edit Contact Successfully!", Toast.LENGTH_SHORT).show()
+
 
             } else {
                 Toast.makeText(requireContext(), "Invalid Phone Number", Toast.LENGTH_SHORT).show()
@@ -193,7 +189,6 @@ class EditContactFragment : Fragment() {
         tvMessage.text = message
 
         btnDelete.setOnClickListener{
-            val user = Firebase.auth.currentUser
 
             viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
                 val isDeleted = viewModel.deleteContact(contact.contactId!!)
@@ -203,7 +198,7 @@ class EditContactFragment : Fragment() {
                         // Deletion successful
                         Toast.makeText(context, "Contact Deleted", Toast.LENGTH_SHORT).show()
 
-                        findNavController().navigate(R.id.action_editContactFragment_to_emergencyContactFragment)
+                        findNavController().popBackStack()
                     }
 
                     Constants.FIREBASE_REQUEST_NOT_BELONG_USER,
@@ -234,13 +229,26 @@ class EditContactFragment : Fragment() {
 
         try {
             val newContact = Contact(contact.contactId, contactName.text.toString(), contactPhoneNo.text.toString(), FirebaseClient.firebaseAuth.currentUser?.uid)
-            val updateContact = viewModel.updateContact(newContact)
-            Log.d("UpdateContact", "Update successful: $updateContact")
+            val status = viewModel.updateContact(newContact)
 
-            // Navigate back to the EmergencyContactFragment
-            findNavController().popBackStack()
+            when(status) {
+                Constants.FIREBASE_REQUEST_SUCCESS -> {
+                    Toast.makeText(requireContext(), "Edit contact successfully!", Toast.LENGTH_SHORT).show()
+
+                    // Navigate back to the EmergencyContactFragment
+                    findNavController().popBackStack()
+                }
+
+                Constants.FIREBASE_REQUEST_EXCEPTION -> {
+                    Toast.makeText(requireContext(), "Update contact failed", Toast.LENGTH_SHORT).show()
+                }
+
+                else -> {
+                    Toast.makeText(requireContext(), "Update contact failed", Toast.LENGTH_SHORT).show()
+                }
+            }
         } catch (e: Exception) {
-            Log.e("UpdateContact", "Error updating contact: ${e.message}", e)
+            Log.e("EditContactFragment: UpdateContact", "Error updating contact: ${e.message}")
         }
     }
 

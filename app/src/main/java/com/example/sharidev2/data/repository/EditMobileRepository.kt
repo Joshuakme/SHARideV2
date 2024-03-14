@@ -29,16 +29,15 @@ class EditMobileRepository() {
                         .update("phoneNumber", newMobile)
                         .await()
 
-                    return@withContext Constants.FIREBASE_REQUEST_SUCCESS    // SUCCESS
+                    Constants.FIREBASE_REQUEST_SUCCESS    // SUCCESS
                 } catch (e: Exception) {
                     // Handle any exceptions here
                     e.printStackTrace()
 
-                    return@withContext Constants.FIREBASE_REQUEST_EXCEPTION
+                    Constants.FIREBASE_REQUEST_EXCEPTION
                 }
             } else {
-
-                return@withContext Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED
+                Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED
             }
         }
     }
@@ -47,10 +46,10 @@ class EditMobileRepository() {
         return withContext(Dispatchers.IO) {
             try {
                 val mobileSnapshot = mobileRef.document(userId).get().await()
-                return@withContext mobileSnapshot.getString("phoneNumber")
+                mobileSnapshot.getString("phoneNumber")
             } catch (e: Exception) {
-                Log.e("FetchMobileNumber", "Error fetching mobile: ${e.message}", e)
-                return@withContext null
+                Log.e("FetchMobileNumber", "Error fetching mobile: ${e.message}")
+                null
             }
         }
     }

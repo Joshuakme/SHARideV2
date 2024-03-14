@@ -29,6 +29,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentDrivingLicenseBinding
+import com.example.sharidev2.databinding.FragmentDrivingLicenseBindingImpl
 import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.FirebaseClient
 import com.example.sharidev2.viewmodel.LicenseUploadViewModel

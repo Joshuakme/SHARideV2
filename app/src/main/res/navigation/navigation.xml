@@ -117,6 +117,9 @@
         <action
             android:id="@+id/action_personalInformationFragment_to_editGenderFragment"
             app:destination="@id/editGenderFragment" />
+        <action
+            android:id="@+id/action_personalInformationFragment_to_vehicleDocFragment"
+            app:destination="@id/vehicleDocFragment" />
 
     </fragment>
     <fragment
@@ -301,5 +304,35 @@
         <action
             android:id="@+id/action_editGenderFragment_to_personalInformationFragment"
             app:destination="@id/personalInformationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/vehicleDocFragment"
+        android:name="com.example.sharidev2.screen.user.VehicleDocFragment"
+        android:label="VehicleDocFragment" >
+        <action
+            android:id="@+id/action_vehicleDocFragment_to_personalInformationFragment"
+            app:destination="@id/personalInformationFragment" />
+        <action
+            android:id="@+id/action_vehicleDocFragment_to_addVehicleDocFragment"
+            app:destination="@id/addVehicleDocFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addVehicleDocFragment"
+        android:name="com.example.sharidev2.screen.user.AddVehicleDocFragment"
+        android:label="AddVehicleDocFragment" >
+        <action
+            android:id="@+id/action_addVehicleDocFragment_to_vehicleDocFragment"
+            app:destination="@id/vehicleDocFragment" />
+        <action
+            android:id="@+id/action_addVehicleDocFragment_to_editVehicleDocFragment"
+            app:destination="@id/editVehicleDocFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editVehicleDocFragment"
+        android:name="com.example.sharidev2.screen.user.EditVehicleDocFragment"
+        android:label="EditVehicleDocFragment" >
+        <action
+            android:id="@+id/action_editVehicleDocFragment_to_addVehicleDocFragment"
+            app:destination="@id/addVehicleDocFragment" />
     </fragment>
 </navigation>

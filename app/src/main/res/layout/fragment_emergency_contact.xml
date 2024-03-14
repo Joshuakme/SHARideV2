@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="409dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/ss_home_nav_top_padding">
 
@@ -26,6 +26,7 @@
             android:id="@+id/btn_back_emergency_contact"
             android:layout_width="36dp"
             android:layout_height="36dp"
+            android:layout_marginStart="@dimen/ss_screen_width_margin"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tv_emergency_contact_title"
@@ -33,7 +34,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0"
-            app:srcCompat="@drawable/baseline_arrow_back_24" />
+            app:srcCompat="@drawable/baseline_arrow_back_24"
+            app:tint="?attr/colorOnBackground" />
 
         <TextView
             android:id="@+id/tv_emergency_contact_title"
@@ -76,7 +78,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_emergency_contact_title"
-            tools:visibility="gone">
+            tools:visibility="visible">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -89,17 +91,17 @@
                     android:layout_width="147dp"
                     android:layout_height="152dp"
                     android:layout_gravity="center"
-                    android:background="#F5F8FD"
                     app:srcCompat="@drawable/add_contact"
                     app:tint="@color/system_neutral2_500" />
 
                 <TextView
                     android:id="@+id/tv_emergency_contact"
-                    android:layout_width="355dp"
-                    android:layout_height="80dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/poppins_medium"
-                    android:text="Add up to 3 Emergency Contacts who will be notified via SMS anytime you require an emergency assistance during a ride."
+                    android:maxWidth="355dp"
+                    android:text="@string/message_add_emergency_contact"
                     android:textAlignment="center"
                     android:textColor="@color/md_theme_outlineVariant_mediumContrast"
                     android:textSize="@dimen/text_margin"
@@ -120,7 +122,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/recycler_view_emergency_contacts" />
+            app:layout_constraintTop_toTopOf="@+id/recycler_view_emergency_contacts"
+            tools:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

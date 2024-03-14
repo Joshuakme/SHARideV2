@@ -46,7 +46,7 @@ class EmergencyContactFragment : Fragment(),
                 emergencyContactsRecyclerView.visibility = View.GONE
                 reminderAddContactCard.visibility = View.GONE
             } else {
-                emergencyContactList?.let { list ->
+                emergencyContactList.let { list ->
                     if (list.isNotEmpty()) {
                         adapter = ContactAdapter(list, this)
                         emergencyContactsRecyclerView.layoutManager = LinearLayoutManager(context)

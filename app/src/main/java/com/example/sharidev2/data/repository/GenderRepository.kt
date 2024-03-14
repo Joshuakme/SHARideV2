@@ -26,7 +26,7 @@ class GenderRepository() {
                 }
                 Constants.FIREBASE_REQUEST_SUCCESS
             } catch (e: Exception) {
-                Log.e("UpdateGender", "Error updating gender: ${e.message}", e)
+                Log.e("UpdateGender", "Error updating gender: ${e.message}")
                 Constants.FIREBASE_REQUEST_EXCEPTION
             }
         }
@@ -40,7 +40,7 @@ class GenderRepository() {
                     documentSnapshot.getString("gender")
                 }
             } catch (e: Exception) {
-                Log.e("FetchGender", "Error fetching gender: ${e.message}", e)
+                Log.e("FetchGender", "Error fetching gender: ${e.message}")
                 null
             }
         }

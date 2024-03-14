@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.util.Log
 import com.example.sharidev2.data.model.Chat
 import com.example.sharidev2.data.model.Contact
 import com.example.sharidev2.data.model.Driver
@@ -18,11 +17,11 @@ import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.data.model.User
 import com.example.sharidev2.data.model.UserStatus
 import com.example.sharidev2.data.model.Vehicle
+import com.example.sharidev2.data.model.VehicleDoc
 import com.example.sharidev2.data.model.VehicleType
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.Timestamp
 import com.google.gson.Gson
-import kotlin.reflect.typeOf
 
 
 class Converters() {
@@ -351,6 +350,61 @@ class Converters() {
             contactName = contactName,
             contactPhone = contactPhone,
             userUid = userUid
+        )
+    }
+
+
+    fun toVehicleDoc(map: Map<String, Any>): VehicleDoc {
+        val userUid = map["userUid"] as String
+        val firstName = map["firstName"] as String
+        val lastName = map["lastName"] as String
+        val vehicleTypeString = map["type"] as String
+        val vehicleType = VehicleType.valueOf(vehicleTypeString)
+        val vehicleModel = map["vehicleModel"] as String
+        val carPlate = map["carPlate"] as String
+        val manufactureDate = map["manufactureDate"] as Timestamp
+
+
+        val vehicleRegisCertMap = map["vehicleRegisCert"] as Map<String, Any>
+        val vehicleRegisCertList = mutableListOf<Uri>()
+
+        vehicleRegisCertMap.forEach {(s, cert) ->
+            vehicleRegisCertList.add(Uri.parse(cert as String))
+        }
+
+
+        val roadtaxMap = map["roadtax"] as Map<String, Any>
+        val roadtaxList = mutableListOf<Uri>()
+
+        roadtaxMap.forEach {(r, roadtax) ->
+            roadtaxList.add(Uri.parse(roadtax as String))
+        }
+
+
+        val insuranceMap = map["insurance"] as Map<String, Any>
+        val insuranceList = mutableListOf<Uri>()
+
+        insuranceMap.forEach {(i, insurance) ->
+            insuranceList.add(Uri.parse(insurance as String))
+        }
+
+
+        val vehicleId = map["vehicleId"] as String
+
+
+        return VehicleDoc(
+            userUid,
+            firstName,
+            lastName,
+            vehicleTypeString, // Pass vehicleTypeString instead of vehicleType
+            vehicleModel,
+            carPlate,
+            manufactureDate,
+            vehicleRegisCertList,
+            roadtaxList,
+            insuranceList,
+            vehicleId
+
         )
     }
 

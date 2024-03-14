@@ -15,6 +15,7 @@ class Constants {
         val FIREBASE_REQUEST_USER_NOT_AUTHENTICATED = 1002 // User not authenticated
         val FIREBASE_REQUEST_EXCEPTION = 1003 // Handle exceptions
         val FIREBASE_REQUEST_DATA_NOT_VALID = 1004
+        val FIREBASE_REQUEST_FAILED = 1005
 
 
         // UI DATA LOADING

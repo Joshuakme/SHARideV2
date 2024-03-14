@@ -5,6 +5,7 @@ import android.util.Log
 import com.example.sharidev2.data.model.Contact
 import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.Converters
+import com.example.sharidev2.utility.FirebaseClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -14,10 +15,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
-class EmergencyContactRepository(
-    private val firestore: FirebaseFirestore,
-    private val firebaseAuth: FirebaseAuth
-) {
+class EmergencyContactRepository {
+    private val firestore = FirebaseClient.firestore
+    private val firebaseAuth = FirebaseClient.firebaseAuth
+
     // Variables
     private val contactsRef = firestore.collection("contact")
     private val converters = Converters()
@@ -25,33 +26,36 @@ class EmergencyContactRepository(
     private val isUserLogin = currentUser != null
 
 
-
     suspend fun addContact(contact: Contact): Int {
         return withContext(Dispatchers.IO) {
             val currentUser = Firebase.auth.currentUser
             if (currentUser != null) {
-                val newContact = hashMapOf(
-                    "contactName" to contact.contactName,
-                    "contactPhone" to contact.contactPhone,
-                    "userUid" to currentUser.uid
-                )
+
                 try {
-                    val documentReference = firestore.collection("contact").add(newContact).await()
-                    val contactId = documentReference.id
+                    val contactId = contactsRef.document().id
 
-                    // Update the document with the contact ID
-                    documentReference.update("contactId", contactId).await()
+                    val newContact = hashMapOf(
+                        "contactId" to contactId,
+                        "contactName" to contact.contactName,
+                        "contactPhone" to contact.contactPhone,
+                        "userUid" to currentUser.uid,
+                    )
 
+                    contactsRef
+                        .document(contactId)
+                        .set(newContact)
+                        .await()
 
+                    Log.e("Add Contact", "Added Successfully")
                     return@withContext Constants.FIREBASE_REQUEST_SUCCESS    // SUCCESS
                 } catch (e: Exception) {
                     // Handle any exceptions here
-                    e.printStackTrace()
+                    Log.e("Add Contact", e.message.toString())
 
                     return@withContext Constants.FIREBASE_REQUEST_EXCEPTION
                 }
             } else {
-
+                Log.e("Add Contact", "User not login")
                 return@withContext Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED
             }
         }
@@ -60,7 +64,7 @@ class EmergencyContactRepository(
 
 
 
-// Retrieve Emergency Contact
+    // Retrieve Emergency Contact
     fun listenForContactChanges(callback: (List<Contact>?, Exception?) -> Unit) {
         contactsRef.addSnapshotListener { snapshot, exception ->
             if (exception != null) {
@@ -84,26 +88,31 @@ class EmergencyContactRepository(
         return withContext(Dispatchers.IO) {
             val contactList = mutableListOf<Contact>()
 
-            try {
-                val querySnapshot = contactsRef
-                    .whereEqualTo("userUid", currentUser?.uid ?: "")
-                    .get()
-                    .await() // Using await() to suspend until the Firestore operation completes
+            if(currentUser != null) {
+                try {
+                    val querySnapshot = contactsRef
+                        .whereEqualTo("userUid", currentUser.uid)
+                        .get()
+                        .await() // Using await() to suspend until the Firestore operation completes
 
-                for (document in querySnapshot.documents) {
-                    val contactData = document.data
-                    if (contactData != null) {
-                        contactList.add(converters.toContact(contactData))
+                    Log.e("Get ALl Contacts", "Contact Num: " + querySnapshot.size())
+                    if(!querySnapshot.isEmpty) {
+                        for (document in querySnapshot.documents) {
+                            val contactData = document.data
+                            if (contactData != null) {
+                                contactList.add(converters.toContact(contactData))
 
-                    } else {
-                        Log.e(
-                            "Get Emergency Contacts",
-                            "Contact data is null for document ID: ${document.id}"
-                        )
+                            } else {
+                                Log.e(
+                                    "Get Emergency Contacts",
+                                    "Contact data is null for document ID: ${document.id}"
+                                )
+                            }
+                        }
                     }
+                } catch (e: Exception) {
+                    Log.e("Get Emergency Contacts", "Error fetching emergency contacts: ${e.message}")
                 }
-            } catch (e: Exception) {
-                Log.e("Get Emergency Contacts", "Error fetching emergency contacts: ${e.message}")
             }
 
             contactList
@@ -116,28 +125,40 @@ class EmergencyContactRepository(
     suspend fun updateContact(newContact: Contact): Int {
         return withContext(Dispatchers.IO) {
             try {
-                val contactId = newContact.contactId
+                val contactId = newContact.contactId!!
                 val contactUserId = newContact.userUid
 
-                val contactRef = firestore.collection("contact").document(contactId?: "")
-                val emergencyContactSnapshot = contactRef.get().await()
-                val userId = emergencyContactSnapshot.getString("userUid")
+
+                val contactDocRef = contactsRef.document(contactId)
+                val contactData = contactDocRef
+                                        .get()
+                                        .await()
+                                        .data
 
 
-                if(isUserLogin){
-                    if (userId == contactUserId) {
-                        // Update the emergency contact content
-                        contactRef.update("contactName", newContact.contactName).await()
-                        contactRef.update("contactPhone", newContact.contactPhone).await()
+                if(contactData != null) {
+                    val userId = contactData["userUid"] as String
 
-                        Log.d("UPDATE CONTACT", "SUCESSFUL")
+                    if(isUserLogin){
+                        if (userId == contactUserId) {
+                            // Update the emergency contact content
+                            contactDocRef.update("contactName", newContact.contactName).await()
+                            contactDocRef.update("contactPhone", newContact.contactPhone).await()
 
-                        Constants.FIREBASE_REQUEST_SUCCESS // Update successful
+                            Log.d("UPDATE CONTACT", "SUCCESSFUL")
+
+                            Constants.FIREBASE_REQUEST_SUCCESS  // Update successful
+                        } else {
+                            Log.d("UPDATE CONTACT", "NOT YOUR CONTACT BRO")
+                            Constants.FIREBASE_REQUEST_NOT_BELONG_USER // Contact doesn't belong to the current user
+                        }
                     } else {
-                        Constants.FIREBASE_REQUEST_NOT_BELONG_USER // Contact doesn't belong to the current user
+                        Log.d("UPDATE CONTACT", "LOGIN PLEASE BRO")
+                        Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED // User not authenticated
                     }
                 } else {
-                    Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED // User not authenticated
+                    Log.e("Update Contact", "TAK ADA CONTACT DATA")
+                    Constants.FIREBASE_REQUEST_FAILED
                 }
             } catch (e: Exception) {
                 Constants.FIREBASE_REQUEST_EXCEPTION // Handle exceptions
@@ -161,15 +182,16 @@ class EmergencyContactRepository(
                     if (userId == userUid.uid) {
                         // Delete the emergency contact
                         contactRef.delete().await()
-                        0 // Deletion successful
+
+                        Constants.FIREBASE_REQUEST_SUCCESS
                     } else {
-                        1 // Contact doesn't belong to the current user
+                        Constants.FIREBASE_REQUEST_NOT_BELONG_USER
                     }
                 } else {
-                    2 // User not authenticated
+                    Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED
                 }
             } catch (e: Exception) {
-                3 // Handle exceptions
+                Constants.FIREBASE_REQUEST_EXCEPTION
             }
         }
     }

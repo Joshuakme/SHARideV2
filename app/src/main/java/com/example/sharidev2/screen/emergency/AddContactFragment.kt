@@ -14,8 +14,6 @@ import com.example.sharidev2.R
 import com.example.sharidev2.data.model.Contact
 import com.example.sharidev2.databinding.FragmentAddContactBinding
 import com.example.sharidev2.utility.Constants
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -42,35 +40,49 @@ class AddContactFragment : Fragment() {
         val inputContactName = binding.inputEmergencyName
         val inputContactPhoneNo = binding.inputEmergencyPhoneNo
 
-        binding.btnSaveContactDetail.setOnClickListener(){
-            lifecycleScope.launch(Dispatchers.IO) {
-                val respond = viewModel.addContact(
-                    Contact(
-                        contactName = inputContactName.text.toString(),
-                        contactPhone = inputContactPhoneNo.text.toString()
-                    )
-                )
+        binding.btnSaveContactDetail.setOnClickListener{
 
-                lifecycleScope.launch(Dispatchers.Main){
-                    when(respond) {
+            if(!inputContactName.text.isNullOrBlank() &&
+                !inputContactPhoneNo.text.isNullOrBlank()
+                && (inputContactPhoneNo.length() == 10 || inputContactPhoneNo.length() == 11)) {
+
+                viewLifecycleOwner.lifecycleScope.launch {
+                    val respond = viewModel.addContact(
+                        Contact(
+                            contactName = inputContactName.text.toString(),
+                            contactPhone = inputContactPhoneNo.text.toString()
+                        )
+                    )
+
+                    when(respond)  {
                         Constants.FIREBASE_REQUEST_SUCCESS -> {
                             Toast.makeText(requireContext(), "Contact Added", Toast.LENGTH_SHORT).show()
+                            findNavController().navigate(R.id.action_addContactFragment_to_emergencyContactFragment)
                         }
 
-                        Constants.FIREBASE_REQUEST_NOT_BELONG_USER,
-                        Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED,
-                        Constants.FIREBASE_REQUEST_EXCEPTION -> {
+                        Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED -> {
+                            Toast.makeText(requireContext(), "Please login to add contact", Toast.LENGTH_SHORT).show()
+                        }
+
+                        else -> {
                             Toast.makeText(requireContext(), "Failed to add contact", Toast.LENGTH_SHORT).show()
                         }
                     }
-
-                    findNavController().navigate(R.id.action_addContactFragment_to_emergencyContactFragment)
                 }
+            } else if(inputContactName.text.isNullOrBlank() ||
+                inputContactPhoneNo.text.isNullOrBlank()) {
+                Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show()
+
+            } else if(!(inputContactPhoneNo.length() == 10 || inputContactPhoneNo.length() == 11))  {
+                Toast.makeText(requireContext(), "Invalid phone number", Toast.LENGTH_SHORT).show()
+            }
+            else {
+                Toast.makeText(requireContext(), "Invalid data", Toast.LENGTH_SHORT).show()
             }
         }
 
         binding.btnBackContactDetail.setOnClickListener{
-            findNavController().navigate(R.id.action_addContactFragment_to_emergencyContactFragment)
+            findNavController().popBackStack()
         }
         return root
     }

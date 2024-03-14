@@ -197,6 +197,12 @@
     <!--  EmergencyContact Fragment -->
     <string name="message_add_emergency_contact" translatable="false">Add up to 3 Emergency Contacts who will be notified via SMS anytime you require an emergency assistance during a ride </string>
 
+    <!--  VehicleDoc Fragment -->
+    <string name="message_add_vehicle_doc" translatable="false">Let\'s get started! Fill out the details below to add a new vehicle.</string>
+    <string name="vehicle_doc_fragment_choose_timing_title">Select your vehicle manufacture date</string>
+
+
+
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>

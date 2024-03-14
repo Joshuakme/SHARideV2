@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "178112270595",
+    "firebase_url": "https://sharide-777b0-default-rtdb.firebaseio.com",
     "project_id": "sharide-777b0",
     "storage_bucket": "sharide-777b0.appspot.com"
   },
@@ -12,7 +13,28 @@
           "package_name": "com.example.sharidev2"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "178112270595-65p5u2rivk185975v9bc6n36mgnl26fe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.sharidev2",
+            "certificate_hash": "71d49136fe25453cd560de7efedc2316935c8f31"
+          }
+        },
+        {
+          "client_id": "178112270595-ki3bvfp4k71c0q9kevorld0nkuo1b2mn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.sharidev2",
+            "certificate_hash": "c9df39fd1badbcab3a34608026abb87d8ceb0c8a"
+          }
+        },
+        {
+          "client_id": "178112270595-mbkueg137033n1edkrmd2ocepfk6b2ig.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCfsP1xX9W9IMQ7JJdusjltI9G6X3ODLA0"
@@ -20,7 +42,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "178112270595-mbkueg137033n1edkrmd2ocepfk6b2ig.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

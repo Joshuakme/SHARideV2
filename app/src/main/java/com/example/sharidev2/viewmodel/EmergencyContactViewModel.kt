@@ -1,9 +1,12 @@
+import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sharidev2.data.model.Contact
 import com.example.sharidev2.data.repository.EmergencyContactRepository
+import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.FirebaseClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -12,7 +15,7 @@ import kotlinx.coroutines.launch
 class EmergencyContactViewModel(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val repository = EmergencyContactRepository(FirebaseClient.firestore, FirebaseClient.firebaseAuth)
+    private val repository = EmergencyContactRepository()
     private val currentUser = FirebaseClient.firebaseAuth.currentUser
 
     // DATA KEY CONSTANT
@@ -21,14 +24,20 @@ class EmergencyContactViewModel(
 
     // INTERNAL DATA MEMBERS
     // emergency contact
-    val emergencyContactList: LiveData<MutableList<Contact>> = savedStateHandle.getLiveData(CONTACT_LIST_KEY)
+    private val _emergencyContactList: MutableLiveData<MutableList<Contact>> = savedStateHandle.getLiveData(CONTACT_LIST_KEY, mutableListOf())
+
+    val emergencyContactList: LiveData<MutableList<Contact>> = _emergencyContactList
 
 
     init {
         viewModelScope.launch(Dispatchers.Main) {
-            val emergencyContacts = repository.getAllContacts().toMutableList()
+            val allContacts = repository.getAllContacts()
 
-            setContactList(emergencyContacts)
+            if(allContacts != null) {
+                setContactList(allContacts.toMutableList())
+            } else {
+                setContactList(mutableListOf())
+            }
         }
 
         repository.listenForContactChanges { contacts, exception ->
@@ -49,15 +58,23 @@ class EmergencyContactViewModel(
     // SETTER in SavedStateHandle
     // Contact
     suspend fun addContact(newContact: Contact): Int {
-        emergencyContactList.value?.add(newContact)
+        Log.e("EmergencyCOntactViewModel", emergencyContactList.value?.size.toString())
+        emergencyContactList.value!!.add(newContact)
 
-
-        return repository.addContact(newContact)
-
+        return try {
+            repository.addContact(newContact)
+        } catch (e: Exception) {
+            Log.e("Add Contact", e.message.toString())
+            Constants.FIREBASE_REQUEST_FAILED // Return failure code
+        }
     }
 
     fun setContactList(newContactList: MutableList<Contact>) {
-        savedStateHandle[CONTACT_LIST_KEY] = newContactList
+        if (emergencyContactList.isInitialized) {
+            savedStateHandle[CONTACT_LIST_KEY] = newContactList
+        } else {
+
+        }
     }
 
     suspend fun updateContact(newContact: Contact): Int {

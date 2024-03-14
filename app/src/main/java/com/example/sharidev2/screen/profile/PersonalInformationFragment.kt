@@ -87,6 +87,7 @@ class PersonalInformationFragment : Fragment() {
         val gender = binding.cardPersonalInfoGender
         val mobileNumber = binding.cardPersonalInfoMobileNumber
         val driverLicense = binding.cardPersonalInfoDrivingLicense
+        val vehicleDoc = binding.cardPersonalInfoVehicleDoc
         val profilePictureImageView = binding.imgPersonalInfoUserPic
 
         // Find the profile pic ImageView
@@ -186,8 +187,8 @@ class PersonalInformationFragment : Fragment() {
 
         //TODO：
         // Personal Information Fragment -> Vehicle Documentation Fragment
-        driverLicense.setOnClickListener{
-            //findNavController().navigate(R.id.)
+        vehicleDoc.setOnClickListener{
+            findNavController().navigate(R.id.action_personalInformationFragment_to_vehicleDocFragment)
         }
 
         // Personal Information Fragment -> Driving License Fragment

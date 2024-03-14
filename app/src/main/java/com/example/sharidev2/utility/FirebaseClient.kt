@@ -72,7 +72,7 @@ object FirebaseClient {
 
                 val uid = user.getString("uid")
                 val displayName = user.getString("displayName")
-                val email = user.getString("email") ?: ""
+                val email = user.getString("email")
                 val phoneNumber = user.getString("phoneNumber")
                 //val photoUri = Uri.parse(user.getString("photoUrl"))
 
@@ -83,7 +83,11 @@ object FirebaseClient {
 
                 val rideOption = RideOption(driverGender, vehicleType, petFriendly)
 
-                val rating = (user.get("rating") as Long).toDouble()
+                val rating = if(user.get("rating") != null) {
+                    (user.get("rating") as Long).toDouble()
+                } else {
+                    null
+                }
 
 //                val savedAddresses =
 //                    converters.toSearchLocationList(user.get("savedAddress") as List<Map<String, Any>>)
