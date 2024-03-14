@@ -65,6 +65,17 @@ class EmergencyContactFragment : Fragment(),
             }
         }
 
+        // Check if the maximum number of emergency contacts has been reached
+        viewModel.emergencyContactList.observe(viewLifecycleOwner) { emergencyContactList ->
+            val maxContactAddMessage = binding.tvMaximumContactMessage
+            val maxEmergencyContacts = 3
+            val isMaxContactsReached = emergencyContactList?.size ?: 0 >= maxEmergencyContacts
+            binding.btnAddContact.isEnabled = !isMaxContactsReached
+            if (isMaxContactsReached) {
+                maxContactAddMessage.visibility = View.VISIBLE
+            }
+        }
+
         // EVENT LISTENERS
         addContactButton.setOnClickListener {
             findNavController().navigate(R.id.action_emergencyContactFragment_to_addContactFragment)

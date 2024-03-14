@@ -153,7 +153,7 @@ class EditContactFragment : Fragment() {
         updateContactButton.setOnClickListener {
             val completePhoneNumber = "0"+contactPhoneNo.text.toString().replace(" ", "")
 
-            if(contactName.text!!.isNotBlank() && (completePhoneNumber.length == 10 || completePhoneNumber.length == 11)) {
+            if(contactName.text!!.isNotBlank() && (completePhoneNumber.length == 9 || completePhoneNumber.length == 10)) {
                 // Able to Save the Edited Emergency Contact
                 viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
                     updateContact()

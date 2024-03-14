@@ -145,8 +145,6 @@ class EmergencyContactRepository {
                             contactDocRef.update("contactName", newContact.contactName).await()
                             contactDocRef.update("contactPhone", newContact.contactPhone).await()
 
-                            Log.d("UPDATE CONTACT", "SUCCESSFUL")
-
                             Constants.FIREBASE_REQUEST_SUCCESS  // Update successful
                         } else {
                             Log.d("UPDATE CONTACT", "NOT YOUR CONTACT BRO")
@@ -162,7 +160,7 @@ class EmergencyContactRepository {
                 }
             } catch (e: Exception) {
                 Constants.FIREBASE_REQUEST_EXCEPTION // Handle exceptions
-                Log.d("PROBLEMMMM", e.message.toString())
+                Log.d("Update Contact", e.message.toString())
             }
         }
 

@@ -16,10 +16,27 @@
             android:layout_marginTop="16dp"
             android:layout_marginRight="@dimen/ss_screen_width_margin"
             android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@+id/btn_add_contact"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_emergency_contact_title"
+            tools:visibility="gone">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <TextView
+            android:id="@+id/tv_maximum_contact_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            android:text="@string/message_maximum_contact_added"
+            android:textColor="@color/md_theme_outlineVariant_mediumContrast"
+            android:textSize="11sp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recycler_view_emergency_contacts"
             tools:visibility="gone" />
 
         <ImageView
@@ -57,15 +74,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
-            android:layout_marginTop="222dp"
             android:layout_marginEnd="50dp"
             android:layout_marginBottom="104dp"
             android:text="Add Contact"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/progress_bar_emergency_contact" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/card_emergency_contact_reminder"
@@ -78,7 +93,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_emergency_contact_title"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -122,8 +137,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/recycler_view_emergency_contacts"
-            tools:visibility="gone" />
+            app:layout_constraintTop_toTopOf="@+id/recycler_view_emergency_contacts" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

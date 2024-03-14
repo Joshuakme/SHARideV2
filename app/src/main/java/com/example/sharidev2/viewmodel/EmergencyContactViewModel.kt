@@ -22,6 +22,7 @@ class EmergencyContactViewModel(
     private val CONTACT_LIST_KEY = "contact_list"
 
 
+
     // INTERNAL DATA MEMBERS
     // emergency contact
     private val _emergencyContactList: MutableLiveData<MutableList<Contact>> = savedStateHandle.getLiveData(CONTACT_LIST_KEY, mutableListOf())

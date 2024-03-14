@@ -44,7 +44,7 @@ class AddContactFragment : Fragment() {
 
             if(!inputContactName.text.isNullOrBlank() &&
                 !inputContactPhoneNo.text.isNullOrBlank()
-                && (inputContactPhoneNo.length() == 10 || inputContactPhoneNo.length() == 11)) {
+                && (inputContactPhoneNo.length() == 9 || inputContactPhoneNo.length() == 10)) {
 
                 viewLifecycleOwner.lifecycleScope.launch {
                     val respond = viewModel.addContact(
