@@ -58,8 +58,8 @@ class ActiveRidePassengerImageAdapter(
         val passenger = passengerImgList[position]
 
         // Image
-        if(passenger.user?.photoUrl != null) {
-            holder.passengerImg.setImageURI(passenger.user!!.photoUrl)
+        if(passenger.user?.photoUri != null) {
+            holder.passengerImg.setImageURI(passenger.user!!.photoUri)
         } else {
             holder.passengerImg.setImageResource(R.drawable.baseline_account_circle_24)
         }

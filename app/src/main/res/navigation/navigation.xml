@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_homeFragment_to_searchFragment"
             app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_bookingFragment"
+            app:destination="@id/bookingFragment" />
     </fragment>
     <fragment
         android:id="@+id/messagesFragment"
@@ -21,7 +24,11 @@
         tools:layout="@layout/fragment_messages" >
         <action
             android:id="@+id/action_messagesFragment_to_chatFragment"
-            app:destination="@id/chatFragment" />
+            app:destination="@id/chatFragment">
+            <argument
+                android:name="chat"
+                app:argType="com.example.sharidev2.data.model.Chat" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -57,7 +64,17 @@
             app:popUpTo="@id/bookingFragment">
             <argument
                 android:name="ride"
-            app:argType="com.example.sharidev2.data.model.Ride" />
+                app:argType="com.example.sharidev2.data.model.Ride" />
+        </action>
+        <action
+            android:id="@+id/action_bookingFragment_to_homeFragment2"
+            app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_bookingFragment_to_bookingDetailPassengerFragment"
+            app:destination="@id/bookingDetailPassengerFragment" >
+            <argument
+                android:name="ride"
+                app:argType="com.example.sharidev2.data.model.Ride" />
         </action>
     </fragment>
     <fragment
@@ -154,9 +171,9 @@
     </fragment>
     <fragment
         android:id="@+id/rideDetailConfigurationFragment"
-        android:name="com.example.sharidev2.screen.ride.RideDetailConfigurationFragment"
+        android:name="com.example.sharidev2.screen.ride.SearchRideDetailConfigurationFragment"
         android:label="fragment_ride_detail_configuration"
-        tools:layout="@layout/fragment_ride_detail_configuration" >
+        tools:layout="@layout/fragment_search_ride_detail_configuration" >
         <action
             android:id="@+id/action_rideDetailConfigurationFragment_to_searchSelectOriginFragment"
             app:destination="@id/searchSelectOriginFragment" />
@@ -181,6 +198,10 @@
                 android:name="rideId"
                 app:argType="string" />
         </action>
+        <action
+            android:id="@+id/action_matchedRideFragment_to_driverCreateRideFragment"
+            app:destination="@id/driverCreateRideFragment"
+            app:popUpTo="@id/matchedRideFragment" />
     </fragment>
     <fragment
         android:id="@+id/driverCreateRideFragment"
@@ -212,12 +233,14 @@
         tools:layout="@layout/fragment_ride_detail" >
         <action
             android:id="@+id/action_rideDetailFragment_to_bookingFragment"
-            app:destination="@id/bookingFragment"/>
+            app:destination="@id/bookingFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true" />
 
     </fragment>
     <fragment
         android:id="@+id/bookingDetailFragment"
-        android:name="com.example.sharidev2.screen.ride.BookingDetailFragment"
+        android:name="com.example.sharidev2.screen.ride.BookingDetailDriverFragment"
         android:label="BookingDetailFragment" >
         <action
             android:id="@+id/action_bookingDetailFragment_to_viewBookingRequestsFragment"
@@ -304,6 +327,14 @@
         <action
             android:id="@+id/action_editGenderFragment_to_personalInformationFragment"
             app:destination="@id/personalInformationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/bookingDetailPassengerFragment"
+        android:name="com.example.sharidev2.screen.ride.BookingDetailPassengerFragment"
+        android:label="BookingDetailPassengerFragment" >
+        <action
+            android:id="@+id/action_bookingDetailPassengerFragment_to_activeRideFragment"
+            app:destination="@id/activeRideFragment" />
     </fragment>
     <fragment
         android:id="@+id/vehicleDocFragment"

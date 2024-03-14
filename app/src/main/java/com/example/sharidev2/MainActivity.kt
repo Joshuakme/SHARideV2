@@ -3,15 +3,11 @@ package com.example.sharidev2
 
 import android.Manifest
 import android.app.ActivityManager
-import android.content.ComponentName
 import android.content.ContentValues.TAG
-import android.content.Context
 import android.content.Intent
-import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.os.IBinder
 import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
@@ -24,10 +20,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import com.example.sharidev2.data.repository.UserLocationRepository
 import com.example.sharidev2.databinding.ActivityMainBinding
-import com.example.sharidev2.service.NetworkService
 import com.example.sharidev2.service.LocationService
+import com.example.sharidev2.service.NetworkService
 import com.example.sharidev2.utility.Constants.Companion.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
 import com.example.sharidev2.utility.Constants.Companion.PERMISSIONS_REQUEST_POST_NOTIFICATION
 import com.example.sharidev2.utility.FirebaseClient
@@ -65,7 +60,8 @@ class MainActivity : AppCompatActivity() {
 
         bottomNav.setupWithNavController(navController)
 
-        Places.initialize(applicationContext, "AIzaSyBTPyaUpFhz9GMIpFq40zi9cZlCeZZZtQc")
+
+        Places.initialize(applicationContext, getString(R.string.google_api_key))
 
         lifecycleScope.launch(Dispatchers.IO) {
             UserClient.setCurrentUser(FirebaseClient.firebaseAuth.currentUser?.uid ?: "")
@@ -267,6 +263,4 @@ class MainActivity : AppCompatActivity() {
             getLocationPermission()
         }
     }
-
-
 }

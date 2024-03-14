@@ -9,8 +9,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
+import com.example.sharidev2.GlideApp
 import com.example.sharidev2.R
 import com.example.sharidev2.data.model.Ride
+import com.example.sharidev2.utility.CommonUtils
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -54,8 +58,16 @@ class RideAdapter (
         val bookingDateFormatter = SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.ENGLISH)
 
         // Bind data into UI
-        if(ride.driver.user?.photoUrl != null) {
-            holder.profileImg.setImageURI(ride.driver.user?.photoUrl)
+        if(ride.driver.user?.photoUri != null) {
+            val photoUri = ride.driver.user?.photoUri
+
+            GlideApp.with(context)
+                .load(photoUri.toString())
+                .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Disable disk caching
+                .into(holder.profileImg)
+        } else {
+            val colorOutline = CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorOutline)
+            holder.profileImg.setColorFilter(colorOutline)
         }
 
         holder.locationRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)

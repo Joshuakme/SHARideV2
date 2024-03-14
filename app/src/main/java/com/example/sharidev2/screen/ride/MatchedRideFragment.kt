@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,12 +20,13 @@ import com.example.sharidev2.utility.FirebaseClient
 import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.viewmodel.RideViewModel
+import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
 
 class MatchedRideFragment :
     Fragment(),
     RideAdapter.OnRideClickListener {
     private lateinit var binding: FragmentMatchedRideBinding
-    private val rideViewModel: RideViewModel by viewModels()
+    private val searchRideViewModel: SharedSearchRideViewModel by activityViewModels()
     private val currentUser = FirebaseClient.firebaseAuth.currentUser
 
     override fun onCreateView(
@@ -44,7 +46,9 @@ class MatchedRideFragment :
         recyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
 
 
-        rideViewModel.filterRideList.observe(viewLifecycleOwner) {rideList ->
+        val searchResult = searchRideViewModel.searchRide()
+
+        searchResult.observe(viewLifecycleOwner) {rideList ->
             loading(Constants.UI_DATA_LOADING)
 
             if(currentUser != null && rideList != null && rideList.isNotEmpty()) {
@@ -65,6 +69,7 @@ class MatchedRideFragment :
             }
         }
 
+
         // On Click Listeners
         setupOnClickListeners()
 
@@ -74,11 +79,17 @@ class MatchedRideFragment :
 
     private fun setupOnClickListeners() {
         val backBtn = binding.imgBtnMatchedRideNavBack
+        val createRideBtnText = binding.textMatchedRideErrorCta
 
         // NAVIGATION
         // Matched Ride Fragment -> Ride Detail Configuration Fragment
         backBtn.setOnClickListener {
             findNavController().navigate(R.id.action_matchedRideFragment_to_rideDetailConfigurationFragment)
+        }
+
+        // Matched Ride Fragment -> Driver Create Ride Fragment
+        createRideBtnText.setOnClickListener {
+            findNavController().navigate(R.id.action_matchedRideFragment_to_driverCreateRideFragment)
         }
     }
 

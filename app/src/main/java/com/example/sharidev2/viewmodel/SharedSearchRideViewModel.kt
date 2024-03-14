@@ -1,20 +1,35 @@
 package com.example.sharidev2.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
 import com.example.sharidev2.data.model.Gender
+import com.example.sharidev2.data.model.Passenger
+import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.data.model.RideOption
 import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.data.model.SearchRide
 import com.example.sharidev2.data.model.VehicleType
+import com.example.sharidev2.data.repository.RideRepository
+import com.example.sharidev2.utility.FirebaseClient
+import com.example.sharidev2.utility.RideUtils
 import com.google.firebase.Timestamp
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.LocalTime
 import java.util.Calendar
 
 class SharedSearchRideViewModel(
     private val savedStateHandle: SavedStateHandle
 ): ViewModel() {
+    // Repository
+    val currentLocationViewModel = CurrentLocationViewModel()
+    val rideRepository = RideRepository()
+
     // DATA KEY CONSTANT
     private val ORIGIN_KEY = "origin"
     private val DESTINATION_KEY = "destination"
@@ -96,6 +111,32 @@ class SharedSearchRideViewModel(
 
         savedStateHandle[SEARCH_RIDE_KEY] = newSearchRide
     }
+
+    fun searchRide(): LiveData<List<Ride>> {
+        return if (FirebaseClient.firebaseAuth.currentUser?.uid != null && searchRide.value != null) {
+            liveData(viewModelScope.coroutineContext) {
+                val passenger = Passenger(
+                    userUid = FirebaseClient.firebaseAuth.currentUser!!.uid,
+                    user = FirebaseClient.getCurrentUser(),
+                    location = currentLocationViewModel.currentLocation.value
+                )
+
+                val availableRideList = rideRepository.getAvailableRideList()
+                val matchedRideList = availableRideList.filter { ride ->
+                    RideUtils().matchRidePassenger(ride, searchRide.value!!, passenger) != null
+                }
+
+                Log.e("SearchRideViewModel: searchRide()", availableRideList.size.toString())
+                Log.e("SearchRideViewModel: searchRide()", matchedRideList.size.toString())
+                emit(matchedRideList)
+            }
+        } else {
+            MutableLiveData<List<Ride>>().apply { value = emptyList() }
+        }
+    }
+
+
+
 
 
     // HELPER METHODS

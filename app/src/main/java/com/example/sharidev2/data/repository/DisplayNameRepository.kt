@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.FirebaseClient
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
@@ -17,8 +18,7 @@ class DisplayNameRepository() {
 
     // Variables
     private val displayNameRef = firestore.collection("user")
-    private val currentUser = firebaseAuth.currentUser
-    private val isUserLogin = currentUser != null
+    private val currentUser = FirebaseClient.firebaseAuth.currentUser
 
 
     suspend fun updateDisplayName(newDisplayName: String): Int {
@@ -26,20 +26,27 @@ class DisplayNameRepository() {
 
             if (currentUser != null) {
                 try {
-                    val documentReference = firestore.collection("user")
+                    // User collection
+                    firestore.collection("user")
                         .document(currentUser.uid)
                         .update("displayName", newDisplayName)
                         .await()
 
+                    // Auth User
+                    val profileUpdates = UserProfileChangeRequest.Builder()
+                        .setDisplayName(newDisplayName)
+                        .build()
+
+                    firebaseAuth.currentUser!!.updateProfile(profileUpdates).await()
+
                     return@withContext Constants.FIREBASE_REQUEST_SUCCESS // SUCCESS
                 } catch (e: Exception) {
                     // Handle any exceptions here
-                    e.printStackTrace()
+                    Log.e("Display Name Repository", e.stackTrace.toString())
 
                     return@withContext Constants.FIREBASE_REQUEST_EXCEPTION
                 }
             } else {
-
                 return@withContext Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED
             }
         }

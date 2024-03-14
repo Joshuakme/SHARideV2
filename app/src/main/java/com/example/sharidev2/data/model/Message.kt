@@ -1,13 +1,17 @@
 package com.example.sharidev2.data.model
 
+import android.os.Parcelable
 import com.google.firebase.Timestamp
+import kotlinx.parcelize.Parcelize
+import java.util.UUID
 
+@Parcelize
 data class Message(
-    val messageId: String,
-    val senderId: String,
+    val messageId: String? = UUID.randomUUID().toString(),
+    var senderId: String? = null,
     val text: String,
-    val timestamp: Timestamp? = null,
+    val timestamp: Timestamp? = Timestamp.now(),
     val attachmentURL: String? = null, // Nullable for text messages
-    val readBy: List<String>,
-    val messageType: MessageType
-)
+    val readBy: List<String> = emptyList(),
+    val messageType: MessageType = MessageType.Text
+): Parcelable

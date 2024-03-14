@@ -12,11 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class LicenseUploadViewModel : ViewModel() {
-    private val repository = DrivingLicenseRepository(
-        FirebaseClient.firestore,
-        FirebaseClient.firebaseAuth,
-        FirebaseClient.firebaseStorage
-    )
+    private val repository = DrivingLicenseRepository()
 
     private val _frontImageUri = MutableLiveData<Uri?>()
     val frontImageUri: LiveData<Uri?>

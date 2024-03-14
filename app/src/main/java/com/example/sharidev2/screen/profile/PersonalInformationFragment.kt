@@ -24,7 +24,6 @@ import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentPersonalInformationBinding
 import com.example.sharidev2.utility.FirebaseClient
-import com.example.sharidev2.viewmodel.LicenseUploadViewModel
 import com.example.sharidev2.viewmodel.PersonalInfoViewModel
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.auth.FirebaseAuth
@@ -124,7 +123,7 @@ class PersonalInformationFragment : Fragment() {
         }
 
         viewModel.mobile.observe(viewLifecycleOwner) { mobile ->
-            binding.textPersonalInfoItemValueMobileNumber.text = "+60 " + mobile
+            binding.textPersonalInfoItemValueMobileNumber.text = formatPhoneNumberWithCountryCode(mobile)
         }
 
         viewModel.gender.observe(viewLifecycleOwner) { gender ->
@@ -205,5 +204,13 @@ class PersonalInformationFragment : Fragment() {
 
     fun isUri(imagePath: String): Boolean {
         return !isUrl(imagePath) // Assume that if it's not a URL, it's a URI
+    }
+
+
+    fun formatPhoneNumberWithCountryCode(phoneNumber: String): String {
+        val part1 = phoneNumber.substring(0, 3)
+        val part2 = phoneNumber.substring(3)
+
+        return "$part1 $part2"
     }
 }

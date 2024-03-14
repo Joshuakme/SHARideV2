@@ -2,6 +2,7 @@
     <string name="app_name">SHARideV2</string>
     <string name="web_client_id">178112270595-mbkueg137033n1edkrmd2ocepfk6b2ig.apps.googleusercontent.com</string>
     <string name="map_id" translatable="false">ed88a81f472d4f02</string>
+    <string name="google_api_key" translatable="false">AIzaSyCfsP1xX9W9IMQ7JJdusjltI9G6X3ODLA0</string>
     <string name="share_app_link" translatable="false">joshuakme.github.io/SHARide-Web/</string>
 
 
@@ -21,7 +22,7 @@
     <string name="screen_title_profile">Profile</string>
 
     <!--  Home Fragment  -->
-    <string name="home_fragment_welcome_user">Welcome %s</string>
+    <string name="home_fragment_welcome_user">Welcome %s!</string>
     <string name="home_fragment_welcome_user_area">Unknown location</string>
     <string name="home_fragment_pick_up_location">Origin location</string>
 
@@ -109,9 +110,13 @@
     <string name="ride_detail_fragment_title_ride_detail">Ride Detail</string>
     <string name="ride_detail_fragment_section_title_driver_details">Driver details</string>
     <string name="ride_detail_fragment_section_title_ride_details">Ride details</string>
-    <string name="ride_detail_fragment_driver_rating">%.1f (%d reviews)</string>
+    <string name="ride_detail_fragment_driver_rating">%.1f</string>
+    <string name="ride_detail_fragment_driver_rating_review">(%d reviews)</string>
     <string name="ride_detail_fragment_passengers_seat_booked">%d/%d seats booked</string>
     <string name="ride_detail_fragment_passengers_estimated_price">RM %.2f</string>
+    <string name="ride_detail_fragment_ride_detail_date">Ride date:</string>
+    <string name="ride_detail_fragment_ride_detail_starting_time">Starting time:</string>
+    <string name="ride_detail_fragment_ride_detail_vehicle">Vehicle:</string>
 
 
     <!--  Booking Fragment  -->

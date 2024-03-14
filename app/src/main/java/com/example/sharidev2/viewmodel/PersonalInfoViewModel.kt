@@ -20,14 +20,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class PersonalInfoViewModel: ViewModel() {    // LiveData for current display name
-    // Initialize repositories for handling display name, mobile, and gender data
     private val personalInfoRepository = PersonalnformationRepository()
     private val displayNameRepository = DisplayNameRepository()
     private val mobileRepository = EditMobileRepository()
     private val genderRepository = GenderRepository()
-    private val personalnformationRepository = PersonalnformationRepository()
+    // Initialize repositories for handling display name, mobile, and gender data
 
 
+
+    private val firebaaseAuth = FirebaseClient.firebaseAuth
+
+
+    // DATA
     //Mutable Live Data
     private val _selectedImageUri = MutableLiveData<Uri>()
     private val _displayName = MutableLiveData<String>()
@@ -61,7 +65,7 @@ class PersonalInfoViewModel: ViewModel() {    // LiveData for current display na
 
     init {
         viewModelScope.launch(Dispatchers.Main) {
-            val profilePicUri = personalnformationRepository.getProfilePic()
+            val profilePicUri = personalInfoRepository.getProfilePic()
 
             if(profilePicUri != null){
                 setSelectedImageUri(profilePicUri)
@@ -95,8 +99,10 @@ class PersonalInfoViewModel: ViewModel() {    // LiveData for current display na
 
 
         // Updates the display name of the user in the repository
-        suspend fun updateDisplayName(newDisplayName: String) {
-            displayNameRepository.updateDisplayName(newDisplayName)
+        fun updateDisplayName(newDisplayName: String) {
+            viewModelScope.launch {
+                displayNameRepository.updateDisplayName(newDisplayName)
+            }
         }
 
         //Fetches the display name of the current user from the database and updates the LiveData

@@ -11,6 +11,7 @@ import com.example.sharidev2.data.model.User
 import com.example.sharidev2.data.model.UserLocation
 import com.example.sharidev2.data.repository.ActiveRideRepository
 import com.example.sharidev2.utility.FirebaseClient
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.Timestamp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,8 +34,6 @@ class ActiveRideViewModel(
 
     // INTERNAL DATA MEMBERS
     val activeRide: LiveData<Ride> = savedStateHandle.getLiveData(ACTIVE_RIDE_KEY)
-    val activeRideDriver: LiveData<Driver> = savedStateHandle.getLiveData(ACTIVE_RIDE_DRIVER_KEY)
-    val activeRidePassengers: LiveData<List<Passenger>> = savedStateHandle.getLiveData(ACTIVE_RIDE_PASSENGERS_KEY)
     val activeRideUserLocationList: LiveData<List<UserLocation>> = savedStateHandle.getLiveData(ACTIVE_RIDE_PASSENGERS_KEY)
     val activeRideCurrentUserId: LiveData<String> = savedStateHandle.getLiveData(ACTIVE_RIDE_CURRENT_USER_KEY)
     val activeRideCurrentUserRole: LiveData<String> = savedStateHandle.getLiveData(ACTIVE_RIDE_CURRENT_USER_ROLE_KEY)
@@ -43,6 +42,20 @@ class ActiveRideViewModel(
     // SETTER in SavedStateHandle
     fun setActiveRide(newActiveRide: Ride) {
         savedStateHandle[ACTIVE_RIDE_KEY] = newActiveRide
+
+        if(currentUser != null) {
+            if(newActiveRide.driver.userUid == currentUser.uid) {
+                setActiveRideCurrentUserRole("driver")
+            } else {
+                for(passenger in newActiveRide.passengers){
+                    if(passenger != null) {
+                        if(passenger.key == currentUser.uid) {
+                            setActiveRideCurrentUserRole("passenger")
+                        }
+                    }
+                }
+            }
+        }
     }
 
     fun setActiveRideDriver(newActiveRideDriver: Driver) {
@@ -103,6 +116,14 @@ class ActiveRideViewModel(
         }
     }
 
+
+    fun addRoutePathList(routePathList: MutableList<MutableList<LatLng>>) {
+        if(activeRide.value?.id != null) {
+            viewModelScope.launch(Dispatchers.IO) {
+                activeRideRepository.addRoutePathList(activeRide.value!!.id!!, routePathList)
+            }
+        }
+    }
 
     fun startRide() {
         val timestamp = Timestamp.now()

@@ -1,7 +1,6 @@
 package com.example.sharidev2.data.model
 
 import android.content.Context
-import android.location.Location
 import android.location.Location.distanceBetween
 import android.os.Parcelable
 import com.example.sharidev2.R
@@ -12,7 +11,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class SearchLocation(
-    val placeId: String = "",
+    val placeId: String? = null,
     val name: String = "",
     val distanceMetersFromOrigin: Int = 0,
     val detailAddress: String = "",

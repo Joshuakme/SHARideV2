@@ -116,8 +116,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/ss_profile_section_item_bottom_margin"
+                android:visibility="gone"
                 app:cardBackgroundColor="#00FFFFFF"
-                app:cardElevation="0dp">
+                app:cardElevation="0dp"
+                tools:visibility="gone">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -133,7 +135,7 @@
                         app:layout_constraintTop_toTopOf="parent">
 
                         <ImageButton
-                            android:id="@+id/image_button_chat"
+                            android:id="@+id/image_button_chat_pic"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="#00FFFFFF"
@@ -153,13 +155,13 @@
                         android:fontFamily="@font/poppins_medium"
                         android:text="Ali"
                         android:textSize="16sp"
-                        app:layout_constraintBottom_toTopOf="@+id/text_chat_desc"
-                        app:layout_constraintEnd_toStartOf="@+id/text_chat_day"
+                        app:layout_constraintBottom_toTopOf="@+id/text_chat_last_message"
+                        app:layout_constraintEnd_toStartOf="@+id/text_chat_date"
                         app:layout_constraintStart_toEndOf="@+id/chat_icon"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/text_chat_desc"
+                        android:id="@+id/text_chat_last_message"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
@@ -173,7 +175,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/text_chat_title" />
 
                     <TextView
-                        android:id="@+id/text_chat_day"
+                        android:id="@+id/text_chat_date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="2023-12-07"
@@ -186,10 +188,9 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_chat"
+                android:id="@+id/recycler_chats"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
                 tools:listitem="@layout/recycler_item_messages_chat"
                 tools:visibility="gone" />
 
@@ -197,12 +198,14 @@
                 android:id="@+id/card_error_load_chat"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:visibility="gone"
                 app:cardBackgroundColor="#00FFFFFF"
                 app:cardCornerRadius="0dp"
                 app:cardForegroundColor="#00FFFFFF"
                 app:layout_constraintHeight_default="percent"
                 app:layout_constraintHeight_percent="0.5"
-                app:strokeColor="#00FFFFFF">
+                app:strokeColor="#00FFFFFF"
+                tools:visibility="gone">
 
                 <TextView
                     android:id="@+id/text_error_load_chat"
@@ -219,9 +222,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cl_chat_loading_spinner"
                 android:layout_width="match_parent"
-                android:layout_height="470dp"
-                android:visibility="gone"
-                tools:visibility="gone">
+                android:layout_height="470dp">
 
                 <ProgressBar
                     android:id="@+id/progressBar"

@@ -1,9 +1,11 @@
 package com.example.sharidev2.utility
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.util.TypedValue
 import com.example.sharidev2.data.model.Chat
 import com.example.sharidev2.data.model.Contact
 import com.example.sharidev2.data.model.Driver
@@ -122,10 +124,11 @@ class Converters() {
         return userList
     }
 
-    fun toDriver(map: Map<String, Any>): Driver {
+    suspend fun toDriver(map: Map<String, Any>): Driver {
         val userUid = map["userUid"] as String
 
-        val driverUser = toUser(map["user"] as Map<String, Any>)
+//        val driverUser = toUser(map["user"] as Map<String, Any>)
+        val driverUser = FirebaseClient.getUserFromUid(userUid)
 
         val locationMap = map["location"] as Map<String, Any>?
         val location = if(locationMap != null) {
@@ -149,10 +152,11 @@ class Converters() {
         )
     }
 
-    fun toPassenger(map: Map<String, Any>): Passenger {
+    suspend fun toPassenger(map: Map<String, Any>): Passenger {
         val userUid = map["userUid"] as String
 
-        val user = if(map["user"] != null) toUser(map["user"] as Map<String, Any>) else User()
+//        val user = if(map["user"] != null) toUser(map["user"] as Map<String, Any>) else User()
+        val user = FirebaseClient.getUserFromUid(userUid)
 
         val locationMap = map["location"] as Map<String, Any>?
         val location = if(locationMap != null) {
@@ -164,6 +168,18 @@ class Converters() {
             null
         }
 
+//        val origin = if(map["origin"] as Map<String, Any> != null) {
+//            toSearchLocation(map["origin"] as Map<String, Any>)
+//        } else {
+//            null
+//        }
+//
+//        val destination = if(map["destination"] as Map<String, Any> != null) {
+//            toSearchLocation(map["destination"] as Map<String, Any>)
+//        } else {
+//            null
+//        }
+
         val status = UserStatus.valueOf((map["status"] as String))
         val ridePrice = (map["price"] as Long?)?.toDouble()
 
@@ -171,6 +187,7 @@ class Converters() {
             userUid,
             user,
             location,
+            null,null,
             status,
             ridePrice
         )
@@ -268,13 +285,13 @@ class Converters() {
     }
 
     // MESSAGE CONVERTERS
-    fun toMessage(map: Map<String, Any>): Message {
+    private fun toMessage(map: Map<String, Any>): Message {
         val messageId = map["messageId"] as String
         val senderID = map["senderId"] as String
         val text = map["text"] as String
         val timestamp = map["timestamp"] as Timestamp
-        val attachmentURL = map["attachmentURL"] as String
-        val readBy = map["messageId"] as List<String>
+        val attachmentURL = map["attachmentURL"] as String?
+        val readBy = map["readBy"] as List<String>
         val messageType = MessageType.valueOf(map["messageType"] as String)
 
         return Message(
@@ -353,6 +370,31 @@ class Converters() {
         )
     }
 
+
+    // LATLNG CONVERTERS
+    fun toLatLng(list: List<Map<String, Any>>): MutableList<LatLng> {
+        val latLngList = mutableListOf<LatLng>()
+
+        for(latlngMap in list) {
+            latlngMap
+            val latitute = latlngMap["latitude"] as Double
+            val longitude = latlngMap["longitude"] as Double
+
+            latLngList.add(LatLng(latitute, longitude))
+        }
+
+        return latLngList
+    }
+
+
+    // Dimension CONVERTERS
+    fun toPixel(context: Context, dimensionInDp: Float): Int {
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            dimensionInDp,
+            context.resources.displayMetrics
+        ).toInt()
+    }
 
     fun toVehicleDoc(map: Map<String, Any>): VehicleDoc {
         val userUid = map["userUid"] as String

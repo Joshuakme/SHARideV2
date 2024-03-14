@@ -1,6 +1,5 @@
 package com.example.sharidev2.screen.user
 
-import android.net.Uri
 import androidx.fragment.app.Fragment
 import android.os.Bundle
 import android.text.Editable
@@ -18,7 +17,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.data.model.RideOption
-import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.data.model.User
 import com.example.sharidev2.databinding.FragmentLoginBinding
 import com.example.sharidev2.utility.FirebaseClient
@@ -36,7 +34,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import java.util.Collections
 import java.util.Timer
 import java.util.TimerTask
 import java.util.concurrent.TimeUnit
@@ -324,6 +321,7 @@ class LoginFragment : Fragment() {
 
                 override fun onVerificationFailed(e: FirebaseException) {
                     getOtpLoading(false)
+                    Log.e("Login Fragment", e.message.toString())
                     Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
                 }
 
@@ -367,7 +365,6 @@ class LoginFragment : Fragment() {
                 if (task.isSuccessful) {
                     loginLoading(false)
 
-                    // TODO: save the phone number to firebase database
 
                     CoroutineScope(Dispatchers.Main).launch {
                         // Call assignUserDefaultInfo from within the coroutine
@@ -408,7 +405,7 @@ class LoginFragment : Fragment() {
                         displayName = task.result.user?.displayName,
                         email = task.result.user?.email,
                         phoneNumber = task.result.user?.phoneNumber,
-                        photoUrl = task.result.user?.photoUrl,
+                        photoUri = task.result.user?.photoUrl,
                         rideOption = RideOption(),
                         savedAddress = mapOf(),
                         joinedDate = Timestamp.now()

@@ -278,6 +278,7 @@
                         android:paddingTop="@dimen/ss_home_input_field_vertical_padding"
                         android:paddingEnd="@dimen/ss_home_input_field_horizontal_padding"
                         android:paddingBottom="@dimen/ss_home_input_field_vertical_padding"
+                        android:singleLine="true"
                         android:textColorHint="?android:attr/textColorHint"
                         android:textSize="14sp" />
                 </LinearLayout>

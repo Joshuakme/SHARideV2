@@ -27,7 +27,7 @@
                 android:id="@+id/img_btn_driver_create_ride_nav_back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/ss_screen_top_margin"
+                android:layout_marginTop="16dp"
                 android:background="#00FFFFFF"
                 android:scaleX="@dimen/ss_profile_subfragment_nav_icon_scale"
                 android:scaleY="@dimen/ss_profile_subfragment_nav_icon_scale"
@@ -41,6 +41,7 @@
                 style="@style/text_fragment_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:fontFamily="@font/poppins"
                 android:gravity="center"
                 android:text="@string/driver_create_ride_fragment_title_create_new_ride"
@@ -182,7 +183,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    app:cardBackgroundColor="#00FFFFFF"
                     app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -193,10 +193,10 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
                         android:focusable="true"
-                        android:focusableInTouchMode="true">
+                        android:focusableInTouchMode="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
                         <ImageButton
                             android:id="@+id/img_btn_create_ride_destination"

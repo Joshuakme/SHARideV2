@@ -55,17 +55,15 @@ class EditDisplayNameFragment: Fragment() {
             val newDisplayName = binding.inputEditUsername.text.toString()
             // Update the display name in the ViewModel
             if (viewModel.isDisplayNameValid(newDisplayName)) {
-                // Update the display name in the ViewModel
-                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-                    viewModel.updateDisplayName(newDisplayName)
 
-                    Toast.makeText(
-                        requireContext(),
-                        "Update Username Successfully!",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    findNavController().popBackStack()
-                }
+                viewModel.updateDisplayName(newDisplayName)
+
+                Toast.makeText(
+                    requireContext(),
+                    "Update Username Successfully!",
+                    Toast.LENGTH_SHORT
+                ).show()
+                findNavController().popBackStack()
             } else {
                 Toast.makeText(
                     requireContext(),
@@ -77,27 +75,6 @@ class EditDisplayNameFragment: Fragment() {
 
         backDisplayNameBtn.setOnClickListener {
             findNavController().navigate(R.id.action_editDisplayNameFragment_to_personalInformationFragment)
-        }
-    }
-
-    private suspend fun updateDisplayName() {
-        val displayName = binding.inputEditUsername
-
-        try {
-            if(user.displayName != null) {
-                val updateDisplayName = viewModel.updateDisplayName(user.displayName!!)
-
-                Log.d("UpdateDisplayName", "Update successful: $updateDisplayName")
-
-                // Navigate back to the EmergencyContactFragment
-                findNavController().popBackStack()
-            }else{
-                Toast.makeText(requireContext(), "Failed to edit display name!", Toast.LENGTH_SHORT)
-                    .show()
-            }
-
-        } catch (e: Exception) {
-            Log.e("UpdateDisplayName", "Error updating display name: ${e.message}", e)
         }
     }
 }

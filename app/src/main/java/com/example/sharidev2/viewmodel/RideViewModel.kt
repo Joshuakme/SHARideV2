@@ -33,7 +33,7 @@ class RideViewModel(
     init {
         viewModelScope.launch(Dispatchers.Main) {
             setRideList(rideRepository.getAllRides())
-            setFilterRideList(rideRepository.getPassengerRideList())
+            setFilterRideList(rideRepository.getAvailableRideList())
             setActiveRideList(getRides(FilterType.ACTIVE).sortedBy { it.datetime }.reversed())
             setPastRideList(getRides(FilterType.PAST))
         }
@@ -76,6 +76,4 @@ class RideViewModel(
         ACTIVE,
         PAST
     }
-
-
 }

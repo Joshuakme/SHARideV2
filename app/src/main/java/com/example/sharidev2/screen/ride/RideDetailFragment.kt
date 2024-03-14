@@ -13,8 +13,13 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
+import com.example.sharidev2.GlideApp
 import com.example.sharidev2.R
 import com.example.sharidev2.adapter.RideDetailPassengerImageAdapter
 import com.example.sharidev2.adapter.BookingTimeLineAdapter
@@ -65,15 +70,20 @@ class RideDetailFragment : Fragment() {
 
 
         // ELEMENT VARIABLES
+        val backBtn = binding.imgBtnRideDetailNavBack
         val requestBtn = binding.btnRideDetailRequestRide
         val navController = Navigation.findNavController(requireActivity(), R.id.fragment_container_main)
         val driverImg = binding.imgRideDetailDriver
         val driverNameText = binding.textRideDetailDriverName
         val driverPhoneNumberText = binding.textRideDetailPhoneNumber
         val driverRatingText = binding.textRideDetailDriverRating
+        val driverRatingReviewText = binding.textRideDetailDriverRatingReview
         val passengersSeatsBookedText = binding.textRideDetailPassengersSeatsBooked
         val passengersImageRecyclerView = binding.recyclerRideDetailPassengersImage
         val rideDetailsTimelineRecyclerView = binding.recyclerRideDetailTimeline
+        val rideDetailRideDateText = binding.textRideDetailRideDate
+        val rideDetailStartingTimeText = binding.textRideDetailStartingTime
+        val rideDetailVehicleText = binding.textRideDetailVehicle
         val estimatedPriceText = binding.textRideDetailEstimatedPrice
 
 
@@ -81,14 +91,25 @@ class RideDetailFragment : Fragment() {
             if(ride != null) {
                 // Driver
                 if(ride.driver.user != null) {
-                    if(ride.driver.user!!.photoUrl != null || ride.driver.user!!.photoUrl.toString() != "") {
-                        driverImg.setImageURI(ride.driver.user!!.photoUrl)
+                    if(ride.driver.user!!.photoUri != null || ride.driver.user!!.photoUri.toString() != "") {
+                        val photoUri = ride.driver.user!!.photoUri
+
+                        Log.e("RideDetailFragment", "PhotoUri: " + photoUri.toString())
+                        if(CommonUtils().isUrl(photoUri.toString())) {
+                            GlideApp.with(requireContext())
+                                .load(photoUri.toString())
+                                .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Disable disk caching
+                                .into(driverImg)
+                        }
+                    } else {
+                        val colorOutline = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorOutline)
+                        driverImg.setColorFilter(colorOutline)
                     }
 
                     driverNameText.text = ride.driver.user?.displayName
-                    driverPhoneNumberText.text = formatPhoneNumber(ride.driver.user?.phoneNumber ?: "")
-                    driverRatingText.text = getString(R.string.ride_detail_fragment_driver_rating,
-                        ride.driver.user?.rating?.toDouble() ?: 0.0, 0)
+                    driverPhoneNumberText.text = CommonUtils.formatHiddenPhoneNumber(ride.driver.user?.phoneNumber ?: "")
+                    driverRatingText.text = getString(R.string.ride_detail_fragment_driver_rating, ride.driver.user?.rating?.toDouble() ?: 0.0)
+                    driverRatingReviewText.text = getString(R.string.ride_detail_fragment_driver_rating_review, 0)
                 }
 
                 // Passengers
@@ -107,12 +128,14 @@ class RideDetailFragment : Fragment() {
                         // Passengers Image
                         val imageList = mutableListOf<Uri>()
                         for(passenger in ride.passengers) {
-                            imageList.add(passenger.value.user?.photoUrl ?: CommonUtils().getUriFromVectorDrawable(image1))
+                            imageList.add(passenger.value.user?.photoUri ?: CommonUtils().getUriFromVectorDrawable(image1))
                         }
 
-                        Log.e("RIDE DETAIL FRAGMENT", "Image list : " + imageList.size.toString())
+                        while(imageList.size < ride.driver.vehicle.capacity-1) {
+                            imageList.add(CommonUtils().getUriFromVectorDrawable(image1))
+                        }
 
-                        val adapter = RideDetailPassengerImageAdapter(imageList)
+                        val adapter = RideDetailPassengerImageAdapter(requireContext(), imageList)
                         passengersImageRecyclerView.adapter = adapter
                         passengersImageRecyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
                     } else {
@@ -127,7 +150,7 @@ class RideDetailFragment : Fragment() {
                             imageList.add(CommonUtils().getUriFromVectorDrawable(image1))
                         }
 
-                        val adapter = RideDetailPassengerImageAdapter(imageList)
+                        val adapter = RideDetailPassengerImageAdapter(requireContext(), imageList)
                         passengersImageRecyclerView.adapter = adapter
                         passengersImageRecyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
                     }
@@ -139,6 +162,17 @@ class RideDetailFragment : Fragment() {
                 val rideAdapter = BookingTimeLineAdapter(rideList)
                 rideDetailsTimelineRecyclerView.adapter = rideAdapter
                 rideDetailsTimelineRecyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+
+
+                rideDetailRideDateText.text =  ride.datetime.let { CommonUtils.formatDate(it) + if(CommonUtils().isToday(it)) "(Today)" else ""}
+                rideDetailStartingTimeText.text =  CommonUtils.formatTime(ride.datetime)
+
+                if(ride.driver.vehicle != null) {
+                    val vehicle = ride.driver.vehicle
+                    rideDetailVehicleText.text = "${vehicle.model} (${vehicle.color})"
+                    rideDetailVehicleText.text = "${vehicle.model} (${vehicle.color})"
+                }
+
 
                 // Price Estimation
                 estimatedPrice = 0.0      // TODO: Calculate price
@@ -178,6 +212,10 @@ class RideDetailFragment : Fragment() {
             }
         }
 
+        backBtn.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
 
         return binding.root
     }
@@ -205,24 +243,5 @@ class RideDetailFragment : Fragment() {
                 null
             }
         }
-    }
-
-    fun formatPhoneNumber(phoneNumber: String): String {
-        // Check if the phone number has at least 4 characters
-        if (phoneNumber.length < 9) {
-            return "phoneNumber" // Return the original number if it's too short
-        }
-
-        // Get the first two and last two characters of the phone number
-        val firstTwoDigits = phoneNumber.take(2)
-        val lastTwoDigits = phoneNumber.takeLast(2)
-
-        // Replace all characters between the first two and last two with two asterisks
-        val hiddenDigits = "**"
-
-        // Combine the formatted number
-        val formattedPhoneNumber = "+60 $firstTwoDigits$hiddenDigits$lastTwoDigits"
-
-        return formattedPhoneNumber
     }
 }

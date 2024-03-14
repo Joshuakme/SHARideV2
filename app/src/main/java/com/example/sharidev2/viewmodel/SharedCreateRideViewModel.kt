@@ -9,8 +9,10 @@ import com.example.sharidev2.data.model.Driver
 import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.data.model.Vehicle
+import com.example.sharidev2.data.repository.DriverVehicleRepository
 import com.example.sharidev2.data.repository.RideRepository
 import com.example.sharidev2.data.repository.UserLocationRepository
+import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.FirebaseClient
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.Timestamp
@@ -23,20 +25,20 @@ class SharedCreateRideViewModel(
 ) : ViewModel() {
     // Repository
     private val rideRepository = RideRepository()
-    private val currentLocationRepo = UserLocationRepository()
+    private val driverVehicleRepository = DriverVehicleRepository()
+
+    // ViewModel
+    private val vehicleViewModel = DriverVehicleViewModel()
 
     // DATA KEY CONSTANT
     private val ORIGIN_KEY = "origin"
     private val DESTINATION_KEY = "destination"
     private val VEHICLE_KEY = "vehicle"
     private val PASSENGER_CAPACITY_KEY = "passenger_capacity"
-    private val RIDE_DATE_TIME_KEY = "ride_date"
+    private val RIDE_DATE_TIME_KEY = "ride_date_time"
+    private val RIDE_ROUTE_KEY = "ride_route"
     private val CREATE_RIDE_STATUS_KEY = "create_ride_status"
 
-    // RIDE STATUS
-    private val CREATE_RIDE_PENDING = 0
-    private val CREATE_RIDE_SUCCESS = 1
-    private val CREATE_RIDE_FAILED = -1
 
 
     // INTERNAL DATA MEMBERS
@@ -55,17 +57,35 @@ class SharedCreateRideViewModel(
     // Ride Date Time
     val rideDateTime: LiveData<Timestamp> = savedStateHandle.getLiveData(RIDE_DATE_TIME_KEY)
 
+    // Ride Date Time
+    val rideRoute: LiveData<MutableList<LatLng>> = savedStateHandle.getLiveData(RIDE_ROUTE_KEY)
+
     // Create Ride Status
     val createRideStatus: LiveData<Int> = savedStateHandle.getLiveData(CREATE_RIDE_STATUS_KEY)
 
 
     // CONSTRUCTOR
     init {
+        Log.e("Shared Create Ride ViewModel", "Init Shared Create Ride ViewModel")
         if (rideDateTime.value == null) {
             setRideDateTime(Timestamp.now())
         }
 
-        setCreateRideStatus(CREATE_RIDE_PENDING)
+        if(vehicle.value == null) {
+            viewModelScope.launch {
+                try {
+                    val vehicleList = driverVehicleRepository.getDriverVehicleList()
+
+                    if(vehicleList.isNotEmpty()) {
+                        setVehicle(vehicleList[0])
+                    }
+                } catch (e: Exception) {
+                    Log.e("Shared Create Ride ViewModel", e.message.toString())
+                }
+            }
+        }
+
+        setCreateRideStatus(Constants.UI_DATA_LOADING)
     }
 
 
@@ -78,6 +98,16 @@ class SharedCreateRideViewModel(
     // Destination Location
     fun setDestination(newDestination: SearchLocation) {
         savedStateHandle[DESTINATION_KEY] = newDestination
+
+        if(origin.value?.name != null && destination.value?.name != null) {
+            viewModelScope.launch(Dispatchers.Main) {
+                val route = rideRepository.getRideRoute(origin.value!!.name, destination.value!!.name)
+
+                if(route != null) {
+                    setRideRoute(route)
+                }
+            }
+        }
     }
 
     // Vehicle
@@ -99,9 +129,28 @@ class SharedCreateRideViewModel(
         savedStateHandle[RIDE_DATE_TIME_KEY] = newRideDateTime
     }
 
+    // Ride Route
+    fun setRideRoute(newRideRoute: MutableList<LatLng>) {
+        savedStateHandle[RIDE_ROUTE_KEY] = newRideRoute
+    }
+
     // Create Ride Status
     fun setCreateRideStatus(response: Int) {
         savedStateHandle[CREATE_RIDE_STATUS_KEY] = response
+    }
+
+    // Create Ride Route
+    fun setRoutePath(routePath: MutableList<LatLng>) {
+        savedStateHandle[RIDE_ROUTE_KEY] = routePath
+    }
+
+    // Save Ride Route
+    fun saveRoutePath() {
+        if(origin.value != null && destination.value != null && rideRoute.value != null) {
+            viewModelScope.launch(Dispatchers.IO) {
+                rideRepository.addRoutePath(origin.value!!, destination.value!!, rideRoute.value!!)
+            }
+        }
     }
 
 
@@ -110,11 +159,6 @@ class SharedCreateRideViewModel(
         val currentUser = FirebaseClient.firebaseAuth.currentUser
 
         if(currentUser != null) {
-            Log.e("Shared Create Ride ViewModel",
-                "Current Location: $currentLocation"
-            )
-            Log.e("Shared Create Ride ViewModel", "Current User ID: " + currentUser.uid)
-
             val newCreatedRide = Ride(
                 origin = origin.value!!,
                 destination = destination.value!!,
@@ -131,18 +175,18 @@ class SharedCreateRideViewModel(
             viewModelScope.launch(Dispatchers.Main) {
                 rideRepository.createRide(newCreatedRide, object : RideRepository.CreateRideCallback {
                     override fun onCreateSuccess() {
-                        setCreateRideStatus(CREATE_RIDE_SUCCESS)
+                        setCreateRideStatus(Constants.UI_DATA_SUCCESS)
                     }
 
                     override fun onCreateFailure(error: Throwable) {
                         Log.e("Create Ride", error.message.toString())
 
-                        setCreateRideStatus(CREATE_RIDE_FAILED)
+                        setCreateRideStatus(Constants.UI_DATA_FAILED)
                     }
                 })
             }
         } else {
-            setCreateRideStatus(CREATE_RIDE_FAILED)
+            setCreateRideStatus(Constants.UI_DATA_FAILED)
         }
     }
 
@@ -150,11 +194,11 @@ class SharedCreateRideViewModel(
 
     // HELPER METHODS
     fun resetData() {
-        setOrigin(SearchLocation()) // Pass an empty SearchLocation or null, depending on your implementation
-        setDestination(SearchLocation())
-        setVehicle(Vehicle()) // Pass an empty Vehicle or null
-        setCapacity(0) // Set capacity to 0 or any default value you prefer
-        setRideDateTime(Timestamp.now()) // Set the date to the current date or any default date
-        setCreateRideStatus(CREATE_RIDE_PENDING) // Reset the create ride status
+        savedStateHandle[ORIGIN_KEY] = SearchLocation()
+        savedStateHandle[DESTINATION_KEY] = SearchLocation()
+        savedStateHandle[VEHICLE_KEY] = Vehicle()
+        savedStateHandle[PASSENGER_CAPACITY_KEY] = 0
+        savedStateHandle[RIDE_DATE_TIME_KEY] = Timestamp.now()
+        savedStateHandle[CREATE_RIDE_STATUS_KEY] = Constants.UI_DATA_LOADING
     }
 }

@@ -1,81 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <!--  Chat  -->
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_chat"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/ss_profile_section_item_bottom_margin"
+    app:cardBackgroundColor="#00FFFFFF"
+    app:cardElevation="0dp">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card_chat"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:cardBackgroundColor="#00FFFFFF"
-        app:cardElevation="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="false"
+        android:contextClickable="false"
+        android:longClickable="false">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <androidx.cardview.widget.CardView
+            android:id="@+id/chat_icon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:clickable="false"
+            android:contextClickable="false"
+            android:longClickable="false"
+            app:cardCornerRadius="10000dp"
+            app:cardElevation="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/chat_icon"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                app:cardCornerRadius="10000dp"
-                app:cardElevation="0dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+            <ImageButton
+                android:id="@+id/image_button_chat_pic"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#00FFFFFF"
+                android:clickable="false"
+                android:contextClickable="false"
+                android:longClickable="false"
+                android:scaleX="2.4"
+                android:scaleY="2.4"
+                android:src="@drawable/baseline_account_circle_24"
+                app:tint="?attr/colorTertiary" />
 
-                <ImageButton
-                    android:id="@+id/image_button_chat"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="#00FFFFFF"
-                    android:clickable="false"
-                    android:scaleX="2.4"
-                    android:scaleY="2.4"
-                    android:src="@drawable/baseline_account_circle_24" />
+        </androidx.cardview.widget.CardView>
 
-            </androidx.cardview.widget.CardView>
+        <TextView
+            android:id="@+id/text_chat_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:clickable="false"
+            android:contextClickable="false"
+            android:ellipsize="end"
+            android:fontFamily="@font/poppins_medium"
+            android:linksClickable="false"
+            android:longClickable="false"
+            android:singleLine="true"
+            android:text="Ali"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toTopOf="@+id/text_chat_last_message"
+            app:layout_constraintEnd_toStartOf="@+id/text_chat_date"
+            app:layout_constraintStart_toEndOf="@+id/chat_icon"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/text_chat_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:fontFamily="@font/poppins_semibold"
-                android:text="Ali"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toTopOf="@+id/text_chat_desc"
-                app:layout_constraintEnd_toStartOf="@+id/text_chat_day"
-                app:layout_constraintStart_toEndOf="@+id/chat_icon"
-                app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/text_chat_last_message"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            android:clickable="false"
+            android:contextClickable="false"
+            android:ellipsize="end"
+            android:linksClickable="false"
+            android:longClickable="false"
+            android:singleLine="true"
+            android:text="Hi, I'm Ali. Nice to meet you."
+            android:textColor="@color/system_neutral2_500"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@+id/chat_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/text_chat_new_message_badge"
+            app:layout_constraintStart_toEndOf="@+id/chat_icon"
+            app:layout_constraintTop_toBottomOf="@+id/text_chat_title" />
 
-            <TextView
-                android:id="@+id/text_chat_desc"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="32dp"
-                android:text="Hi, I'm Ali. Nice to meet you."
-                android:textColor="@android:color/system_neutral1_500"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="@+id/chat_icon"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/chat_icon"
-                app:layout_constraintTop_toBottomOf="@+id/text_chat_title" />
+        <TextView
+            android:id="@+id/text_chat_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:contextClickable="false"
+            android:linksClickable="false"
+            android:longClickable="false"
+            android:text="2023-12-07"
+            android:textColor="@color/system_neutral2_500"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/text_chat_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/text_chat_day"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="17 Dec"
-                android:textSize="12sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/text_chat_new_message_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/badge_circle"
+            android:clickable="false"
+            android:contextClickable="false"
+            android:linksClickable="false"
+            android:longClickable="false"
+            android:padding="4dp"
+            android:text="1"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.cardview.widget.CardView>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
