@@ -22,6 +22,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
+        android:id="@+id/ll_message_item_receive"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="16dp"
@@ -55,37 +56,44 @@
             android:layout_gravity="start"
             app:cardBackgroundColor="?attr/colorSurfaceContainerHigh"
             app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
-            app:contentPaddingRight="12dp"
+            app:contentPaddingTop="8dp"
             app:strokeWidth="0dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp">
 
                 <TextView
                     android:id="@+id/text_message_receive"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginTop="8dp"
-                    android:text="Hi This is message.ahoauhowuidhaoudnaouwn doaunw a wundaown doaw"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginBottom="8dp"
+                    android:includeFontPadding="true"
+                    android:maxEms="13"
+                    android:maxLines="8"
+                    android:minEms="1"
+                    android:paddingStart="1dp"
+                    android:paddingBottom="6dp"
+                    android:text="awjdn anwd kanud na k   wn   k d a   wj dn   k a  j n  d k ja wn wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/text_message_receive_time"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_min="wrap"
                     app:layout_wrapBehaviorInParent="included" />
 
                 <TextView
                     android:id="@+id/text_message_receive_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
                     android:text="5: 00"
                     android:textColor="?android:attr/textColorHint"
-                    android:textSize="12sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/text_message_receive" />
+                    android:textSize="11sp"
+                    android:translationY="4dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_message_receive"
+                    app:layout_constraintEnd_toEndOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

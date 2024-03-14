@@ -22,6 +22,7 @@ import com.example.sharidev2.databinding.FragmentChatBinding
 import com.example.sharidev2.data.model.Message
 import com.example.sharidev2.data.model.MessageType
 import com.example.sharidev2.data.model.Ride
+import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.viewmodel.ChatViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.launch
@@ -30,7 +31,6 @@ import kotlinx.coroutines.launch
 class ChatFragment : Fragment() {
     // Global Variables Init
     private lateinit var binding: FragmentChatBinding
-    //private val chatMessageList: MutableList<Message> = getMessageChat()
     private val chatViewModel: ChatViewModel by viewModels()
     private lateinit var chat: Chat
 
@@ -54,7 +54,7 @@ class ChatFragment : Fragment() {
         val navBackButton = binding.imgBtnChatBack
         val chatMessagesRecyclerView = binding.recyclerViewChatMessages
         val chatTextInput = binding.editTextMessagesChatInput
-        val chatSendButton = binding.imgBtnMessagesChatSend
+        val chatSendButton = binding.cardChatSendBtn
         val chatTextInputContainer = binding.llChatBottomNav
 
 
@@ -63,12 +63,12 @@ class ChatFragment : Fragment() {
 
         // Set Up RecyclerView
         if(chat != null) {
-            val chatAdapter = MessageAdapter(chat.messages!!.toList())
+            chatViewModel.setActiveChat(chat)
+
+            val chatAdapter = MessageAdapter(requireContext(), chat.messages!!.toList())
             chatMessagesRecyclerView.layoutManager = LinearLayoutManager(context)
             chatMessagesRecyclerView.adapter = chatAdapter
         }
-
-
 
 
         // EVENT LISTENERS
@@ -119,7 +119,7 @@ class ChatFragment : Fragment() {
             }
 
 
-            chatTextInput.text.clear()
+
         }
 
 
@@ -127,4 +127,22 @@ class ChatFragment : Fragment() {
     }
 
 
+    private fun loadingSendMessage(status: Int) {
+        val chatSendButton = binding.cardChatSendBtn
+        val chatTextInput = binding.editTextMessagesChatInput
+        val chatSendButtonIcon = binding.imgBtnMessagesChatSend
+        val chatSendButtonLoading = binding.progressBarChatSendLoading
+
+        when(status) {
+            Constants.FIREBASE_REQUEST_SUCCESS -> {
+
+
+                chatTextInput.text.clear()
+            }
+
+            Constants.UI_DATA_LOADING -> {
+
+            }
+        }
+    }
 }

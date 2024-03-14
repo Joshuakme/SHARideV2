@@ -93,26 +93,23 @@ class CommonUtils {
 
 
     fun isToday(timestamp: com.google.firebase.Timestamp): Boolean {
-        val calendar = Calendar.getInstance()
-        val currentDate = calendar.time
-        val firebaseDate = timestamp.toDate()
+        val currentDate = Calendar.getInstance()
+        val messageDate = Calendar.getInstance().apply { timeInMillis = timestamp.toDate().time }
 
         // Compare year, month, and day of month
-        return calendar.get(Calendar.YEAR) == firebaseDate.year + 1900 &&
-                calendar.get(Calendar.MONTH) == firebaseDate.month &&
-                calendar.get(Calendar.DAY_OF_MONTH) == firebaseDate.date
+        return currentDate.get(Calendar.YEAR) == messageDate.get(Calendar.YEAR) &&
+                currentDate.get(Calendar.MONTH) == messageDate.get(Calendar.MONTH) &&
+                currentDate.get(Calendar.DAY_OF_MONTH) == messageDate.get(Calendar.DAY_OF_MONTH)
     }
 
     fun isYesterday(timestamp: com.google.firebase.Timestamp): Boolean {
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DAY_OF_MONTH, -1) // Subtract one day to get yesterday's date
-        val yesterdayDate = calendar.time
-        val firebaseDate = timestamp.toDate()
+        val currentDate = Calendar.getInstance()
+        val messageDate = Calendar.getInstance().apply { timeInMillis = timestamp.toDate().time }
 
         // Compare year, month, and day of month
-        return calendar.get(Calendar.YEAR) == firebaseDate.year + 1900 &&
-                calendar.get(Calendar.MONTH) == firebaseDate.month &&
-                calendar.get(Calendar.DAY_OF_MONTH) == firebaseDate.date
+        return currentDate.get(Calendar.YEAR) == messageDate.get(Calendar.YEAR) &&
+                currentDate.get(Calendar.MONTH) == messageDate.get(Calendar.MONTH) &&
+                currentDate.get(Calendar.DAY_OF_MONTH) - messageDate.get(Calendar.DAY_OF_MONTH) == 1
     }
 
     fun calculateTimestampDurationInSeconds(startTime: Timestamp, endTime: Timestamp): Long {

@@ -18,7 +18,6 @@ class ChatViewModel(
     private val savedStateHandle: SavedStateHandle
 ): ViewModel() {
     private val chatRepository = ChatRepository()
-    private val currentUser = FirebaseClient.firebaseAuth.currentUser
 
     // DATA KEY CONSTANT
     private var userChatsListener: ListenerRegistration? = null
@@ -28,8 +27,8 @@ class ChatViewModel(
 
 
     // INTERNAL DATA MEMBERS
-    val chatList: LiveData<List<Chat>> = savedStateHandle.getLiveData(CHAT_LIST_KEY)
-    val activeChat: LiveData<Chat> = savedStateHandle.getLiveData(ACTIVE_CHAT_KEY)
+    private val chatList: LiveData<List<Chat>> = savedStateHandle.getLiveData(CHAT_LIST_KEY)
+    private val activeChat: LiveData<Chat> = savedStateHandle.getLiveData(ACTIVE_CHAT_KEY)
 
 
     init {
@@ -61,8 +60,6 @@ class ChatViewModel(
     }
 
     suspend fun addMessageToChat(chatId: String, message: Message): Int {
-        Log.e("Chat View Model", activeChat.value?.lastMessage?: "")
-
          return chatRepository.addMessageToChat(chatId, message, activeChat.value!!)
     }
 

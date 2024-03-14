@@ -1,21 +1,33 @@
 package com.example.sharidev2.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.view.marginTop
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sharidev2.R
 import com.example.sharidev2.data.model.Message
 import com.example.sharidev2.utility.CommonUtils
+import com.example.sharidev2.utility.Converters
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 
-class MessageAdapter(private val messageList: List<Message>) :
+class MessageAdapter(
+    private val context: Context,
+    private val messageList: List<Message>
+) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+        private var lastDisplayedDateLabel: String? = null
 
 
     private val ITEM_RECEIVE = 1
@@ -41,29 +53,62 @@ class MessageAdapter(private val messageList: List<Message>) :
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         // Bind data to views in the message item
         val message = messageList[position]
-        // Set text, load images, etc.
+        val currentDateLabel = getMessageDateLabel(message.timestamp!!)
 
-        if(holder.javaClass == SentViewHolder::class.java) {
+        val previousSender: String? = if (position > 0) messageList[position - 1].senderId else null
+        val currentSender: String = message.senderId!!
+        val isSameSender = previousSender == currentSender
+
+
+        if(holder is SentViewHolder) {
             // render sent message
             val viewHolder = holder as SentViewHolder
 
-            holder.sentMessage.text = message.text
+            if (lastDisplayedDateLabel != currentDateLabel) {
+                viewHolder.messageDateTitle.text = formatMessageDate(message.timestamp)
+                viewHolder.messageDateTitle.visibility = View.VISIBLE
+
+                lastDisplayedDateLabel = currentDateLabel
+            } else {
+                viewHolder.messageDateTitle.visibility = View.GONE
+            }
+
+
+            if(isSameSender) {
+                val layoutParams = viewHolder.messageItemLL.layoutParams as ViewGroup.MarginLayoutParams
+                layoutParams.setMargins(
+                    layoutParams.leftMargin,
+                    Converters().toPixel(context, 4f),
+                    layoutParams.rightMargin,
+                    layoutParams.bottomMargin
+                )
+                viewHolder.messageItemLL.layoutParams = layoutParams
+            } else {
+                val layoutParams = viewHolder.messageItemLL.layoutParams as ViewGroup.MarginLayoutParams
+                layoutParams.setMargins(
+                    layoutParams.leftMargin,
+                    Converters().toPixel(context, 16f),
+                    layoutParams.rightMargin,
+                    layoutParams.bottomMargin
+                )
+                viewHolder.messageItemLL.layoutParams = layoutParams
+            }
+
+            viewHolder.receivedMessage.text = message.text
+            viewHolder.messageTime.text = CommonUtils.formatTime(message.timestamp, "HH: mm")
         } else {
             // render received message
             val viewHolder = holder as ReceivedViewHolder
 
-
-            if(messageList.size >1) {
-                if(exceedHalfHour(messageList[position-1].timestamp!!, message.timestamp!!)) {
-                    viewHolder.messageDateTitle.text = formatMessageDate(message.timestamp)
-                    viewHolder.messageDateTitle.visibility = View.VISIBLE
-                } else {
-                    viewHolder.messageDateTitle.visibility = View.GONE
-                }
-            } else {
-                viewHolder.messageDateTitle.text = formatMessageDate(message.timestamp!!)
+            if (lastDisplayedDateLabel != currentDateLabel) {
+                viewHolder.messageDateTitle.text = formatMessageDate(message.timestamp)
                 viewHolder.messageDateTitle.visibility = View.VISIBLE
+
+                lastDisplayedDateLabel = currentDateLabel
+            } else {
+                viewHolder.messageDateTitle.visibility = View.GONE
             }
+
 
 
             viewHolder.receivedMessage.text = message.text
@@ -87,10 +132,14 @@ class MessageAdapter(private val messageList: List<Message>) :
     }
 
     class SentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val sentMessage = itemView.findViewById<TextView>(R.id.text_message_sent)
+        val messageItemLL = itemView.findViewById<LinearLayout>(R.id.ll_message_item_sent)
+        val messageDateTitle = itemView.findViewById<TextView>(R.id.text_message_sent_timestamp_title)
+        val receivedMessage = itemView.findViewById<TextView>(R.id.text_message_sent)
+        val messageTime = itemView.findViewById<TextView>(R.id.text_message_sent_time)
     }
 
     class ReceivedViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val messageItemLL = itemView.findViewById<LinearLayout>(R.id.ll_message_item_receive)
         val messageUserImg = itemView.findViewById<ImageView>(R.id.img_message_receive_user)
         val messageDateTitle = itemView.findViewById<TextView>(R.id.text_message_receive_timestamp_title)
         val receivedMessage = itemView.findViewById<TextView>(R.id.text_message_receive)
@@ -114,6 +163,17 @@ class MessageAdapter(private val messageList: List<Message>) :
         else {
             CommonUtils.formatDate(date, "yyyy/MM/dd")
         }
+    }
 
+    fun getMessageDateLabel(timestamp: Timestamp): String {
+
+        return when {
+            CommonUtils().isToday(timestamp) ->
+                "Today"
+
+            CommonUtils().isYesterday(timestamp) ->
+                "Yesterday"
+            else -> SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(timestamp.toDate())
+        }
     }
 }

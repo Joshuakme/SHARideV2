@@ -1,10 +1,12 @@
 package com.example.sharidev2.utility
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.Log
+import android.util.TypedValue
 import com.example.sharidev2.data.model.Chat
 import com.example.sharidev2.data.model.Contact
 import com.example.sharidev2.data.model.Driver
@@ -292,7 +294,7 @@ class Converters() {
         val text = map["text"] as String
         val timestamp = map["timestamp"] as Timestamp
         val attachmentURL = map["attachmentURL"] as String?
-        val readBy = map["readBy"] as List<String>?: emptyList()
+        val readBy = map["readBy"] as List<String>
         val messageType = MessageType.valueOf(map["messageType"] as String)
 
         return Message(
@@ -385,5 +387,15 @@ class Converters() {
         }
 
         return latLngList
+    }
+
+
+    // Dimension CONVERTERS
+    fun toPixel(context: Context, dimensionInDp: Float): Int {
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            dimensionInDp,
+            context.resources.displayMetrics
+        ).toInt()
     }
 }

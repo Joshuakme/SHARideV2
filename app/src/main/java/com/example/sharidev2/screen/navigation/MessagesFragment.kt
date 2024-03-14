@@ -56,7 +56,6 @@ class MessagesFragment : Fragment() {
 
                         val adapter = ChatAdapter(chatList, object: ChatAdapter.OnChatClickListener {
                             override fun onChatClick(chat: Chat) {
-                                chatViewModel.setActiveChat(chat)
                                 val action = MessagesFragmentDirections.actionMessagesFragmentToChatFragment(chat)
                                 findNavController().navigate(action)
                             }
