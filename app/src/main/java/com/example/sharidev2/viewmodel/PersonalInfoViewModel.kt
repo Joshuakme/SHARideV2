@@ -3,14 +3,10 @@ package com.example.sharidev2.viewmodel
 import android.net.Uri
 import android.util.Log
 import android.widget.ImageView
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
 import com.example.sharidev2.data.repository.DisplayNameRepository
 import com.example.sharidev2.data.repository.EditMobileRepository
 import com.example.sharidev2.data.repository.GenderRepository
@@ -28,7 +24,7 @@ class PersonalInfoViewModel: ViewModel() {    // LiveData for current display na
 
 
 
-    private val firebaaseAuth = FirebaseClient.firebaseAuth
+    private val firebaseAuth = FirebaseClient.firebaseAuth
 
 
     // DATA
@@ -152,7 +148,7 @@ class PersonalInfoViewModel: ViewModel() {    // LiveData for current display na
                     // Fetch the mobile phone from the repository
                     val mobile = mobileRepository.fetchMobile(userId)
                     // Update the LiveData with the fetched mobile phone
-                    _mobile.value = mobile ?: ""
+                    _mobile.value = "+60" + mobile ?: ""
                 }
             }
         }
