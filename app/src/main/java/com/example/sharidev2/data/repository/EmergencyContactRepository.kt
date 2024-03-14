@@ -131,9 +131,9 @@ class EmergencyContactRepository {
 
                 val contactDocRef = contactsRef.document(contactId)
                 val contactData = contactDocRef
-                                        .get()
-                                        .await()
-                                        .data
+                    .get()
+                    .await()
+                    .data
 
 
                 if(contactData != null) {

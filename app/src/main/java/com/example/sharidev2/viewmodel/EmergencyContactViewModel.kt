@@ -59,7 +59,7 @@ class EmergencyContactViewModel(
     // SETTER in SavedStateHandle
     // Contact
     suspend fun addContact(newContact: Contact): Int {
-        Log.e("EmergencyCOntactViewModel", emergencyContactList.value?.size.toString())
+        Log.e("EmergencyContactViewModel", emergencyContactList.value?.size.toString())
         emergencyContactList.value!!.add(newContact)
 
         return try {
