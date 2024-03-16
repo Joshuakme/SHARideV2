@@ -80,15 +80,19 @@ class ChatFragment : Fragment() {
 
         if(chat != null) {
             chatViewModel.setActiveChat(chat)
+            chatViewModel.setOldChat(chat)
 
             chatViewModel.startListeningForChatUpdates(chat.chatId!!, object: (Chat?) -> Unit {
                 override fun invoke(latestChat: Chat?) {
                     if(latestChat != null) {
-                        // Send notification
-                        CommonUtils().sendMessageNotification(context, latestChat)
-
                         chatViewModel.setActiveChat(latestChat)
                         chatTitle.text = latestChat.chatTitle
+
+                        // Send notification
+                        val newMessage = chatViewModel.getNewMessage()
+                        if(newMessage != null) {
+                            CommonUtils().sendMessageNotification(context, newMessage)
+                        }
 
                         // Set Up RecyclerView
                         messageAdapter = MessageAdapter(context, latestChat.messages!!.toList())

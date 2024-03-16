@@ -33,6 +33,7 @@ import androidx.core.content.ContextCompat.getSystemService
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.data.model.Chat
+import com.example.sharidev2.data.model.Message
 import com.example.sharidev2.utility.Constants.Companion.NOTIF_MESSAGE_CHANNEL
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -327,8 +328,8 @@ class CommonUtils {
         fun onKeyboardVisibilityChanged(change: Boolean)
     }
 
-    @RequiresApi(Build.VERSION_CODES.R)
-    fun sendMessageNotification(context: Context, chat: Chat) {
+
+    fun sendMessageNotification(context: Context, message: Message) {
         val notificationManager = getSystemService(
             context,
             NotificationManager::class.java
@@ -338,16 +339,14 @@ class CommonUtils {
         val channelId = NOTIF_MESSAGE_CHANNEL.toString()
         val notificationId = Constants.NOTIF_MESSAGE // Unique ID for the notification
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Create a notification channel
-            val channelName = "Receive Chat Update Channel"
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(channelId, channelName, importance).apply {
-                description = "Notification channel for messaging"
-            }
-            // Optionally configure other channel properties
-            notificationManager.createNotificationChannel(channel)
+        // Create a notification channel
+        val channelName = "Receive Chat Update Channel"
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel(channelId, channelName, importance).apply {
+            description = "Notification channel for messaging"
         }
+        // Optionally configure other channel properties
+        notificationManager.createNotificationChannel(channel)
 
         // Create an intent to launch your activity or fragment
         val intent = Intent(context, MainActivity::class.java)
@@ -365,8 +364,8 @@ class CommonUtils {
         // Build the notification
         val builder = Notification.Builder(context, channelId)
             .setSmallIcon(R.drawable.baseline_message_24)
-            .setContentTitle("New Message from ${chat.messages!!.last().senderName}")
-            .setContentText(chat.messages!!.last().text)
+            .setContentTitle("New Message from ${message.senderName}")
+            .setContentText(message.text)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true) // Dismiss the notification when clicked
             .setShowWhen(true)
@@ -374,4 +373,6 @@ class CommonUtils {
         // Show the notification
         notificationManager.notify(notificationId, builder.build())
     }
+
+
 }

@@ -74,7 +74,7 @@ class MessagesFragment : Fragment() {
                         })
 
                         chatsRecyclerView.adapter = adapter
-                        chatsRecyclerView.layoutManager = LinearLayoutManager(requireActivity().applicationContext, RecyclerView.VERTICAL, false)
+                        chatsRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 
                         loadingMessages(Constants.UI_DATA_SUCCESS)
                     } else {
