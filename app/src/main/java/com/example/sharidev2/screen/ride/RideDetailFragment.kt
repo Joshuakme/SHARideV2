@@ -16,7 +16,6 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.example.sharidev2.GlideApp
@@ -115,8 +114,8 @@ class RideDetailFragment : Fragment() {
                 // Passengers
                 if(ride.driver.vehicle != null) {
                     passengersSeatsBookedText.text = getString(R.string.ride_detail_fragment_passengers_seat_booked, 0, ride.driver.vehicle.capacity-1)
-                    val image1 = binding.imgRideDetailPassenger1
-                    image1.tag = "baseline_account_circle_24"
+                    val defaultUserImage = binding.imgRideDetailPassenger1
+                    defaultUserImage.tag = "baseline_account_circle_24"
 
                     if(ride.passengers.isNotEmpty() && ride.passengers != null) {
                         passengersSeatsBookedText.text = getString(
@@ -127,13 +126,22 @@ class RideDetailFragment : Fragment() {
 
                         // Passengers Image
                         val imageList = mutableListOf<Uri>()
-                        for(passenger in ride.passengers) {
-                            imageList.add(passenger.value.user?.photoUri ?: CommonUtils().getUriFromVectorDrawable(image1))
+                        // Check if there are passengers
+                        if (ride.passengers.isEmpty()) {
+                            // Populate with default user images
+                            val remainingCapacity = ride.driver.vehicle.capacity - 1
+                            repeat(remainingCapacity) {
+                                imageList.add(CommonUtils().getUriFromVectorDrawable(defaultUserImage))
+                            }
+                        } else {
+                            // Populate with passengers' photos
+                            ride.passengers.forEach { passenger ->
+                                val photoUri = passenger.user?.photoUri ?: CommonUtils().getUriFromVectorDrawable(defaultUserImage)
+                                imageList.add(photoUri)
+                            }
                         }
 
-                        while(imageList.size < ride.driver.vehicle.capacity-1) {
-                            imageList.add(CommonUtils().getUriFromVectorDrawable(image1))
-                        }
+
 
                         val adapter = RideDetailPassengerImageAdapter(requireContext(), imageList)
                         passengersImageRecyclerView.adapter = adapter
@@ -147,7 +155,7 @@ class RideDetailFragment : Fragment() {
 
                         val imageList = mutableListOf<Uri>()
                         for(i in 1..<ride.driver.vehicle.capacity) {
-                            imageList.add(CommonUtils().getUriFromVectorDrawable(image1))
+                            imageList.add(CommonUtils().getUriFromVectorDrawable(defaultUserImage))
                         }
 
                         val adapter = RideDetailPassengerImageAdapter(requireContext(), imageList)

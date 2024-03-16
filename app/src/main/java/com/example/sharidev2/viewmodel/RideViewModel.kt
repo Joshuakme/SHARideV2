@@ -57,7 +57,7 @@ class RideViewModel(
     }
 
     suspend fun addPassengerToRide(passenger: Passenger, rideId: String): Int {
-        return rideRepository.addPassenger(passenger, rideId)
+        return rideRepository.addPassengerToRide(passenger, rideId)
     }
 
     private fun getRides(filterType: FilterType): List<Ride> {

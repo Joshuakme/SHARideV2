@@ -3,7 +3,6 @@ package com.example.sharidev2.data.repository
 import android.net.Uri
 import android.util.Log
 import com.example.sharidev2.data.model.Chat
-import com.example.sharidev2.data.model.ChatStatus
 import com.example.sharidev2.data.model.Message
 import com.example.sharidev2.data.model.MessageType
 import com.example.sharidev2.data.model.Passenger
@@ -14,13 +13,11 @@ import com.example.sharidev2.utility.Converters
 import com.example.sharidev2.utility.FirebaseClient
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.Timestamp
-import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import java.util.Calendar
 import java.util.UUID
 
 
@@ -33,9 +30,6 @@ class RideRepository() {
     private val currentUser = FirebaseClient.firebaseAuth.currentUser
     private val converters = Converters()
 
-    // Data Variables
-    private val routeList = mutableListOf<MutableList<LatLng>>()
-
 
     // CREATE METHODS
     suspend fun createRide(ride: Ride, callback: CreateRideCallback) {
@@ -47,35 +41,13 @@ class RideRepository() {
 
 
                     ride.driver.user = driverUser
-                    Log.e("Ride Repository", "Create Ride: ${driverUser.displayName}")
+                    Log.e("Ride Repository", "Create Ride: ${driverUser!!.displayName}")
 
                     val rideId = rideCollectionRef.document().id
 
-                    val newChat = createEmptyChat(rideId, "Ride to ${ride.destination.name}", adminUser.photoUri)
+                    val newChat = createEmptyChat(rideId, "Ride to ${ride.destination.name}", adminUser?.photoUri)
 
-
-                    val newChatHashMap = hashMapOf(
-                        "chatId" to newChat.chatId,
-                        "members" to newChat.members,
-                        "lastMessage" to newChat.lastMessage,
-                        "timestamp" to newChat.timestamp
-                    )
-
-                    val newRide = hashMapOf(
-                        "origin" to ride.origin,
-                        "destination" to ride.destination,
-                        "datetime" to ride.datetime,
-                        "driver" to ride.driver,
-                        "passengers" to ride.passengers,
-                        "rideStatus" to ride.rideStatus,
-                        "startTime" to ride.startTime,
-                        "completeTime" to ride.completeTime,
-                        "availableSeats" to ride.availableSeats,
-                        "reviews" to ride.reviews,
-                        "chat" to newChatHashMap,
-                        "createdAt" to ride.createdAt
-                    )
-
+                    val newRide = converters.toRideHashMap(ride, rideId, newChat.chatId)
 
 
                     rideCollectionRef.document(rideId)
@@ -88,36 +60,6 @@ class RideRepository() {
                             // Write failed
                             callback.onCreateFailure(e)
                         }
-
-                    // Passengers Sub-Collection
-//                    for(passenger in ride.passengers) {
-//                        rideCollectionRef.document(rideId)
-//                            .collection("passengers")
-//                            .document(passenger.key)
-//                            .set(ride.passengers.values)
-//                            .await()
-//                    }
-
-                    // Reviews Sub-Collection
-//                    for(review in ride.reviews) {
-//                        rideCollectionRef.document(rideId)
-//                            .collection("reviews")
-//                            .document()
-//                            .set(review)
-//                            .await()
-//                    }
-
-                    // Message Sub-Collection
-                    val messageId = rideCollectionRef.document(rideId)
-                                        .collection("messages")
-                                        .document().id
-
-                    rideCollectionRef.document(rideId)
-                        .collection("messages")
-                        .document(messageId)
-                        .set(newChat.messages!!)
-                        .await()
-
                 } else {
                     // User not logged in yet
                     Log.e("Create Ride : HAIYAA", "User is not logged in yet")
@@ -148,7 +90,7 @@ class RideRepository() {
                         attachmentURL = null,
                         emptyList(),
                         MessageType.Text,
-                        if(photoUri != null) photoUri else null
+                        photoUri
                     )
                 )
 
@@ -178,7 +120,7 @@ class RideRepository() {
     }
 
 
-    suspend fun addPassenger(newPassenger: Passenger, rideId: String): Int {
+    suspend fun addPassengerToRide(newPassenger: Passenger, rideId: String): Int {
         return withContext(Dispatchers.IO) {
             try {
                 val rideRef = rideCollectionRef.document(rideId)
@@ -186,46 +128,49 @@ class RideRepository() {
                 newPassenger.user = FirebaseClient.getCurrentUser()
 
                 // Add the new passenger to the "passengers" sub-collection
-                rideRef.collection("passengers")
-                    .document(newPassenger.userUid!!)
-                    .set(newPassenger)
-                    .await()
+                val passengersDoc = rideRef.get().await()
 
-                // Get the count of passengers in the "passengers" sub-collection
-                val passengersQuery = rideRef.collection("passengers").get().await()
-                val passengersCount = passengersQuery.size()
+                val passengers = converters.toPassengerList(
+                    passengersDoc.get("passengers") as? List<Map<String, Any>>?: mutableListOf()
+                ).toMutableList()
+
+                passengers.add(newPassenger)
+
+                rideRef.update("passengers", passengers)
+
+                val passengersCount = passengers.size
 
                 // Get the ride data
                 val rideData = rideRef.get().await().data
-                val driver = converters.toDriver(rideData?.get("driver") as Map<String, Any>)
+
 
                 // Add user into chatroom
                 val chatRef = firestore.collection("chat")
-
                 val chatQuerySnapshot = chatRef
                                         .whereEqualTo("rideId", rideId)
+                                        .limit(1)
                                         .get()
                                         .await()
 
                 if(!chatQuerySnapshot.isEmpty) {
-                    val chatDoc = chatQuerySnapshot.documents[1]
+                    val chatDoc = chatQuerySnapshot.documents[0]
                     val chatId = chatDoc.id
 
-                    val chatDocSnapshot = chatRef.
-                    document(chatId)
-                        .get()
-                        .await()
+                    val chatDocSnapshot = chatRef.document(chatId)
+                                                .get()
+                                                .await()
 
                     val chatData = chatDocSnapshot.data
-
                     if(chatData != null) {
                         val chatMemberList = (chatData["members"] as List<String>).toMutableList()
 
                         chatMemberList.add(currentUser!!.uid)
+
+                        chatRef.document(chatId).update("members", chatMemberList)
                     }
                 }
 
-
+                val driver = converters.toDriver(rideData?.get("driver") as Map<String, Any>)
                 if(driver.vehicle?.capacity != null) {
                     val vehicleCapacity = driver.vehicle.capacity.minus(1)
 
@@ -352,9 +297,6 @@ class RideRepository() {
         }
     }
 
-
-
-
     suspend fun getRideRoute(originName: String, destinationName: String): MutableList<LatLng>? {
         return withContext(Dispatchers.IO) {
             try {
@@ -370,7 +312,7 @@ class RideRepository() {
                     val routeData = querySnapshot.documents.first().data
 
                     if(routeData != null) {
-                        converters.toLatLng(routeData["route"] as List<Map<String, Any>>)
+                        converters.toLatLngList(routeData["route"] as List<Map<String, Any>>)
                     } else {
                         null
                     }

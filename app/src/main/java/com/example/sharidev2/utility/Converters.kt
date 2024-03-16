@@ -1,9 +1,6 @@
 package com.example.sharidev2.utility
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.TypedValue
 import com.example.sharidev2.data.model.Chat
@@ -15,6 +12,7 @@ import com.example.sharidev2.data.model.Message
 import com.example.sharidev2.data.model.MessageType
 import com.example.sharidev2.data.model.Passenger
 import com.example.sharidev2.data.model.Review
+import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.data.model.RideOption
 import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.data.model.User
@@ -35,19 +33,49 @@ class Converters() {
         fun metersToKiloMeters(value: Int): Double {
             return value.toDouble() / 1000
         }
-
-        fun getBitmapFromVectorDrawable(vectorDrawable: Drawable): Bitmap {
-            val bitmap = Bitmap.createBitmap(
-                vectorDrawable.intrinsicWidth,
-                vectorDrawable.intrinsicHeight,
-                Bitmap.Config.ARGB_8888
-            )
-            val canvas = Canvas(bitmap)
-            vectorDrawable.setBounds(0, 0, canvas.width, canvas.height)
-            vectorDrawable.draw(canvas)
-            return bitmap
-        }
     }
+
+
+
+    // RIDE
+    fun toRideHashMap(ride: Ride): HashMap<String, *> {
+        return hashMapOf(
+            "rideId" to ride.id,
+            "origin" to ride.origin,
+            "destination" to ride.destination,
+            "datetime" to ride.datetime,
+            "driver" to toDriverHashMapWithoutUser(ride.driver),
+            "passengers" to ride.passengers,
+            "rideStatus" to ride.rideStatus,
+            "startTime" to ride.startTime,
+            "completeTime" to ride.completeTime,
+            "availableSeats" to ride.availableSeats,
+            "reviews" to ride.reviews,
+            "chat" to ride.chat,
+            "completedRoute" to ride.completedRoute,
+            "createdAt" to ride.createdAt
+        )
+    }
+
+    fun toRideHashMap(ride: Ride, rideId:String, chatId: String?): HashMap<String, *> {
+        return hashMapOf(
+            "rideId" to rideId,
+            "origin" to ride.origin,
+            "destination" to ride.destination,
+            "datetime" to ride.datetime,
+            "driver" to toDriverHashMapWithoutUser(ride.driver),
+            "passengers" to ride.passengers,
+            "rideStatus" to ride.rideStatus,
+            "startTime" to ride.startTime,
+            "completeTime" to ride.completeTime,
+            "availableSeats" to ride.availableSeats,
+            "reviews" to ride.reviews,
+            "chat" to chatId,
+            "completedRoute" to ride.completedRoute,
+            "createdAt" to ride.createdAt
+        )
+    }
+
 
 
     // SEARCH LOCATION CONVERTERS
@@ -154,10 +182,19 @@ class Converters() {
         )
     }
 
-    suspend fun toPassenger(map: Map<String, Any>): Passenger {
-        val userUid = map["userUid"] as String
+    private fun toDriverHashMapWithoutUser(driver: Driver): HashMap<String, *> {
+        // Remove user field from uploading to Firestore
 
-//        val user = if(map["user"] != null) toUser(map["user"] as Map<String, Any>) else User()
+        return hashMapOf(
+            "userUid" to driver.userUid,
+            "location" to driver.location,
+            "status" to driver.status,
+            "vehicle" to driver.vehicle
+        )
+    }
+
+    private suspend fun toPassenger(map: Map<String, Any>): Passenger {
+        val userUid = map["userUid"] as String
         val user = FirebaseClient.getUserFromUid(userUid)
 
         val locationMap = map["location"] as Map<String, Any>?
@@ -170,29 +207,40 @@ class Converters() {
             null
         }
 
-//        val origin = if(map["origin"] as Map<String, Any> != null) {
-//            toSearchLocation(map["origin"] as Map<String, Any>)
-//        } else {
-//            null
-//        }
-//
-//        val destination = if(map["destination"] as Map<String, Any> != null) {
-//            toSearchLocation(map["destination"] as Map<String, Any>)
-//        } else {
-//            null
-//        }
+        val origin = if(map["origin"] as Map<String, Any>? != null) {
+            toSearchLocation(map["origin"] as Map<String, Any>)
+        } else {
+            null
+        }
+
+        val destination = if(map["destination"] as Map<String, Any> != null) {
+            toSearchLocation(map["destination"] as Map<String, Any>)
+        } else {
+            null
+        }
 
         val status = UserStatus.valueOf((map["status"] as String))
         val ridePrice = (map["price"] as Long?)?.toDouble()
 
         return Passenger(
-            userUid,
-            user,
-            location,
-            null,null,
-            status,
-            ridePrice
+            userUid = userUid,
+            user = user,
+            location = location,
+            origin = origin,
+            destination = destination,
+            status = status,
+            ridePrice = ridePrice
         )
+    }
+
+    suspend fun toPassengerList(mapList: List<Map<String, Any>>): List<Passenger> {
+        val passengerList = mutableListOf<Passenger>()
+
+        for(map in mapList) {
+            passengerList.add(toPassenger(map))
+        }
+
+        return passengerList
     }
 
 
@@ -387,7 +435,6 @@ class Converters() {
     }
 
     fun toMessageList(mapList: List<Map<String, Any>>): List<Message> {
-
         val messageList = mutableListOf<Message>()
 
         for(map in mapList) {
@@ -397,7 +444,7 @@ class Converters() {
         return messageList
     }
 
-    fun toMessageHashmap(message: Message): HashMap<String, Any?> {
+    private fun toMessageHashmap(message: Message): HashMap<String, Any?> {
         return hashMapOf(
             "messageId" to message.messageId,
             "senderId" to message.senderId,
@@ -407,7 +454,7 @@ class Converters() {
             "readBy" to message.readBy,
             "attachmentURL" to message.attachmentURL,
             "messageType" to message.messageType,
-            "photoUrl" to message.photoUrl
+            "photoUrl" to message.photoUrl?.toString()
         )
     }
 
@@ -481,19 +528,23 @@ class Converters() {
 
 
     // LATLNG CONVERTERS
-    fun toLatLng(list: List<Map<String, Any>>): MutableList<LatLng> {
+    private fun toLatLng(latlngMap: Map<String, Any>): LatLng {
+        val latitute = latlngMap["latitude"] as Double
+        val longitude = latlngMap["longitude"] as Double
+
+        return(LatLng(latitute, longitude))
+    }
+
+    fun toLatLngList(list: List<Map<String, Any>>): MutableList<LatLng> {
         val latLngList = mutableListOf<LatLng>()
 
         for(latlngMap in list) {
-            latlngMap
-            val latitute = latlngMap["latitude"] as Double
-            val longitude = latlngMap["longitude"] as Double
-
-            latLngList.add(LatLng(latitute, longitude))
+            latLngList.add(toLatLng(latlngMap))
         }
 
         return latLngList
     }
+
 
 
     // Dimension CONVERTERS

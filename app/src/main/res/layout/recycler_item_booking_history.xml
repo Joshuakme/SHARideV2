@@ -18,7 +18,6 @@
         android:fontFamily="@font/poppins_medium"
         android:gravity="start|center_vertical"
         android:singleLine="true"
-        android:text="@string/placeholder_booking_recycler_item_title"
         android:textSize="15sp"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
@@ -48,7 +47,6 @@
             android:gravity="center"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
-            android:text="Driver"
             android:textSize="12sp" />
     </com.google.android.material.card.MaterialCardView>
 
@@ -58,7 +56,6 @@
         android:layout_height="wrap_content"
         android:clickable="false"
         android:contextClickable="false"
-        android:text="@string/placeholder_booking_recycler_item_date"
         android:textColor="@color/system_neutral2_500"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_booking_title" />
@@ -70,7 +67,6 @@
         android:clickable="false"
         android:contextClickable="false"
         android:fontFamily="@font/poppins"
-        android:text="@string/placeholder_booking_recycler_item_price"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -1,7 +1,10 @@
 package com.example.sharidev2.data.model
 
+import android.os.Parcelable
 import com.google.firebase.Timestamp
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class Review(
     val reviewID: String? = null,
     val reviewer: String? = null,       // Will be replaced to "User" class
@@ -9,4 +12,4 @@ data class Review(
     val rating: Float? = null,
     val comment: String? = "",
     val dateTime: Timestamp? = Timestamp.now()
-)
+) : Parcelable
