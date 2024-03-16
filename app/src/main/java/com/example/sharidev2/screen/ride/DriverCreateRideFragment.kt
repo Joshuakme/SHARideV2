@@ -367,10 +367,9 @@ class DriverCreateRideFragment : Fragment() {
         constraintSet.applyTo(constraintLayout)
     }
 
+
+
     // GOOGLE MAP RELATED METHODS
-
-
-
     private fun updateMap(originLocation: LatLng? = null) {
         val origin = createRideViewModel.origin.value?.geolocation
         val destination = createRideViewModel.destination.value?.geolocation

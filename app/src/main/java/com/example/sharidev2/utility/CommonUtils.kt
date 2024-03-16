@@ -170,6 +170,14 @@ class CommonUtils {
 
 
     // ANDROID
+     fun getMapOriginMarkerColor(context: Context): Int {
+        return context.getColor(R.color.origin_marker)
+     }
+
+    fun getMapDestMarkerColor(context: Context): Int {
+        return context.getColor(R.color.dest_marker)
+    }
+
     fun getThemeColor(context: Context, themeColorId: Int): Int {
         val typedValue = TypedValue()
         // Resolve the attribute to get the color value programmatically

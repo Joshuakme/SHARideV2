@@ -23,7 +23,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:/$PROJECT_DIR$/../../../Joshua%20Koh/AppData/Local/Android/Sdk/icons/material/materialicons/keyboard/baseline_keyboard_24.xml" />
+                                      <entry key="url" value="file:/$PROJECT_DIR$/../../../Joshua%20Koh/AppData/Local/Android/Sdk/icons/material/materialicons/panorama_fish_eye/baseline_panorama_fish_eye_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -33,7 +33,7 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="baseline_keyboard_24" />
+                            <entry key="outputName" value="baseline_panorama_fish_eye_24" />
                             <entry key="sourceFile" value="C:\Users\Joshua Koh\AndroidStudioProjects\SHARideV2" />
                           </map>
                         </option>

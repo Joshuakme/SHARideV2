@@ -9,6 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,17 +20,23 @@ import com.example.sharidev2.R
 import com.example.sharidev2.adapter.BookingTimeLineAdapter
 import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.data.model.Ride.Companion.write
+import com.example.sharidev2.data.repository.RideRepository
 import com.example.sharidev2.databinding.FragmentBookingDetailPassengerBinding
 import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.FirebaseClient
 import com.example.sharidev2.utility.GoogleMapUtils
+import com.example.sharidev2.viewmodel.BookingDetailViewModel
+import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.PolygonOptions
 import com.google.android.gms.maps.model.PolylineOptions
+import kotlinx.coroutines.launch
 
 
 class BookingDetailPassengerFragment : Fragment() {
     private lateinit var binding: FragmentBookingDetailPassengerBinding
+
+    private val bookingDetailViewModel: BookingDetailViewModel by viewModels()
 
     private val currentUser = FirebaseClient.firebaseAuth.currentUser
     private lateinit var ride: Ride
@@ -116,13 +125,25 @@ class BookingDetailPassengerFragment : Fragment() {
                 true
             }
 
-            if(ride.completedRoute != null && ride.completedRoute!!.isNotEmpty()) {
-                val polyline = googleMap.addPolyline(PolylineOptions().addAll(ride.completedRoute!!).clickable(false))
-                polyline.color = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorOnSurfaceInverse)
+
+            lifecycleScope.launch {
+                val route = if(ride.completedRoute != null && ride.completedRoute!!.isNotEmpty()) {
+                    ride.completedRoute
+                } else {
+                    bookingDetailViewModel.getRoute(ride.origin.name, ride.destination.name)
+                }
+
+                if(route != null) {
+                    val polyline = googleMap.addPolyline(PolylineOptions().addAll(route).clickable(false))
+                    polyline.color = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorOnSurfaceInverse)
+                }
             }
 
-            val originColor = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorPrimaryInverse)
-            val destinationColor = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorErrorContainer)
+
+
+
+            val originColor = CommonUtils().getMapOriginMarkerColor(requireContext())
+            val destinationColor = CommonUtils().getMapDestMarkerColor(requireContext())
             val originIcon = CommonUtils().getLocationBitmapFromVector(requireContext(), originColor)
             val destinationIcon = CommonUtils().getLocationBitmapFromVector(requireContext(), destinationColor)
 
@@ -155,7 +176,7 @@ class BookingDetailPassengerFragment : Fragment() {
 
 
 
-        val locationList = mutableListOf(ride.origin.name,ride.origin.name, ride.destination.name)
+        val locationList = mutableListOf(ride.origin.name, ride.destination.name)
 
         val adapter = BookingTimeLineAdapter(locationList)
         rideTimelineRecyclerView.adapter = adapter

@@ -13,6 +13,7 @@ import com.example.sharidev2.utility.Converters
 import com.example.sharidev2.utility.FirebaseClient
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.Dispatchers
@@ -41,7 +42,6 @@ class RideRepository() {
 
 
                     ride.driver.user = driverUser
-                    Log.e("Ride Repository", "Create Ride: ${driverUser!!.displayName}")
 
                     val rideId = rideCollectionRef.document().id
 
@@ -127,16 +127,20 @@ class RideRepository() {
 
                 newPassenger.user = FirebaseClient.getCurrentUser()
 
-                // Add the new passenger to the "passengers" sub-collection
-                val passengersDoc = rideRef.get().await()
 
+                val rideDoc = rideRef.get().await()
                 val passengers = converters.toPassengerList(
-                    passengersDoc.get("passengers") as? List<Map<String, Any>>?: mutableListOf()
+                    rideDoc.get("passengers") as? List<Map<String, Any>>?: mutableListOf()
                 ).toMutableList()
 
                 passengers.add(newPassenger)
 
+                val passengerIds = (rideDoc.get("passengerIds") as List<String>).toMutableList()
+                passengerIds.add(newPassenger.userUid!!)
+
                 rideRef.update("passengers", passengers)
+                rideRef.update("passengerIds", passengerIds)
+
 
                 val passengersCount = passengers.size
 
@@ -225,33 +229,21 @@ class RideRepository() {
             try{
                 if(currentUser?.uid != null) {
                     val driverQuerySnapshot = rideCollectionRef
-                        .whereEqualTo("driver.userUid", currentUser.uid ?: "")
+                        .whereEqualTo("driver.userUid", currentUser.uid)
                         .orderBy("datetime", Query.Direction.DESCENDING)
                         .get()
                         .await()
 
-
-                    val passengerQuerySnapshot = firestore.collectionGroup("passengers")
-                        .whereEqualTo("userUid", currentUser.uid)
+                    val passengerQuerySnapshot = rideCollectionRef
+                        .whereArrayContains("passengerIds", currentUser.uid)
+                        .orderBy("datetime", Query.Direction.DESCENDING)
                         .get()
                         .await()
 
                     val driverRideList = createRideListFromQuerySnapshot(driverQuerySnapshot)
-                    val passengerRideList = mutableListOf<Ride>()
+                    val passengerRideList = createRideListFromQuerySnapshot(passengerQuerySnapshot)
 
-                    for (document in passengerQuerySnapshot.documents) {
-                        val rideRef = document.reference.parent.parent
-                        if (rideRef != null) {
-                            val rideSnapshot = rideRef.get().await()
-
-                            val ride = FirebaseClient.createRideFromDocumentSnapshot(rideSnapshot)
-                            if (ride != null) {
-                                passengerRideList.add(ride)
-                            }
-                        }
-                    }
-
-                    val rideList = driverRideList + passengerRideList
+                    val rideList = (driverRideList + passengerRideList).sortedByDescending { it.datetime }
 
 
                     Log.e("Get All Rides", "All Rides: " + rideList.size.toString())

@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,14 +21,18 @@ import com.example.sharidev2.databinding.FragmentBookingDetailDriverBinding
 import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.FirebaseClient
 import com.example.sharidev2.utility.GoogleMapUtils
+import com.example.sharidev2.viewmodel.BookingDetailViewModel
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.PolygonOptions
 import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.PolylineOptions
+import kotlinx.coroutines.launch
 
 
 class BookingDetailDriverFragment : Fragment() {
     private lateinit var binding: FragmentBookingDetailDriverBinding
+
+    private val bookingDetailViewModel: BookingDetailViewModel by viewModels()
 
     private val currentUser = FirebaseClient.firebaseAuth.currentUser
     private lateinit var ride: Ride
@@ -87,12 +93,9 @@ class BookingDetailDriverFragment : Fragment() {
 
 
         // Ride Price
-        var totalPrice = 0.0
-        ride.passengers.forEach { passenger ->
-            if(passenger.ridePrice != null) {
-                totalPrice += passenger.ridePrice!!
-            }
-        }
+        var totalPrice = ride.passengers.sumOf {
+                            it.ridePrice ?: 0.0
+                        }
 
         ridePriceText.text = getString(R.string.price, totalPrice)
 
@@ -116,15 +119,23 @@ class BookingDetailDriverFragment : Fragment() {
                 true
             }
 
-            Toast.makeText(requireContext(), ride.completedRoute?.isEmpty().toString(), Toast.LENGTH_SHORT).show()
 
-            if(ride.completedRoute != null && ride.completedRoute!!.isNotEmpty()) {
-                val polyline = googleMap.addPolyline(PolylineOptions().addAll(ride.completedRoute!!).clickable(false))
-                polyline.color = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorOnSurfaceInverse)
+            lifecycleScope.launch {
+                val route = if(ride.completedRoute != null && ride.completedRoute!!.isNotEmpty()) {
+                    ride.completedRoute
+                } else {
+                    bookingDetailViewModel.getRoute(ride.origin.name, ride.destination.name)
+                }
+
+                if(route != null) {
+                    val polyline = googleMap.addPolyline(PolylineOptions().addAll(route).clickable(false))
+                    polyline.color = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorOnSurfaceInverse)
+                }
             }
 
-            val originColor = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorPrimaryInverse)
-            val destinationColor = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorErrorContainer)
+
+            val originColor = CommonUtils().getMapOriginMarkerColor(requireContext())
+            val destinationColor = CommonUtils().getMapDestMarkerColor(requireContext())
             val originIcon = CommonUtils().getLocationBitmapFromVector(requireContext(), originColor)
             val destinationIcon = CommonUtils().getLocationBitmapFromVector(requireContext(), destinationColor)
 

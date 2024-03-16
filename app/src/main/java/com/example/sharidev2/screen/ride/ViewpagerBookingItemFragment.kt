@@ -74,7 +74,6 @@ class ViewpagerBookingItemFragment :
                         } else {
                             showLoadingStatusProgressBar(STATUS_ERROR)
                         }
-
                     }
                 }
 

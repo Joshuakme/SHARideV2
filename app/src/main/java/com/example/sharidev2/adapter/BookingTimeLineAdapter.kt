@@ -1,11 +1,14 @@
 package com.example.sharidev2.adapter
 
+import android.graphics.BlendModeColorFilter
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sharidev2.R
 import com.example.sharidev2.utility.CommonUtils
@@ -53,17 +56,11 @@ class BookingTimeLineAdapter(
         holder.bookingTimeLine.lineStyle = LineStyle.DASHED
 
         if(position == 0) {
-            val colorPrimary = CommonUtils().getThemeColor(holder.itemView.context, com.google.android.material.R.attr.colorPrimary)
-
-            holder.bookingTimeLine.marker = holder.itemView.context.getDrawable(R.drawable.ic_hollow_circle_thick)
-            holder.bookingTimeLine.marker.colorFilter = PorterDuffColorFilter(colorPrimary, PorterDuff.Mode.MULTIPLY)
+            holder.bookingTimeLine.marker = ContextCompat.getDrawable(holder.itemView.context, R.drawable.ic_origin_circle_marker)
         } else if (position == bookingNameList.lastIndex) {
-            val colorError = CommonUtils().getThemeColor(holder.itemView.context, com.google.android.material.R.attr.colorError)
-
-            holder.bookingTimeLine.marker = holder.itemView.context.getDrawable(R.drawable.ic_hollow_circle_thick_with_dot)
-            holder.bookingTimeLine.marker.colorFilter = PorterDuffColorFilter(colorError, PorterDuff.Mode.MULTIPLY)
+            holder.bookingTimeLine.marker = AppCompatResources.getDrawable(holder.itemView.context, R.drawable.ic_dest_circle_marker)
         } else {
-            holder.bookingTimeLine.marker = holder.itemView.context.getDrawable(R.drawable.ic_hollow_circle)
+            holder.bookingTimeLine.marker = AppCompatResources.getDrawable(holder.itemView.context, R.drawable.ic_hollow_circle)
             holder.bookingTimeLine.marker.clearColorFilter()
         }
     }

@@ -31,6 +31,7 @@ import com.example.sharidev2.utility.FirebaseClient
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
 import com.example.sharidev2.viewmodel.RideDetailViewModel
 import com.example.sharidev2.viewmodel.RideViewModel
+import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -41,6 +42,7 @@ class RideDetailFragment : Fragment() {
     private val rideDetailViewModel: RideDetailViewModel by viewModels()
     private val rideViewModel: RideViewModel by viewModels()
     private val currentLocationViewModel: CurrentLocationViewModel by activityViewModels()
+    private val searchRideViewModel: SharedSearchRideViewModel by activityViewModels()
     private val currentUser = FirebaseClient.firebaseAuth.currentUser
 
 
@@ -199,8 +201,10 @@ class RideDetailFragment : Fragment() {
                 if((rideId != null) && (currentUser != null)) {
                     val passenger = Passenger(
                         userUid = currentUser.uid,
+                        location = currentLocationViewModel.currentLocation.value,
+                        origin = searchRideViewModel.origin.value,
+                        destination = searchRideViewModel.destination.value,
                         ridePrice = estimatedPrice,
-                        location = currentLocationViewModel.currentLocation.value
                     )
 
                     val responseStatus = rideViewModel.addPassengerToRide(passenger, rideId)

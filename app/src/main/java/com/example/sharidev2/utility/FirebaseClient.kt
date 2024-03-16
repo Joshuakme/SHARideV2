@@ -281,7 +281,7 @@ object FirebaseClient {
                 val driver = converters.toDriver(document.get("driver") as Map<String, Any>)
 
                 // Passengers
-                val passengers = if(document.get("passenger") != null) {
+                val passengers = if(document.get("passengers") != null) {
                     converters.toPassengerList(document.get("passengers") as List<Map<String, Any>>)
                 } else {
                     emptyList()

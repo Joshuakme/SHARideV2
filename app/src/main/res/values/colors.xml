@@ -148,4 +148,8 @@
 
     <color name="system_neutral2_500">#70777C</color>
     <color name="system_neutral2_600">#585F65</color>
+
+
+    <color name="origin_marker">#246489</color>
+    <color name="dest_marker">#BA1A1A</color>
 </resources>

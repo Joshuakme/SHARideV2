@@ -23,7 +23,7 @@
             app:lineOrientation="vertical"
             app:lineStyle="normal"
             app:lineWidth="1dp"
-            app:marker="@drawable/ic_hollow_circle"
+            app:marker="@drawable/ic_hollow_circle_thick"
             app:markerSize="12dp"
             app:startLineColor="?attr/colorOutline" />
 

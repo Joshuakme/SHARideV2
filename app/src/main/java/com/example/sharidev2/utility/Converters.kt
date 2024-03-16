@@ -2,6 +2,7 @@ package com.example.sharidev2.utility
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import android.util.TypedValue
 import com.example.sharidev2.data.model.Chat
 import com.example.sharidev2.data.model.ChatStatus
@@ -58,6 +59,12 @@ class Converters() {
     }
 
     fun toRideHashMap(ride: Ride, rideId:String, chatId: String?): HashMap<String, *> {
+        val passengerIds = mutableListOf<String>()
+        for(passenger in ride.passengers) {
+            if(passenger.userUid != null)
+                passengerIds.add(passenger.userUid)
+        }
+
         return hashMapOf(
             "rideId" to rideId,
             "origin" to ride.origin,
@@ -65,6 +72,7 @@ class Converters() {
             "datetime" to ride.datetime,
             "driver" to toDriverHashMapWithoutUser(ride.driver),
             "passengers" to ride.passengers,
+            "passengerIds" to passengerIds,
             "rideStatus" to ride.rideStatus,
             "startTime" to ride.startTime,
             "completeTime" to ride.completeTime,
@@ -220,7 +228,7 @@ class Converters() {
         }
 
         val status = UserStatus.valueOf((map["status"] as String))
-        val ridePrice = (map["price"] as Long?)?.toDouble()
+        val ridePrice = (map["ridePrice"] as Long?)?.toDouble()
 
         return Passenger(
             userUid = userUid,

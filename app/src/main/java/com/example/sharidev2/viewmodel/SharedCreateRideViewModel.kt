@@ -57,7 +57,7 @@ class SharedCreateRideViewModel(
     // Ride Date Time
     val rideDateTime: LiveData<Timestamp> = savedStateHandle.getLiveData(RIDE_DATE_TIME_KEY)
 
-    // Ride Date Time
+    // Ride Route Time
     val rideRoute: LiveData<MutableList<LatLng>> = savedStateHandle.getLiveData(RIDE_ROUTE_KEY)
 
     // Create Ride Status

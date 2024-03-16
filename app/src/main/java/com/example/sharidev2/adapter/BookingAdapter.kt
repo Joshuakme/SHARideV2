@@ -1,6 +1,7 @@
 package com.example.sharidev2.adapter
 
 import android.content.Context
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.sharidev2.R
 import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.data.model.UserStatus
+import com.example.sharidev2.utility.CommonUtils
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -59,8 +61,18 @@ class BookingAdapter (
                                     .replace("PM", "pm")
 
 
+
         // Price
         if(isDriver(booking)) {
+            val colorPrimary = CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorPrimary)
+
+            // Tag Text
+            holder.bookingTagText.text = "Driver"
+            holder.bookingTagText.visibility = View.VISIBLE
+            holder.priceText.setTextColor(colorPrimary)
+
+
+            // Price/Status Text
             val driver = booking.driver
             when(driver.status) {
                 UserStatus.COMPLETED -> {
@@ -83,7 +95,18 @@ class BookingAdapter (
                 else -> holder.priceText.text = driver.status.toString().lowercase()
             }
         } else if(isPassenger(booking)) {
+            val colorError = CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorError)
+
+            // Tag Text
+            holder.bookingTagText.text = "Passenger"
+            holder.bookingTagText.visibility = View.VISIBLE
+            holder.priceText.setTextColor(colorError)
+
+
+            // Price/Status Text
             for(passenger in booking.passengers) {
+
+
                 if(passenger.userUid == currentUserUid) {
                     when(passenger.status) {
                         UserStatus.COMPLETED -> {
@@ -98,27 +121,11 @@ class BookingAdapter (
                     }
                 }
             }
-        }
-
-
-
-
-        val typedValue = TypedValue()
-        context.theme?.resolveAttribute(com.google.android.material.R.attr.colorPrimary, typedValue, true)
-        val colorPrimary = typedValue.data
-        context.theme?.resolveAttribute(com.google.android.material.R.attr.colorError, typedValue, true)
-        val colorError = typedValue.data
-
-
-        if(isDriver(booking)) {
-            holder.bookingTagText.text = "Driver"
-            holder.priceText.setTextColor(colorPrimary)
-        } else if(isPassenger(booking)) {
-            holder.bookingTagText.text = "Passenger"
-            holder.priceText.setTextColor(colorError)
         } else {
+            // Tag Text
             holder.bookingTagText.visibility = View.GONE
         }
+
 
 
         holder.itemView.setOnClickListener {
@@ -143,7 +150,8 @@ class BookingAdapter (
 
     private fun isPassenger(ride: Ride): Boolean {
         return ride.passengers.any { passenger ->
-            passenger.userUid == currentUserUid }
+            passenger.userUid == currentUserUid
+        }
     }
 
 }
