@@ -88,7 +88,7 @@ class BookingDetailDriverFragment : Fragment() {
 
         // Ride Price
         var totalPrice = 0.0
-        ride.passengers.forEach { (_, passenger) ->
+        ride.passengers.forEach { passenger ->
             if(passenger.ridePrice != null) {
                 totalPrice += passenger.ridePrice!!
             }
@@ -167,7 +167,7 @@ class BookingDetailDriverFragment : Fragment() {
 
         // Rating
         var rating = 0.0F
-        ride.reviews.forEach {(id, review) ->
+        ride.reviews.forEach {review ->
             if(review.rating != null) {
                 rating += review.rating
             }

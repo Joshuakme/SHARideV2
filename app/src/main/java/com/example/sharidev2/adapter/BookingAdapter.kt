@@ -6,9 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.compose.ui.text.toLowerCase
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sharidev2.R
 import com.example.sharidev2.data.model.Ride
+import com.example.sharidev2.data.model.UserStatus
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -55,12 +57,50 @@ class BookingAdapter (
         holder.dateText.text = bookingDateFormatter.format(Date(booking.datetime.seconds * 1000))
                                     .replace("AM", "am")
                                     .replace("PM", "pm")
-        holder.priceText.text = if(booking.passengers?.get(currentUserUid)?.ridePrice != null) {
-                                    holder.itemView.context.getString(R.string.booking_item_price,
-                                        booking.passengers[currentUserUid]!!.ridePrice)
-                                } else {
-                                    "pending"
-                                }
+
+
+        // Price
+        if(isDriver(booking)) {
+            val driver = booking.driver
+            when(driver.status) {
+                UserStatus.COMPLETED -> {
+                    val totalPrice = if(booking.passengers.isNotEmpty()) {
+                        var totalPrice = 0.0
+                        for(passenger in booking.passengers) {
+                            totalPrice += passenger.ridePrice?: 0.0
+                        }
+                        totalPrice
+                    } else {
+                        0.0
+                    }
+                    holder.priceText.text = holder.itemView.context.getString(R.string.booking_item_price, totalPrice)
+                }
+
+                UserStatus.IN_VEHICLE -> {
+                    holder.priceText.text = "ongoing"
+                }
+
+                else -> holder.priceText.text = driver.status.toString().lowercase()
+            }
+        } else if(isPassenger(booking)) {
+            for(passenger in booking.passengers) {
+                if(passenger.userUid == currentUserUid) {
+                    when(passenger.status) {
+                        UserStatus.COMPLETED -> {
+                            holder.priceText.text = holder.itemView.context.getString(R.string.booking_item_price, passenger.ridePrice)
+                        }
+
+                        UserStatus.IN_VEHICLE -> {
+                            holder.priceText.text = "ongoing"
+                        }
+
+                        else -> holder.priceText.text = passenger.status.toString().lowercase()
+                    }
+                }
+            }
+        }
+
+
 
 
         val typedValue = TypedValue()
@@ -102,8 +142,8 @@ class BookingAdapter (
     }
 
     private fun isPassenger(ride: Ride): Boolean {
-        return ride.passengers?.any { passenger ->
-            passenger.key == currentUserUid } ?: false
+        return ride.passengers.any { passenger ->
+            passenger.userUid == currentUserUid }
     }
 
 }

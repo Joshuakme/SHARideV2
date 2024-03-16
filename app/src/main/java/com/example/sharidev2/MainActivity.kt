@@ -3,7 +3,9 @@ package com.example.sharidev2
 
 import android.Manifest
 import android.app.ActivityManager
+import android.app.PendingIntent
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -17,16 +19,24 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.sharidev2.adapter.MessageAdapter
+import com.example.sharidev2.data.model.Chat
 import com.example.sharidev2.databinding.ActivityMainBinding
 import com.example.sharidev2.service.LocationService
 import com.example.sharidev2.service.NetworkService
+import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.Constants.Companion.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
 import com.example.sharidev2.utility.Constants.Companion.PERMISSIONS_REQUEST_POST_NOTIFICATION
 import com.example.sharidev2.utility.FirebaseClient
 import com.example.sharidev2.utility.UserClient
+import com.example.sharidev2.viewmodel.ChatViewModel
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -41,6 +51,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bottomNavContainer: LinearLayout
 
     private val currentLocationViewModel: CurrentLocationViewModel by viewModels()
+    private val chatViewModel: ChatViewModel by viewModels()
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var locationPermissionGranted = false
@@ -84,6 +95,8 @@ class MainActivity : AppCompatActivity() {
         // Check Network Connection
         startNetworkService()
 
+        // Set up notification listener
+        navigateToFragmentFromNotification()
 
 //        if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
 //            setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, true)
@@ -253,6 +266,37 @@ class MainActivity : AppCompatActivity() {
                 PERMISSIONS_REQUEST_POST_NOTIFICATION)
         }
     }
+
+    private fun navigateToFragmentFromNotification() {
+        val fragmentTag = intent.getStringExtra("fragment")
+        if (fragmentTag != null) {
+            // Navigate to the specified fragment
+            val fragment = supportFragmentManager.findFragmentByTag(fragmentTag)
+            if (fragment != null) {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container_main, fragment)
+                    .commit()
+            }
+        }
+    }
+
+//    private fun startListeningToChatUpdates() {
+//        chatViewModel.startListeningForChatUpdates(chat.chatId!!, object: (Chat?) -> Unit {
+//            override fun invoke(latestChat: Chat?) {
+//                if(latestChat != null) {
+//                    // Send notification
+//                    CommonUtils().sendMessageNotification(applicationContext, latestChat)
+//
+//                    chatViewModel.setActiveChat(latestChat)
+//
+//                    // TODO: Set Unread Badge
+//                } else {
+//                    findNavController().navigate(R.id.action_chatFragment_to_messagesFragment)
+//                }
+//            }
+//        })
+//    }
+
 
     override fun onResume() {
         super.onResume()

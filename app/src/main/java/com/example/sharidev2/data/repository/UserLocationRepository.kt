@@ -54,9 +54,11 @@ class UserLocationRepository() {
                 newUserLocation.user = user
 
                 try {
-                    locationCollectionRef.document(user.uid!!)
-                        .set(newUserLocation)
-                        .await()
+                    if (user != null) {
+                        locationCollectionRef.document(user.uid!!)
+                            .set(newUserLocation)
+                            .await()
+                    }
 
                 } catch (e: Exception) {
                     Log.e("Update User Location", e.message.toString())

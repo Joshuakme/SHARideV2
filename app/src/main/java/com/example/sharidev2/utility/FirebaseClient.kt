@@ -12,16 +12,13 @@ import com.example.sharidev2.data.model.Chat
 import com.example.sharidev2.data.model.Gender
 import com.example.sharidev2.data.model.Message
 import com.example.sharidev2.data.model.MessageType
-import com.example.sharidev2.data.model.Passenger
 import com.example.sharidev2.data.model.Review
 import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.data.model.RideOption
 import com.example.sharidev2.data.model.RideStatus
-import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.data.model.User
 import com.example.sharidev2.data.model.Vehicle
 import com.example.sharidev2.data.model.VehicleType
-import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.AdditionalUserInfo
 import com.google.firebase.auth.FirebaseAuth
@@ -64,68 +61,72 @@ object FirebaseClient {
 
         return null
     }
-    suspend fun getUserFromUid(userUid: String): User {
+    suspend fun getUserFromUid(userUid: String): User? {
         return withContext(Dispatchers.IO) {
             try {
-                val user = firestore.collection("user")
+                val userData = firestore.collection("user")
                     .document(userUid)
                     .get()
-                    .await()
+                    .await().data
 
-                val uid = user.getString("uid")
-                val displayName = user.getString("displayName")
-                val email = user.getString("email") ?: ""
-                val phoneNumber = user.getString("phoneNumber")
+                if(userData != null) {
+                    val uid = userData["uid"] as String
+                    val displayName = userData["displayName"] as String
+                    val email = userData["email"] as String?
+                    val phoneNumber = userData["phoneNumber"] as String
 
-                val photoUri = if(user.getString("photoUrl") != null) {
-                    Uri.parse(user.getString("photoUrl"))
-                } else {
-                    null
-                }
+                    val photoUri = if(userData["photoUrl"] != null) {
+                        Uri.parse(userData["photoUrl"] as String)
+                    } else {
+                        null
+                    }
 
 
-                val rideOptionMap = user.get("rideOption") as Map<String, String>
-                val driverGender = rideOptionMap["driverGender"]?.let { Gender.valueOf(it) }
-                val vehicleType = rideOptionMap["vehicleType"]?.let { VehicleType.valueOf(it) }
-                val petFriendly = rideOptionMap["petFriendly"] as? Boolean
+                    val rideOptionMap = userData["rideOption"] as Map<String, String>
+                    val driverGender = rideOptionMap["driverGender"]?.let { Gender.valueOf(it) }
+                    val vehicleType = rideOptionMap["vehicleType"]?.let { VehicleType.valueOf(it) }
+                    val petFriendly = rideOptionMap["petFriendly"] as? Boolean
 
-                val rideOption = RideOption(driverGender, vehicleType, petFriendly)
+                    val rideOption = RideOption(driverGender, vehicleType, petFriendly)
 
-                val rating = if(user.get("rating") != null) {
-                    (user.get("rating") as Long).toDouble()
-                } else {
-                    null
-                }
+                    val rating = if(userData["rating"] != null) {
+                        (userData["rating"] as Long).toDouble()
+                    } else {
+                        null
+                    }
 
 
 //                val savedAddresses =
 //                    converters.toSearchLocationList(user.get("savedAddress") as List<Map<String, Any>>)
 //                        .toMutableList()
 
-                val gender = if(user.getString("gender") != null) {
-                    Gender.valueOf(user.getString("gender")!!)
+                    val gender = if(userData["gender"] != null) {
+                        Gender.valueOf(userData["gender"] as String)
+                    } else {
+                        null
+                    }
+
+                    val joinedDate = userData["joinedDate"] as Timestamp
+
+
+                    return@withContext User(
+                        uid = uid,
+                        displayName = displayName,
+                        email = email,
+                        phoneNumber = phoneNumber,
+                        photoUri = photoUri,
+                        rideOption = rideOption,
+                        rating = rating,
+                        savedAddress = null,
+                        gender = gender,
+                        joinedDate = joinedDate
+                    )
                 } else {
                     null
                 }
-
-                val joinedDate = user.getTimestamp("joinedDate")
-
-
-                return@withContext User(
-                    uid = uid,
-                    displayName = displayName,
-                    email = email,
-                    phoneNumber = phoneNumber,
-                    photoUri = photoUri,
-                    rideOption = rideOption,
-                    rating = rating,
-                    savedAddress = mapOf(),
-                    gender = gender,
-                    joinedDate = joinedDate
-                )
             } catch (e: Exception) {
                 Log.e("Get User From Uid", e.message.toString())
-                return@withContext User()
+                return@withContext null
             }
         }
     }
@@ -276,41 +277,14 @@ object FirebaseClient {
             try {
                 val origin = converters.toSearchLocation(document.get("origin") as Map<String, Any>)
                 val destination = converters.toSearchLocation(document.get("destination") as Map<String, Any>)
-
-                // Waypoints Sub-Collection
-                val waypointsSnapshot = document.reference.collection("waypoints")
-                    .get()
-                    .await()
-                val waypointsMap = mutableMapOf<String, SearchLocation>()
-
-                if(waypointsSnapshot != null && !waypointsSnapshot.isEmpty) {
-                    for(waypointDoc in waypointsSnapshot.documents) {
-                        val waypointData: Map<String, Any>? = waypointDoc.data
-
-                        if(waypointData != null) {
-                            waypointsMap[waypointDoc.id] = converters.toSearchLocation(waypointData)
-                        }
-                    }
-                }
-
-
                 val datetime = document.getTimestamp("datetime")!!
                 val driver = converters.toDriver(document.get("driver") as Map<String, Any>)
 
-                // Passenger Sub-Collection
-                val passengersSnapshot = document.reference.collection("passengers")
-                    .get()
-                    .await()
-                val passengersMap = mutableMapOf<String, Passenger>()
-
-                if(passengersSnapshot != null && !passengersSnapshot.isEmpty) {
-                    for(passengerDoc in passengersSnapshot.documents) {
-                        val passengerData: Map<String, Any>? = passengerDoc.data
-
-                        if(passengerData != null) {
-                            passengersMap[passengerDoc.id] = converters.toPassenger(passengerData)
-                        }
-                    }
+                // Passengers
+                val passengers = if(document.get("passenger") != null) {
+                    converters.toPassengerList(document.get("passengers") as List<Map<String, Any>>)
+                } else {
+                    emptyList()
                 }
 
                 val rideStatus = RideStatus.valueOf(document.getString("rideStatus") ?: "")
@@ -318,67 +292,43 @@ object FirebaseClient {
                 val completeTime = document.getTimestamp("completeTime")
                 val availableSeats = (document.get("availableSeats") as Long).toInt()
 
-                // Review Sub-Collection
-                val reviewSnapshot = document.reference.collection("reviews")
-                    .get()
-                    .await()
-                val reviewsMap = mutableMapOf<String, Review>()
-
-                if(reviewSnapshot != null && !reviewSnapshot.isEmpty) {
-                    for(reviewDoc in reviewSnapshot.documents) {
-                        val reviewData = reviewDoc.data
-
-                        if(reviewData != null) {
-                            reviewsMap[reviewDoc.id] = converters.toReview(reviewData)
-                        }
-                    }
+                // Reviews
+                val reviewList = if(document.get("reviews") != null) {
+                    converters.toReviewList(document.get("reviews") as List<Map<String, Any>>)
+                } else {
+                    emptyList()
                 }
+
 
                 // Chat Sub-Collection
                 //val chat = FirebaseClient.getChatFromChatId(getString("chat") ?: "")
-                val chat = converters.toChat(document.get("chat") as Map<String, Any>)
+                //val chat = converters.toChat(document.get("chat") as Map<String, Any>)
 
 
-
-                // Completed Route Sub-Collection
-                val routesSnapshot = document.reference.collection("routes")
-                    .get()
-                    .await()
-
-                Log.e("FirebaseClient CreateSnapshot", "${document.id} : " + routesSnapshot.size().toString())
-                var completedRoute: MutableList<LatLng>? = null
-                if(!routesSnapshot.isEmpty && routesSnapshot != null) {
-                    completedRoute = mutableListOf()
-                    for(routeDoc in routesSnapshot.documents) {
-                        val routeData = routeDoc.data
-
-                        if(routeData != null) {
-                            if(routeData["selected"] as Boolean) {
-                                Log.e("FirebaseClient CreateSnapshot", "${document.id} : ${routeDoc.id}")
-                                completedRoute = converters.toLatLng(routeData["route"] as List<Map<String, Any>>)
-                            }
-                        }
-                    }
+                // Completed Route
+                val completedRoute = if(document.get("completedRoute") != null) {
+                    converters.toLatLngList(document.get("completedRoute") as List<Map<String, Any>>)
+                } else {
+                    mutableListOf()
                 }
 
                 val createdAt = document.getTimestamp("createdAt")!!
 
 
                 val ride = Ride(
-                    document.id,
-                    origin,
-                    destination,
-                    waypointsMap,
-                    datetime,
-                    driver,
-                    passengersMap,
-                    rideStatus,
-                    startTime,
-                    completeTime,
-                    availableSeats,
-                    reviewsMap,
-                    chat,
-                    completedRoute,
+                    id = document.id,
+                    origin = origin,
+                    destination = destination,
+                    datetime = datetime,
+                    driver = driver,
+                    passengers = passengers,
+                    rideStatus = rideStatus,
+                    startTime = startTime,
+                    completeTime = completeTime,
+                    availableSeats = availableSeats,
+                    reviews = reviewList,
+                    chat = null,
+                    completedRoute = completedRoute,
                     createdAt = createdAt
                 )
 

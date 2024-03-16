@@ -90,9 +90,11 @@ class BookingDetailPassengerFragment : Fragment() {
 
 
         // Ride Price
-        val priceValue = ride.passengers[currentUser?.uid]?.ridePrice ?: 0.0
+        val ridePrice: Double = ride.passengers
+            .filter { it.userUid == currentUser?.uid }
+            .sumOf { it.ridePrice ?: 0.0 }
 
-        ridePriceText.text = getString(R.string.price, priceValue)
+        ridePriceText.text = getString(R.string.price, ridePrice)
 
 
         // Map
@@ -163,7 +165,7 @@ class BookingDetailPassengerFragment : Fragment() {
 
         // Rating
         var rating = 0.0F
-        ride.reviews.forEach {(id, review) ->
+        ride.reviews.forEach {review ->
             if(review.rating != null) {
                 rating += review.rating
             }

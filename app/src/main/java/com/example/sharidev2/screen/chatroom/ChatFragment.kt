@@ -84,18 +84,21 @@ class ChatFragment : Fragment() {
             chatViewModel.startListeningForChatUpdates(chat.chatId!!, object: (Chat?) -> Unit {
                 override fun invoke(latestChat: Chat?) {
                     if(latestChat != null) {
+                        // Send notification
+                        CommonUtils().sendMessageNotification(context, latestChat)
+
                         chatViewModel.setActiveChat(latestChat)
                         chatTitle.text = latestChat.chatTitle
 
                         // Set Up RecyclerView
                         messageAdapter = MessageAdapter(context, latestChat.messages!!.toList())
-                        chatMessagesRecyclerView.layoutManager = LinearLayoutManager(context)
+                        chatMessagesRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
                         chatMessagesRecyclerView.adapter = messageAdapter
                         chatMessagesRecyclerView.scrollToPosition(messageAdapter!!.itemCount-1)
 
                         // TODO: Set Unread Badge
                     } else {
-                        findNavController().popBackStack()
+                        findNavController().navigate(R.id.action_chatFragment_to_messagesFragment)
                     }
                 }
             })
@@ -103,19 +106,20 @@ class ChatFragment : Fragment() {
 
 
         // EVENT LISTENERS
-        chatMessagesRecyclerView.viewTreeObserver.addOnGlobalLayoutListener {
-            val heightDiff = chatMessagesRecyclerView.rootView.height - chatMessagesRecyclerView.height
-            if (heightDiff > 100) { // Adjust this threshold as needed
-                // Keyboard is visible
-                if(messageAdapter != null) {
-                    // When user pop up keyboard, scroll recycler view to bottom
-                    chatMessagesRecyclerView.scrollToPosition(messageAdapter!!.itemCount-1)
+        CommonUtils().addKeyboardListenerToView(chatMessagesRecyclerView,
+            object: CommonUtils.OnKeyboardListenersToView {
+                override fun onKeyboardVisibilityChanged(change: Boolean) {
+                    if(change) {
+                        // Keyboard is visible
+                        if(messageAdapter != null) {
+                            // When user pop up keyboard, scroll recycler view to bottom
+                            chatMessagesRecyclerView.scrollToPosition(messageAdapter!!.itemCount-1)
+                        }
+                    }
                 }
-            } else {
-                // Keyboard is hidden
-
             }
-        }
+        )
+
 
         // Navigate back to Messages Fragment
         navBackButton.setOnClickListener {

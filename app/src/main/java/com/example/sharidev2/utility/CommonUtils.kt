@@ -1,24 +1,39 @@
 package com.example.sharidev2.utility
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Person
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
+import android.graphics.Rect
+import android.graphics.drawable.Icon
 import android.graphics.drawable.VectorDrawable
 import android.location.Location
 import android.net.Uri
+import android.os.Build
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
+import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
+import com.example.sharidev2.data.model.Chat
+import com.example.sharidev2.utility.Constants.Companion.NOTIF_MESSAGE_CHANNEL
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.firebase.Timestamp
@@ -26,6 +41,7 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
+
 
 class CommonUtils {
     fun calculateDistance(
@@ -277,6 +293,85 @@ class CommonUtils {
 
     fun openKeyboard(editText: EditText, context: Context) {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(editText.rootView, InputMethodManager.SHOW_IMPLICIT)
+
+        editText.requestFocus()
+        editText.post {
+            editText.post {
+                imm.showSoftInput(editText, 0)
+            }
+        }
+    }
+
+
+    fun addKeyboardListenerToView(contentView: View, listener: OnKeyboardListenersToView) {
+        contentView.viewTreeObserver.addOnGlobalLayoutListener {
+            val r = Rect()
+            contentView.getWindowVisibleDisplayFrame(r)
+            val screenHeight: Int = contentView.rootView.height
+
+            // r.bottom is the position above soft keypad or device button.
+            // if keypad is shown, the r.bottom is smaller than that before.
+            val keypadHeight: Int = screenHeight - r.bottom
+            Log.d("Add Keyboard Listener To View", "keypadHeight = $keypadHeight")
+            if (keypadHeight > screenHeight * 0.15) { // 0.15 ratio is perhaps enough to determine keypad height.
+                // keyboard is opened
+                listener.onKeyboardVisibilityChanged(true)
+            } else {
+                // keyboard is closed
+                listener.onKeyboardVisibilityChanged(false)
+            }
+        }
+    }
+
+    interface OnKeyboardListenersToView {
+        fun onKeyboardVisibilityChanged(change: Boolean)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.R)
+    fun sendMessageNotification(context: Context, chat: Chat) {
+        val notificationManager = getSystemService(
+            context,
+            NotificationManager::class.java
+        ) as NotificationManager
+
+
+        val channelId = NOTIF_MESSAGE_CHANNEL.toString()
+        val notificationId = Constants.NOTIF_MESSAGE // Unique ID for the notification
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Create a notification channel
+            val channelName = "Receive Chat Update Channel"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(channelId, channelName, importance).apply {
+                description = "Notification channel for messaging"
+            }
+            // Optionally configure other channel properties
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        // Create an intent to launch your activity or fragment
+        val intent = Intent(context, MainActivity::class.java)
+        intent.putExtra("fragment", "chat_fragment") // Pass any extra data if needed
+
+        // Create a PendingIntent to open the chat activity
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            0,
+            intent,
+            PendingIntent.FLAG_MUTABLE
+        )
+
+
+        // Build the notification
+        val builder = Notification.Builder(context, channelId)
+            .setSmallIcon(R.drawable.baseline_message_24)
+            .setContentTitle("New Message from ${chat.messages!!.last().senderName}")
+            .setContentText(chat.messages!!.last().text)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true) // Dismiss the notification when clicked
+            .setShowWhen(true)
+
+        // Show the notification
+        notificationManager.notify(notificationId, builder.build())
     }
 }

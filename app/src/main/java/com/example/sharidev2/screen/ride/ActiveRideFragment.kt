@@ -184,7 +184,7 @@ class ActiveRideFragment: Fragment() {
 
 
                         // Passengers
-                        activeRide.passengers.forEach() {(s, passenger) ->
+                        activeRide.passengers.forEach() {passenger ->
                             if(passenger?.location != null) {
                                 val icon = CommonUtils().getLocationBitmapFromVector(requireContext(), Color.BLUE)
 
@@ -305,7 +305,7 @@ class ActiveRideFragment: Fragment() {
                 }
 
                 // Passengers
-                activeRide.passengers.forEach { (id, passenger) ->
+                activeRide.passengers.forEach { passenger ->
                     passengerList.add(passenger)
                 }
                 val adapter = ActiveRidePassengerImageAdapter(requireContext(), passengerList,

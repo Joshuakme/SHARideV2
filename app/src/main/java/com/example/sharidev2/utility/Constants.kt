@@ -22,5 +22,12 @@ class Constants {
         val UI_DATA_LOADING = 2000
         val UI_DATA_SUCCESS = 2001
         val UI_DATA_FAILED = 2002
+
+
+        // NOTIFICATION CHANNEL
+        val NOTIF_MESSAGE_CHANNEL = 3000
+        val NOTIF_MESSAGE = 3001
+
+
     }
 }

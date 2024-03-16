@@ -81,9 +81,10 @@ class AddContactFragment : Fragment() {
             }
         }
 
-        binding.btnBackContactDetail.setOnClickListener{
+        binding.btnBackAddContact.setOnClickListener{
             findNavController().popBackStack()
         }
+
         return root
     }
 }
