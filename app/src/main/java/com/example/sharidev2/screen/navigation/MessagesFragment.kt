@@ -15,12 +15,12 @@ import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.adapter.ChatAdapter
 import com.example.sharidev2.data.model.Chat
+import com.example.sharidev2.data.model.Message
 import com.example.sharidev2.databinding.FragmentMessagesBinding
+import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.FirebaseClient
 import com.example.sharidev2.viewmodel.ChatViewModel
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.firestore.ListenerRegistration
 
 class MessagesFragment : Fragment() {
     // Variables Init
@@ -62,16 +62,25 @@ class MessagesFragment : Fragment() {
 
         if(currentUser?.uid != null) {
             chatViewModel.startListeningForUserChatsUpdates(currentUser.uid, object: (List<Chat>) -> Unit {
-                override fun invoke(chatList: List<Chat>) {
-                    if(chatList.isNotEmpty()) {
-                        chatViewModel.setChatList(chatList)
+                override fun invoke(newChatList: List<Chat>) {
+                    if(newChatList.isNotEmpty()) {
+                        chatViewModel.setChatList(newChatList)
 
-                        val adapter = ChatAdapter(chatList, object: ChatAdapter.OnChatClickListener {
-                            override fun onChatClick(chat: Chat) {
-                                val action = MessagesFragmentDirections.actionMessagesFragmentToChatFragment(chat)
-                                findNavController().navigate(action)
+                        val adapter = ChatAdapter(chatViewModel.oldChatList.value!!, newChatList, chatViewModel,
+                            object: ChatAdapter.OnChatClickListener {
+                                override fun onChatClick(chat: Chat) {
+                                    chatViewModel.setOldChatList(newChatList)
+
+                                    val action = MessagesFragmentDirections.actionMessagesFragmentToChatFragment(chat)
+                                    findNavController().navigate(action)
+                                }
+                            },
+                            object: ChatAdapter.OnChatUpdateListener {
+                                override fun onChatUpdate(newMessage: Message) {
+                                    CommonUtils().sendMessageNotification(context, newMessage)
+                                }
                             }
-                        })
+                        )
 
                         chatsRecyclerView.adapter = adapter
                         chatsRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)

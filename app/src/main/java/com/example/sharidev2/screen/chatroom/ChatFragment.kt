@@ -88,19 +88,11 @@ class ChatFragment : Fragment() {
                         chatViewModel.setActiveChat(latestChat)
                         chatTitle.text = latestChat.chatTitle
 
-                        // Send notification
-                        val newMessage = chatViewModel.getNewMessage()
-                        if(newMessage != null) {
-                            CommonUtils().sendMessageNotification(context, newMessage)
-                        }
-
                         // Set Up RecyclerView
                         messageAdapter = MessageAdapter(context, latestChat.messages!!.toList())
                         chatMessagesRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
                         chatMessagesRecyclerView.adapter = messageAdapter
                         chatMessagesRecyclerView.scrollToPosition(messageAdapter!!.itemCount-1)
-
-                        // TODO: Set Unread Badge
                     } else {
                         findNavController().navigate(R.id.action_chatFragment_to_messagesFragment)
                     }

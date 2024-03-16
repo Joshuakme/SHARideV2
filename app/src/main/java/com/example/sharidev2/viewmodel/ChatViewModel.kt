@@ -30,7 +30,7 @@ class ChatViewModel(
 
     // INTERNAL DATA MEMBERS
     private val chatList: LiveData<List<Chat>> = savedStateHandle.getLiveData(CHAT_LIST_KEY, mutableListOf())
-    private val oldChatList: LiveData<List<Chat>> = savedStateHandle.getLiveData(OLD_CHAT_LIST_KEY, mutableListOf())
+    val oldChatList: LiveData<List<Chat>> = savedStateHandle.getLiveData(OLD_CHAT_LIST_KEY, mutableListOf())
     private val activeChat: LiveData<Chat> = savedStateHandle.getLiveData(ACTIVE_CHAT_KEY, Chat())
     private val oldChat: LiveData<Chat> = savedStateHandle.getLiveData(OLD_CHAT_KEY, Chat())
 
@@ -41,6 +41,7 @@ class ChatViewModel(
 
             if(chatList != null) {
                 setChatList(chatList)
+                // TODO: oldChatList suppose to be the local data of chat
                 setOldChatList(chatList)
             }
         }
@@ -97,6 +98,38 @@ class ChatViewModel(
         }
         // No new messages found
         return null
+    }
+
+    fun hasNewMessagesInChatList(): Boolean {
+        for (newChat in chatList.value!!) {
+            val oldChat = oldChatList.value!!.find { it.chatId == newChat.chatId }
+            if (oldChat != null) {
+                // Compare messages
+                val newMessage = hasNewMessagesInChat(newChat.messages!!.toList(), oldChat.messages!!.toList())
+                if (newMessage != null) {
+
+                    return true // Found new messages
+                }
+            } else {
+                // New chat in newChatList
+                return true // Assume all messages in new chat are new
+            }
+        }
+        return false // No new messages found
+    }
+
+    fun hasNewMessagesInChat(newMessages: List<Message>, oldMessages: List<Message>): Message? {
+        for (newMessage in newMessages) {
+            if (!oldMessages.contains(newMessage)) {
+                // Found new message
+                if(currentUser?.uid != null) {
+                    if(newMessage.senderId != currentUser!!.uid) {
+                        return newMessage
+                    }
+                }
+            }
+        }
+        return null // No new messages found
     }
 
     override fun onCleared() {

@@ -10,15 +10,24 @@ import com.example.sharidev2.R
 import com.example.sharidev2.data.model.Chat
 import com.example.sharidev2.data.model.Message
 import com.example.sharidev2.utility.CommonUtils
+import com.example.sharidev2.viewmodel.ChatViewModel
 import com.google.firebase.Timestamp
 
 class ChatAdapter(
-    private val chatList: List<Chat>,
-    private val clickListener: OnChatClickListener
+    private val oldChatList: List<Chat>,
+    private val newChatList: List<Chat>,
+    private val chatViewModel: ChatViewModel,
+    private val clickListener: OnChatClickListener,
+    private val updateListener: OnChatUpdateListener,
 ) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
+
 
     interface OnChatClickListener {
         fun onChatClick(chat: Chat)
+    }
+
+    interface OnChatUpdateListener {
+        fun onChatUpdate(message: Message)
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -48,13 +57,32 @@ class ChatAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val chat = chatList[position]
+        val chat = newChatList[position]
 
 
         holder.chatTitle.text = chat.chatTitle
         holder.chatLastMessage.text = chat.lastMessage
         holder.chatDate.text = formatChatDate(chat.messages?.last()?.timestamp?: Timestamp.now())
-        holder.chatNewMessageBadgeText.visibility =  View.GONE
+
+        // Check if new messages exist
+        for (newChat in newChatList) {
+            val oldChat = oldChatList.find { it.chatId == newChat.chatId }
+            if (oldChat != null) {
+                // Compare messages
+                val newMessage = chatViewModel.hasNewMessagesInChat(newChat.messages!!.toList(), oldChat.messages!!.toList())
+                if (newMessage != null) {
+                    // Found new messages
+                    holder.chatNewMessageBadgeText.visibility =  View.VISIBLE
+
+                    // Send Notification
+                    updateListener.onChatUpdate(newMessage)
+                } else {
+                    holder.chatNewMessageBadgeText.visibility =  View.GONE
+                }
+            } else {
+                holder.chatNewMessageBadgeText.visibility =  View.GONE
+            }
+        }
 
 
         holder.itemView.setOnClickListener {
@@ -65,7 +93,7 @@ class ChatAdapter(
 
 
     override fun getItemCount(): Int {
-        return chatList.size
+        return newChatList.size
     }
 
     private fun formatChatDate(date: Timestamp): String {
