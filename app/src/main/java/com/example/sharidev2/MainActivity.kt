@@ -297,6 +297,11 @@ class MainActivity : AppCompatActivity() {
 //        })
 //    }
 
+    // TODO: Set up notification for the below
+    // TODO: Set up listeners for Chat Updates
+    // TODO: Set up listeners for Ride Status Updates
+
+
 
     override fun onResume() {
         super.onResume()

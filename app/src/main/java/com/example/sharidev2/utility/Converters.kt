@@ -228,7 +228,9 @@ class Converters() {
         }
 
         val status = UserStatus.valueOf((map["status"] as String))
-        val ridePrice = (map["ridePrice"] as Long?)?.toDouble()
+        val ridePrice = map["ridePrice"] as? Double?
+
+        val requestedDateTime = map["requestedDateTime"] as Timestamp?
 
         return Passenger(
             userUid = userUid,
@@ -237,7 +239,8 @@ class Converters() {
             origin = origin,
             destination = destination,
             status = status,
-            ridePrice = ridePrice
+            ridePrice = ridePrice,
+            requestedDateTime = requestedDateTime
         )
     }
 

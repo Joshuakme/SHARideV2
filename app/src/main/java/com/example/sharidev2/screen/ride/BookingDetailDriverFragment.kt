@@ -195,7 +195,9 @@ class BookingDetailDriverFragment : Fragment() {
         // NAVIGATION LISTENERS
         // Booking Detail Fragment -> View Booking Request Fragment
         bookingDetailViewRequests.setOnClickListener {
-            findNavController().navigate(R.id.action_bookingDetailFragment_to_viewBookingRequestsFragment)
+            val action = BookingDetailDriverFragmentDirections
+                .actionBookingDetailFragmentToViewBookingRequestsFragment(ride.id!!, ride.passengers.toTypedArray())
+            findNavController().navigate(action)
         }
 
         // Booking Detail Fragment -> Active Ride Fragment
@@ -204,7 +206,5 @@ class BookingDetailDriverFragment : Fragment() {
             findNavController().navigate(action)
         }
     }
-
-
 
 }

@@ -40,7 +40,7 @@ class RideAdapter (
             profileImg = itemView.findViewById(R.id.img_ride_driver_icon)
             locationRecyclerView = itemView.findViewById(R.id.recycler_ride_item_location_timeline)
             vehicleCapacityText = itemView.findViewById(R.id.text_ride_item_seats_chip)
-            dateText = itemView.findViewById(R.id.text_ride_date)
+            dateText = itemView.findViewById(R.id.text_passenger_request_ride_date)
             availableSeatsText = itemView.findViewById(R.id.text_ride_available_seats)
         }
     }

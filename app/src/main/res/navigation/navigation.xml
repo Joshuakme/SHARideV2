@@ -245,7 +245,14 @@
         <action
             android:id="@+id/action_bookingDetailFragment_to_viewBookingRequestsFragment"
             app:destination="@id/viewBookingRequestsFragment"
-            app:popUpTo="@id/bookingDetailFragment" />
+            app:popUpTo="@id/bookingDetailFragment">
+            <argument
+                android:name="rideId"
+                app:argType="string" />
+            <argument
+                android:name="passengers"
+                app:argType="com.example.sharidev2.data.model.Passenger[]" />
+        </action>
         <action
             android:id="@+id/action_bookingDetailFragment_to_activeRideFragment"
             app:destination="@id/activeRideFragment"

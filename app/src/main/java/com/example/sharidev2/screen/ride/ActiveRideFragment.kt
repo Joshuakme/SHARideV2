@@ -74,7 +74,6 @@ class ActiveRideFragment: Fragment() {
 
 
         // Args
-
         try {
             val activeRide = arguments?.get("ride") as Ride
 

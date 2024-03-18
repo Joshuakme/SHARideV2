@@ -8,12 +8,12 @@ import com.example.sharidev2.data.model.MessageType
 import com.example.sharidev2.data.model.Passenger
 import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.data.model.SearchLocation
+import com.example.sharidev2.data.model.UserStatus
 import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.Converters
 import com.example.sharidev2.utility.FirebaseClient
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.Timestamp
-import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.Dispatchers
@@ -142,27 +142,49 @@ class RideRepository() {
                 rideRef.update("passengerIds", passengerIds)
 
 
-                val passengersCount = passengers.size
 
-                // Get the ride data
-                val rideData = rideRef.get().await().data
+                Constants.FIREBASE_REQUEST_SUCCESS
+            } catch (e: Exception) {
+                Log.e("Add Passenger", e.message.toString())
+                Constants.FIREBASE_REQUEST_EXCEPTION
+            }
+        }
+    }
+
+    suspend fun acceptPassengerToRide(acceptedPassenger: Passenger, rideId: String): Int {
+        return withContext(Dispatchers.IO) {
+            try {
+                val rideRef = rideCollectionRef.document(rideId)
+
+                val rideDoc = rideRef.get().await()
+                val passengers = converters.toPassengerList(
+                    rideDoc.get("passengers") as? List<Map<String, Any>>?: mutableListOf()
+                ).toMutableList()
+
+
+                // Update Accepted Passenger Status
+                passengers.forEach { passenger ->
+                    if(passenger.userUid == acceptedPassenger.userUid) {
+                        passenger.status = UserStatus.ACCEPTED
+                    }
+                }
+                rideRef.update("passengers", passengers).await()
 
 
                 // Add user into chatroom
                 val chatRef = firestore.collection("chat")
                 val chatQuerySnapshot = chatRef
-                                        .whereEqualTo("rideId", rideId)
-                                        .limit(1)
-                                        .get()
-                                        .await()
+                    .whereEqualTo("rideId", rideId)
+                    .limit(1)
+                    .get()
+                    .await()
 
                 if(!chatQuerySnapshot.isEmpty) {
-                    val chatDoc = chatQuerySnapshot.documents[0]
-                    val chatId = chatDoc.id
+                    val chatId = chatQuerySnapshot.documents[0].id
 
                     val chatDocSnapshot = chatRef.document(chatId)
-                                                .get()
-                                                .await()
+                        .get()
+                        .await()
 
                     val chatData = chatDocSnapshot.data
                     if(chatData != null) {
@@ -174,6 +196,13 @@ class RideRepository() {
                     }
                 }
 
+
+                // UPDATE AVAILABLE SEATS
+                // Get the ride data
+                val rideData = rideDoc.data
+                // Get Accepted Passenger Size
+                val passengersCount = passengers.filter { it.status == UserStatus.ACCEPTED }.size
+
                 val driver = converters.toDriver(rideData?.get("driver") as Map<String, Any>)
                 if(driver.vehicle?.capacity != null) {
                     val vehicleCapacity = driver.vehicle.capacity.minus(1)
@@ -182,8 +211,7 @@ class RideRepository() {
                     val availableSeats = vehicleCapacity.minus(passengersCount)
 
                     // Update the available seats for the ride
-                    rideRef.update("availableSeats", availableSeats)
-                        .await()
+                    rideRef.update("availableSeats", availableSeats).await()
 
                     Constants.FIREBASE_REQUEST_SUCCESS
                 } else {
@@ -323,6 +351,35 @@ class RideRepository() {
     // UPDATE FUNCTIONS
     suspend fun updatePassenger(oldPassengerUid: String, newPassenger: Passenger) {
 
+    }
+
+
+    // DELETE FUNCTIONS
+    suspend fun rejectPassengerToRide(rejectedPassenger: Passenger, rideId: String): Int {
+        return withContext(Dispatchers.IO) {
+            try {
+                val rideRef = rideCollectionRef.document(rideId)
+
+                val rideDoc = rideRef.get().await()
+                val passengers = converters.toPassengerList(
+                    rideDoc.get("passengers") as? List<Map<String, Any>>?: mutableListOf()
+                ).toMutableList()
+
+                // Update Rejected Passenger Status
+                passengers.forEach { passenger ->
+                    if(passenger.userUid == rejectedPassenger.userUid) {
+                        passenger.status = UserStatus.REJECTED
+                    }
+                }
+                rideRef.update("passengers", passengers).await()
+
+
+                Constants.FIREBASE_REQUEST_SUCCESS
+            } catch (e: Exception) {
+                Log.e("Add Passenger", e.message.toString())
+                Constants.FIREBASE_REQUEST_EXCEPTION
+            }
+        }
     }
 
 

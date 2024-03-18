@@ -180,7 +180,6 @@ class RideDetailFragment : Fragment() {
                 if(ride.driver.vehicle != null) {
                     val vehicle = ride.driver.vehicle
                     rideDetailVehicleText.text = "${vehicle.model} (${vehicle.color})"
-                    rideDetailVehicleText.text = "${vehicle.model} (${vehicle.color})"
                 }
 
 
@@ -205,6 +204,7 @@ class RideDetailFragment : Fragment() {
                         origin = searchRideViewModel.origin.value,
                         destination = searchRideViewModel.destination.value,
                         ridePrice = estimatedPrice,
+                        requestedDateTime = searchRideViewModel.rideDateTime.value
                     )
 
                     val responseStatus = rideViewModel.addPassengerToRide(passenger, rideId)

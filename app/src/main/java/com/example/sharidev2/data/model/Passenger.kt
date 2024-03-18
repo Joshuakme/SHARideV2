@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.parcelize.Parcelize
 
+
 @Parcelize
 data class Passenger (
     override val userUid: String? = null,
@@ -11,6 +12,7 @@ data class Passenger (
     override val location: LatLng? = null,
     val origin: SearchLocation? = null,
     val destination: SearchLocation? = null,
-    override val status: UserStatus = UserStatus.REQUESTED,
-    var ridePrice: Double? = null
+    override var status: UserStatus = UserStatus.REQUESTED,
+    var ridePrice: Double? = null,
+    val requestedDateTime: com.google.firebase.Timestamp? = null
 ): RideParticipant(userUid, user, location, status), Parcelable

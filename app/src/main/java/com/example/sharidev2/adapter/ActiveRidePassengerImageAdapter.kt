@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.sharidev2.R
 import com.example.sharidev2.data.model.Passenger
 import com.example.sharidev2.data.model.UserStatus
+import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.FirebaseClient
 import com.google.android.material.card.MaterialCardView
 
@@ -71,16 +72,12 @@ class ActiveRidePassengerImageAdapter(
 
         // Status Badge
         if(passenger.status != null) {
-            val typedValue = TypedValue()
-            // Resolve the attribute to get the color value programmatically
-            context.theme?.resolveAttribute(com.google.android.material.R.attr.colorPrimary, typedValue, true)
-            val colorPrimary = typedValue.data
-            context.theme?.resolveAttribute(com.google.android.material.R.attr.colorPrimaryContainer, typedValue, true)
-            val colorPrimaryContainer = typedValue.data
-            context.theme?.resolveAttribute(com.google.android.material.R.attr.colorSurfaceContainerHighest, typedValue, true)
-            val colorSurfaceContainerHighest = typedValue.data
-            context.theme?.resolveAttribute(com.google.android.material.R.attr.colorOnSurface, typedValue, true)
-            val colorOnSurface = typedValue.data
+            val commonUtils = CommonUtils()
+
+            val colorPrimary = commonUtils.getThemeColor(context, com.google.android.material.R.attr.colorPrimary)
+            val colorPrimaryContainer = commonUtils.getThemeColor(context, com.google.android.material.R.attr.colorPrimaryContainer)
+            val colorSurfaceContainerHighest = commonUtils.getThemeColor(context, com.google.android.material.R.attr.colorSurfaceContainerHighest)
+            val colorOnSurface = commonUtils.getThemeColor(context, com.google.android.material.R.attr.colorOnSurface)
 
             if(passenger.userUid == currentUser?.uid) {
                 holder.passengerImgCard.strokeWidth = (1 * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
