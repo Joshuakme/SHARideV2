@@ -299,7 +299,8 @@ class MainActivity : AppCompatActivity() {
 
     // TODO: Set up notification for the below
     // TODO: Set up listeners for Chat Updates
-    // TODO: Set up listeners for Ride Status Updates
+    // TODO: Set up listeners for Ride Status Updates (Passenger -> "$DriverName accepted your request",
+    //  Driver -> "$PassengerName requested to join your ride to $PlaceName")
 
 
 
