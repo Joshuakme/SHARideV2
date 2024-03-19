@@ -123,12 +123,12 @@ class SearchSelectOriginFragment : Fragment() {
 
         // Search Select Origin Fragment -> Search Fragment
         backBtn.setOnClickListener {
-            findNavController().navigate(R.id.action_searchSelectOriginFragment_to_searchFragment)
+            findNavController().navigate(R.id.action_searchSelectOriginFragment_to_searchRideFragment)
         }
 
         // Search Select Origin Fragment -> Search Fragment
         originDetailCard.setOnClickListener {
-            findNavController().navigate(R.id.action_searchSelectOriginFragment_to_searchFragment)
+            findNavController().navigate(R.id.action_searchSelectOriginFragment_to_searchRideFragment)
             // TODO: Focus origin edit text field
         }
 

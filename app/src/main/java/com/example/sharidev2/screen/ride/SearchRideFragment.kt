@@ -26,7 +26,6 @@ import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.adapter.SearchRideAdapter
 import com.example.sharidev2.data.model.SearchLocation
-import com.example.sharidev2.data.repository.UserLocationRepository
 import com.example.sharidev2.databinding.FragmentSearchRideBinding
 import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.NetworkUtils
@@ -135,12 +134,12 @@ class SearchRideFragment : Fragment() {
         // NAVIGATION EVENT LISTENERS
         // Search Fragment -> Home Fragment
         backBtn.setOnClickListener {
-            findNavController().navigate(R.id.action_searchFragment_to_homeFragment)
+            findNavController().navigate(R.id.action_searchRideFragment_to_homeFragment)
         }
 
         // Search Fragment -> Driver Ride Fragment
         changeRoleButton.setOnClickListener {
-            findNavController().navigate(R.id.action_searchFragment_to_driverCreateRideFragment)
+            findNavController().navigate(R.id.action_searchRideFragment_to_driverCreateRideFragment)
         }
 
         return binding.root
@@ -571,7 +570,7 @@ class SearchRideFragment : Fragment() {
                         //performOriginAutocompleteRequest(currentLocation = currentLocation)
                         performOriginCurrentPlaceRequest()
 
-                        findNavController().navigate(R.id.action_searchFragment_to_searchSelectOriginFragment)
+                        findNavController().navigate(R.id.action_searchRideFragment_to_searchSelectOriginFragment)
                     }
                 searchResultRecyclerView.layoutManager = LinearLayoutManager(context)
                 searchResultRecyclerView.adapter = searchResultAdapter

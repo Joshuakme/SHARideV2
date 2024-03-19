@@ -118,7 +118,7 @@ class HomeFragment : Fragment() {
         // NAVIGATION EVENT LISTENERS
         // Home Fragment -> Search Fragment
         searchBarBtn.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_searchFragment)
+            findNavController().navigate(R.id.action_homeFragment_to_searchRideFragment)
         }
 
         shareThisAppCopyBtn.setOnClickListener {

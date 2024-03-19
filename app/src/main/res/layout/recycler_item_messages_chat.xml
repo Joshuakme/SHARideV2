@@ -2,31 +2,35 @@
     <!--  Chat  -->
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card_chat"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/ss_profile_section_item_bottom_margin"
+    android:layout_marginBottom="24dp"
     app:cardBackgroundColor="#00FFFFFF"
     app:cardElevation="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:clickable="false"
         android:contextClickable="false"
         android:longClickable="false">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/chat_icon"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
             android:clickable="false"
             android:contextClickable="false"
             android:longClickable="false"
             app:cardCornerRadius="10000dp"
             app:cardElevation="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5">
 
             <ImageButton
                 android:id="@+id/image_button_chat_pic"
@@ -56,12 +60,12 @@
             android:linksClickable="false"
             android:longClickable="false"
             android:singleLine="true"
-            android:text="Ali"
             android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@+id/text_chat_last_message"
             app:layout_constraintEnd_toStartOf="@+id/text_chat_date"
             app:layout_constraintStart_toEndOf="@+id/chat_icon"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Ali" />
 
         <TextView
             android:id="@+id/text_chat_last_message"
@@ -75,14 +79,13 @@
             android:linksClickable="false"
             android:longClickable="false"
             android:singleLine="true"
-            android:text="Hi, I'm Ali. Nice to meet you."
             android:textColor="@color/system_neutral2_500"
             android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="@+id/chat_icon"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/text_chat_new_message_badge"
             app:layout_constraintStart_toEndOf="@+id/chat_icon"
-            app:layout_constraintTop_toBottomOf="@+id/text_chat_title" />
+            app:layout_constraintTop_toBottomOf="@+id/text_chat_title"
+            tools:text="Hi, I'm Ali. Nice to meet you." />
 
         <TextView
             android:id="@+id/text_chat_date"
@@ -92,12 +95,12 @@
             android:contextClickable="false"
             android:linksClickable="false"
             android:longClickable="false"
-            android:text="2023-12-07"
             android:textColor="@color/system_neutral2_500"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/text_chat_title"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="2023-12-07" />
 
         <TextView
             android:id="@+id/text_chat_new_message_badge"
@@ -111,10 +114,10 @@
             android:linksClickable="false"
             android:longClickable="false"
             android:padding="4dp"
-            android:text="1"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="1" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>
