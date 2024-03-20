@@ -51,6 +51,7 @@
 
         <!-- Set the default font family -->
         <item name="android:fontFamily">@font/poppins</item>
+        <item name="android:datePickerStyle">@style/myDatePickerStyle</item>
     </style>
 
     <style name="ThemeOverlay.AppTheme.MediumContrast" parent="Theme.Material3.Light.NoActionBar">

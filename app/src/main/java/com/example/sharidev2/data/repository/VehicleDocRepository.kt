@@ -219,7 +219,7 @@ class VehicleDocRepository(
 //    }
 //
 //    // Function to update manufacture date EditText with the selected date
-//    fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
+//    fun onDateSet(view: DateTimePicker?, year: Int, month: Int, dayOfMonth: Int) {
 //        val calendar = Calendar.getInstance()
 //        calendar.set(year, month, dayOfMonth)
 //        val formattedDate = "${calendar.get(Calendar.DAY_OF_MONTH)}-${calendar.get(Calendar.MONTH) + 1}-${calendar.get(

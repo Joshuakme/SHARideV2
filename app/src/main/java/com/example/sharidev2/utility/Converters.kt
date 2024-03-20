@@ -330,6 +330,62 @@ class Converters() {
     }
 
 
+    // VEHICLE DOC CONVERTERS
+    fun toVehicleDoc(map: Map<String, Any>): VehicleDoc {
+        val userUid = map["userUid"] as String
+        val firstName = map["firstName"] as String
+        val lastName = map["lastName"] as String
+        val vehicleTypeString = map["type"] as String
+        val vehicleType = VehicleType.valueOf(vehicleTypeString)
+        val vehicleModel = map["vehicleModel"] as String
+        val carPlate = map["carPlate"] as String
+        val manufactureDate = map["manufactureDate"] as Timestamp
+
+
+        val vehicleRegisCertMap = map["vehicleRegisCert"] as Map<String, Any>
+        val vehicleRegisCertList = mutableListOf<Uri>()
+
+        vehicleRegisCertMap.forEach {(s, cert) ->
+            vehicleRegisCertList.add(Uri.parse(cert as String))
+        }
+
+
+        val roadtaxMap = map["roadtax"] as Map<String, Any>
+        val roadtaxList = mutableListOf<Uri>()
+
+        roadtaxMap.forEach {(r, roadtax) ->
+            roadtaxList.add(Uri.parse(roadtax as String))
+        }
+
+
+        val insuranceMap = map["insurance"] as Map<String, Any>
+        val insuranceList = mutableListOf<Uri>()
+
+        insuranceMap.forEach {(i, insurance) ->
+            insuranceList.add(Uri.parse(insurance as String))
+        }
+
+
+        val vehicleId = map["vehicleId"] as String
+
+
+        return VehicleDoc(
+            userUid,
+            firstName,
+            lastName,
+            vehicleTypeString, // Pass vehicleTypeString instead of vehicleType
+            vehicleModel,
+            carPlate,
+            manufactureDate,
+            vehicleRegisCertList,
+            roadtaxList,
+            insuranceList,
+            vehicleId
+
+        )
+    }
+
+
     // CHAT CONVERTERS
     fun toChat(map: Map<String, Any>): Chat {
         val chatId = map["chatId"] as String
@@ -567,58 +623,5 @@ class Converters() {
         ).toInt()
     }
 
-    fun toVehicleDoc(map: Map<String, Any>): VehicleDoc {
-        val userUid = map["userUid"] as String
-        val firstName = map["firstName"] as String
-        val lastName = map["lastName"] as String
-        val vehicleTypeString = map["type"] as String
-        val vehicleType = VehicleType.valueOf(vehicleTypeString)
-        val vehicleModel = map["vehicleModel"] as String
-        val carPlate = map["carPlate"] as String
-        val manufactureDate = map["manufactureDate"] as Timestamp
-
-
-        val vehicleRegisCertMap = map["vehicleRegisCert"] as Map<String, Any>
-        val vehicleRegisCertList = mutableListOf<Uri>()
-
-        vehicleRegisCertMap.forEach {(s, cert) ->
-            vehicleRegisCertList.add(Uri.parse(cert as String))
-        }
-
-
-        val roadtaxMap = map["roadtax"] as Map<String, Any>
-        val roadtaxList = mutableListOf<Uri>()
-
-        roadtaxMap.forEach {(r, roadtax) ->
-            roadtaxList.add(Uri.parse(roadtax as String))
-        }
-
-
-        val insuranceMap = map["insurance"] as Map<String, Any>
-        val insuranceList = mutableListOf<Uri>()
-
-        insuranceMap.forEach {(i, insurance) ->
-            insuranceList.add(Uri.parse(insurance as String))
-        }
-
-
-        val vehicleId = map["vehicleId"] as String
-
-
-        return VehicleDoc(
-            userUid,
-            firstName,
-            lastName,
-            vehicleTypeString, // Pass vehicleTypeString instead of vehicleType
-            vehicleModel,
-            carPlate,
-            manufactureDate,
-            vehicleRegisCertList,
-            roadtaxList,
-            insuranceList,
-            vehicleId
-
-        )
-    }
 
 }

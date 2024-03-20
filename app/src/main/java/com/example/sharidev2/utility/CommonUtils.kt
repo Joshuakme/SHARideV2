@@ -321,7 +321,6 @@ class CommonUtils {
             // r.bottom is the position above soft keypad or device button.
             // if keypad is shown, the r.bottom is smaller than that before.
             val keypadHeight: Int = screenHeight - r.bottom
-            Log.d("Add Keyboard Listener To View", "keypadHeight = $keypadHeight")
             if (keypadHeight > screenHeight * 0.15) { // 0.15 ratio is perhaps enough to determine keypad height.
                 // keyboard is opened
                 listener.onKeyboardVisibilityChanged(true)

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/date_picker_parent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <NumberPicker
+        android:id="@+id/numPickerYear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="6dp"
+        android:visibility="gone"
+        tools:visibility="gone" />
+
+    <NumberPicker
+        android:id="@+id/numPickerMonth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="6dp"
+        android:visibility="gone"
+        tools:visibility="gone" />
+
+    <NumberPicker
+        android:id="@+id/numPickerDay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="6dp"
+        android:visibility="gone"
+        tools:visibility="gone" />
+
+    <NumberPicker
+        android:id="@+id/numPickerMonthDay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="6dp" />
+
+    <NumberPicker
+        android:id="@+id/numPickerHour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="6dp" />
+
+    <NumberPicker
+        android:id="@+id/numPickerMinute"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="6dp" />
+</LinearLayout>

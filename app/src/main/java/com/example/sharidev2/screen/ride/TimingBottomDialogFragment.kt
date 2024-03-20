@@ -8,18 +8,13 @@ import android.view.ViewGroup
 import android.widget.NumberPicker
 import androidx.fragment.app.activityViewModels
 import com.example.sharidev2.R
+import com.example.sharidev2.utility.DateTimePicker
 import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.card.MaterialCardView
-import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 import java.util.Calendar
-import java.util.Date
 import java.util.Locale
-import java.time.ZoneOffset
 
 class TimingBottomDialogFragment(
     private val dialogClickListener: DialogClickListener
@@ -40,60 +35,45 @@ class TimingBottomDialogFragment(
         // Initialize the recyclerView here
 
         // ELEMENT VARIABLES
-        val numPickerMonthDay = view.findViewById<NumberPicker>(R.id.numPickerMonthDay)
-        val numPickerHour = view.findViewById<NumberPicker>(R.id.numPickerHour)
-        val numPickerMinute = view.findViewById<NumberPicker>(R.id.numPickerMinute)
+        val dateTimePicker = view.findViewById<DateTimePicker>(R.id.date_picker_bottom_dialog_date)
         val cancelButton = view.findViewById<MaterialCardView>(R.id.btn_search_timing_cta_cancel)
         val confirmButton = view.findViewById<MaterialCardView>(R.id.btn_search_timing_cta_confirm)
 
 
         // LAYOUT
 
-        val dayList = getDayList()
 
         // Set up NumberPicker for month and day
-        numPickerMonthDay.minValue = 0
-        numPickerMonthDay.maxValue = dayList.size - 1
-        numPickerMonthDay.displayedValues = dayList.toTypedArray()
-        numPickerMonthDay.wrapSelectorWheel = false
+        dateTimePicker.maxDaysFromToday(12)
 
 
-        // EVENT LISTENERS
-        // Set up listeners for month and day picker
-        numPickerMonthDay.setOnValueChangedListener { _, _, _ ->
-            // Update hour and minute pickers based on selected day
-            updateHourMinutePickers()
-        }
 
-        numPickerHour.setOnValueChangedListener { _, _, _ ->
-            adjustMinutePicker(Calendar.getInstance(), numPickerHour.value, numPickerMinute)
-        }
+
 
         cancelButton.setOnClickListener {
-
             dialogClickListener.onCancelClick()
             dismiss()
         }
 
         confirmButton.setOnClickListener {
-            // Get the selected day string from the NumberPicker
-            val selectedDayIndex = numPickerMonthDay.value
-            val selectedDay = "2024 " + dayList[selectedDayIndex] // Assuming dayList contains date strings in the format "MMM dd"
-
-            // Parse the selected date string to a LocalDate object
-            val formatter = DateTimeFormatter.ofPattern("yyyy MMM dd", Locale.ENGLISH) // Use Locale.ENGLISH to ensure consistent month names
-            val selectedDate = LocalDate.parse(selectedDay, formatter)
-
-            // Get the selected hour and minute from the NumberPickers
-            val selectedHour = numPickerHour.value
-            val selectedMinute = numPickerMinute.value * 5 // Since the minute picker has intervals of 5 minutes
-
-            // Create a LocalTime object representing the selected time
-            val selectedTime = LocalTime.of(selectedHour, selectedMinute)
-
-            // Pass both the selected date and time to the ViewModel
-            val datetime = Date((selectedDate.atTime(selectedTime).toInstant(ZoneOffset.UTC).toEpochMilli()))
-            searchRideViewModel.setRideDateTime(Timestamp(datetime))
+//            // Get the selected day string from the NumberPicker
+//            val selectedDayIndex = numPickerMonthDay.value
+//            val selectedDay = "2024 " + dayList[selectedDayIndex] // Assuming dayList contains date strings in the format "MMM dd"
+//
+//            // Parse the selected date string to a LocalDate object
+//            val formatter = DateTimeFormatter.ofPattern("yyyy MMM dd", Locale.ENGLISH) // Use Locale.ENGLISH to ensure consistent month names
+//            val selectedDate = LocalDate.parse(selectedDay, formatter)
+//
+//            // Get the selected hour and minute from the NumberPickers
+//            val selectedHour = numPickerHour.value
+//            val selectedMinute = numPickerMinute.value * 5 // Since the minute picker has intervals of 5 minutes
+//
+//            // Create a LocalTime object representing the selected time
+//            val selectedTime = LocalTime.of(selectedHour, selectedMinute)
+//
+//            // Pass both the selected date and time to the ViewModel
+//            val datetime = Date((selectedDate.atTime(selectedTime).toInstant(ZoneOffset.UTC).toEpochMilli()))
+//            searchRideViewModel.setRideDateTime(Timestamp(datetime))
 
 
             // Dismiss the dialog
@@ -101,7 +81,7 @@ class TimingBottomDialogFragment(
         }
 
         // Set up initial hour and minute pickers
-        updateHourMinutePickers()
+
 
     }
 
@@ -124,36 +104,36 @@ class TimingBottomDialogFragment(
     }
 
 
-    private fun updateHourMinutePickers() {
-        val numPickerMonthDay = requireView().findViewById<NumberPicker>(R.id.numPickerMonthDay)
-        val numPickerHour = requireView().findViewById<NumberPicker>(R.id.numPickerHour)
-        val numPickerMinute = requireView().findViewById<NumberPicker>(R.id.numPickerMinute)
-
-        val selectedDay = Calendar.getInstance()
-        selectedDay.add(Calendar.DAY_OF_MONTH, numPickerMonthDay.value) // Adjust to selected day
-
-        // Get the hour and minute range based on the selected day
-        val (minHourMinute, maxHourMinute) = getHourMinuteRange(selectedDay)
-        // TODO: Fix the display problem of hour and minute
-        // Set minimum and maximum values for the hour NumberPicker
-        numPickerHour.minValue = minHourMinute.first
-        numPickerHour.maxValue = maxHourMinute.first
-        numPickerHour.wrapSelectorWheel = false
-
-        // Set minimum and maximum values for the minute NumberPicker
-        numPickerMinute.minValue = minHourMinute.second
-        numPickerMinute.maxValue = maxHourMinute.second
-        numPickerMinute.wrapSelectorWheel = false
-
-        // Adjust minute picker based on selected day and hour
-        adjustMinutePicker(selectedDay, numPickerHour.value, numPickerMinute)
-
-        // Select the first value in the hour or minute NumberPicker
-        if (selectedDay.get(Calendar.DAY_OF_YEAR) != Calendar.getInstance().get(Calendar.DAY_OF_YEAR) || numPickerHour.value != Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
-            numPickerHour.value = minHourMinute.first
-            numPickerMinute.value = minHourMinute.second
-        }
-    }
+//    private fun updateHourMinutePickers() {
+//        val numPickerMonthDay = requireView().findViewById<NumberPicker>(R.id.numPickerMonthDay)
+//        val numPickerHour = requireView().findViewById<NumberPicker>(R.id.numPickerHour)
+//        val numPickerMinute = requireView().findViewById<NumberPicker>(R.id.numPickerMinute)
+//
+//        val selectedDay = Calendar.getInstance()
+//        selectedDay.add(Calendar.DAY_OF_MONTH, numPickerMonthDay.value) // Adjust to selected day
+//
+//        // Get the hour and minute range based on the selected day
+//        val (minHourMinute, maxHourMinute) = getHourMinuteRange(selectedDay)
+//        // TODO: Fix the display problem of hour and minute
+//        // Set minimum and maximum values for the hour NumberPicker
+//        numPickerHour.minValue = minHourMinute.first
+//        numPickerHour.maxValue = maxHourMinute.first
+//        numPickerHour.wrapSelectorWheel = false
+//
+//        // Set minimum and maximum values for the minute NumberPicker
+//        numPickerMinute.minValue = minHourMinute.second
+//        numPickerMinute.maxValue = maxHourMinute.second
+//        numPickerMinute.wrapSelectorWheel = false
+//
+//        // Adjust minute picker based on selected day and hour
+//        adjustMinutePicker(selectedDay, numPickerHour.value, numPickerMinute)
+//
+//        // Select the first value in the hour or minute NumberPicker
+//        if (selectedDay.get(Calendar.DAY_OF_YEAR) != Calendar.getInstance().get(Calendar.DAY_OF_YEAR) || numPickerHour.value != Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
+//            numPickerHour.value = minHourMinute.first
+//            numPickerMinute.value = minHourMinute.second
+//        }
+//    }
 
     private fun adjustMinutePicker(selectedDay: Calendar, selectedHour: Int, numPickerMinute: NumberPicker) {
         val currentCalendar = Calendar.getInstance()

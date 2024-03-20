@@ -188,11 +188,18 @@ class BookingDetailDriverFragment : Fragment() {
     }
 
     private fun setupOnClickListeners() {
+        val backBtn = binding.imgBtnBookingDetailDriverNavBack
         val bookingDetailViewRequests = binding.textBookingDetailViewRequests
         val startRideBtn = binding.cardBookingDetailCtaStartBtn
 
 
         // NAVIGATION LISTENERS
+        // Booking Detail Fragment -> Booking Fragment
+        backBtn.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
+
         // Booking Detail Fragment -> View Booking Request Fragment
         bookingDetailViewRequests.setOnClickListener {
             val action = BookingDetailDriverFragmentDirections
