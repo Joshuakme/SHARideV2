@@ -8,30 +8,6 @@
     android:orientation="horizontal">
 
     <NumberPicker
-        android:id="@+id/numPickerYear"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="6dp"
-        android:visibility="gone"
-        tools:visibility="gone" />
-
-    <NumberPicker
-        android:id="@+id/numPickerMonth"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="6dp"
-        android:visibility="gone"
-        tools:visibility="gone" />
-
-    <NumberPicker
-        android:id="@+id/numPickerDay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="6dp"
-        android:visibility="gone"
-        tools:visibility="gone" />
-
-    <NumberPicker
         android:id="@+id/numPickerMonthDay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

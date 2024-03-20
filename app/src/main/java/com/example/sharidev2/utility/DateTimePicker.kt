@@ -3,18 +3,20 @@ package com.example.sharidev2.utility
 import android.content.Context
 import android.util.AttributeSet
 import android.util.Log
-import android.view.LayoutInflater
-import android.widget.FrameLayout
+import android.view.View
+import android.widget.LinearLayout
 import android.widget.NumberPicker
 import java.text.SimpleDateFormat
 import java.util.*
 import com.example.sharidev2.R
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class DateTimePicker @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
-) : FrameLayout(context, attrs, defStyleAttr) {
+) : LinearLayout(context, attrs, defStyleAttr) {
 
     companion object {
         // DEFAULT VALUES
@@ -24,13 +26,13 @@ class DateTimePicker @JvmOverloads constructor(
 
     // Config
     var defaultDateFormat = "MMM dd"
-    var defaultHourFormat = "hh"
+    var defaultHourFormat = "HH"
     var defaultMinuteFormat = "mm"
     var defaultTimeFormat = "hh:mm a"
 
     private val today = Calendar.getInstance()
     var minDate: Calendar = today                                   // Default is today
-    var maxDate: Calendar = getDefaultMaxDate()                     // Default is 2100/12/31
+    var maxDate: Calendar = getDefaultMaxDate()                    // Default is 2100/12/31
     var maxDaysFromMinDate: Int = DEFAULT_MAX_DAYS_FROM_MIN_DATE     // Default is 12 days from $minDate
 
     private lateinit var selectedDate: Calendar
@@ -42,20 +44,26 @@ class DateTimePicker @JvmOverloads constructor(
     private var timePickerMinute: NumberPicker
 
 
-    private lateinit var dateList: List<String>
-    private var hourArray = getHourArray()
-    private var minuteArray = getMinuteArray()
+    private val defaultHourArray = getHourArray()
+    private val todayHourArray = getHourArray(today)
+    private var defaultMinuteArray = getMinuteArray()
+    private val todayMinuteArray = getMinuteArray(today)
+
+    private var dateList: List<String>
+    private var hourArray: Array<String>
+    private var minuteArray: Array<String>
 
     private var selectedDateIndex = 0
-    private var selectedHour = 0
-    private var selectedMin = 0
+    private var selectedHourIndex = 0
+    private var selectedMinIndex = 0
+
+    private var todayIndex: Int = 0
+    private val currentHourIndex = getHourIndex(today, todayHourArray.toList())
 
 
 
+    val view: View = inflate(context, R.layout.date_time_picker, this)
     init {
-        // Inflate the layout
-        val view = LayoutInflater.from(context).inflate(R.layout.date_time_picker, this, true)
-
         // Init Number Pickers
         datePicker = view.findViewById(R.id.numPickerMonthDay)
         timePickerHour = view.findViewById(R.id.numPickerHour)
@@ -63,108 +71,132 @@ class DateTimePicker @JvmOverloads constructor(
 
 
         // Init Data
-        selectedDate = minDate
         dateList = getMonthDayList(minDate, maxDate)
+        hourArray = defaultHourArray
+        minuteArray = defaultMinuteArray
+
+        selectedDate = minDate
         selectedDateIndex = getDateIndex(minDate, dateList)
-        Log.e("DateTimePicker","SelectedDateIndex: " + selectedDateIndex.toString())
 
 
         // Setup Number Pickers
         setupDatePicker()
+        setupTimeHourPicker()
     }
 
-    // Set up date picker
 
 
 
     private fun setupDatePicker() {
-        // Format date picker
-
-        val todayIndex = getTodayIndex(dateList)
-        val newHourArray = getHourArray(today)
-
-        if(selectedDateIndex == todayIndex) {
-            hourArray = newHourArray
-            timePickerHour.maxValue = newHourArray.lastIndex
-
-        } else {
-            hourArray = getHourArray()
-            timePickerHour.maxValue = hourArray.lastIndex
-        }
+        todayIndex = getTodayIndex(dateList)
 
         datePicker.displayedValues = dateList.toTypedArray()
         datePicker.value = selectedDateIndex
         datePicker.maxValue = dateList.lastIndex
-        datePicker.wrapSelectorWheel = false
+        datePicker.wrapSelectorWheel = true
 
+
+        // Init Hour Picker
+        if(selectedDateIndex == todayIndex) {
+            timePickerHour.displayedValues = todayHourArray
+            timePickerHour.maxValue = todayHourArray.lastIndex
+            hourArray = todayHourArray
+        } else {
+            timePickerHour.displayedValues = defaultHourArray
+            timePickerHour.maxValue = defaultHourArray.lastIndex
+            hourArray = defaultHourArray
+        }
         setupTimeHourPicker()
+
 
         // Set a listener for date picker changes
         datePicker.setOnValueChangedListener { numPicker, oldValue, newValue ->
-            numPicker.value = newValue
+            selectedDateIndex = newValue
 
-            if(newValue != todayIndex) {
-                hourArray = getHourArray()
-                timePickerHour.maxValue = hourArray.lastIndex
+            var prevHourArr: Array<String>
+            var nextHourArr: Array<String>
 
-                setupTimeHourPicker()
+            if(selectedDateIndex == todayIndex) {
+                selectedHourIndex = 0
+
+                prevHourArr = defaultHourArray
+                nextHourArr = todayHourArray
+                hourArray = todayHourArray
             } else {
-                hourArray = newHourArray
-                timePickerHour.maxValue = newHourArray.lastIndex
-
-
-                setupTimeHourPicker()
+                prevHourArr = todayHourArray
+                nextHourArr = defaultHourArray
+                hourArray = defaultHourArray
             }
+
+            // If new Array size is smaller
+            if(prevHourArr.size > nextHourArr.size) {
+                timePickerHour.maxValue = nextHourArr.lastIndex
+                timePickerHour.displayedValues = nextHourArr
+                timePickerHour.value = selectedHourIndex
+            } else {
+                // If new Array size is larger
+                timePickerHour.displayedValues = nextHourArr
+                timePickerHour.maxValue = nextHourArr.lastIndex
+                timePickerHour.value = selectedHourIndex
+            }
+            setupTimeHourPicker()
         }
     }
 
 
     private fun setupTimeHourPicker() {
-        timePickerHour.displayedValues = hourArray
-        timePickerHour.value = selectedHour
+//        timePickerHour.value = selectedHourIndex
         timePickerHour.minValue = 0
-        timePickerHour.wrapSelectorWheel = false
+        timePickerHour.wrapSelectorWheel = true
 
 
-        val newMinuteArray = getMinuteArray(today)
-
-        val currentHourIndex = getHourIndex(today, hourArray.toList())
-
-        if(selectedHour != currentHourIndex) {
-            minuteArray = getMinuteArray()
-            timePickerMinute.maxValue = minuteArray.lastIndex
+        if(selectedDateIndex == todayIndex && selectedHourIndex == currentHourIndex) {
+            timePickerMinute.maxValue = todayMinuteArray.lastIndex
+            timePickerMinute.displayedValues = todayMinuteArray
         } else {
-            minuteArray = newMinuteArray
-            timePickerMinute.maxValue = newMinuteArray.lastIndex
+            timePickerMinute.displayedValues = defaultMinuteArray
+            timePickerMinute.maxValue = defaultMinuteArray.lastIndex
         }
         setupTimeMinutePicker()
 
 
         timePickerHour.setOnValueChangedListener {  numPicker, oldValue, newValue ->
-            numPicker.value = newValue
+            selectedHourIndex = newValue
 
-            if(newValue != currentHourIndex) {
-                minuteArray = getMinuteArray()
-                timePickerMinute.maxValue = minuteArray.lastIndex
+            var prevMinArr: Array<String>
+            var nextMinArr: Array<String>
 
-                setupTimeMinutePicker()
+            if(newValue == currentHourIndex) {
+                selectedMinIndex = 0
+
+                prevMinArr = defaultMinuteArray
+                nextMinArr = todayMinuteArray
             } else {
-                minuteArray = newMinuteArray
-                timePickerMinute.maxValue = newMinuteArray.lastIndex
-
-                setupTimeMinutePicker()
+                prevMinArr = todayMinuteArray
+                nextMinArr = defaultMinuteArray
             }
+
+            // If new Array size is smaller
+            if(prevMinArr.size > nextMinArr.size) {
+                timePickerMinute.maxValue = nextMinArr.lastIndex
+                timePickerMinute.displayedValues = nextMinArr
+            } else {
+                // If new Array size is larger
+                timePickerMinute.displayedValues = nextMinArr
+                timePickerMinute.maxValue = nextMinArr.lastIndex
+            }
+
+            setupTimeMinutePicker()
         }
     }
 
     private fun setupTimeMinutePicker() {
-        timePickerMinute.displayedValues = minuteArray
-        timePickerMinute.value = selectedMin
+        timePickerMinute.value = selectedMinIndex
         timePickerMinute.minValue = 0
-        timePickerMinute.wrapSelectorWheel = false
+        timePickerMinute.wrapSelectorWheel = true
 
         timePickerMinute.setOnValueChangedListener {  numPicker, oldValue, newValue ->
-            numPicker.value = newValue
+            selectedMinIndex = newValue
         }
     }
 
@@ -173,26 +205,27 @@ class DateTimePicker @JvmOverloads constructor(
         val dateFormat = SimpleDateFormat(defaultDateFormat, Locale.getDefault())
         val dateList = mutableListOf<String>()
 
-        val newMinDate = minDate.clone() as Calendar
-        val newMaxDate = maxDate.clone() as Calendar
+        val startDay = minDate.clone() as Calendar
+        val endDay = maxDate.clone() as Calendar
 
-        if(isLastFiveMinute(minDate)) {
-            newMinDate.add(Calendar.DAY_OF_MONTH, 1)
-            newMaxDate.add(Calendar.DAY_OF_MONTH, 1)
+        if (isLastFiveMinuteOfDay(minDate)) {
+            startDay.add(Calendar.DAY_OF_MONTH, 1)
+            endDay.add(Calendar.DAY_OF_MONTH, 1)
         }
 
-        while (newMinDate.before(newMaxDate) || newMinDate != newMaxDate) {
-            dateList.add(dateFormat.format(newMinDate.time))
-            newMinDate.add(Calendar.DAY_OF_MONTH, 1)
+        while (startDay.before(endDay) || startDay == endDay) {
+            dateList.add(dateFormat.format(startDay.time))
+            startDay.add(Calendar.DAY_OF_MONTH, 1)
+            if (dateList.size >= 15) break // Exit loop if 15 dates are added
         }
 
-        return dateList.take(15)
+        return dateList
     }
 
     private fun getHourArray(selectedDate: Calendar): Array<String> {
         val hourList = mutableListOf<String>()
 
-        if(selectedDate.get(Calendar.MINUTE) >= 55) {
+        if(isLastFiveMinuteOfHour(selectedDate)) {
             for(hour in (selectedDate.get(Calendar.HOUR_OF_DAY) + 1)..23) {
                 hourList.add(String.format("%02d", hour))
             }
@@ -217,16 +250,19 @@ class DateTimePicker @JvmOverloads constructor(
     private fun getMinuteArray(selectedDate: Calendar): Array<String> {
         val currentMinute = selectedDate.get(Calendar.MINUTE)
 
-       val intervalMinuteArr = (0..11).map { it * 5 }.toTypedArray()
-
-        val filteredIntervalMinuteArr = intervalMinuteArr.filter {it > currentMinute }.toTypedArray()
-        return filteredIntervalMinuteArr.map { String.format("%02d", it) }.toTypedArray()
+        if(isLastFiveMinuteOfHour(selectedDate)) {
+            return getMinuteArray()
+        } else {
+             return  (0..11).map { it * 5 }
+                                 .filter { it > currentMinute }
+                                 .map { String.format("%02d", it) }.toTypedArray()
+        }
     }
 
     private fun getMinuteArray(): Array<String> {
-        val intervalMinuteArr = (0..11).map { it * 5 }.toTypedArray()
-
-        return intervalMinuteArr.map { String.format("%02d", it) }.toTypedArray()
+        return  (0..11).map { it * 5 }
+                .map { String.format("%02d", it) }
+                .toTypedArray()
     }
 
     private fun getDefaultMaxDate(): Calendar {
@@ -260,15 +296,22 @@ class DateTimePicker @JvmOverloads constructor(
     }
 
     private fun getHourIndex(date: Calendar, hourList: List<String>): Int {
-        val date = SimpleDateFormat(defaultHourFormat, Locale.getDefault()).format(date.time)
-        return hourList.indexOf(date)
+        if(isLastFiveMinuteOfHour(date))
+            date.add(Calendar.HOUR_OF_DAY, 1)
+
+        val formattedDate = SimpleDateFormat(defaultHourFormat, Locale.getDefault()).format(date.time)
+
+        return hourList.indexOf(formattedDate)
     }
 
 
-
-    private fun isLastFiveMinute(date: Calendar): Boolean {
+    private fun isLastFiveMinuteOfDay(date: Calendar): Boolean {
         return (date.get(Calendar.HOUR_OF_DAY) == 23) &&
                 (date.get(Calendar.MINUTE) >= 55)
+    }
+
+    private fun isLastFiveMinuteOfHour(date: Calendar): Boolean {
+        return date.get(Calendar.MINUTE) >= 55
     }
 
 
@@ -284,4 +327,14 @@ class DateTimePicker @JvmOverloads constructor(
         setupDatePicker() // Re-setup the date picker with the new maxDate
     }
 
+    fun getDateValue(): String {
+        val isCurrentYear = false
+
+        val monthDayFormatter = DateTimeFormatter.ofPattern("MMM dd", Locale.ENGLISH)
+        val selectedDate = LocalDate.parse(dateList[datePicker.value], monthDayFormatter)
+
+        if(today.get(Calendar.MONTH) > selectedDate)
+
+        val selectedDay = dateList[datePicker.value] + hourArray[timePickerHour.value] + minuteArray[timePickerMinute.value]
+    }
 }
