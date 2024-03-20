@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import com.example.sharidev2.R
 import java.time.LocalDate
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 class DateTimePicker @JvmOverloads constructor(
@@ -153,9 +154,11 @@ class DateTimePicker @JvmOverloads constructor(
         if(selectedDateIndex == todayIndex && selectedHourIndex == currentHourIndex) {
             timePickerMinute.maxValue = todayMinuteArray.lastIndex
             timePickerMinute.displayedValues = todayMinuteArray
+            minuteArray = todayMinuteArray
         } else {
             timePickerMinute.displayedValues = defaultMinuteArray
             timePickerMinute.maxValue = defaultMinuteArray.lastIndex
+            minuteArray = defaultMinuteArray
         }
         setupTimeMinutePicker()
 
@@ -328,13 +331,26 @@ class DateTimePicker @JvmOverloads constructor(
     }
 
     fun getDateValue(): String {
-        val isCurrentYear = false
+        val currentYear = today.get(Calendar.YEAR)
 
-        val monthDayFormatter = DateTimeFormatter.ofPattern("MMM dd", Locale.ENGLISH)
-        val selectedDate = LocalDate.parse(dateList[datePicker.value], monthDayFormatter)
+        val monthDayFormatter = DateTimeFormatter.ofPattern("yyyy MMM dd", Locale.ENGLISH)
+        val selectedDate = LocalDate.parse("$currentYear ${dateList[datePicker.value]}", monthDayFormatter)
+        val monthDayCalendar = getCalendarFromLocalDate(selectedDate)
 
-        if(today.get(Calendar.MONTH) > selectedDate)
+        val selectedDay = "${dateList[datePicker.value]}, ${hourArray[timePickerHour.value]}:${minuteArray[timePickerMinute.value]}"
 
-        val selectedDay = dateList[datePicker.value] + hourArray[timePickerHour.value] + minuteArray[timePickerMinute.value]
+        return if(monthDayCalendar.get(Calendar.MONTH) >= today.get(Calendar.MONTH)) {
+            "$currentYear $selectedDay"
+        } else {
+            "${currentYear + 1} $selectedDay"
+        }
+    }
+
+    private fun getCalendarFromLocalDate(localDate: LocalDate): Calendar {
+        val zoneId: ZoneId = ZoneId.systemDefault() // Or specify a specific time zone if needed
+        val zonedDateTime = localDate.atStartOfDay(zoneId)
+        val calendar = Calendar.getInstance()
+        calendar.time = Date.from(zonedDateTime.toInstant())
+        return calendar
     }
 }

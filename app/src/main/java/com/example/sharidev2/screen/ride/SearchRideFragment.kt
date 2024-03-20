@@ -42,6 +42,7 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest
 import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.firebase.Timestamp
 import kotlin.math.cos
 
 class SearchRideFragment : Fragment() {
@@ -153,14 +154,10 @@ class SearchRideFragment : Fragment() {
         val scheduleBtn = binding.cardSearchSchedule
         val scheduleBtnText = binding.textSearchSchedule
 
-        val typedValue = TypedValue()
-        // Resolve the attribute to get the color value programmatically
-        context?.theme?.resolveAttribute(com.google.android.material.R.attr.colorPrimary, typedValue, true)
-        val colorPrimary = typedValue.data
-        context?.theme?.resolveAttribute(com.google.android.material.R.attr.colorOnPrimary, typedValue, true)
-        val colorOnPrimary = typedValue.data
-        context?.theme?.resolveAttribute(com.google.android.material.R.attr.colorOutline, typedValue, true)
-        val colorOutline = typedValue.data
+
+        val colorPrimary = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorPrimary)
+        val colorOnPrimary = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorOnPrimary)
+        val colorOutline = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorOutline)
 
         val poppinsMediumTypeface = ResourcesCompat.getFont(requireContext(), R.font.poppins_medium)
         val poppinsTypeface = resources.getFont(R.font.poppins)
@@ -239,6 +236,10 @@ class SearchRideFragment : Fragment() {
         val dialogFragment = TimingBottomDialogFragment(object: TimingBottomDialogFragment.DialogClickListener {
             override fun onCancelClick() {
                 selectSearchNow(true)
+            }
+
+            override fun onConfirmClick(datetime: Timestamp) {
+                searchRideViewModel.setRideDateTime(datetime)
             }
 
         })

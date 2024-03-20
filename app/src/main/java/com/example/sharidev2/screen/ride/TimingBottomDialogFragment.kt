@@ -5,11 +5,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import com.example.sharidev2.R
+import com.example.sharidev2.utility.DateTimePicker
 import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.card.MaterialCardView
+import com.google.firebase.Timestamp
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
+import java.util.Date
+import java.util.Locale
 
 class TimingBottomDialogFragment(
     private val dialogClickListener: DialogClickListener
@@ -30,7 +39,7 @@ class TimingBottomDialogFragment(
         // Initialize the recyclerView here
 
         // ELEMENT VARIABLES
-        //val dateTimePicker = view.findViewById<DateTimePicker>(R.id.date_picker_bottom_dialog_date)
+        val dateTimePicker = view.findViewById<DateTimePicker>(R.id.date_picker_bottom_dialog_date)
         val cancelButton = view.findViewById<MaterialCardView>(R.id.btn_search_timing_cta_cancel)
         val confirmButton = view.findViewById<MaterialCardView>(R.id.btn_search_timing_cta_confirm)
 
@@ -39,7 +48,9 @@ class TimingBottomDialogFragment(
 
 
         // Set up NumberPicker for month and day
-        //dateTimePicker.maxDaysFromToday(12)
+
+
+
 
 
 
@@ -51,25 +62,17 @@ class TimingBottomDialogFragment(
         }
 
         confirmButton.setOnClickListener {
-//            // Get the selected day string from the NumberPicker
-//            val selectedDayIndex = numPickerMonthDay.value
-//            val selectedDay = "2024 " + dayList[selectedDayIndex] // Assuming dayList contains date strings in the format "MMM dd"
-//
-//            // Parse the selected date string to a LocalDate object
-//            val formatter = DateTimeFormatter.ofPattern("yyyy MMM dd", Locale.ENGLISH) // Use Locale.ENGLISH to ensure consistent month names
-//            val selectedDate = LocalDate.parse(selectedDay, formatter)
-//
-//            // Get the selected hour and minute from the NumberPickers
-//            val selectedHour = numPickerHour.value
-//            val selectedMinute = numPickerMinute.value * 5 // Since the minute picker has intervals of 5 minutes
-//
-//            // Create a LocalTime object representing the selected time
-//            val selectedTime = LocalTime.of(selectedHour, selectedMinute)
-//
-//            // Pass both the selected date and time to the ViewModel
-//            val datetime = Date((selectedDate.atTime(selectedTime).toInstant(ZoneOffset.UTC).toEpochMilli()))
-//            searchRideViewModel.setRideDateTime(Timestamp(datetime))
+            val selectedDateString = dateTimePicker.getDateValue()
 
+            Toast.makeText(requireContext(), selectedDateString, Toast.LENGTH_SHORT).show()
+
+            val formatter = DateTimeFormatter.ofPattern("yyyy MMM dd, HH:mm", Locale.ENGLISH) // Use Locale.ENGLISH to ensure consistent month names
+            val selectedDate = LocalDateTime.parse(selectedDateString, formatter)
+
+            // Pass both the selected date and time to the ViewModel
+            val datetime = Date((selectedDate.toInstant(ZoneOffset.UTC).toEpochMilli()))
+
+            dialogClickListener.onConfirmClick(Timestamp(datetime))
 
             // Dismiss the dialog
             dismiss()
@@ -87,5 +90,7 @@ class TimingBottomDialogFragment(
 
     interface DialogClickListener {
         fun onCancelClick()
+
+        fun onConfirmClick(datetime: Timestamp)
     }
 }

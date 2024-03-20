@@ -126,8 +126,6 @@ class SharedSearchRideViewModel(
                     RideUtils().matchRidePassenger(ride, searchRide.value!!, passenger) != null
                 }
 
-                Log.e("SearchRideViewModel: searchRide()", availableRideList.size.toString())
-                Log.e("SearchRideViewModel: searchRide()", matchedRideList.size.toString())
                 emit(matchedRideList)
             }
         } else {

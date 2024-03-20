@@ -20,6 +20,7 @@ import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
 import com.example.sharidev2.viewmodel.SharedCreateRideViewModel
 import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
+import com.google.firebase.Timestamp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -54,7 +55,7 @@ class DriverRideConfigFragment : Fragment() {
 
         // EVENT LISTENERS
         backBtn.setOnClickListener {
-            findNavController().navigateUp()
+            findNavController().popBackStack()
         }
 
 
@@ -120,6 +121,8 @@ class DriverRideConfigFragment : Fragment() {
     private fun setupOnClickListeners() {
         val vehicleSpinner = binding.spinnerDriverRideConfigVehicle
         val passengerCapacitySpinner = binding.spinnerDriverRideConfigRideCapacity
+        val rideDateSpinner = binding.spinnerDriverRideConfigScheduleDate
+        val rideTimeSpinner = binding.spinnerDriverRideConfigScheduleTime
         val createRideBtn = binding.btnDriverRideConfigCtaCreateRide
         val createRideBtnCtaText = binding.textDriverRideConfigCtaCreateRide
         val createRideBtnLoadingProgressBar = binding.progressBarDriverRideCtaCreateRide
@@ -131,6 +134,15 @@ class DriverRideConfigFragment : Fragment() {
         passengerCapacitySpinner.setOnClickListener {
             showPassengerCapacityDialog()
         }
+
+        rideDateSpinner.setOnClickListener {
+            showTimingDialog()
+        }
+
+        rideTimeSpinner.setOnClickListener {
+            showTimingDialog()
+        }
+
 
         createRideBtn.setOnClickListener {
             currentLocationViewModel.currentLocation.observe(viewLifecycleOwner) {currentLocation ->
@@ -175,6 +187,21 @@ class DriverRideConfigFragment : Fragment() {
     private fun showPassengerCapacityDialog() {
         val dialogFragment = PassengerCapacityBottomDialogFragment()
         dialogFragment.show(childFragmentManager, dialogFragment.tag)
+    }
+
+    private fun showTimingDialog() {
+        val dialogFragment = TimingBottomDialogFragment(object: TimingBottomDialogFragment.DialogClickListener {
+            override fun onCancelClick() {
+                // Do nothing
+            }
+
+            override fun onConfirmClick(datetime: Timestamp) {
+                createRideViewModel.setRideDateTime(datetime)
+            }
+
+        })
+        dialogFragment.show(childFragmentManager, dialogFragment.tag)
+        dialogFragment.isCancelable = false
     }
 
     private fun disableCapacitySpinner(disable: Boolean) {
