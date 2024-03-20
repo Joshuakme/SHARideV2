@@ -1,16 +1,25 @@
 package com.example.sharidev2.adapter
 
+import android.content.res.ColorStateList
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
+import com.example.sharidev2.GlideApp
 import com.example.sharidev2.R
 import com.example.sharidev2.data.model.Chat
 import com.example.sharidev2.data.model.Message
 import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.viewmodel.ChatViewModel
+import com.google.android.material.card.MaterialCardView
 import com.google.firebase.Timestamp
 
 class ChatAdapter(
@@ -32,13 +41,15 @@ class ChatAdapter(
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         // Add views for a message item (e.g., TextViews, ImageViews)
-        var chatPic: ImageButton
+        val chatPicCard: CardView
+        var chatPic: ImageView
         var chatTitle: TextView
         var chatLastMessage: TextView
         var chatDate: TextView
         var chatNewMessageBadgeText: TextView
 
         init {
+            chatPicCard = itemView.findViewById(R.id.chat_icon)
             chatPic = itemView.findViewById(R.id.image_button_chat_pic)
             chatTitle = itemView.findViewById(R.id.text_chat_title)
             chatLastMessage = itemView.findViewById(R.id.text_chat_last_message)
@@ -59,6 +70,30 @@ class ChatAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val chat = newChatList[position]
 
+        val context = holder.itemView.context
+
+        if(chat.messages!!.size > 1) {
+            GlideApp.with(holder.itemView.context)
+                .load(chat.messages!![1].photoUrl)
+                .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.AUTOMATIC))
+                .into(holder.chatPic)
+
+            holder.chatPic.clearColorFilter()
+            holder.chatPic.scaleX = 1f
+            holder.chatPic.scaleY = 1f
+        } else {
+            val groupDrawable = context.getDrawable(R.drawable.baseline_group_24)
+            groupDrawable!!.colorFilter = PorterDuffColorFilter(
+                context.getColor(R.color.chat_group_image_icon_tint),
+                PorterDuff.Mode.SRC_IN
+            )
+            holder.chatPic.setImageDrawable(groupDrawable)
+            holder.chatPic.scaleX = 0.7f
+            holder.chatPic.scaleY = 0.7f
+
+            val colorOutline = CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorOutline)
+            holder.chatPicCard.setCardBackgroundColor(colorOutline)
+        }
 
         holder.chatTitle.text = chat.chatTitle
         holder.chatLastMessage.text = chat.lastMessage

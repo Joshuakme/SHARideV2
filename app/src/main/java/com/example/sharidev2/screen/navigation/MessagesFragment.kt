@@ -64,12 +64,14 @@ class MessagesFragment : Fragment() {
             chatViewModel.startListeningForUserChatsUpdates(currentUser.uid, object: (List<Chat>) -> Unit {
                 override fun invoke(newChatList: List<Chat>) {
                     if(newChatList.isNotEmpty()) {
-                        chatViewModel.setChatList(newChatList)
+                        val newSortedChatList = newChatList.sortedByDescending { it.timestamp }
 
-                        val adapter = ChatAdapter(chatViewModel.oldChatList.value!!, newChatList, chatViewModel,
+                        chatViewModel.setChatList(newSortedChatList)
+
+                        val adapter = ChatAdapter(chatViewModel.oldChatList.value!!, newSortedChatList, chatViewModel,
                             object: ChatAdapter.OnChatClickListener {
                                 override fun onChatClick(chat: Chat) {
-                                    chatViewModel.setOldChatList(newChatList)
+                                    chatViewModel.setOldChatList(newSortedChatList)
 
                                     val action = MessagesFragmentDirections.actionMessagesFragmentToChatFragment(chat)
                                     findNavController().navigate(action)

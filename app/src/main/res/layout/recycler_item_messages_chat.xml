@@ -20,11 +20,12 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/chat_icon"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:clickable="false"
             android:contextClickable="false"
             android:longClickable="false"
+            app:cardBackgroundColor="?attr/colorOutline"
             app:cardCornerRadius="10000dp"
             app:cardElevation="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -32,7 +33,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.5">
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/image_button_chat_pic"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -40,10 +41,9 @@
                 android:clickable="false"
                 android:contextClickable="false"
                 android:longClickable="false"
-                android:scaleX="2.4"
-                android:scaleY="2.4"
-                android:src="@drawable/baseline_account_circle_24"
-                app:tint="?attr/colorTertiary" />
+                android:scaleX="0.7"
+                android:scaleY="0.7"
+                app:srcCompat="@drawable/baseline_group_24" />
 
         </androidx.cardview.widget.CardView>
 
@@ -56,12 +56,11 @@
             android:clickable="false"
             android:contextClickable="false"
             android:ellipsize="end"
-            android:fontFamily="@font/poppins_medium"
+            android:fontFamily="@font/poppins"
             android:linksClickable="false"
             android:longClickable="false"
             android:singleLine="true"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toTopOf="@+id/text_chat_last_message"
+            android:textSize="15sp"
             app:layout_constraintEnd_toStartOf="@+id/text_chat_date"
             app:layout_constraintStart_toEndOf="@+id/chat_icon"
             app:layout_constraintTop_toTopOf="parent"

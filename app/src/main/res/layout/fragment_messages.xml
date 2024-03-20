@@ -27,7 +27,9 @@
                 style="@style/text_section_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/messages_section_title_notification" />
+                android:text="@string/messages_section_title_notification"
+                android:visibility="gone"
+                tools:visibility="gone" />
 
             <!--  Notification  -->
             <androidx.cardview.widget.CardView
@@ -35,8 +37,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/ss_section_bottom_margin"
+                android:visibility="gone"
                 app:cardBackgroundColor="#00FFFFFF"
-                app:cardElevation="0dp">
+                app:cardElevation="0dp"
+                tools:visibility="gone">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -108,7 +112,9 @@
                 style="@style/text_section_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/messages_section_title_chat" />
+                android:text="@string/messages_section_title_chat"
+                android:visibility="gone"
+                tools:visibility="gone" />
 
             <!--  Chat  -->
             <androidx.cardview.widget.CardView
@@ -222,7 +228,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cl_chat_loading_spinner"
                 android:layout_width="match_parent"
-                android:layout_height="470dp">
+                android:layout_height="match_parent">
 
                 <ProgressBar
                     android:id="@+id/progressBar"

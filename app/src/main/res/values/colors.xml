@@ -152,4 +152,7 @@
 
     <color name="origin_marker">#246489</color>
     <color name="dest_marker">#BA1A1A</color>
+
+    <color name="chat_group_image_icon_tint">#DFE3E8</color>
+
 </resources>
