@@ -95,13 +95,14 @@ class RideRepository() {
                 )
 
                 val chat = Chat(
-                    chatId,
-                    rideName,
-                    listOf(currentUser!!.uid),
-                    welcomeChatMessage,
-                    now,
-                    messages,
-                    rideId
+                    chatId = chatId,
+                    chatTitle = rideName,
+                    members = listOf(currentUser!!.uid),
+                    memberFcmTokens = listOf(FirebaseClient.getUserFcmToken(currentUser.uid)!!),
+                    lastMessage = welcomeChatMessage,
+                    timestamp = now,
+                    messages = messages,
+                    rideId = rideId
                 )
                 val chatHashMap = converters.toChatHashMap(chat)
 

@@ -13,6 +13,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.drawable.Icon
@@ -202,10 +203,10 @@ class CommonUtils {
         // Create a VectorDrawable from the default marker resource
         val vectorDrawable = ContextCompat.getDrawable(context, R.drawable.location) as? VectorDrawable
 
-        vectorDrawable?.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+        vectorDrawable?.colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN)
 
-        val bitmapWidth = (vectorDrawable?.intrinsicWidth ?: 0 * SCALE_FACTOR).toInt()
-        val bitmapHeight = (vectorDrawable?.intrinsicHeight ?: 0 * SCALE_FACTOR).toInt()
+        val bitmapWidth = ((vectorDrawable?.intrinsicWidth ?: (0 * SCALE_FACTOR))).toInt()
+        val bitmapHeight = ((vectorDrawable?.intrinsicHeight ?: (0 * SCALE_FACTOR))).toInt()
 
         // Convert the VectorDrawable to a BitmapDescriptor
         val bitmap = Bitmap.createBitmap(

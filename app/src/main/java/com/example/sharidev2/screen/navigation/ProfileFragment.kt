@@ -18,6 +18,7 @@ import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentProfileBinding
 import com.example.sharidev2.utility.FirebaseClient
+import com.example.sharidev2.viewmodel.SharedCurrentUserViewModel
 
 class ProfileFragment : Fragment() {
     // Variables Init
@@ -25,7 +26,7 @@ class ProfileFragment : Fragment() {
     private val auth = FirebaseClient.firebaseAuth
 
     // Initialize ViewModel
-    private val profileViewModel: ProfileViewModel by activityViewModels()
+    private val currentUserViewModel: SharedCurrentUserViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,23 +50,30 @@ class ProfileFragment : Fragment() {
         (activity as MainActivity).resetBottomNavPosition()
 
         // Observe ViewModel data
-        profileViewModel.displayName.observe(viewLifecycleOwner, Observer { displayName ->
+        currentUserViewModel.displayName.observe(viewLifecycleOwner) { displayName ->
             profileNameText.text = displayName ?: getString(R.string.profile_log_in)
-        })
+        }
 
-        profileViewModel.userId.observe(viewLifecycleOwner, Observer { userId ->
-            profileUserIdText.text = "@$userId"
-            profileUserIdText.visibility = if (userId == null) View.GONE else View.VISIBLE
-        })
 
-        profileViewModel.profilePicUrl.observe(viewLifecycleOwner, Observer { profilePicUrl ->
+        currentUserViewModel.user.observe(viewLifecycleOwner) {user ->
+            if(user != null) {
+                profileUserIdText.text = getString(R.string.profile_user_id, user.uid)
+                profileUserIdText.visibility = View.VISIBLE
+            } else {
+                profileUserIdText.visibility = View.GONE
+            }
+        }
+
+
+        currentUserViewModel.imageUri.observe(viewLifecycleOwner) { profilePicUrl ->
             profilePicUrl?.let {
                 Glide.with(requireContext())
                     .load(profilePicUrl)
                     .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Disable disk caching
                     .into(profilePic)
             }
-        })
+        }
+
 
         // NAVIGATION EVENT LISTENERS
         if (auth.currentUser == null) {
@@ -104,7 +112,8 @@ class ProfileFragment : Fragment() {
         // Log out
         logoutBtn.setOnClickListener {
             // TODO: Dialog to confirm user to logout
-            auth.signOut()
+            currentUserViewModel.signOut()
+
             Toast.makeText(requireContext(), "Logged out!", Toast.LENGTH_SHORT).show()
             findNavController().navigate(R.id.action_profileFragment_to_homeFragment)
         }

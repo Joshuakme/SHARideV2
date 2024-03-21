@@ -7,25 +7,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.sharidev2.data.repository.DisplayNameRepository
-import com.example.sharidev2.data.repository.EditMobileRepository
-import com.example.sharidev2.data.repository.GenderRepository
-import com.example.sharidev2.data.repository.PersonalnformationRepository
+import com.example.sharidev2.data.repository.CurrentUserRepository
 import com.example.sharidev2.utility.FirebaseClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class PersonalInfoViewModel: ViewModel() {    // LiveData for current display name
-    private val personalInfoRepository = PersonalnformationRepository()
-    private val displayNameRepository = DisplayNameRepository()
-    private val mobileRepository = EditMobileRepository()
-    private val genderRepository = GenderRepository()
+class PersonalInfoViewModel: ViewModel() {
     // Initialize repositories for handling display name, mobile, and gender data
-
-
-
-    private val firebaseAuth = FirebaseClient.firebaseAuth
-
+    private val currentUserRepository = CurrentUserRepository()
 
     // DATA
     //Mutable Live Data
@@ -61,7 +50,7 @@ class PersonalInfoViewModel: ViewModel() {    // LiveData for current display na
 
     init {
         viewModelScope.launch(Dispatchers.Main) {
-            val profilePicUri = personalInfoRepository.getProfilePic()
+            val profilePicUri = currentUserRepository.getProfilePic()
 
             if(profilePicUri != null){
                 setSelectedImageUri(profilePicUri)
@@ -80,7 +69,7 @@ class PersonalInfoViewModel: ViewModel() {    // LiveData for current display na
             currentUser?.uid?.let {
                 viewModelScope.launch {
                     try {
-                        personalInfoRepository.updateProfilePicture(uri)
+                        currentUserRepository.updateProfilePicture(uri)
                     } catch (e: Exception) {
                         // Handle the exception
                         Log.e(
@@ -94,12 +83,7 @@ class PersonalInfoViewModel: ViewModel() {    // LiveData for current display na
         }
 
 
-        // Updates the display name of the user in the repository
-        fun updateDisplayName(newDisplayName: String) {
-            viewModelScope.launch {
-                displayNameRepository.updateDisplayName(newDisplayName)
-            }
-        }
+
 
         //Fetches the display name of the current user from the database and updates the LiveData
         fun fetchDisplayNameFromDatabase() {
@@ -108,36 +92,17 @@ class PersonalInfoViewModel: ViewModel() {    // LiveData for current display na
                 // Launch a coroutine to perform the database operation
                 viewModelScope.launch {
                     // Fetch the display name from the repository
-                    val displayName = displayNameRepository.fetchDisplayName(userId)
+                    val displayName = currentUserRepository.getDisplayName(userId)
                     // Update the LiveData with the fetched display name
                     _displayName.value = displayName ?: ""
                 }
             }
         }
 
-        //Checks if the provided display name is valid
-        fun isDisplayNameValid(displayName: String): Boolean {
-            // Define the regex pattern for valid display names
-            val regex = "^[a-zA-Z0-9_\\-\\.\\s]{2,25}$".toRegex()
 
-            // Check if the display name matches the pattern and does not contain invalid characters
-            return regex.matches(displayName) && !displayName.contains("!") &&
-                    !displayName.contains("@") && !displayName.contains("#") &&
-                    !displayName.contains("$") && !displayName.contains("%") &&
-                    !displayName.contains("^") && !displayName.contains("&") &&
-                    !displayName.contains("*") && !displayName.contains("(") &&
-                    !displayName.contains(")") && !displayName.contains("-") &&
-                    !displayName.contains("_") && !displayName.contains("=") &&
-                    !displayName.contains("+") && !displayName.contains("/") &&
-                    !displayName.contains("<") && !displayName.contains(">") &&
-                    !displayName.contains("?") && !displayName.contains("`") &&
-                    !displayName.contains("~")
-        }
 
-        // Updates the mobile phone of the user in the repository
-        suspend fun updateMobile(newMobile: String) {
-            mobileRepository.updateMobile(newMobile)
-        }
+
+
 
         //Fetches the mobile phone of the current user from the database and updates the LiveData
         fun fetchMobileFromDatabase() {
@@ -146,25 +111,22 @@ class PersonalInfoViewModel: ViewModel() {    // LiveData for current display na
                 // Launch a coroutine to perform the database operation
                 viewModelScope.launch {
                     // Fetch the mobile phone from the repository
-                    val mobile = mobileRepository.fetchMobile(userId)
+                    val mobile = currentUserRepository.getMobile(userId)
                     // Update the LiveData with the fetched mobile phone
-                    _mobile.value = "+60" + mobile ?: ""
+                    _mobile.value = if(mobile != null) "+60$mobile" else ""
                 }
             }
         }
 
 
-        // Updates the gender of the user in the repository
-        suspend fun updateGender(newGender: String) {
-            genderRepository.updateGender(newGender)
-        }
+
 
         //Fetches the gender of the current user from the database and updates the LiveData
         fun fetchGenderFromDatabase() {
             // Launch a coroutine to perform the database operation
             viewModelScope.launch {
                 // Fetch the gender from the repository
-                val gender = genderRepository.fetchGender()
+                val gender = currentUserRepository.getGender()
                 // Update the LiveData with the fetched gender
                 _gender.value = gender ?: ""
             }

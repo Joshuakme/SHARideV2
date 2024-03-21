@@ -43,10 +43,10 @@ class SharedCreateRideViewModel(
 
     // INTERNAL DATA MEMBERS
     // Origin Location
-    val origin: LiveData<SearchLocation> = savedStateHandle.getLiveData(ORIGIN_KEY)
+    val origin: LiveData<SearchLocation?> = savedStateHandle.getLiveData(ORIGIN_KEY)
 
     // Destination Location
-    val destination: LiveData<SearchLocation> = savedStateHandle.getLiveData(DESTINATION_KEY)
+    val destination: LiveData<SearchLocation?> = savedStateHandle.getLiveData(DESTINATION_KEY)
 
     // Vehicle
     val vehicle: LiveData<Vehicle> = savedStateHandle.getLiveData(VEHICLE_KEY)
@@ -57,8 +57,8 @@ class SharedCreateRideViewModel(
     // Ride Date Time
     val rideDateTime: LiveData<Timestamp> = savedStateHandle.getLiveData(RIDE_DATE_TIME_KEY)
 
-    // Ride Route Time
-    val rideRoute: LiveData<MutableList<LatLng>> = savedStateHandle.getLiveData(RIDE_ROUTE_KEY)
+    // Ride Route
+    val rideRoute: LiveData<MutableList<LatLng>?> = savedStateHandle.getLiveData(RIDE_ROUTE_KEY)
 
     // Create Ride Status
     val createRideStatus: LiveData<Int> = savedStateHandle.getLiveData(CREATE_RIDE_STATUS_KEY)
@@ -129,7 +129,7 @@ class SharedCreateRideViewModel(
         savedStateHandle[RIDE_DATE_TIME_KEY] = newRideDateTime
     }
 
-    // Ride Route
+    // Create Ride Route
     fun setRideRoute(newRideRoute: MutableList<LatLng>) {
         savedStateHandle[RIDE_ROUTE_KEY] = newRideRoute
     }
@@ -139,10 +139,6 @@ class SharedCreateRideViewModel(
         savedStateHandle[CREATE_RIDE_STATUS_KEY] = response
     }
 
-    // Create Ride Route
-    fun setRoutePath(routePath: MutableList<LatLng>) {
-        savedStateHandle[RIDE_ROUTE_KEY] = routePath
-    }
 
     // Save Ride Route
     fun saveRoutePath() {
@@ -194,11 +190,28 @@ class SharedCreateRideViewModel(
 
     // HELPER METHODS
     fun resetData() {
-        savedStateHandle[ORIGIN_KEY] = SearchLocation()
-        savedStateHandle[DESTINATION_KEY] = SearchLocation()
+        savedStateHandle[ORIGIN_KEY] = null
+        savedStateHandle[DESTINATION_KEY] = null
         savedStateHandle[VEHICLE_KEY] = Vehicle()
         savedStateHandle[PASSENGER_CAPACITY_KEY] = 0
         savedStateHandle[RIDE_DATE_TIME_KEY] = Timestamp.now()
+        savedStateHandle[RIDE_ROUTE_KEY] = null
         savedStateHandle[CREATE_RIDE_STATUS_KEY] = Constants.UI_DATA_LOADING
+    }
+
+    fun clearOrigin() {
+        savedStateHandle[ORIGIN_KEY] = null
+
+        clearRideRoute()
+    }
+
+    fun clearDestination() {
+        savedStateHandle[DESTINATION_KEY] = null
+
+        clearRideRoute()
+    }
+
+    fun clearRideRoute() {
+        savedStateHandle[RIDE_ROUTE_KEY] = null
     }
 }

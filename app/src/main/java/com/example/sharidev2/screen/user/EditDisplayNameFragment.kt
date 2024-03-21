@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -15,12 +16,13 @@ import com.example.sharidev2.R
 import com.example.sharidev2.data.model.User
 import com.example.sharidev2.databinding.FragmentEditDisplayNameBinding
 import com.example.sharidev2.viewmodel.PersonalInfoViewModel
+import com.example.sharidev2.viewmodel.SharedCurrentUserViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class EditDisplayNameFragment: Fragment() {
     private lateinit var binding: FragmentEditDisplayNameBinding
-    private lateinit var viewModel: PersonalInfoViewModel
+    private val currentUserViewModel: SharedCurrentUserViewModel by activityViewModels()
     private lateinit var user: User
 
     override fun onCreateView(
@@ -36,17 +38,13 @@ class EditDisplayNameFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Initialize ViewModel
-        viewModel = ViewModelProvider(requireActivity()).get(PersonalInfoViewModel::class.java)
+
         val saveDisplayNameBtn = binding.btnUpdateUsername
         val backDisplayNameBtn = binding.btnBackEditUsername
 
-// Fetch current display name from the database
-        viewModel.fetchDisplayNameFromDatabase()
-
 
         // Observe the current display name
-        viewModel.displayName.observe(viewLifecycleOwner) { displayName ->
+        currentUserViewModel.displayName.observe(viewLifecycleOwner) { displayName ->
             binding.inputEditUsername.setText(displayName)
         }
 
@@ -54,9 +52,9 @@ class EditDisplayNameFragment: Fragment() {
         saveDisplayNameBtn.setOnClickListener {
             val newDisplayName = binding.inputEditUsername.text.toString()
             // Update the display name in the ViewModel
-            if (viewModel.isDisplayNameValid(newDisplayName)) {
+            if (isDisplayNameValid(newDisplayName)) {
 
-                viewModel.updateDisplayName(newDisplayName)
+                currentUserViewModel.updateDisplayName(newDisplayName)
 
                 Toast.makeText(
                     requireContext(),
@@ -76,5 +74,25 @@ class EditDisplayNameFragment: Fragment() {
         backDisplayNameBtn.setOnClickListener {
             findNavController().navigate(R.id.action_editDisplayNameFragment_to_personalInformationFragment)
         }
+    }
+
+
+    //Checks if the provided display name is valid
+    private fun isDisplayNameValid(displayName: String): Boolean {
+        // Define the regex pattern for valid display names
+        val regex = "^[a-zA-Z0-9_\\-\\.\\s]{2,25}$".toRegex()
+
+        // Check if the display name matches the pattern and does not contain invalid characters
+        return regex.matches(displayName) && !displayName.contains("!") &&
+                !displayName.contains("@") && !displayName.contains("#") &&
+                !displayName.contains("$") && !displayName.contains("%") &&
+                !displayName.contains("^") && !displayName.contains("&") &&
+                !displayName.contains("*") && !displayName.contains("(") &&
+                !displayName.contains(")") && !displayName.contains("-") &&
+                !displayName.contains("_") && !displayName.contains("=") &&
+                !displayName.contains("+") && !displayName.contains("/") &&
+                !displayName.contains("<") && !displayName.contains(">") &&
+                !displayName.contains("?") && !displayName.contains("`") &&
+                !displayName.contains("~")
     }
 }

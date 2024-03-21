@@ -49,13 +49,6 @@ class TimingBottomDialogFragment(
 
         // Set up NumberPicker for month and day
 
-
-
-
-
-
-
-
         cancelButton.setOnClickListener {
             dialogClickListener.onCancelClick()
             dismiss()
@@ -63,8 +56,6 @@ class TimingBottomDialogFragment(
 
         confirmButton.setOnClickListener {
             val selectedDateString = dateTimePicker.getDateValue()
-
-            Toast.makeText(requireContext(), selectedDateString, Toast.LENGTH_SHORT).show()
 
             val formatter = DateTimeFormatter.ofPattern("yyyy MMM dd, HH:mm", Locale.ENGLISH) // Use Locale.ENGLISH to ensure consistent month names
             val selectedDate = LocalDateTime.parse(selectedDateString, formatter)
@@ -82,10 +73,6 @@ class TimingBottomDialogFragment(
 
 
     }
-
-
-
-
 
 
     interface DialogClickListener {

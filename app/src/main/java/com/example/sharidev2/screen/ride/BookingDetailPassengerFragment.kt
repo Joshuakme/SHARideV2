@@ -48,7 +48,6 @@ class BookingDetailPassengerFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_booking_detail_passenger, container, false)
 
-        Log.e("Booking Detail Passenger Fragment", "On Created")
 
         // DATA
         try {
@@ -172,8 +171,6 @@ class BookingDetailPassengerFragment : Fragment() {
                 0, 0
             )
         }
-
-
 
 
         val locationList = mutableListOf(ride.origin.name, ride.destination.name)

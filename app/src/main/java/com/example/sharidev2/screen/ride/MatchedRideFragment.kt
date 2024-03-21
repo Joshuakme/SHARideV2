@@ -20,6 +20,7 @@ import com.example.sharidev2.utility.FirebaseClient
 import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.viewmodel.RideViewModel
+import com.example.sharidev2.viewmodel.SharedCreateRideViewModel
 import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
 
 class MatchedRideFragment :
@@ -27,6 +28,7 @@ class MatchedRideFragment :
     RideAdapter.OnRideClickListener {
     private lateinit var binding: FragmentMatchedRideBinding
     private val searchRideViewModel: SharedSearchRideViewModel by activityViewModels()
+    private val createRideViewModel: SharedCreateRideViewModel by activityViewModels()
     private val currentUser = FirebaseClient.firebaseAuth.currentUser
 
     override fun onCreateView(
@@ -89,6 +91,12 @@ class MatchedRideFragment :
 
         // Matched Ride Fragment -> Driver Create Ride Fragment
         createRideBtnText.setOnClickListener {
+            if(searchRideViewModel.origin.value != null && searchRideViewModel.destination.value != null) {
+                createRideViewModel.setOrigin(searchRideViewModel.origin.value!!)
+                createRideViewModel.setDestination(searchRideViewModel.destination.value!!)
+            }
+
+
             findNavController().navigate(R.id.action_matchedRideFragment_to_driverCreateRideFragment)
         }
     }

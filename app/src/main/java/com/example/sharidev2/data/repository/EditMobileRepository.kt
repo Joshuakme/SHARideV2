@@ -1,10 +1,7 @@
 package com.example.sharidev2.data.repository
 
 import android.util.Log
-import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.FirebaseClient
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -19,40 +16,40 @@ class EditMobileRepository() {
     private val isUserLogin = currentUser != null
 
 
-    suspend fun updateMobile(newMobile: String): Int {
-        return withContext(Dispatchers.IO) {
+//    suspend fun updateMobile(newMobile: String): Int {
+//        return withContext(Dispatchers.IO) {
+//
+//            if (currentUser != null) {
+//                try {
+//                    val documentReference = firestore.collection("user")
+//                        .document(currentUser.uid)
+//                        .update("phoneNumber", newMobile)
+//                        .await()
+//
+//                    Constants.FIREBASE_REQUEST_SUCCESS    // SUCCESS
+//                } catch (e: Exception) {
+//                    // Handle any exceptions here
+//                    e.printStackTrace()
+//
+//                    Constants.FIREBASE_REQUEST_EXCEPTION
+//                }
+//            } else {
+//                Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED
+//            }
+//        }
+//    }
 
-            if (currentUser != null) {
-                try {
-                    val documentReference = firestore.collection("user")
-                        .document(currentUser.uid)
-                        .update("phoneNumber", newMobile)
-                        .await()
-
-                    Constants.FIREBASE_REQUEST_SUCCESS    // SUCCESS
-                } catch (e: Exception) {
-                    // Handle any exceptions here
-                    e.printStackTrace()
-
-                    Constants.FIREBASE_REQUEST_EXCEPTION
-                }
-            } else {
-                Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED
-            }
-        }
-    }
-
-    suspend fun fetchMobile(userId: String): String? {
-        return withContext(Dispatchers.IO) {
-            try {
-                val mobileSnapshot = mobileRef.document(userId).get().await()
-                mobileSnapshot.getString("phoneNumber")
-            } catch (e: Exception) {
-                Log.e("FetchMobileNumber", "Error fetching mobile: ${e.message}")
-                null
-            }
-        }
-    }
+//    suspend fun getMobile(userId: String): String? {
+//        return withContext(Dispatchers.IO) {
+//            try {
+//                val mobileSnapshot = mobileRef.document(userId).get().await()
+//                mobileSnapshot.getString("phoneNumber")
+//            } catch (e: Exception) {
+//                Log.e("FetchMobileNumber", "Error fetching mobile: ${e.message}")
+//                null
+//            }
+//        }
+//    }
 }
 
 

@@ -3,6 +3,7 @@ package com.example.sharidev2.screen.ride
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ContentValues
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
@@ -24,6 +25,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.adapter.SearchRideAdapter
 import com.example.sharidev2.data.model.PolylineData
@@ -58,6 +60,7 @@ class DriverCreateRideFragment : Fragment() {
     private val currentLocationViewModel: CurrentLocationViewModel by activityViewModels()
     private val createRideViewModel: SharedCreateRideViewModel by activityViewModels()
 
+    private lateinit var context: Context
     private lateinit var placesClient: PlacesClient
     private lateinit var searchResultRecyclerView: RecyclerView
     private lateinit var searchResultAdapter: SearchRideAdapter
@@ -77,7 +80,14 @@ class DriverCreateRideFragment : Fragment() {
 
 
         // VARIABLES INIT
-        placesClient = Places.createClient(requireContext())
+        if(getContext() != null) {
+            context = requireContext()
+        } else {
+            context = requireActivity().applicationContext
+        }
+
+
+        placesClient = Places.createClient(context)
 
 
         // ELEMENT VARIABLES
@@ -92,22 +102,27 @@ class DriverCreateRideFragment : Fragment() {
 
 
         // LAYOUT SETTINGS
+        (activity as MainActivity).setBottomNavVisible(false)
         setupMap()
         if(createRideViewModel.origin.value?.placeId == null) {
             performOriginCurrentPlaceRequest()      // Get current location
         }
 
-        createRideViewModel.origin.observe(viewLifecycleOwner) { searchLocation ->
-            originLocationEditText.setText(searchLocation.name)
-            destinationLocationEditText.requestFocus()
-            updateMap()
+        createRideViewModel.origin.observe(viewLifecycleOwner) { origin ->
+            if(origin != null) {
+                originLocationEditText.setText(origin.name)
+                destinationLocationEditText.requestFocus()
+                updateMap()
+            }
         }
 
-        createRideViewModel.destination.observe(viewLifecycleOwner) { destinationSearchLocation ->
-            destinationLocationEditText.setText(destinationSearchLocation.name)
-            destinationLocationEditText.clearFocus()
-            nextBtn.requestFocus()
-            updateMap()
+        createRideViewModel.destination.observe(viewLifecycleOwner) { destination ->
+            if(destination != null) {
+                destinationLocationEditText.setText(destination.name)
+                destinationLocationEditText.clearFocus()
+                nextBtn.requestFocus()
+                updateMap()
+            }
         }
 
         // EVENT LISTENERS
@@ -124,7 +139,6 @@ class DriverCreateRideFragment : Fragment() {
         // Driver Add Ride Fragment -> Driver Ride Config Fragment
         nextBtn.setOnClickListener {
             findNavController().navigate(R.id.action_driverCreateRideFragment_to_driverRideConfigFragment)
-            createRideViewModel.saveRoutePath()
         }
 
 
@@ -162,7 +176,7 @@ class DriverCreateRideFragment : Fragment() {
                     currentLocationViewModel.currentLocation.observe(viewLifecycleOwner) {
                         currentLocation = it
 
-                        NetworkUtils(requireContext()).showNetworkStatus()
+                        NetworkUtils(context).showNetworkStatus()
 
                         performLocationAutocompleteRequest(query, currentLocation)
                     }
@@ -182,6 +196,7 @@ class DriverCreateRideFragment : Fragment() {
 
         originEditTextCancelButton.setOnClickListener {
             originLocationEditText.text.clear()
+            createRideViewModel.clearOrigin()
         }
     }
 
@@ -212,7 +227,7 @@ class DriverCreateRideFragment : Fragment() {
                     currentLocationViewModel.currentLocation.observe(viewLifecycleOwner) {
                         currentLocation = it
 
-                        NetworkUtils(requireContext()).showNetworkStatus()
+                        NetworkUtils(context).showNetworkStatus()
 
                         performLocationAutocompleteRequest(query, currentLocation)
                     }
@@ -232,6 +247,7 @@ class DriverCreateRideFragment : Fragment() {
 
         destinationEditTextCancelButton.setOnClickListener {
             destinationLocationEditText.text.clear()
+            createRideViewModel.clearDestination()
         }
     }
 
@@ -278,10 +294,8 @@ class DriverCreateRideFragment : Fragment() {
 
         val typedValue = TypedValue()
         // Resolve the attribute to get the color value programmatically
-        context?.theme?.resolveAttribute(com.google.android.material.R.attr.colorOnBackground, typedValue, true)
-        val colorOnBackground = typedValue.data
-        context?.theme?.resolveAttribute(com.google.android.material.R.attr.colorOutlineVariant, typedValue, true)
-        val colorOutlineVariant = typedValue.data
+        val colorOnBackground = CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorOnBackground)
+        val colorOutlineVariant = CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorOutlineVariant)
 
 
         if (focus) {
@@ -375,13 +389,11 @@ class DriverCreateRideFragment : Fragment() {
         val destination = createRideViewModel.destination.value?.geolocation
         val googleMapUtils = GoogleMapUtils()
 
-        // Colors
-        val originColor = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorPrimary)
-        val destinationColor = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorError)
-
         mapFragment.getMapAsync { googleMap ->
-            val originLocationIcon = CommonUtils().getLocationBitmapFromVector(requireContext(), originColor)
-            val destinationLocationIcon = CommonUtils().getLocationBitmapFromVector(requireContext(), destinationColor)
+            val originColor = CommonUtils().getMapOriginMarkerColor(context)
+            val destinationColor = CommonUtils().getMapDestMarkerColor(context)
+            val originLocationIcon = CommonUtils().getLocationBitmapFromVector(context, originColor)
+            val destinationLocationIcon = CommonUtils().getLocationBitmapFromVector(context, destinationColor)
 
             googleMap.setOnMapLoadedCallback {
                 googleMap.clear()   // Clear previous markers
@@ -402,43 +414,46 @@ class DriverCreateRideFragment : Fragment() {
                     googleMapUtils.addMarker(googleMap, it, destinationLocationIcon)
                 }
 
-                googleMapUtils.updateMapZoomAndCamera(requireContext(), googleMap, origin, destination)
+                googleMapUtils.updateMapZoomAndCamera(context, googleMap, origin, destination)
 
 
                 // Draw Route
                 if(origin != null && destination != null) {
-                    createRideViewModel.rideRoute.observe(viewLifecycleOwner) {rideRoute ->
-                        if(rideRoute != null) {
-                            val polyline: Polyline = googleMap.addPolyline(PolylineOptions().addAll(rideRoute))
-                            polyline.color = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorOnSurfaceInverse)
-                        } else {
-                            googleMapUtils.calculateDirections(
-                                requireContext(),
-                                origin,
-                                destination,
-                                false,
-                            ) {result ->
-                                if(result != null) {
-                                    Handler(Looper.getMainLooper()).post {
-                                        for (route in result.routes) {
-                                            val decodedPath =
-                                                PolylineEncoding.decode(route.overviewPolyline.encodedPath)
-                                            val newDecodedPath = mutableListOf<LatLng>()
+                    if(createRideViewModel.rideRoute.value.isNullOrEmpty()) {
+                        googleMapUtils.calculateDirections(
+                            context,
+                            origin,
+                            destination,
+                            false,
+                        ) {result ->
+                            if(result != null) {
+                                Handler(Looper.getMainLooper()).post {
+                                    for (route in result.routes) {
+                                        val decodedPath =
+                                            PolylineEncoding.decode(route.overviewPolyline.encodedPath)
+                                        val newDecodedPath = mutableListOf<LatLng>()
 
-                                            for (latLng in decodedPath) {
-                                                newDecodedPath.add(LatLng(latLng.lat, latLng.lng))
-                                            }
-
-                                            val polyline: Polyline = googleMap.addPolyline(
-                                                PolylineOptions().addAll(newDecodedPath).clickable(true)
-                                            )
-                                            polyline.color = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorOnSurfaceInverse)
-
-                                            createRideViewModel.setRoutePath(newDecodedPath)
+                                        for (latLng in decodedPath) {
+                                            newDecodedPath.add(LatLng(latLng.lat, latLng.lng))
                                         }
+
+                                        val polyline: Polyline = googleMap.addPolyline(
+                                            PolylineOptions().addAll(newDecodedPath).clickable(true)
+                                        )
+                                        polyline.color = CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorOnSurfaceInverse)
+
+                                        createRideViewModel.setRideRoute(newDecodedPath)
+                                        createRideViewModel.saveRoutePath()
                                     }
                                 }
                             }
+                        }
+                    }
+
+                    createRideViewModel.rideRoute.observe(viewLifecycleOwner) {rideRoute ->
+                        if(rideRoute != null) {
+                            val polyline: Polyline = googleMap.addPolyline(PolylineOptions().addAll(rideRoute))
+                            polyline.color = CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorOnSurfaceInverse)
                         }
                     }
                 }
@@ -478,7 +493,7 @@ class DriverCreateRideFragment : Fragment() {
                         recyclerView.visibility = View.VISIBLE
 
                         searchResultAdapter =
-                            SearchRideAdapter(requireContext(), locationList) { selectedLocation ->
+                            SearchRideAdapter(context, locationList) { selectedLocation ->
                                 // Determine if the user is focusing on origin or destination
                                 if (isOriginFocused) {
                                     createRideViewModel.setOrigin(selectedLocation)
@@ -488,7 +503,7 @@ class DriverCreateRideFragment : Fragment() {
                                     // Focus lost, do nothing..
                                 }
 
-                                CommonUtils().closeKeyboard(requireView(), requireContext())
+                                CommonUtils().closeKeyboard(requireView(), context)
                                 showSearchResultCard(false)
                             }
                         searchResultRecyclerView.layoutManager = LinearLayoutManager(context)
@@ -532,7 +547,7 @@ class DriverCreateRideFragment : Fragment() {
         val request: FindCurrentPlaceRequest = FindCurrentPlaceRequest.newInstance(placeFields)
 
         // Call findCurrentPlace and handle the response (first check that the user has granted permission).
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) ==
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) ==
             PackageManager.PERMISSION_GRANTED) {
 
             val placeResponse = placesClient.findCurrentPlace(request)
@@ -594,7 +609,7 @@ class DriverCreateRideFragment : Fragment() {
             }
             .addOnFailureListener { exception ->
                 // Handle failure to fetch place details
-                Toast.makeText(requireContext(), exception.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, exception.toString(), Toast.LENGTH_SHORT).show()
                 Log.e("EXCEPTION BABIIIIII", exception.toString())
                 callback.invoke(null)
             }

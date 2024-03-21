@@ -20,12 +20,16 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
+import com.example.sharidev2.GlideApp
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentHomeBinding
 import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
 import com.example.sharidev2.viewmodel.PersonalInfoViewModel
+import com.example.sharidev2.viewmodel.SharedCurrentUserViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers
@@ -38,9 +42,7 @@ class HomeFragment : Fragment() {
     // Variables Init
     private lateinit var binding: FragmentHomeBinding
     private val currentLocationViewModel: CurrentLocationViewModel by activityViewModels()
-    private val personalInfoViewModel: PersonalInfoViewModel by viewModels()
-
-    private val auth = FirebaseAuth.getInstance()
+    private val currentUserViewModel: SharedCurrentUserViewModel by activityViewModels()
 
 
     override fun onCreateView(
@@ -50,32 +52,27 @@ class HomeFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
 
-        Log.e("Home Fragment", "On Created")
 
         // ELEMENT VARIABLES
-        val homeNestedScrollView = binding.nsvFragmentHome
+        val profilePicImg = binding.imgUserProfilePic
         val welcomeHomeText = binding.textHomeWelcomeUser
-        val searchBarBtn = binding.cardHomeSearchBar
-        val shareThisAppLinkText = binding.textHomeShareThisAppLink
-        val shareThisAppCopyBtn = binding.btnHomeShareThisAppCopy
-        val shareThisAppShareBtn = binding.btnHomeShareThisAppShare
+
 
         // AUTH VARIABLES
-        val currentUser = auth.currentUser
+        val currentUser = currentUserViewModel.user.value
 
 
         // LAYOUT SETTINGS
         (activity as MainActivity).setBottomNavVisible(true)
         (activity as MainActivity).resetBottomNavPosition()
 
-        if(currentUser != null) {
 
+        currentUserViewModel.displayName.observe(viewLifecycleOwner) {displayName ->
+            welcomeHomeText.text = getString(R.string.home_fragment_welcome_user, displayName ?: "guest")
         }
-        welcomeHomeText.text = getString(R.string.home_fragment_welcome_user, currentUser?.displayName ?: "back")
 
 
-
-
+        // Get User Current Location
         currentLocationViewModel.currentLocation.observe(viewLifecycleOwner) { currentLocation ->
             if(currentLocation != null) {
                 fetchAreaFromLocation(Location(LocationManager.GPS_PROVIDER).apply {
@@ -86,54 +83,23 @@ class HomeFragment : Fragment() {
         }
 
 
-        homeNestedScrollView.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
-            val bottomNavContainer = requireActivity().findViewById<LinearLayout>(R.id.ll_bottom_navigation)
-            val bottomNav = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation)
-
-            val constraintLayout = (activity as MainActivity).findViewById<ConstraintLayout>(R.id.constraint_main_activity)
-            val activityFragmentContainer = (activity as MainActivity).findViewById<FragmentContainerView>(R.id.fragment_container_main)
-            val constraintSet = ConstraintSet()
-
-            constraintSet.clone(constraintLayout)
-
-            if(scrollY > 0) {   // Scroll down
-                constraintSet.connect(activityFragmentContainer.id, ConstraintSet.BOTTOM, constraintLayout.id, ConstraintSet.BOTTOM)
+        // Set User Profile Pic
+        currentUserViewModel.imageUri.observe(viewLifecycleOwner) {profilePic ->
+            if(profilePic != null) {
+                GlideApp.with(this)
+                    .load(profilePic.toString())
+                    .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Disable disk caching
+                    .into(profilePicImg)
             } else {
-                constraintSet.connect(activityFragmentContainer.id, ConstraintSet.BOTTOM, bottomNavContainer.id, ConstraintSet.TOP)
+
             }
-            constraintSet.applyTo(constraintLayout)
-
-            // Calculate the scroll change
-            val dy = oldScrollY - scrollY
-
-            // Translate the bottom navigation
-            bottomNavContainer.translationY = ((bottomNavContainer.translationY + -dy)
-                .coerceAtLeast(0f))     // if translation less than 0, then 0
-                .coerceAtMost(bottomNav.height.toFloat())   // if translation more than height of bottomNav, then height of bottomNav
         }
 
 
+        setOnScrollListener()
 
+        setOnClickListeners()
 
-        // NAVIGATION EVENT LISTENERS
-        // Home Fragment -> Search Fragment
-        searchBarBtn.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_searchRideFragment)
-        }
-
-        shareThisAppCopyBtn.setOnClickListener {
-            CommonUtils().copyLinkToClipboard(requireContext(), getString(R.string.share_app_link))
-        }
-
-        shareThisAppShareBtn.setOnClickListener {
-            val sendIntent = Intent().apply {
-                action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_TEXT, getString(R.string.share_app_link))
-                type = "text/plain"
-            }
-            val shareIntent = Intent.createChooser(sendIntent, null)
-            startActivity(shareIntent)
-        }
 
         return binding.root
     }
@@ -167,7 +133,80 @@ class HomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        val homeNestedScrollView = binding.nsvFragmentHome
+        val homeNestedScrollView = binding.nsvNavFragmentHome
         homeNestedScrollView.scrollY = 0
+    }
+
+
+    private fun setOnScrollListener() {
+        // ELEMENT VARIABLES
+        val homeNestedScrollView = binding.nsvNavFragmentHome
+
+        homeNestedScrollView.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
+            val bottomNavContainer = requireActivity().findViewById<LinearLayout>(R.id.ll_bottom_navigation)
+            val bottomNav = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation)
+
+            val constraintLayout = (activity as MainActivity).findViewById<ConstraintLayout>(R.id.constraint_main_activity)
+            val activityFragmentContainer = (activity as MainActivity).findViewById<FragmentContainerView>(R.id.fragment_container_main)
+            val constraintSet = ConstraintSet()
+
+            constraintSet.clone(constraintLayout)
+
+            if(scrollY > 0) {   // Scroll down
+                Log.e("HomeFragment: SetOnCrollListener", "scrollY: $scrollY")
+                if(scrollY > 70)
+                    constraintSet.connect(activityFragmentContainer.id, ConstraintSet.BOTTOM, constraintLayout.id, ConstraintSet.BOTTOM)
+            } else {
+                constraintSet.connect(activityFragmentContainer.id, ConstraintSet.BOTTOM, bottomNavContainer.id, ConstraintSet.TOP)
+            }
+            constraintSet.applyTo(constraintLayout)
+
+            // Calculate the scroll change
+            val dy = oldScrollY - scrollY
+
+            // Translate the bottom navigation
+            bottomNavContainer.translationY = ((bottomNavContainer.translationY + -dy)
+                .coerceAtLeast(0f))     // if translation less than 0, then 0
+                .coerceAtMost(bottomNav.height.toFloat())   // if translation more than height of bottomNav, then height of bottomNav
+        }
+    }
+
+    private fun setOnClickListeners() {
+        // ELEMENT VARIABLES
+        val searchBarBtn = binding.cardHomeSearchBar
+        val addRideBtn = binding.imgBtnHomeAddRide
+        val shareThisAppLinkText = binding.textHomeShareThisAppLink
+        val shareThisAppCopyBtn = binding.btnHomeShareThisAppCopy
+        val shareThisAppShareBtn = binding.btnHomeShareThisAppShare
+
+        // NAVIGATION EVENT LISTENERS
+        // Home Fragment -> Search Fragment
+        searchBarBtn.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_searchRideFragment)
+        }
+
+        // Home Fragment -> Driver Create Ride Fragment
+        addRideBtn.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_driverCreateRideFragment)
+        }
+
+
+        shareThisAppLinkText.setOnClickListener {
+            CommonUtils().copyLinkToClipboard(requireContext(), getString(R.string.share_app_link))
+        }
+
+        shareThisAppCopyBtn.setOnClickListener {
+            CommonUtils().copyLinkToClipboard(requireContext(), getString(R.string.share_app_link))
+        }
+
+        shareThisAppShareBtn.setOnClickListener {
+            val sendIntent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, getString(R.string.share_app_link))
+                type = "text/plain"
+            }
+            val shareIntent = Intent.createChooser(sendIntent, null)
+            startActivity(shareIntent)
+        }
     }
 }

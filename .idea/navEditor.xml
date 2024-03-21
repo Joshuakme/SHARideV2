@@ -386,7 +386,7 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
-                            <entry key="action_homeFragment_to_searchFragment">
+                            <entry key="action_homeFragment_to_searchRideFragment">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -629,28 +629,28 @@
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="searchFragment">
+                  <entry key="searchRideFragment">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="651" />
-                            <option name="y" value="440" />
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
                           </Point>
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="action_searchFragment_to_driverCreateRideFragment">
+                            <entry key="action_searchRideFragment_to_driverCreateRideFragment">
                               <value>
                                 <LayoutPositions />
                               </value>
                             </entry>
-                            <entry key="action_searchFragment_to_homeFragment">
+                            <entry key="action_searchRideFragment_to_homeFragment">
                               <value>
                                 <LayoutPositions />
                               </value>
                             </entry>
-                            <entry key="action_searchFragment_to_searchSelectOriginFragment">
+                            <entry key="action_searchRideFragment_to_searchSelectOriginFragment">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -676,7 +676,7 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
-                            <entry key="action_searchSelectOriginFragment_to_searchFragment">
+                            <entry key="action_searchSelectOriginFragment_to_searchRideFragment">
                               <value>
                                 <LayoutPositions />
                               </value>

@@ -17,6 +17,7 @@ import com.example.sharidev2.data.model.VehicleType
 import com.example.sharidev2.data.repository.RideRepository
 import com.example.sharidev2.utility.FirebaseClient
 import com.example.sharidev2.utility.RideUtils
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.Timestamp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -37,15 +38,16 @@ class SharedSearchRideViewModel(
     private val VEHICLE_TYPE_KEY = "vehicle_type"
     private val RIDE_DATE_TIME_KEY = "ride_date_time"
     private val SEARCH_RIDE_KEY = "search_ride"
+    private val RIDE_ROUTE_KEY = "ride_route"
 
 
 
     // INTERNAL DATA MEMBERS
     // Origin Location
-    val origin: LiveData<SearchLocation> = savedStateHandle.getLiveData(ORIGIN_KEY)
+    val origin: LiveData<SearchLocation?> = savedStateHandle.getLiveData(ORIGIN_KEY)
 
     // Destination Location
-    val destination: LiveData<SearchLocation> = savedStateHandle.getLiveData(DESTINATION_KEY)
+    val destination: LiveData<SearchLocation?> = savedStateHandle.getLiveData(DESTINATION_KEY)
 
     // Driver's Gender
     val driverGender: LiveData<Gender> = savedStateHandle.getLiveData(DRIVER_GENDER_KEY)
@@ -55,6 +57,9 @@ class SharedSearchRideViewModel(
 
     // Ride Date Time
     val rideDateTime: LiveData<Timestamp> = savedStateHandle.getLiveData(RIDE_DATE_TIME_KEY)
+
+    // Ride Route Time
+    val rideRoute: LiveData<MutableList<LatLng>?> = savedStateHandle.getLiveData(RIDE_ROUTE_KEY)
 
 
     // Seat Needed
@@ -95,6 +100,22 @@ class SharedSearchRideViewModel(
     // Ride Date Time
     fun setRideDateTime(newRideDateTime: Timestamp) {
         savedStateHandle[RIDE_DATE_TIME_KEY] = newRideDateTime
+    }
+
+    // Ride Route
+    fun setRideRoute(newRideRoute: MutableList<LatLng>) {
+        savedStateHandle[RIDE_ROUTE_KEY] = newRideRoute
+
+        saveRoutePath()
+    }
+
+    // Save Ride Route
+    private fun saveRoutePath() {
+        if(origin.value != null && destination.value != null && rideRoute.value != null) {
+            viewModelScope.launch(Dispatchers.IO) {
+                rideRepository.addRoutePath(origin.value!!, destination.value!!, rideRoute.value!!)
+            }
+        }
     }
 
     // Search Ride
@@ -155,4 +176,21 @@ class SharedSearchRideViewModel(
         return currentTime.withHour(finalHour).withMinute(finalMinute).withSecond(0).withNano(0)
     }
 
+
+
+    // RESET DATA
+    fun clearOrigin() {
+        savedStateHandle[ORIGIN_KEY] = null
+
+        clearRideRoute()
+    }
+
+    fun clearDestination() {
+        savedStateHandle[DESTINATION_KEY] = null
+
+        clearRideRoute()
+    }
+    private fun clearRideRoute() {
+        savedStateHandle[RIDE_ROUTE_KEY] = null
+    }
 }

@@ -38,12 +38,14 @@ import com.example.sharidev2.utility.FirebaseClient
 import com.example.sharidev2.utility.UserClient
 import com.example.sharidev2.viewmodel.ChatViewModel
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
+import com.example.sharidev2.viewmodel.SharedCurrentUserViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 
 class MainActivity : AppCompatActivity() {
@@ -51,6 +53,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bottomNavContainer: LinearLayout
 
     private val currentLocationViewModel: CurrentLocationViewModel by viewModels()
+    private val currentUserViewModel: SharedCurrentUserViewModel by viewModels()
     private val chatViewModel: ChatViewModel by viewModels()
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -108,6 +111,7 @@ class MainActivity : AppCompatActivity() {
 //            setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
 //            window.statusBarColor = Color.TRANSPARENT
 //        }
+        getFCMToken()
     }
 
 
@@ -204,6 +208,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
+    // SERVICES
     private fun startNetworkService() {
         if(!isNetworkServiceRunning()) {
             val serviceIntent = Intent(this, NetworkService::class.java)
@@ -251,6 +257,24 @@ class MainActivity : AppCompatActivity() {
         }
         Log.d(TAG, "isLocationServiceRunning: location service is not running.")
         return false
+    }
+
+    private fun getFCMToken() {
+        FirebaseClient.firebaseMessaging.token.addOnCompleteListener {task ->
+            if(!task.isSuccessful) {
+                Log.e(TAG, "Fetching FCM registration token failed", task.exception)
+
+            }
+
+            // Get new FCM registration token
+            val token = task.result
+
+            currentUserViewModel.setFcmToken(token)
+
+            // Log and toast
+            Log.e(TAG, "FirebaseMsg Token: $token")
+            Toast.makeText(baseContext, "FirebaseMsg Token: $token", Toast.LENGTH_SHORT).show()
+        }
     }
 
 

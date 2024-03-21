@@ -24,7 +24,9 @@ import com.example.sharidev2.data.model.Message
 import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.viewmodel.ChatViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
 
 class ChatFragment : Fragment() {
@@ -175,10 +177,12 @@ class ChatFragment : Fragment() {
             val newMessage = Message(text = message)
 
             loadingSendMessage(Constants.UI_DATA_LOADING)
-            lifecycleScope.launch {
+            lifecycleScope.launch(Dispatchers.IO) {
                 val respond = chatViewModel.addMessageToChat(chat.chatId!!, newMessage)
 
-                loadingSendMessage(respond)
+                activity?.runOnUiThread {
+                    loadingSendMessage(respond)
+                }
             }
         }
 
@@ -259,4 +263,7 @@ class ChatFragment : Fragment() {
             CommonUtils().openKeyboard(chatTextInput, context)
         }
     }
+
+
+
 }

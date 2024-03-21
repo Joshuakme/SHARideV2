@@ -2,18 +2,22 @@ package com.example.sharidev2.data.repository
 
 import android.util.Log
 import com.example.sharidev2.data.model.Chat
-import com.example.sharidev2.data.model.ChatStatus
 import com.example.sharidev2.data.model.Message
-import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.Converters
 import com.example.sharidev2.utility.FirebaseClient
-import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
+
 
 class ChatRepository {
     // Firebase Instances
@@ -44,6 +48,8 @@ class ChatRepository {
                     chatCollectionRef.document(chatId)
                         .update(chatHashMap)
                         .await()
+
+                    sendNotification(chatId, message, oldChat)
 
                     Constants.FIREBASE_REQUEST_SUCCESS
                 } else {
@@ -133,5 +139,53 @@ class ChatRepository {
                 listener(chat)
             }
         }
+    }
+
+
+    private suspend fun sendNotification(chatId: String, message: Message, oldChat: Chat) {
+        if(currentUser != null) {
+            val currentUserFcmToken = FirebaseClient.getUserFcmToken(currentUser.uid)
+
+            val chatMembersFcmTokens = oldChat.memberFcmTokens!!.filter { it != currentUserFcmToken }
+
+
+            try {
+                val jsonObject = JSONObject()
+
+                val notificationObj = JSONObject()
+                notificationObj.put("title", oldChat.chatTitle)
+                notificationObj.put("body", message)
+
+                val dataObj = JSONObject()
+                dataObj.put("chatId", chatId)   // For activity to intent to chat
+
+                jsonObject.put("notification", notificationObj)
+                jsonObject.put("data", dataObj)
+                jsonObject.put("to", chatMembersFcmTokens)
+
+                callApi(jsonObject)
+            } catch (e: Exception) {
+
+            }
+        }
+    }
+
+    private fun callApi(jsonObject: JSONObject) {
+        val JSON: MediaType = "application/json".toMediaType()
+        val client = OkHttpClient()
+
+        val fcmUrl = "https://fcm.googleapis.com/fcm/send"
+
+        val body = jsonObject.toString().toRequestBody(JSON)
+
+        val apiKey = "AAAAKXhRkQM:APA91bEoSgCfObxmlnjVYuwbpUuhJwj1htZTk_oSSjhZDglLaoQiHaEbaPUSWqNqaXF_D4RLyTNMyLBJQDeeG5ZZ82BM18GyLDA3SrDQh16OMPrn9vxvP5zMT2qn8G_MrySscSeoEO-v"
+
+        val request = Request.Builder()
+            .url(fcmUrl)
+            .post(body)
+            .header("Authorization", "Bearer $apiKey")
+            .build()
+
+        client.newCall(request)
     }
 }

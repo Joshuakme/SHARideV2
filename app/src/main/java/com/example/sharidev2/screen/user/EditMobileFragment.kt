@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -19,13 +20,14 @@ import com.example.sharidev2.data.model.User
 import com.example.sharidev2.databinding.FragmentEditDisplayNameBinding
 import com.example.sharidev2.databinding.FragmentEditMobileBinding
 import com.example.sharidev2.viewmodel.PersonalInfoViewModel
+import com.example.sharidev2.viewmodel.SharedCurrentUserViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class EditMobileFragment: Fragment() {
     private lateinit var binding: FragmentEditMobileBinding
-    private lateinit var viewModel: PersonalInfoViewModel
-    private lateinit var user: User
+
+    private val currentUserViewModel: SharedCurrentUserViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,7 +43,6 @@ class EditMobileFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Initialize ViewModel
-        viewModel = ViewModelProvider(requireActivity()).get(PersonalInfoViewModel::class.java)
         val saveMobileBtn = binding.btnUpdateMobile
         val backMobileBtn = binding.btnBackEditMobile
         val mobileNumber = binding.inputEditMobile
@@ -54,12 +55,10 @@ class EditMobileFragment: Fragment() {
         val phoneNumberFilters = arrayOf<InputFilter>(InputFilter.LengthFilter(phoneNumMaxLength))
         mobileNumber.filters = phoneNumberFilters
 
-// Fetch current display name from the database
-        viewModel.fetchMobileFromDatabase()
 
 
         // Observe the current display name
-        viewModel.mobile.observe(viewLifecycleOwner) { mobile ->
+        currentUserViewModel.phoneNumber.observe(viewLifecycleOwner) { mobile ->
             binding.inputEditMobile.setText(mobile)
         }
 
@@ -70,7 +69,7 @@ class EditMobileFragment: Fragment() {
             // Update the mobile in the ViewModel
             if(newMobile.length == 11 || newMobile.length == 12) {
                 viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-                    viewModel.updateMobile(newMobile)
+                    currentUserViewModel.updateMobile(newMobile)
 
                     Toast.makeText(
                         requireContext(),
@@ -121,26 +120,26 @@ class EditMobileFragment: Fragment() {
         })
     }
 
-    private suspend fun updateMobile() {
-        val mobile = binding.inputEditMobile
-
-        try {
-            if(user.phoneNumber != null) {
-                val updateMobile = viewModel.updateDisplayName(user.phoneNumber!!)
-
-                Log.d("UpdateMobile", "Update successful: $updateMobile")
-
-                // Navigate back to the EmergencyContactFragment
-                findNavController().popBackStack()
-            }else{
-                Toast.makeText(requireContext(), "Failed to edit mobile phone number!", Toast.LENGTH_SHORT)
-                    .show()
-            }
-
-        } catch (e: Exception) {
-            Log.e("UpdateMobileNumber", "Error updating mobile: ${e.message}", e)
-        }
-    }
+//    private suspend fun updateMobile() {
+//        val mobile = binding.inputEditMobile
+//
+//        try {
+//            if(user.phoneNumber != null) {
+//                val updateMobile = currentUserViewModel.updateDisplayName(user.phoneNumber!!)
+//
+//                Log.d("UpdateMobile", "Update successful: $updateMobile")
+//
+//                // Navigate back to the EmergencyContactFragment
+//                findNavController().popBackStack()
+//            }else{
+//                Toast.makeText(requireContext(), "Failed to edit mobile phone number!", Toast.LENGTH_SHORT)
+//                    .show()
+//            }
+//
+//        } catch (e: Exception) {
+//            Log.e("UpdateMobileNumber", "Error updating mobile: ${e.message}", e)
+//        }
+//    }
 
 
     private fun formatMobileNumber(originalText: String): String {

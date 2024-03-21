@@ -25,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.Dispatchers
@@ -44,6 +45,10 @@ object FirebaseClient {
 
     val firebaseStorage: FirebaseStorage by lazy {
         FirebaseStorage.getInstance()
+    }
+
+    val firebaseMessaging : FirebaseMessaging by lazy {
+        FirebaseMessaging.getInstance()
     }
 
 
@@ -81,7 +86,6 @@ object FirebaseClient {
                         null
                     }
 
-
                     val rideOptionMap = userData["rideOption"] as Map<String, String>
                     val driverGender = rideOptionMap["driverGender"]?.let { Gender.valueOf(it) }
                     val vehicleType = rideOptionMap["vehicleType"]?.let { VehicleType.valueOf(it) }
@@ -106,6 +110,8 @@ object FirebaseClient {
                         null
                     }
 
+                    val fcmToken = userData["fcmToken"] as String
+
                     val joinedDate = userData["joinedDate"] as Timestamp
 
 
@@ -119,6 +125,7 @@ object FirebaseClient {
                         rating = rating,
                         savedAddress = null,
                         gender = gender,
+                        fcmToken = fcmToken,
                         joinedDate = joinedDate
                     )
                 } else {
@@ -126,6 +133,23 @@ object FirebaseClient {
                 }
             } catch (e: Exception) {
                 Log.e("Get User From Uid", e.message.toString())
+                return@withContext null
+            }
+        }
+    }
+
+    suspend fun getUserFcmToken(userUid: String): String? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val userData = firestore.collection("user")
+                    .document(userUid)
+                    .get()
+                    .await().data
+
+
+                userData?.get("fcmToken") as String
+            } catch (e: Exception) {
+                Log.e("Get User FCM Token From Uid", e.message.toString())
                 return@withContext null
             }
         }
@@ -184,6 +208,20 @@ object FirebaseClient {
             val chatId = chatRef.id
             val chatTitle = chatData["chatTitle"] as? String ?: ""
             val members = chatData["members"] as? List<String> ?: emptyList()
+
+            val membersUserList = mutableListOf<User>()
+            for(member in members) {
+                getUserFromUid(member)?.let { membersUserList.add(it) }
+            }
+
+            val memberFcmTokens = chatData["memberFcmTokens"] as? List<String> ?: emptyList()
+
+            val memberFcmTokenList = mutableListOf<String>()
+            for(memberFcmToken in memberFcmTokens) {
+                memberFcmTokenList.add(memberFcmToken)
+            }
+
+
             val lastMessage = chatData["lastMessage"] as? String ?: ""
             val timestamp = chatData["timestamp"] as? Timestamp
             val typingUsers = chatData["typingUsers"] as? List<String> ?: emptyList()
@@ -217,6 +255,7 @@ object FirebaseClient {
                 chatId,
                 chatTitle,
                 members,
+                memberFcmTokenList,
                 lastMessage,
                 timestamp,
                 messageList,

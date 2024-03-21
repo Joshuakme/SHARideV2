@@ -3,8 +3,11 @@ package com.example.sharidev2.screen.ride
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ContentValues
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -26,11 +29,14 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Polyline
+import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.material.card.MaterialCardView
+import com.google.maps.internal.PolylineEncoding
 
 class SearchSelectOriginFragment : Fragment() {
     private lateinit var binding: FragmentSearchSelectOriginBinding
@@ -38,6 +44,7 @@ class SearchSelectOriginFragment : Fragment() {
     private val currentLocationViewModel: CurrentLocationViewModel by activityViewModels()
     private lateinit var myLocationBtn: MaterialCardView
 
+    private lateinit var context: Context
     private lateinit var placesClient: PlacesClient
     private lateinit var mapFragment: SupportMapFragment
 
@@ -56,7 +63,13 @@ class SearchSelectOriginFragment : Fragment() {
 
 
         // VARIABLES INIT
-        placesClient = Places.createClient(requireContext())
+        if(getContext() != null) {
+            context = requireContext()
+        } else {
+            context = requireActivity().applicationContext
+        }
+
+        placesClient = Places.createClient(context)
 
         // ELEMENT VARIABLES
         myLocationBtn = binding.cardSearchSelectOriginMyLocationContainer
@@ -180,12 +193,12 @@ class SearchSelectOriginFragment : Fragment() {
         val googleMapUtils = GoogleMapUtils()
 
         // Colors
-        val originColor = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorPrimary)
-        val destinationColor = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorError)
 
         mapFragment.getMapAsync { googleMap ->
-            val originLocationIcon = CommonUtils().getLocationBitmapFromVector(requireContext(), originColor)
-            val destinationLocationIcon = CommonUtils().getLocationBitmapFromVector(requireContext(), destinationColor)
+            val originColor = CommonUtils().getMapOriginMarkerColor(context)
+            val destinationColor = CommonUtils().getMapDestMarkerColor(context)
+            val originLocationIcon = CommonUtils().getLocationBitmapFromVector(context, originColor)
+            val destinationLocationIcon = CommonUtils().getLocationBitmapFromVector(context, destinationColor)
 
             googleMap.setOnMapLoadedCallback {
                 googleMap.clear()   // Clear previous markers
@@ -202,8 +215,55 @@ class SearchSelectOriginFragment : Fragment() {
                     googleMapUtils.addMarker(googleMap, it, destinationLocationIcon)
                 }
 
-                googleMapUtils.updateMapZoomAndCamera(requireContext(), googleMap, origin, destination)
-                //googleMapUtils.drawRoute(googleMap, origin, destination)
+                googleMapUtils.updateMapZoomAndCamera(context, googleMap, origin, destination)
+
+
+                // Draw Route
+                if(origin != null && destination != null) {
+                    if (searchRideViewModel.rideRoute.value.isNullOrEmpty()) {
+                        googleMapUtils.calculateDirections(
+                            context,
+                            origin,
+                            destination,
+                            false,
+                        ) { result ->
+                            if (result != null) {
+                                Handler(Looper.getMainLooper()).post {
+                                    for (route in result.routes) {
+                                        val decodedPath =
+                                            PolylineEncoding.decode(route.overviewPolyline.encodedPath)
+                                        val newDecodedPath = mutableListOf<LatLng>()
+
+                                        for (latLng in decodedPath) {
+                                            newDecodedPath.add(LatLng(latLng.lat, latLng.lng))
+                                        }
+
+                                        val polyline: Polyline = googleMap.addPolyline(
+                                            PolylineOptions().addAll(newDecodedPath).clickable(true)
+                                        )
+                                        polyline.color = CommonUtils().getThemeColor(
+                                            context,
+                                            com.google.android.material.R.attr.colorOnSurfaceInverse
+                                        )
+
+                                        searchRideViewModel.setRideRoute(newDecodedPath)
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    searchRideViewModel.rideRoute.observe(viewLifecycleOwner) { rideRoute ->
+                        if (rideRoute != null) {
+                            val polyline: Polyline =
+                                googleMap.addPolyline(PolylineOptions().addAll(rideRoute))
+                            polyline.color = CommonUtils().getThemeColor(
+                                context,
+                                com.google.android.material.R.attr.colorOnSurfaceInverse
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -226,7 +286,7 @@ class SearchSelectOriginFragment : Fragment() {
         val request: FindCurrentPlaceRequest = FindCurrentPlaceRequest.newInstance(placeFields)
 
         // Call findCurrentPlace and handle the response (first check that the user has granted permission).
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) ==
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) ==
             PackageManager.PERMISSION_GRANTED) {
 
             val placeResponse = placesClient.findCurrentPlace(request)

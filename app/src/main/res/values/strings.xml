@@ -22,16 +22,14 @@
     <string name="screen_title_profile">Profile</string>
 
     <!--  Home Fragment  -->
-    <string name="home_fragment_welcome_user">Welcome %s!</string>
+    <string name="home_fragment_welcome_user">Hi %s</string>
     <string name="home_fragment_welcome_user_area">Unknown location</string>
     <string name="home_fragment_pick_up_location">Origin location</string>
 
     <string name="home_fragment_destination_location">Destination location</string>
     <string name="home_fragment_date_time">Date &amp; Time</string>
     <string name="home_fragment_select_more">More</string>
-    <string name="home_fragment_find_ride_cta">Find Ride</string>
-    <string name="home_fragment_offer_ride_cta">Offer Ride</string>
-    <string name="home_fragment_offer_ride_continue_cta">Continue</string>
+    <string name="home_fragment_add_ride_cta">Add Ride</string>
     <string name="home_fragment_offer_ride_vehicle">Vehicle</string>
     <string name="home_fragment_search_hint">Enter destination or starting point</string>
     <string name="home_section_recent_rides_title">Recent rides</string>
@@ -141,6 +139,7 @@
 
 
     <!--  Profile Fragment  -->
+    <string name="profile_user_id">\@%s</string>
     <string name="profile_section_title_my_account">My Account</string>
     <string name="profile_subsection_title_personal_info">Personal Information</string>
     <string name="profile_subsection_title_payment_method">Payment Method</string>
@@ -194,7 +193,7 @@
 
 
     <!--  Edit Personal Information -->
-    <string name="edit_username_fragment_message_set_username">Please set 2 - 24 characters, excluding invalid characters such as ! @ / ?</string>
+    <string name="edit_username_fragment_message_set_username">Please set 2 – 24 characters, excluding invalid characters such as ! @ / ?</string>
     <string name="edit_user_mobile_fragment_text">Phone Number</string>
     <string name="edit_username_fragment_allowed_characters">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_.</string>
 
@@ -206,7 +205,6 @@
     <!--  VehicleDoc Fragment -->
     <string name="message_add_vehicle_doc" translatable="false">Let\'s get started! Fill out the details below to add a new vehicle.</string>
     <string name="vehicle_doc_fragment_choose_timing_title">Select your vehicle manufacture date</string>
-
 
 
     <!-- Strings related to login -->
@@ -262,4 +260,6 @@
     <string name="placeholder_search_result_place_distance_address">8.85km \u200B \u2022 \u200B Jalan Pudu, Bandar Kuala Lumpur, 55100, Wp Kuala Lumpur, Wp Kuala Lumpur</string>
 
     <string name="placeholder_user_gender">Male</string>
+    <string name="title_activity_splash">SplashActivity</string>
+    <string name="title_activity_splash2">SplashActivity2</string>
 </resources>

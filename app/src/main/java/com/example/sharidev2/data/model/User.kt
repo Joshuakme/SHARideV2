@@ -13,8 +13,9 @@ data class User(
     val phoneNumber: String? = null,
     val photoUri: Uri? = null,
     val rideOption: RideOption? = RideOption(),
-    val rating: Double ?= null,
+    val rating: Double? = null,
     val savedAddress: Map<String, SearchLocation>? = mapOf(),
-    val gender: Gender ?= null,
+    val gender: Gender? = null,
+    val fcmToken: String? = null,
     val joinedDate: Timestamp? = null
 ) : Parcelable

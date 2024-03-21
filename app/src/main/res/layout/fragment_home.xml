@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/nsv_fragment_home"
+        android:id="@+id/nsv_nav_fragment_home"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".screen.navigation.HomeFragment">
@@ -22,9 +22,9 @@
                 android:id="@+id/cl_home_user_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?attr/colorPrimaryVariant"
+                android:background="?attr/colorPrimary"
                 android:paddingTop="@dimen/ss_home_nav_top_padding"
-                android:paddingBottom="50dp"
+                android:paddingBottom="@dimen/ss_home_nav_bottom_padding"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -35,118 +35,127 @@
                     android:layout_width="@dimen/ss_home_pic_size"
                     android:layout_height="@dimen/ss_home_pic_size"
                     android:layout_marginStart="@dimen/ss_screen_width_margin"
-                    app:cardBackgroundColor="#00FFFFFF"
+                    android:background="#00FFFFFF"
                     app:cardCornerRadius="1000dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_home_welcome_user_area"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:strokeColor="#00FFFFFF">
+                    app:layout_constraintTop_toTopOf="@+id/text_home_welcome_user"
+                    app:strokeColor="?attr/colorSurfaceVariant"
+                    app:strokeWidth="0.5dp">
 
                     <ImageView
                         android:id="@+id/img_user_profile_pic"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        app:srcCompat="@drawable/baseline_account_circle_24"
-                        app:tint="?attr/colorOnPrimary" />
+                        app:srcCompat="@drawable/baseline_account_circle_24" />
                 </com.google.android.material.card.MaterialCardView>
 
                 <TextView
                     android:id="@+id/text_home_welcome_user"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:fontFamily="@font/poppins_semibold"
+                    android:layout_height="19dp"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="@font/poppins_medium"
                     android:text="@string/home_fragment_welcome_user"
                     android:textColor="?attr/colorOnPrimary"
                     android:textSize="16sp"
-                    app:layout_constraintBottom_toTopOf="@+id/img_home_welcome_user_location"
                     app:layout_constraintStart_toEndOf="@+id/card_home_user_profile_pic"
-                    app:layout_constraintTop_toTopOf="@+id/card_home_user_profile_pic" />
-
-                <ImageView
-                    android:id="@+id/img_home_welcome_user_location"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:scaleX="0.9"
-                    android:scaleY="0.9"
-                    android:src="@drawable/outline_location_on_24"
-                    android:translationY="-6dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/card_home_user_profile_pic"
-                    app:layout_constraintStart_toEndOf="@+id/card_home_user_profile_pic"
-                    app:layout_constraintTop_toBottomOf="@+id/text_home_welcome_user"
-                    app:tint="?android:attr/textColorHintInverse" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/text_home_welcome_user_area"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/ss_screen_width_margin"
+                    android:layout_marginStart="8dp"
                     android:ellipsize="end"
                     android:singleLine="true"
                     android:text="@string/home_fragment_welcome_user_area"
                     android:textColor="?android:attr/textColorHintInverse"
-                    android:textSize="16sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/img_home_welcome_user_location"
+                    android:textSize="13sp"
+                    app:layout_constraintStart_toEndOf="@+id/card_home_user_profile_pic"
                     app:layout_constraintTop_toBottomOf="@+id/text_home_welcome_user" />
+
+                <ImageButton
+                    android:id="@+id/img_btn_home_add_ride"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:background="#00FFFFFF"
+                    app:layout_constraintEnd_toStartOf="@+id/img_btn_home_notification"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/outline_add_vehicle_24"
+                    app:tint="?attr/colorOnPrimary" />
+
+                <ImageButton
+                    android:id="@+id/img_btn_home_notification"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/ss_screen_width_margin"
+                    android:background="#00FFFFFF"
+                    android:scaleX="0.85"
+                    android:scaleY="0.85"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/baseline_notification_24"
+                    app:tint="?attr/colorOnPrimary" />
+
+
+                <!--  Ride Search Bar  -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_home_search_bar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/ss_screen_width_margin"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="@dimen/ss_screen_width_margin"
+                    app:cardBackgroundColor="?attr/colorOnPrimarySurface"
+                    app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
+                    app:cardElevation="1dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_home_welcome_user_area"
+                    app:strokeWidth="0dp">
+
+                    <LinearLayout
+                        android:id="@+id/ll_home_search_bar_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="10dp"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="14dp">
+
+                        <TextView
+                            android:id="@+id/edit_text_home_search_bar"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@null"
+                            android:clickable="false"
+                            android:fontFamily="@font/poppins_medium"
+                            android:hint="@string/home_fragment_search_hint"
+                            android:maxLines="1"
+                            android:padding="0dp"
+                            android:textColor="?android:attr/textColorHintInverse"
+                            android:textColorHint="?attr/colorOutline"
+                            android:textSize="13sp" />
+
+                        <ImageButton
+                            android:id="@+id/img_btn_home_seearch_bar_foward"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="#00FFFFFF"
+                            android:clickable="false"
+                            android:cropToPadding="false"
+                            android:src="@drawable/baseline_arrow_forward_24"
+                            app:tint="?attr/colorOutline" />
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-            <!--  Ride Search Bar  -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_home_search_bar"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/ss_screen_width_margin"
-                android:layout_marginEnd="@dimen/ss_screen_width_margin"
-                android:translationY="-27dp"
-                app:cardBackgroundColor="?attr/colorOnPrimarySurface"
-                app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
-                app:cardElevation="3dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cl_home_user_info"
-                app:strokeWidth="0dp">
-
-                <LinearLayout
-                    android:id="@+id/ll_home_search_bar_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="12dp"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="14dp">
-
-                    <TextView
-                        android:id="@+id/edit_text_home_search_bar"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@null"
-                        android:clickable="false"
-                        android:fontFamily="@font/poppins_medium"
-                        android:hint="@string/home_fragment_search_hint"
-                        android:maxLines="1"
-                        android:padding="0dp"
-                        android:textColor="?android:attr/textColorHintInverse"
-                        android:textColorHint="?attr/colorOutline"
-                        android:textSize="14sp" />
-
-                    <ImageButton
-                        android:id="@+id/img_btn_home_seearch_bar_foward"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="#00FFFFFF"
-                        android:clickable="false"
-                        android:cropToPadding="false"
-                        android:src="@drawable/baseline_arrow_forward_24"
-                        app:tint="?attr/colorOutline" />
-                </LinearLayout>
-
-
-            </com.google.android.material.card.MaterialCardView>
 
 
             <!--  Recent Rides  -->
@@ -156,11 +165,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/ss_screen_width_margin"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="@dimen/ss_screen_width_margin"
+                android:fontFamily="@font/poppins_semibold"
                 android:text="@string/home_section_recent_rides_title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/card_home_search_bar" />
+                app:layout_constraintTop_toBottomOf="@+id/cl_home_user_info" />
 
             <HorizontalScrollView
                 android:id="@+id/horizontalScrollView"
@@ -346,9 +357,6 @@
                 </LinearLayout>
             </HorizontalScrollView>
 
-
-            D
-
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_home_section_nearby_rides"
                 android:layout_width="match_parent"
@@ -371,7 +379,7 @@
                         style="@style/text_section_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginBottom="@dimen/ss_profile_section_title_bottom_margin"
                         android:text="@string/home_section_nearby_rides_title" />
 
 
@@ -379,7 +387,6 @@
                         android:id="@+id/materialCardView3"
                         android:layout_width="match_parent"
                         android:layout_height="100dp"
-                        android:layout_marginTop="8dp"
                         app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius">
 
 
@@ -391,8 +398,8 @@
                         android:layout_marginTop="16dp"
                         app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius">
 
-
                     </com.google.android.material.card.MaterialCardView>
+
 
                 </LinearLayout>
 
@@ -423,7 +430,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
 
-                        android:layout_marginBottom="12dp"
+                        android:layout_marginBottom="@dimen/ss_profile_section_title_bottom_margin"
                         android:text="@string/home_section_share_this_app_title" />
 
                     <com.google.android.material.card.MaterialCardView

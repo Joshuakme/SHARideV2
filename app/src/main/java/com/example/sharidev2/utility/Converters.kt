@@ -2,7 +2,6 @@ package com.example.sharidev2.utility
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import android.util.TypedValue
 import com.example.sharidev2.data.model.Chat
 import com.example.sharidev2.data.model.ChatStatus
@@ -136,6 +135,9 @@ class Converters() {
         //val savedAddresses = toSearchLocationList(map["savedAddresses"] as List<Map<String, Any>>).toMutableList()
         val savedAddresses = mapOf<String, SearchLocation>()
         val gender = if(map["gender"] != null) Gender.valueOf(map["gender"] as String) else null
+
+        val fcmToken = map["fcmToken"] as String
+
         val joinedDate = map["joinedDate"] as Timestamp
 
         return User(
@@ -148,6 +150,7 @@ class Converters() {
             rating,
             savedAddresses,
             gender,
+            fcmToken,
             joinedDate
         )
     }
@@ -398,8 +401,8 @@ class Converters() {
             chatId,
             chatTitle,
             members,
-            lastMessage,
-            timestamp
+            lastMessage = lastMessage,
+            timestamp = timestamp
         )
     }
 
@@ -407,6 +410,7 @@ class Converters() {
         val chatId = map["chatId"] as String
         val chatTitle = map["chatTitle"] as String
         val members = map["members"] as List<String>
+        val memberFcmTokens = map["memberFcmTokens"] as List<String>
         val lastMessage = map["lastMessage"] as String
         val timestamp = map["timestamp"] as Timestamp
         val messages = toMessageList(map["messages"] as List<Map<String, Any>>).toMutableList()
@@ -417,6 +421,7 @@ class Converters() {
             chatId,
             chatTitle,
             members,
+            memberFcmTokens,
             lastMessage,
             timestamp,
             messages,
@@ -429,7 +434,8 @@ class Converters() {
         return Chat(
             chatId = document.getString("chatId"),
             chatTitle = document.getString("chatTitle"),
-            members = document.get("members") as List<String>,
+            members =  document.get("members") as List<String>,
+            memberFcmTokens = document.get("memberFcmTokens") as List<String>,
             lastMessage = document.getString("lastMessage"),
             timestamp = document.getTimestamp("timestamp"),
             messages =toMessageList(document.get("messages") as List<Map<String, Any>>).toMutableList(),
@@ -450,6 +456,7 @@ class Converters() {
             "chatId" to chat.chatId,
             "chatTitle" to chat.chatTitle,
             "members" to chat.members,
+            "memberFcmTokens" to chat.memberFcmTokens,
             "lastMessage" to chat.lastMessage,
             "timestamp" to chat.timestamp,
             "messages" to messageMapList,

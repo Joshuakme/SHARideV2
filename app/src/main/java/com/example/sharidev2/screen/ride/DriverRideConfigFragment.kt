@@ -75,11 +75,15 @@ class DriverRideConfigFragment : Fragment() {
 
 
         createRideViewModel.origin.observe(viewLifecycleOwner) {origin ->
-            originText.text = origin.name
+            if(origin != null) {
+                originText.text = origin.name
+            }
         }
 
         createRideViewModel.destination.observe(viewLifecycleOwner) {destination ->
-            destinationText.text = destination.name
+            if(destination != null) {
+                destinationText.text = destination.name
+            }
         }
 
 

@@ -7,10 +7,14 @@ import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.sharidev2.data.model.Gender
 import com.example.sharidev2.databinding.FragmentEditGenderBinding
 import com.example.sharidev2.viewmodel.PersonalInfoViewModel
+import com.example.sharidev2.viewmodel.SharedCurrentUserViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -18,7 +22,7 @@ import kotlinx.coroutines.launch
 class EditGenderFragment : Fragment() {
 
     private lateinit var binding: FragmentEditGenderBinding
-    private lateinit var viewModel: PersonalInfoViewModel
+    private val currentUserViewModel: SharedCurrentUserViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,7 +39,6 @@ class EditGenderFragment : Fragment() {
         val saveGenderBtn = binding.btnUpdateGender
         val radioGroupGender = binding.radioGroupGender
 
-        viewModel = ViewModelProvider(requireActivity()).get(PersonalInfoViewModel::class.java)
 
         backEditGenderBtn.setOnClickListener {
             findNavController().popBackStack()
@@ -45,22 +48,25 @@ class EditGenderFragment : Fragment() {
             val selectedRadioButtonId = radioGroupGender.checkedRadioButtonId
             if (selectedRadioButtonId != -1) {
                 val selectedGender = view.findViewById<RadioButton>(selectedRadioButtonId).text.toString()
-                GlobalScope.launch(Dispatchers.Main) {
-                    viewModel.updateGender(selectedGender)
-                    Toast.makeText(requireContext(), "Gender updated successfully", Toast.LENGTH_SHORT).show()
-                    findNavController().popBackStack()
+                lifecycleScope.launch(Dispatchers.IO) {
+                    currentUserViewModel.updateGender(selectedGender)
+
+                    requireActivity().runOnUiThread {
+                        Toast.makeText(requireContext(), "Gender updated successfully", Toast.LENGTH_SHORT).show()
+                        findNavController().popBackStack()
+                    }
                 }
             } else {
                 Toast.makeText(requireContext(), "Please select a gender", Toast.LENGTH_SHORT).show()
             }
         }
 
-        viewModel.gender.observe(viewLifecycleOwner) { gender ->
+        currentUserViewModel.gender.observe(viewLifecycleOwner) { gender ->
             if (gender != null) {
-                if (gender == "Male") {
-                    binding.radioButtonMale.isChecked = true
-                } else {
-                    binding.radioButtonFemale.isChecked = true
+                when(gender) {
+                    Gender.Male -> binding.radioButtonMale.isChecked = true
+
+                    else -> binding.radioButtonFemale.isChecked = true
                 }
             }
         }

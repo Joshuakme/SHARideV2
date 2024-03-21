@@ -13,6 +13,7 @@ import android.widget.ImageView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -26,6 +27,7 @@ import com.example.sharidev2.databinding.FragmentPersonalInformationBinding
 import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.FirebaseClient
 import com.example.sharidev2.viewmodel.PersonalInfoViewModel
+import com.example.sharidev2.viewmodel.SharedCurrentUserViewModel
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.auth.FirebaseAuth
 
@@ -34,7 +36,8 @@ class PersonalInformationFragment : Fragment() {
     // Global Variables Init
     private lateinit var binding: FragmentPersonalInformationBinding
     private lateinit var viewModel: PersonalInfoViewModel
-    private val personalInformationViewModel: PersonalInfoViewModel by viewModels()
+    private val currentUserViewModel: SharedCurrentUserViewModel by activityViewModels()
+//    private val personalInformationViewModel: PersonalInfoViewModel by viewModels()
     private lateinit var imagePickLauncher: ActivityResultLauncher<Intent>
     private lateinit var selectedImageUri: Uri
     private lateinit var profilePic: ImageView
@@ -97,7 +100,7 @@ class PersonalInformationFragment : Fragment() {
         // Initialize ViewModel
         viewModel = ViewModelProvider(requireActivity())[PersonalInfoViewModel::class.java]
 
-        personalInformationViewModel.selectedImageUri.observe(viewLifecycleOwner, Observer { uri ->
+        currentUserViewModel.imageUri.observe(viewLifecycleOwner) { uri ->
             // Update front image view
             if(uri != null) {
                 if (isUrl(uri.toString())) {
@@ -109,7 +112,7 @@ class PersonalInformationFragment : Fragment() {
                     profilePic.setImageURI(uri)
                 }
             }
-        })
+        }
 
 
         // Fetch display name, gender and mobile from Firestore

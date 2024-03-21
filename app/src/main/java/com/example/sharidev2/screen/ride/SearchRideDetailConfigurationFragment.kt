@@ -13,6 +13,7 @@ import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentSearchRideDetailConfigurationBinding
 import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
+import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
 import java.time.LocalTime
 import java.util.Calendar
@@ -88,12 +89,16 @@ class SearchRideDetailConfigurationFragment : Fragment(){
 
         // Search Ride Origin Location
         searchRideViewModel.origin.observe(viewLifecycleOwner) { origin ->
-            originRideDetailText.text = origin.name
+            if(origin != null) {
+                originRideDetailText.text = origin.name
+            }
         }
 
         // Search Ride Destination Location
         searchRideViewModel.destination.observe(viewLifecycleOwner) { destination ->
-            destinationRideDetailText.text = destination.name
+            if(destination != null) {
+                destinationRideDetailText.text = destination.name
+            }
         }
 
         // Search Ride Driver's Gender
@@ -130,11 +135,11 @@ class SearchRideDetailConfigurationFragment : Fragment(){
         }
 
         rideDateSpinner.setOnClickListener {
-            //showDatePickerDialog()
+            showTimingDialog()
         }
 
         rideTimeSpinner.setOnClickListener {
-            //showTimePickerDialog()
+            showTimingDialog()
         }
     }
 
@@ -147,6 +152,21 @@ class SearchRideDetailConfigurationFragment : Fragment(){
     private fun showVehicleTypeDialog() {
         val dialogFragment = VehicleTypeBottomDialogFragment()
         dialogFragment.show(childFragmentManager, dialogFragment.tag)
+    }
+
+    private fun showTimingDialog() {
+        val dialogFragment = TimingBottomDialogFragment(object: TimingBottomDialogFragment.DialogClickListener {
+            override fun onCancelClick() {
+                // Do nothing
+            }
+
+            override fun onConfirmClick(datetime: Timestamp) {
+                searchRideViewModel.setRideDateTime(datetime)
+            }
+
+        })
+        dialogFragment.show(childFragmentManager, dialogFragment.tag)
+        dialogFragment.isCancelable = false
     }
 
 

@@ -9,6 +9,7 @@ data class Chat (
     val chatId: String ?= null,
     val chatTitle: String ?= null,
     val members: List<String>? = null,
+    val memberFcmTokens: List<String>? = null,
     val lastMessage: String? = null,
     val timestamp: Timestamp? = null,
     var messages: MutableList<Message>? = mutableListOf(),
