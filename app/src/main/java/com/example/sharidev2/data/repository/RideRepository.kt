@@ -126,7 +126,7 @@ class RideRepository() {
             try {
                 val rideRef = rideCollectionRef.document(rideId)
 
-                newPassenger.user = FirebaseClient.getCurrentUser()
+                newPassenger.user = FirebaseClient.getUserFromUid(newPassenger.userUid!!)
 
 
                 val rideDoc = rideRef.get().await()
@@ -137,11 +137,10 @@ class RideRepository() {
                 passengers.add(newPassenger)
 
                 val passengerIds = (rideDoc.get("passengerIds") as List<String>).toMutableList()
-                passengerIds.add(newPassenger.userUid!!)
+                passengerIds.add(newPassenger.userUid)
 
                 rideRef.update("passengers", passengers)
                 rideRef.update("passengerIds", passengerIds)
-
 
 
                 Constants.FIREBASE_REQUEST_SUCCESS
@@ -190,10 +189,13 @@ class RideRepository() {
                     val chatData = chatDocSnapshot.data
                     if(chatData != null) {
                         val chatMemberList = (chatData["members"] as List<String>).toMutableList()
+                        val chatMemberFcmTokenList = (chatData["memberFcmTokens"] as List<String>).toMutableList()
 
                         chatMemberList.add(currentUser!!.uid)
+                        chatMemberFcmTokenList.add(acceptedPassenger.user!!.fcmToken!!)
 
                         chatRef.document(chatId).update("members", chatMemberList)
+                        chatRef.document(chatId).update("memberFcmTokens", chatMemberFcmTokenList)
                     }
                 }
 

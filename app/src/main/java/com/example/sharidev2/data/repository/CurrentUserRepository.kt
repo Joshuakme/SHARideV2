@@ -2,11 +2,13 @@ package com.example.sharidev2.data.repository
 
 import android.net.Uri
 import android.util.Log
+import com.example.sharidev2.data.model.Chat
 import com.example.sharidev2.data.model.User
 import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.Converters
 import com.example.sharidev2.utility.FirebaseClient
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -250,6 +252,23 @@ class CurrentUserRepository {
 
 
     // UTILITY
+    fun listenForUserUpdate(userUid: String, listener: (User) -> Unit): ListenerRegistration {
+        return userCollectionRef.document(userUid)
+            .addSnapshotListener {snapshots, error ->
+            if (error != null) {
+                // Handle error
+                return@addSnapshotListener
+            }
+
+            val userData = snapshots?.data
+
+            if(userData != null) {
+               val user = converters.toUser(userData)
+                listener(user)
+            }
+        }
+    }
+
     fun signOut() {
         firebaseAuth.signOut()
     }

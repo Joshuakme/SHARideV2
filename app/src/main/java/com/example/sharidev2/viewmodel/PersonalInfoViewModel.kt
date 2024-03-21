@@ -101,9 +101,6 @@ class PersonalInfoViewModel: ViewModel() {
 
 
 
-
-
-
         //Fetches the mobile phone of the current user from the database and updates the LiveData
         fun fetchMobileFromDatabase() {
             // Check if the current user is authenticated

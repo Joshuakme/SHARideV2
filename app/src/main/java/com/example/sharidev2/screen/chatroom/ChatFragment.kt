@@ -177,12 +177,10 @@ class ChatFragment : Fragment() {
             val newMessage = Message(text = message)
 
             loadingSendMessage(Constants.UI_DATA_LOADING)
-            lifecycleScope.launch(Dispatchers.IO) {
+            lifecycleScope.launch(Dispatchers.Main) {
                 val respond = chatViewModel.addMessageToChat(chat.chatId!!, newMessage)
 
-                activity?.runOnUiThread {
-                    loadingSendMessage(respond)
-                }
+                loadingSendMessage(respond)
             }
         }
 

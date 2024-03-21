@@ -263,7 +263,6 @@ class MainActivity : AppCompatActivity() {
         FirebaseClient.firebaseMessaging.token.addOnCompleteListener {task ->
             if(!task.isSuccessful) {
                 Log.e(TAG, "Fetching FCM registration token failed", task.exception)
-
             }
 
             // Get new FCM registration token
@@ -273,7 +272,6 @@ class MainActivity : AppCompatActivity() {
 
             // Log and toast
             Log.e(TAG, "FirebaseMsg Token: $token")
-            Toast.makeText(baseContext, "FirebaseMsg Token: $token", Toast.LENGTH_SHORT).show()
         }
     }
 

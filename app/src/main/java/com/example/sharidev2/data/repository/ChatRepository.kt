@@ -161,11 +161,12 @@ class ChatRepository {
 
                 jsonObject.put("notification", notificationObj)
                 jsonObject.put("data", dataObj)
-                jsonObject.put("to", chatMembersFcmTokens)
+//                jsonObject.put("to", chatMembersFcmTokens)
+                jsonObject.put("to", "djTypU80RS6b77N0q6S9YZ:APA91bEkOT_nRDS7KxYFUD-HzEw3ZK5qE47YgXEmqugCuLg0YUqb-7xU9a_msuguJAYkCReX6FBbPBC5NCKB2mOPFSsdfbODJl0Tz_qibGCFocgDLZpKMmeAL7H2oCttkp2bf_rx96m2")
 
                 callApi(jsonObject)
             } catch (e: Exception) {
-
+                Log.e("Chat Repository: sendNotification()", e.message.toString())
             }
         }
     }
@@ -174,7 +175,7 @@ class ChatRepository {
         val JSON: MediaType = "application/json".toMediaType()
         val client = OkHttpClient()
 
-        val fcmUrl = "https://fcm.googleapis.com/fcm/send"
+        val fcmUrl = "https://fcm.googleapis.com/v1/projects/sharide-777b0/messages:send"
 
         val body = jsonObject.toString().toRequestBody(JSON)
 

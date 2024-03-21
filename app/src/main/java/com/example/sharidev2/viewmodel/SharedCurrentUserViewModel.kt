@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.sharidev2.data.model.Chat
 import com.example.sharidev2.data.model.Gender
 import com.example.sharidev2.data.model.RideOption
 import com.example.sharidev2.data.model.User
@@ -13,6 +14,7 @@ import com.example.sharidev2.data.repository.CurrentUserRepository
 import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.FirebaseClient
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.launch
 
 class SharedCurrentUserViewModel(
@@ -70,6 +72,8 @@ class SharedCurrentUserViewModel(
                     user.joinedDate?.let { setJoinedDate(it) }
                 }
             }
+
+            startListeningForUserUpdate()
         }
     }
 
@@ -81,36 +85,36 @@ class SharedCurrentUserViewModel(
     }
 
     // Display Name
-    private fun setDisplayName(newDisplayName: String) {
+    fun setDisplayName(newDisplayName: String) {
         savedStateHandle[DISPLAY_NAME_KEY] = newDisplayName
     }
 
     // Email
-    private fun setEmail(newEmail: String) {
+    fun setEmail(newEmail: String) {
         savedStateHandle[EMAIL_KEY] = newEmail
     }
 
     // Phone Number
-    private fun setPhoneNumber(newPhoneNumber: String) {
+    fun setPhoneNumber(newPhoneNumber: String) {
         savedStateHandle[PHONE_NUMBER_KEY] = newPhoneNumber
     }
 
     // Image Uri
-    private fun setImageUri(newImageUri: Uri) {
+    fun setImageUri(newImageUri: Uri) {
         savedStateHandle[IMAGE_URI_KEY] = newImageUri
     }
 
     // Ride Option
-    private fun setRideOption(newRideOption: RideOption) {
+    fun setRideOption(newRideOption: RideOption) {
         savedStateHandle[RIDE_OPTION_KEY] = newRideOption
     }
 
     // Gender
-    private fun setGender(newGender: String) {
+    fun setGender(newGender: String) {
         savedStateHandle[RIDE_OPTION_KEY] = Gender.valueOf(newGender)
     }
 
-    private fun setGender(newGender: Gender) {
+    fun setGender(newGender: Gender) {
         savedStateHandle[RIDE_OPTION_KEY] = newGender
     }
 
@@ -144,6 +148,8 @@ class SharedCurrentUserViewModel(
     // UPDATES
     // Updates the display name of the user in the repository
     fun updateDisplayName(newDisplayName: String) {
+        setDisplayName(newDisplayName)
+
         viewModelScope.launch {
             repository.updateDisplayName(newDisplayName)
         }
@@ -151,11 +157,13 @@ class SharedCurrentUserViewModel(
 
     // Updates the mobile phone of the user in the repository
     suspend fun updateMobile(newMobile: String) {
+        setPhoneNumber(newMobile)
         repository.updateMobile(newMobile)
     }
 
     // Updates the gender of the user in the repository
     suspend fun updateGender(newGender: String) {
+        setGender(newGender)
         repository.updateGender(newGender)
     }
 
@@ -165,6 +173,25 @@ class SharedCurrentUserViewModel(
     private fun resetData() {
         savedStateHandle[USER_KEY] = null
         savedStateHandle[FCM_TOKEN_KEY] = null
+    }
+
+    private fun startListeningForUserUpdate() {
+        if(user.isInitialized && user.value?.uid != null) {
+            repository.listenForUserUpdate(user.value!!.uid!!, object: (User) -> Unit {
+                override fun invoke(newUser: User) {
+                    setUser(newUser)
+
+                    newUser.displayName?.let { setDisplayName(it) }
+                    newUser.email?.let { setEmail(it) }
+                    newUser.phoneNumber?.let { setPhoneNumber(it) }
+                    newUser.photoUri?.let { setImageUri(it) }
+                    newUser.rideOption?.let { setRideOption(it) }
+                    newUser.gender?.let { setGender(it) }
+                    newUser.fcmToken?.let { setFcmToken(it) }
+                    newUser.joinedDate?.let { setJoinedDate(it) }
+                }
+            })
+        }
     }
 
     fun isLoggedIn(): Boolean {
