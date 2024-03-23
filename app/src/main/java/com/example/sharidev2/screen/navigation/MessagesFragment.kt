@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,18 +17,21 @@ import com.example.sharidev2.R
 import com.example.sharidev2.adapter.ChatAdapter
 import com.example.sharidev2.data.model.Chat
 import com.example.sharidev2.data.model.Message
+import com.example.sharidev2.data.model.User
 import com.example.sharidev2.databinding.FragmentMessagesBinding
 import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.FirebaseClient
 import com.example.sharidev2.viewmodel.ChatViewModel
+import com.example.sharidev2.viewmodel.SharedCurrentUserViewModel
 
 class MessagesFragment : Fragment() {
     // Variables Init
     private lateinit var binding: FragmentMessagesBinding
 
     private val chatViewModel: ChatViewModel by viewModels()
-    private val currentUser = FirebaseClient.firebaseAuth.currentUser
+    private val currentUserViewModel: SharedCurrentUserViewModel by activityViewModels()
+    private var currentUser: User? = null
 
     private lateinit var context: Context
 
@@ -35,7 +39,7 @@ class MessagesFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding =  DataBindingUtil.inflate(inflater, R.layout.fragment_messages, container, false)
 
@@ -48,6 +52,7 @@ class MessagesFragment : Fragment() {
             }
         }
 
+        currentUser = currentUserViewModel.user.value
 
         // ELEMENT VARIABLES
         val testChatCard = binding.cardChat
@@ -61,7 +66,7 @@ class MessagesFragment : Fragment() {
 
 
         if(currentUser?.uid != null) {
-            chatViewModel.startListeningForUserChatsUpdates(currentUser.uid, object: (List<Chat>) -> Unit {
+            chatViewModel.startListeningForUserChatsUpdates(currentUser!!.uid!!, object: (List<Chat>) -> Unit {
                 override fun invoke(newChatList: List<Chat>) {
                     if(newChatList.isNotEmpty()) {
                         val newSortedChatList = newChatList.sortedByDescending { it.timestamp }
@@ -93,6 +98,8 @@ class MessagesFragment : Fragment() {
                     }
                 }
             })
+        } else {
+            loadingMessages(Constants.UI_DATA_FAILED)
         }
 
 
@@ -131,6 +138,12 @@ class MessagesFragment : Fragment() {
                 chatsRecyclerView.visibility = View.GONE
                 chatLoadingProgressCl.visibility = View.GONE
                 chatLoadErrorCard.visibility = View.VISIBLE
+            }
+
+            else -> {
+                chatsRecyclerView.visibility = View.GONE
+                chatLoadingProgressCl.visibility = View.GONE
+                chatLoadErrorCard.visibility = View.GONE
             }
         }
     }

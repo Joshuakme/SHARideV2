@@ -62,8 +62,8 @@ class CountryCodeBottomDialogFragment :
     private fun getInitCountryList(): List<Country> {
         return listOf(
             Country("Malaysia", 60),
-            Country("Singapore", 65),
-            Country("Indonesia", 62)
+//            Country("Singapore", 65),
+//            Country("Indonesia", 62)
         )
     }
 
@@ -85,7 +85,7 @@ class CountryCodeBottomDialogFragment :
     private fun filterCountries(query: String?) {
         val filteredList = initCountryList.filter { country ->
                 country.name!!.contains(query.orEmpty(), true) ||
-                        country.countryCode.toString()!!.contains(query.orEmpty(), true)
+                        country.countryCode.toString().contains(query.orEmpty(), true)
 
         }
         adapter.updateData(filteredList)

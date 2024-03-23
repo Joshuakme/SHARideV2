@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.sharidev2.data.model.Chat
 import com.example.sharidev2.data.model.Gender
 import com.example.sharidev2.data.model.RideOption
 import com.example.sharidev2.data.model.User
@@ -14,7 +13,6 @@ import com.example.sharidev2.data.repository.CurrentUserRepository
 import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.FirebaseClient
 import com.google.firebase.Timestamp
-import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.launch
 
 class SharedCurrentUserViewModel(
@@ -27,6 +25,7 @@ class SharedCurrentUserViewModel(
 
     // DATA KEY CONSTANT
     private val USER_KEY = "user"
+    private val USER_UID_KEY = "user_uid"
     private val DISPLAY_NAME_KEY = "display_name"
     private val EMAIL_KEY = "email"
     private val PHONE_NUMBER_KEY = "phone_number"
@@ -38,10 +37,13 @@ class SharedCurrentUserViewModel(
     private val FCM_TOKEN_KEY = "fcm_token"
     private val JOINED_DATE_KEY = "joined_date"
 
+    private val SIGN_OUT_RESULT_KEY = "sign_out_result"
+
 
     // INTERNAL DATA MEMBERS
     // FCM Token
     val user: LiveData<User?> = savedStateHandle.getLiveData(USER_KEY)
+    val userUid: LiveData<String?> = savedStateHandle.getLiveData(USER_UID_KEY)
     val displayName: LiveData<String?> = savedStateHandle.getLiveData(DISPLAY_NAME_KEY)
     val email: LiveData<String?> = savedStateHandle.getLiveData(EMAIL_KEY)
     val phoneNumber: LiveData<String?> = savedStateHandle.getLiveData(PHONE_NUMBER_KEY)
@@ -51,21 +53,27 @@ class SharedCurrentUserViewModel(
     val fcmToken: LiveData<String?> = savedStateHandle.getLiveData(FCM_TOKEN_KEY)
     val joinedDate: LiveData<Timestamp?> = savedStateHandle.getLiveData(JOINED_DATE_KEY)
 
+    // STATUS
+    val signOutResult: LiveData<Boolean> = savedStateHandle.getLiveData(SIGN_OUT_RESULT_KEY)
+
 
     init {
         if(!user.isInitialized && currentUser != null) {
+            setDisplayName(currentUser.displayName!!)
+            setImageUri(currentUser.photoUrl!!)
+
             viewModelScope.launch {
                 val user = repository.getCurrentUser()
 
-                Log.e("Current User Repository", "user is null: ${user == null}")
+                Log.e("Current User ViewModel", "user is null: ${user == null}")
 
                 if(user != null) {
                     setUser(user)
 
-                    user.displayName?.let { setDisplayName(it) }
+                    //user.displayName?.let { setDisplayName(it) }
                     user.email?.let { setEmail(it) }
                     user.phoneNumber?.let { setPhoneNumber(it) }
-                    user.photoUri?.let { setImageUri(it) }
+                    //user.photoUri?.let { setImageUri(it) }
                     user.rideOption?.let { setRideOption(it) }
                     user.gender?.let { setGender(it) }
                     user.fcmToken?.let { setFcmToken(it) }
@@ -82,6 +90,30 @@ class SharedCurrentUserViewModel(
     // User
     private fun setUser(newUser: User) {
         savedStateHandle[USER_KEY] = newUser
+
+        viewModelScope.launch {
+            val user = repository.getCurrentUser()
+
+            Log.e("Current User ViewModel", "user is null: ${user == null}")
+
+            if(user != null) {
+                setUser(user)
+
+                user.displayName?.let { setDisplayName(it) }
+                user.email?.let { setEmail(it) }
+                user.phoneNumber?.let { setPhoneNumber(it) }
+                user.photoUri?.let { setImageUri(it) }
+                user.rideOption?.let { setRideOption(it) }
+                user.gender?.let { setGender(it) }
+                user.fcmToken?.let { setFcmToken(it) }
+                user.joinedDate?.let { setJoinedDate(it) }
+            }
+        }
+    }
+
+    // User Uid
+    private fun setUserUid(newUserUid: String) {
+        savedStateHandle[USER_UID_KEY] = newUserUid
     }
 
     // Display Name
@@ -170,9 +202,21 @@ class SharedCurrentUserViewModel(
 
 
     // OTHER
+    private fun setSignOutResult(success: Boolean) {
+        savedStateHandle[SIGN_OUT_RESULT_KEY] = success
+    }
+
     private fun resetData() {
         savedStateHandle[USER_KEY] = null
+        savedStateHandle[DISPLAY_NAME_KEY] = null
+        savedStateHandle[EMAIL_KEY] = null
+        savedStateHandle[PHONE_NUMBER_KEY] = null
+        savedStateHandle[IMAGE_URI_KEY] = null
+        savedStateHandle[RIDE_OPTION_KEY] = null
+        savedStateHandle[RIDE_OPTION_KEY] = null
         savedStateHandle[FCM_TOKEN_KEY] = null
+        savedStateHandle[JOINED_DATE_KEY] = null
+        savedStateHandle[SIGN_OUT_RESULT_KEY] = false
     }
 
     private fun startListeningForUserUpdate() {
@@ -198,9 +242,23 @@ class SharedCurrentUserViewModel(
         return user.value != null
     }
 
-    fun signOut() {
-        repository.signOut()
+    suspend fun signIn() {
+        val newUser = FirebaseClient.getCurrentUser()
 
-        resetData()
+        if(newUser != null)  {
+            setUser(newUser)
+
+            setDisplayName(currentUser!!.displayName!!)
+            setImageUri(currentUser.photoUrl!!)
+        }
+    }
+
+    fun signOut() {
+        repository.signOut(object: (Boolean) -> Unit {
+            override fun invoke(success: Boolean) {
+                setSignOutResult(success)
+                resetData()
+            }
+        })
     }
 }

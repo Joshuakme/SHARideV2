@@ -56,7 +56,7 @@ class VehicleAdapter (
     }
 
     override fun getItemCount(): Int {
-        return vehicleList!!.size
+        return vehicleList.size
     }
 
     // Method to update data

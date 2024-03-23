@@ -28,6 +28,5 @@ class Constants {
         val NOTIF_MESSAGE_CHANNEL = 3000
         val NOTIF_MESSAGE = 3001
 
-
     }
 }

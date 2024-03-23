@@ -224,6 +224,31 @@
 
             </com.google.android.material.card.MaterialCardView>
 
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_error_user_not_authenticated"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                app:cardBackgroundColor="#00FFFFFF"
+                app:cardCornerRadius="0dp"
+                app:cardForegroundColor="#00FFFFFF"
+                app:layout_constraintHeight_default="percent"
+                app:layout_constraintHeight_percent="0.5"
+                app:strokeColor="#00FFFFFF"
+                tools:visibility="gone">
+
+                <TextView
+                    android:id="@+id/text_error_user_not_authenticated"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/messages_messages_error_user_not_authenticated"
+                    android:textColor="@android:color/system_neutral1_500"
+                    android:textSize="@dimen/fs_fragment_loading_error_text" />
+
+            </com.google.android.material.card.MaterialCardView>
+
             <!--  Progress Bar  -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cl_chat_loading_spinner"

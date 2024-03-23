@@ -3,7 +3,6 @@ package com.example.sharidev2
 
 import android.Manifest
 import android.app.ActivityManager
-import android.app.PendingIntent
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
@@ -19,23 +18,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.sharidev2.adapter.MessageAdapter
-import com.example.sharidev2.data.model.Chat
 import com.example.sharidev2.databinding.ActivityMainBinding
 import com.example.sharidev2.service.LocationService
 import com.example.sharidev2.service.NetworkService
-import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.Constants.Companion.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
 import com.example.sharidev2.utility.Constants.Companion.PERMISSIONS_REQUEST_POST_NOTIFICATION
 import com.example.sharidev2.utility.FirebaseClient
-import com.example.sharidev2.utility.UserClient
 import com.example.sharidev2.viewmodel.ChatViewModel
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
 import com.example.sharidev2.viewmodel.SharedCurrentUserViewModel
@@ -45,7 +36,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
 
 class MainActivity : AppCompatActivity() {
@@ -54,7 +44,6 @@ class MainActivity : AppCompatActivity() {
 
     private val currentLocationViewModel: CurrentLocationViewModel by viewModels()
     private val currentUserViewModel: SharedCurrentUserViewModel by viewModels()
-    private val chatViewModel: ChatViewModel by viewModels()
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var locationPermissionGranted = false
@@ -64,6 +53,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+
+        // DATA
+        getFCMToken()
+
 
         // Variables
         val navHostFragment = supportFragmentManager.findFragmentById(binding.fragmentContainerMain.id) as NavHostFragment
@@ -76,10 +69,6 @@ class MainActivity : AppCompatActivity() {
 
 
         Places.initialize(applicationContext, getString(R.string.google_api_key))
-
-        lifecycleScope.launch(Dispatchers.IO) {
-            UserClient.setCurrentUser(FirebaseClient.firebaseAuth.currentUser?.uid ?: "")
-        }
 
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -111,7 +100,6 @@ class MainActivity : AppCompatActivity() {
 //            setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
 //            window.statusBarColor = Color.TRANSPARENT
 //        }
-        getFCMToken()
     }
 
 
@@ -260,20 +248,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getFCMToken() {
-        FirebaseClient.firebaseMessaging.token.addOnCompleteListener {task ->
-            if(!task.isSuccessful) {
-                Log.e(TAG, "Fetching FCM registration token failed", task.exception)
-            }
+        val preferences = this.getPreferences(Context.MODE_PRIVATE)
+        val tokenStored = preferences.getString("deviceToken", "")
 
-            // Get new FCM registration token
-            val token = task.result
-
-            currentUserViewModel.setFcmToken(token)
-
-            // Log and toast
-            Log.e(TAG, "FirebaseMsg Token: $token")
-        }
+//        if(currentUserViewModel.userUid.value != null) {
+//            lifecycleScope.launch {
+//                val token = FirebaseClient.getUserFcmToken(currentUserViewModel.userUid.value!!)
+//
+//                if (tokenStored.isNullOrBlank() || tokenStored != token)
+//                {
+//                    currentUserViewModel.setFcmToken(token)
+//
+//
+//                }
+//            }
+//        }
     }
+
 
 
     private fun getPostNotificationPermission() {

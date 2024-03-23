@@ -15,6 +15,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.adapter.BookingTimeLineAdapter
@@ -79,6 +82,7 @@ class BookingDetailPassengerFragment : Fragment() {
     private fun setupTextData() {
         val bookingDateTimeText = binding.textViewBookingDetailPassengerFragmentTitleDate
         val bookingIdText = binding.textBookingDetailPassengerBookingId
+        val driverImg = binding.imgBookingDetailPassengerDriver
         val driverNameText = binding.textBookingDetailPassengerDriverName
         val driverPhoneNumberText = binding.textBookingDetailPassengerDriverPhoneNumber
         val ridePriceText = binding.textBokingDetailPassengerRidePrice
@@ -93,6 +97,13 @@ class BookingDetailPassengerFragment : Fragment() {
         bookingIdText.text = ride.id
 
         // Driver
+        ride.driver.user?.let {
+            Glide.with(requireContext())
+                .load(it.photoUri.toString())
+                .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Disable disk caching
+                .into(driverImg)
+            driverImg.clearColorFilter()
+        }
         driverNameText.text = ride.driver.user?.displayName ?: ""
         driverPhoneNumberText.text = CommonUtils.formatHiddenPhoneNumber(ride.driver.user?.phoneNumber ?: "")
 
@@ -137,8 +148,6 @@ class BookingDetailPassengerFragment : Fragment() {
                     polyline.color = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorOnSurfaceInverse)
                 }
             }
-
-
 
 
             val originColor = CommonUtils().getMapOriginMarkerColor(requireContext())

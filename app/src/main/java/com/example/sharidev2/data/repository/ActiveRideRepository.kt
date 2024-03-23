@@ -6,7 +6,6 @@ import com.example.sharidev2.data.model.Passenger
 import com.example.sharidev2.data.model.RideParticipant
 import com.example.sharidev2.data.model.UserLocation
 import com.example.sharidev2.utility.FirebaseClient
-import com.example.sharidev2.utility.UserClient
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await

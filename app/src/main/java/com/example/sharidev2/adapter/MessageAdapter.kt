@@ -10,9 +10,9 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
-import com.example.sharidev2.GlideApp
 import com.example.sharidev2.R
 import com.example.sharidev2.data.model.Message
 import com.example.sharidev2.utility.CommonUtils
@@ -144,7 +144,7 @@ class MessageAdapter(
 
                 // Check user profile image visibility
                 if(message.photoUrl != null) {
-                    GlideApp.with(context)
+                    Glide.with(context)
                         .load(message.photoUrl)
                         .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.AUTOMATIC)) // Disable disk caching
                         .into(viewHolder.messageUserImg)

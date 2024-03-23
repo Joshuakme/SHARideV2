@@ -165,7 +165,7 @@ class ActiveRideFragment: Fragment() {
 
                     GoogleMapUtils().addMarker(
                         googleMap,
-                        activeRide.destination!!.geolocation!!,
+                        activeRide.destination.geolocation!!,
                         CommonUtils().getLocationBitmapFromVector(requireContext(), colorError)
                     )
 

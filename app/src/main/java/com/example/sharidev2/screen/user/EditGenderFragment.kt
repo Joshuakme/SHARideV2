@@ -48,13 +48,11 @@ class EditGenderFragment : Fragment() {
             val selectedRadioButtonId = radioGroupGender.checkedRadioButtonId
             if (selectedRadioButtonId != -1) {
                 val selectedGender = view.findViewById<RadioButton>(selectedRadioButtonId).text.toString()
-                lifecycleScope.launch(Dispatchers.IO) {
+                lifecycleScope.launch(Dispatchers.Main) {
                     currentUserViewModel.updateGender(selectedGender)
 
-                    requireActivity().runOnUiThread {
-                        Toast.makeText(requireContext(), "Gender updated successfully", Toast.LENGTH_SHORT).show()
-                        findNavController().popBackStack()
-                    }
+                    Toast.makeText(requireContext(), "Gender updated successfully", Toast.LENGTH_SHORT).show()
+                    findNavController().popBackStack()
                 }
             } else {
                 Toast.makeText(requireContext(), "Please select a gender", Toast.LENGTH_SHORT).show()

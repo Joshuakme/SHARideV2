@@ -46,6 +46,6 @@ class PassengerCapacityAdapter(
     }
 
     override fun getItemCount(): Int {
-        return capacityList!!.size
+        return capacityList.size
     }
 }

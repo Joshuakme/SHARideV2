@@ -11,9 +11,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
-import com.example.sharidev2.GlideApp
 import com.example.sharidev2.R
 import com.example.sharidev2.data.model.Chat
 import com.example.sharidev2.data.model.Message
@@ -73,7 +73,7 @@ class ChatAdapter(
         val context = holder.itemView.context
 
         if(chat.messages!!.size > 1) {
-            GlideApp.with(holder.itemView.context)
+            Glide.with(holder.itemView.context)
                 .load(chat.messages!![1].photoUrl)
                 .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.AUTOMATIC))
                 .into(holder.chatPic)

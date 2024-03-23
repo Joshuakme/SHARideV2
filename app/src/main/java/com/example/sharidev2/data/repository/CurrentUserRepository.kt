@@ -19,6 +19,7 @@ class CurrentUserRepository {
     private val firestore = FirebaseClient.firestore
     private val firebaseAuth = FirebaseClient.firebaseAuth
     private val firebaseStorage = FirebaseClient.firebaseStorage
+    private val firebaseMessaging = FirebaseClient.firebaseMessaging
 
     // References
     private val userCollectionRef = firestore.collection("user")
@@ -269,7 +270,14 @@ class CurrentUserRepository {
         }
     }
 
-    fun signOut() {
-        firebaseAuth.signOut()
+    fun signOut(listener: (Boolean) -> Unit) {
+        firebaseMessaging.deleteToken().addOnCompleteListener {task ->
+            if(task.isSuccessful) {
+                firebaseAuth.signOut()
+                listener(true)
+            } else {
+                listener(false)
+            }
+        }
     }
 }

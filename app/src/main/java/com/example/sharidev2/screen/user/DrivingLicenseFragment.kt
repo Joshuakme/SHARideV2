@@ -1,12 +1,8 @@
 import android.Manifest
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
-import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +12,6 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
@@ -29,19 +24,13 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentDrivingLicenseBinding
-import com.example.sharidev2.databinding.FragmentDrivingLicenseBindingImpl
 import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.FirebaseClient
 import com.example.sharidev2.viewmodel.LicenseUploadViewModel
 import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
-import java.io.IOException
-import java.net.URL
-import java.text.SimpleDateFormat
-import java.util.*
 
 class DrivingLicenseFragment : Fragment() {
     private lateinit var binding: FragmentDrivingLicenseBinding
@@ -150,7 +139,7 @@ class DrivingLicenseFragment : Fragment() {
 
     private fun initImageUri() {
         frontImageUri = createImageUri("${currentUser!!.uid}_license_front")
-        backImageUri = createImageUri("${currentUser!!.uid}_license_back")
+        backImageUri = createImageUri("${currentUser.uid}_license_back")
 
         // Initialize ActivityResultLauncher for taking pictures
         registerPictureLauncher()

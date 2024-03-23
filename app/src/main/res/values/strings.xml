@@ -135,6 +135,7 @@
     <string name="messages_section_title_notification">Notification</string>
     <string name="messages_section_title_chat">Chat</string>
     <string name="messages_messages_error_loading">Sorry, no chat found!</string>
+    <string name="messages_messages_error_user_not_authenticated">Please login to proceed...</string>
     <string name="messages_messages_chat_input_hint">Type a message...</string>
 
 

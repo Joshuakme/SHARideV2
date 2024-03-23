@@ -36,7 +36,7 @@ class SearchRideAdapter(
     }
 
     override fun getItemCount(): Int {
-        return searchPlaceList!!.size
+        return searchPlaceList.size
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

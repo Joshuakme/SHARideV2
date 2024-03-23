@@ -8,9 +8,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
-import com.example.sharidev2.GlideApp
 import com.example.sharidev2.R
 import com.example.sharidev2.data.model.Passenger
 import com.example.sharidev2.utility.CommonUtils
@@ -60,7 +60,7 @@ class PassengerRequestAdapter(
 
         // Passenger Image
         if(passenger.user?.photoUri != null) {
-            GlideApp.with(context)
+            Glide.with(context)
                 .load(passenger.user!!.photoUri.toString())
                 .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Disable disk caching
                 .into(holder.passengerImg)

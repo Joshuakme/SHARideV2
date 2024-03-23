@@ -1,5 +1,6 @@
 package com.example.sharidev2.screen.user
 
+import android.content.Context
 import androidx.fragment.app.Fragment
 import android.os.Bundle
 import android.text.Editable
@@ -19,9 +20,10 @@ import com.example.sharidev2.R
 import com.example.sharidev2.data.model.RideOption
 import com.example.sharidev2.data.model.User
 import com.example.sharidev2.databinding.FragmentLoginBinding
+import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.FirebaseClient
-import com.example.sharidev2.utility.UserClient
 import com.example.sharidev2.viewmodel.LoginViewModel
+import com.example.sharidev2.viewmodel.SharedCurrentUserViewModel
 import com.google.android.gms.tasks.Task
 import com.google.android.material.card.MaterialCardView
 import com.google.firebase.FirebaseException
@@ -43,20 +45,21 @@ class LoginFragment : Fragment() {
 
     private lateinit var binding: FragmentLoginBinding
     private val loginViewModel: LoginViewModel by activityViewModels()
+    private val currentUserViewModel: SharedCurrentUserViewModel by activityViewModels()
 
     private var timeoutSeconds: Long = 60 // Initial countdown time in seconds
 
     private val auth = FirebaseClient.firebaseAuth
-    private val currentUser = UserClient
 
-    private lateinit var verificationCode: String
+    private lateinit var context: Context
+    private var verificationCode: String? = null
     private lateinit var forceResendingToken: PhoneAuthProvider.ForceResendingToken
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false)
 
@@ -81,6 +84,12 @@ class LoginFragment : Fragment() {
 
 
         // DATA VARIABLES
+        if(getContext() != null) {
+            context = requireContext()
+        } else {
+            context = requireActivity().applicationContext
+        }
+
         var isValidNumber: Boolean = false
         var isValidOTP: Boolean = false
         val mobileNumMaxLength = 12
@@ -94,8 +103,8 @@ class LoginFragment : Fragment() {
         val otpCodeFilters = arrayOf<InputFilter>(InputFilter.LengthFilter(otpCodeMaxLength))
         mobileNumberEditText.filters = mobileNumberFilters
         otpCodeEditText.filters = otpCodeFilters
-        getOtpBtn.isEnabled = false
-        loginBtn.isEnabled = false
+        enableGetOtpBtn(false)
+        enableLoginBtn(false)
 
 
         // VIEW MODEL
@@ -135,7 +144,7 @@ class LoginFragment : Fragment() {
                     mobileNumberEditText.setSelection(formattedText.length)
                 }
 
-                getOtpBtn.isEnabled = isValidNumber
+                enableGetOtpBtn(isValidNumber)
 
                 verifyCodeContainer.visibility = View.GONE
                 showLoginBtn(false)
@@ -158,7 +167,7 @@ class LoginFragment : Fragment() {
                 isValidOTP =
                     input.isNotEmpty() && input.toDoubleOrNull() != null && input.length == 6
 
-                loginBtn.isEnabled = isValidOTP
+                enableLoginBtn(isValidOTP)
             }
 
         }))
@@ -179,7 +188,7 @@ class LoginFragment : Fragment() {
                 countdownText.visibility = View.VISIBLE
                 resendText.visibility = View.GONE
             } else {
-                Toast.makeText(requireContext(), "Invalid Phone Number", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Invalid Phone Number", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -187,10 +196,12 @@ class LoginFragment : Fragment() {
         loginBtn.setOnClickListener {
             if (verificationCode != null) {
                 val credential: PhoneAuthCredential = PhoneAuthProvider.getCredential(
-                    verificationCode,
+                    verificationCode!!,
                     otpCodeEditText.text.toString()
                 )
                 signInWithPhone(credential)
+            } else {
+                Toast.makeText(context, "Please enter OTP code", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -207,7 +218,7 @@ class LoginFragment : Fragment() {
         // NAVIGATION EVENT LISTENERS
         // Profile Fragment -> Personal Information Fragment
         backBtn.setOnClickListener {
-            findNavController().popBackStack(R.id.action_profileFragment_to_loginFragment, true)
+            findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
         }
     }
 
@@ -227,6 +238,52 @@ class LoginFragment : Fragment() {
 
         loginBtnGetOtpText.visibility = if (loading) View.INVISIBLE else View.VISIBLE
         getOtpLoadingSpinner.visibility = if (loading) View.VISIBLE else View.GONE
+    }
+
+    private fun enableGetOtpBtn(enable: Boolean) {
+        val getOtpBtn = binding.btnLoginCtaGetOtp
+        val getOtpBtnText = binding.textLoginCtaBtnGetOtp
+
+        getOtpBtn.isEnabled = enable
+        getOtpBtn.isClickable = enable
+
+        if(enable) {
+            val colorOnPrimary = CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorOnPrimary)
+            val colorSurfaceInverse = CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorSurfaceInverse)
+
+            getOtpBtn.setCardBackgroundColor(colorSurfaceInverse)
+            getOtpBtnText.setTextColor(colorOnPrimary)
+
+        } else {
+            val colorOutline = CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorOutline)
+            val colorSurfaceContainerHighest = CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorSurfaceContainerHighest)
+
+            getOtpBtn.setCardBackgroundColor(colorSurfaceContainerHighest)
+            getOtpBtnText.setTextColor(colorOutline)
+        }
+    }
+
+    private fun enableLoginBtn(enable: Boolean) {
+        val loginBtn = binding.btnLoginCtaLogin
+        val loginBtnLoginText = binding.textLoginCtaBtnLogin
+
+        loginBtn.isEnabled = enable
+        loginBtn.isClickable = enable
+
+        if(enable) {
+            val colorOnPrimary = CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorOnPrimary)
+            val colorSurfaceInverse = CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorSurfaceInverse)
+
+            loginBtn.setCardBackgroundColor(colorSurfaceInverse)
+            loginBtnLoginText.setTextColor(colorOnPrimary)
+
+        } else {
+            val colorOutline = CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorOutline)
+            val colorSurfaceContainerHighest = CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorSurfaceContainerHighest)
+
+            loginBtn.setCardBackgroundColor(colorSurfaceContainerHighest)
+            loginBtnLoginText.setTextColor(colorOutline)
+        }
     }
 
     private fun loginLoading(loading: Boolean) {
@@ -263,8 +320,8 @@ class LoginFragment : Fragment() {
         val resendText = binding.textLoginResendVerificationCode
 
         // Show the countdown text and hide the "Resend" text
-        countdownTimerText?.visibility = View.VISIBLE
-        resendText?.visibility = View.GONE
+        countdownTimerText.visibility = View.VISIBLE
+        resendText.visibility = View.GONE
 
 
         // Start a new countdown timer
@@ -272,20 +329,25 @@ class LoginFragment : Fragment() {
             override fun run() {
                 timeoutSeconds--
 
-                requireActivity().runOnUiThread {
-                    countdownTimerText?.text =
-                        getString(
-                            R.string.login_fragment_btn_verify_code_resend_countdown,
-                            timeoutSeconds
-                        )
+                if (isAdded) {
+                    requireActivity().runOnUiThread {
+                        countdownTimerText?.text =
+                            getString(
+                                R.string.login_fragment_btn_verify_code_resend_countdown,
+                                timeoutSeconds
+                            )
 
-                    if (timeoutSeconds <= 0) {
-                        timeoutSeconds = 60L
-                        resendTimer.cancel()
+                        if (timeoutSeconds <= 0) {
+                            timeoutSeconds = 60L
+                            resendTimer.cancel()
 
-                        countdownTimerText?.visibility = View.GONE
-                        resendText?.visibility = View.VISIBLE
+                            countdownTimerText?.visibility = View.GONE
+                            resendText?.visibility = View.VISIBLE
+                        }
                     }
+                } else {
+                    // Fragment is not attached to the activity, handle the case accordingly
+                    resendTimer.cancel() // Cancel the timer task
                 }
             }
 
@@ -308,46 +370,39 @@ class LoginFragment : Fragment() {
             .setActivity(requireActivity())
             .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                 override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-                    // This callback will be invoked in two situations:
-                    // 1. Instant verification. In some cases the phone number can be instantly
-                    //    verified without needing to send or enter a verification code.
-                    // 2. Auto-retrieval. On some devices Google Play services can automatically
-                    //    detect the incoming verification SMS and perform verification without
-                    //    user action.
-                    // Here, you can handle the verification completion logic.
                     getOtpLoading(false)
+
                     signInWithPhone(credential)
                 }
 
                 override fun onVerificationFailed(e: FirebaseException) {
                     getOtpLoading(false)
+
                     Log.e("Login Fragment", e.message.toString())
-                    Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
                 }
 
                 override fun onCodeSent(
                     verificationId: String,
                     token: PhoneAuthProvider.ForceResendingToken
                 ) {
-                    // This callback is invoked when the verification code is successfully sent.
-                    // `verificationId` is the verification code sent to the user's phone number.
-                    // You can save this code and use it to verify the user later.
-                    // `token` can be used to resend the verification code, if needed.
-                    // Here, you can handle the code sent logic.
                     getOtpLoading(false)
+
 
                     verificationCode = verificationId
                     forceResendingToken = token
+                    Log.e("LoginFragment", "forceResendingToken: $forceResendingToken")
 
-                    Toast.makeText(requireContext(), "OTP sent successfully!", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(context, "OTP sent successfully!", Toast.LENGTH_SHORT).show()
                 }
             })
 
         if (isResend) {
-            PhoneAuthProvider.verifyPhoneNumber(
-                builder.setForceResendingToken(forceResendingToken).build()
-            )
+            if(forceResendingToken != null) {
+                PhoneAuthProvider.verifyPhoneNumber(
+                    builder.setForceResendingToken(forceResendingToken).build()
+                )
+            }
         } else {
             // Start the phone number verification process
             PhoneAuthProvider.verifyPhoneNumber(builder.build())
@@ -365,25 +420,21 @@ class LoginFragment : Fragment() {
                 if (task.isSuccessful) {
                     loginLoading(false)
 
-
                     CoroutineScope(Dispatchers.Main).launch {
                         // Call assignUserDefaultInfo from within the coroutine
                         FirebaseClient.assignUserDefaultInfo(task.result?.additionalUserInfo)
 
-
                         addNewUserToFirestore(task)
-
-                        currentUser.setCurrentUser(task.result.user?.uid ?: "")
+                        currentUserViewModel.signIn()
                     }
 
-                    Toast.makeText(requireContext(), "Logged in successfully!", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(context, "Logged in successfully!", Toast.LENGTH_SHORT).show()
 
                     findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
                 } else {
                     loginLoading(false)
 
-                    Toast.makeText(requireContext(), "OTP verification failed", Toast.LENGTH_SHORT)
+                    Toast.makeText(context, "OTP verification failed", Toast.LENGTH_SHORT)
                         .show()
                 }
             }

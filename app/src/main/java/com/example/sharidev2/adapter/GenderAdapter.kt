@@ -43,7 +43,7 @@ class GenderAdapter (
     }
 
     override fun getItemCount(): Int {
-        return genderList!!.size
+        return genderList.size
     }
 
     // Method to update data

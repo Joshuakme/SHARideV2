@@ -20,9 +20,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
-import com.example.sharidev2.GlideApp
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentHomeBinding
@@ -67,8 +67,12 @@ class HomeFragment : Fragment() {
         (activity as MainActivity).resetBottomNavPosition()
 
 
+        if(currentUserViewModel.displayName.value.isNullOrBlank()) {
+            welcomeHomeText.text = getString(R.string.home_fragment_welcome_user, "guest")
+        }
+
         currentUserViewModel.displayName.observe(viewLifecycleOwner) {displayName ->
-            welcomeHomeText.text = getString(R.string.home_fragment_welcome_user, displayName ?: "guest")
+            welcomeHomeText.text = getString(R.string.home_fragment_welcome_user, displayName?: "guest")
         }
 
 
@@ -86,12 +90,12 @@ class HomeFragment : Fragment() {
         // Set User Profile Pic
         currentUserViewModel.imageUri.observe(viewLifecycleOwner) {profilePic ->
             if(profilePic != null) {
-                GlideApp.with(this)
+                Glide.with(this)
                     .load(profilePic.toString())
                     .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Disable disk caching
                     .into(profilePicImg)
             } else {
-
+                profilePicImg.setImageDrawable(requireContext().getDrawable(R.drawable.baseline_account_circle_24))
             }
         }
 

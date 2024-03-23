@@ -130,7 +130,7 @@
 
 
                         <ImageView
-                            android:id="@+id/imageView4"
+                            android:id="@+id/img_booking_detail_passenger_driver"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             app:srcCompat="@drawable/baseline_account_circle_24"

@@ -50,7 +50,7 @@ class CountryCodeAdapter (
     }
 
     override fun getItemCount(): Int {
-        return countryList!!.size
+        return countryList.size
     }
 
     // Method to update data

@@ -9,9 +9,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
-import com.example.sharidev2.GlideApp
 import com.example.sharidev2.R
 import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.utility.CommonUtils
@@ -61,7 +61,7 @@ class RideAdapter (
         if(ride.driver.user?.photoUri != null) {
             val photoUri = ride.driver.user?.photoUri
 
-            GlideApp.with(context)
+            Glide.with(context)
                 .load(photoUri.toString())
                 .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Disable disk caching
                 .into(holder.profileImg)
@@ -91,12 +91,6 @@ class RideAdapter (
             ride.availableSeats
         )
 
-
-        val typedValue = TypedValue()
-        context.theme?.resolveAttribute(com.google.android.material.R.attr.colorPrimary, typedValue, true)
-        val colorPrimary = typedValue.data
-        context.theme?.resolveAttribute(com.google.android.material.R.attr.colorError, typedValue, true)
-        val colorError = typedValue.data
 
 
 

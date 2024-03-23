@@ -6,9 +6,6 @@ import com.example.sharidev2.data.model.Vehicle
 import com.example.sharidev2.data.model.VehicleType
 import com.example.sharidev2.utility.Converters
 import com.example.sharidev2.utility.FirebaseClient
-import com.example.sharidev2.utility.UserClient
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await

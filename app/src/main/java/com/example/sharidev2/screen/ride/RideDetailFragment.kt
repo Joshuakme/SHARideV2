@@ -16,9 +16,9 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
-import com.example.sharidev2.GlideApp
 import com.example.sharidev2.R
 import com.example.sharidev2.adapter.RideDetailPassengerImageAdapter
 import com.example.sharidev2.adapter.BookingTimeLineAdapter
@@ -97,7 +97,7 @@ class RideDetailFragment : Fragment() {
 
                         Log.e("RideDetailFragment", "PhotoUri: " + photoUri.toString())
                         if(CommonUtils().isUrl(photoUri.toString())) {
-                            GlideApp.with(requireContext())
+                            Glide.with(requireContext())
                                 .load(photoUri.toString())
                                 .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Disable disk caching
                                 .into(driverImg)

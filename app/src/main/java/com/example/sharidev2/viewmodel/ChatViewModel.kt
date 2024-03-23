@@ -1,6 +1,8 @@
 package com.example.sharidev2.viewmodel
 
 import android.util.Log
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -33,6 +35,7 @@ class ChatViewModel(
     val oldChatList: LiveData<List<Chat>> = savedStateHandle.getLiveData(OLD_CHAT_LIST_KEY, mutableListOf())
     private val activeChat: LiveData<Chat> = savedStateHandle.getLiveData(ACTIVE_CHAT_KEY, Chat())
     private val oldChat: LiveData<Chat> = savedStateHandle.getLiveData(OLD_CHAT_KEY, Chat())
+
 
 
     init {
@@ -88,7 +91,7 @@ class ChatViewModel(
                     if (!oldMessages.contains(message)) {
                         // Found a new message
                         if(currentUser?.uid != null) {
-                            if(message.senderId != currentUser!!.uid) {
+                            if(message.senderId != currentUser.uid) {
                                 return message
                             }
                         }
@@ -123,7 +126,7 @@ class ChatViewModel(
             if (!oldMessages.contains(newMessage)) {
                 // Found new message
                 if(currentUser?.uid != null) {
-                    if(newMessage.senderId != currentUser!!.uid) {
+                    if(newMessage.senderId != currentUser.uid) {
                         return newMessage
                     }
                 }
@@ -134,5 +137,9 @@ class ChatViewModel(
 
     override fun onCleared() {
         userChatListListener?.remove()
+    }
+
+    fun onRemoteTokenChange(newToken: String) {
+
     }
 }

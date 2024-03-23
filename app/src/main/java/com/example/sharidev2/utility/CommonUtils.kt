@@ -29,6 +29,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
 import com.example.sharidev2.MainActivity
@@ -235,7 +236,7 @@ class CommonUtils {
         val circularBackground = ContextCompat.getDrawable(context, R.drawable.circular_background)
 
         // Set the background color
-        circularBackground?.setColorFilter(backgroundColor, PorterDuff.Mode.SRC_IN)
+        circularBackground?.colorFilter = PorterDuffColorFilter(backgroundColor, PorterDuff.Mode.SRC_IN)
 
         // Convert the drawable to a Bitmap
         val backgroundBitmap = Bitmap.createBitmap(circularBackground?.intrinsicWidth ?: 0, circularBackground?.intrinsicHeight ?: 0, Bitmap.Config.ARGB_8888)
@@ -272,7 +273,6 @@ class CommonUtils {
         view.draw(canvas)
         return bitmap
     }
-
 
 
 
