@@ -1,5 +1,6 @@
 package com.example.sharidev2.screen.user
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,9 +13,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.data.model.User
 import com.example.sharidev2.databinding.FragmentEditDisplayNameBinding
+import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.viewmodel.PersonalInfoViewModel
 import com.example.sharidev2.viewmodel.SharedCurrentUserViewModel
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +26,7 @@ import kotlinx.coroutines.launch
 class EditDisplayNameFragment: Fragment() {
     private lateinit var binding: FragmentEditDisplayNameBinding
     private val currentUserViewModel: SharedCurrentUserViewModel by activityViewModels()
-    private lateinit var user: User
+    private lateinit var context: Context
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,6 +35,20 @@ class EditDisplayNameFragment: Fragment() {
         // Inflate the layout for this fragment
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_edit_display_name, container, false)
+
+
+        context = if(getContext() != null) {
+            requireContext()
+        } else {
+            requireActivity().applicationContext
+        }
+
+
+        // LAYOUT SETTINGS
+        val activity = activity as MainActivity
+        activity.setStatusBarColor(CommonUtils().getThemeColor(context, android.R.attr.colorBackground))
+        activity.setBottomNavVisible(false)
+
         return binding.root
     }
 
@@ -39,6 +56,8 @@ class EditDisplayNameFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
+
+        // ELEMENT VARIABLES
         val saveDisplayNameBtn = binding.btnUpdateUsername
         val backDisplayNameBtn = binding.btnBackEditUsername
 
@@ -72,7 +91,7 @@ class EditDisplayNameFragment: Fragment() {
         }
 
         backDisplayNameBtn.setOnClickListener {
-            findNavController().navigate(R.id.action_editDisplayNameFragment_to_personalInformationFragment)
+            findNavController().popBackStack()
         }
     }
 

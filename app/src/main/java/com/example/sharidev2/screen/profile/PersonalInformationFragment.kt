@@ -1,6 +1,7 @@
 package com.example.sharidev2.screen.profile
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -42,6 +43,8 @@ class PersonalInformationFragment : Fragment() {
     private lateinit var selectedImageUri: Uri
     private lateinit var profilePic: ImageView
 
+    private lateinit var context: Context
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,9 +83,21 @@ class PersonalInformationFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_personal_information, container, false)
+
+
+        context = if(getContext() != null) {
+            requireContext()
+        } else {
+            requireActivity().applicationContext
+        }
+
+        // LAYOUT SETTINGS
+        val activity = activity as MainActivity
+        activity.setStatusBarColor(CommonUtils().getThemeColor(context, android.R.attr.colorBackground))
+        activity.setBottomNavVisible(false)
 
         // ELEMENT VARIABLES
         val backBtn = binding.imgBtnProfilePersonalInfoNavBack
@@ -139,10 +154,6 @@ class PersonalInformationFragment : Fragment() {
 
 
 
-        // LAYOUT SETTINGS
-        (activity as MainActivity).setBottomNavVisible(false)
-
-
 
         // NAVIGATION EVENT LISTENERS
         // Personal Information Fragment -> Profile Fragment
@@ -158,7 +169,6 @@ class PersonalInformationFragment : Fragment() {
                 .maxResultSize(512, 512)
                 .createIntent { intent ->
                     imagePickLauncher.launch(intent)
-                    null
                 }
         }
 

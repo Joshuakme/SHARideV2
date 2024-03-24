@@ -2,6 +2,7 @@ package com.example.sharidev2.screen.emergency
 
 
 import EmergencyContactViewModel
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,6 +19,7 @@ import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.adapter.ContactAdapter
 import com.example.sharidev2.databinding.FragmentEmergencyContactBinding
+import com.example.sharidev2.utility.CommonUtils
 
 class EmergencyContactFragment : Fragment(),
     ContactAdapter.OnItemClickListener
@@ -25,12 +27,22 @@ class EmergencyContactFragment : Fragment(),
     private lateinit var binding: FragmentEmergencyContactBinding
     private val viewModel: EmergencyContactViewModel by viewModels()
 
+    private lateinit var context: Context
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_emergency_contact, container, false)
+
+
+        context = if(getContext() != null) {
+            requireContext()
+        } else {
+            requireActivity().applicationContext
+        }
+
 
         // ELEMENT VARIABLES
         val addContactButton = binding.btnAddContact
@@ -41,7 +53,9 @@ class EmergencyContactFragment : Fragment(),
 
 
         // LAYOUT SETTINGS
-        (activity as MainActivity).setBottomNavVisible(false)
+        val activity = activity as MainActivity
+        activity.setStatusBarColor(CommonUtils().getThemeColor(context, android.R.attr.colorBackground))
+        activity.setBottomNavVisible(false)
 
 
         // Observe the LiveData from the ViewModel

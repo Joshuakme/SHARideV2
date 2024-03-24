@@ -1,5 +1,6 @@
 package com.example.sharidev2.screen.navigation
 
+import android.content.Context
 import android.content.Intent
 import android.location.Address
 import android.location.Geocoder
@@ -44,6 +45,7 @@ class HomeFragment : Fragment() {
     private val currentLocationViewModel: CurrentLocationViewModel by activityViewModels()
     private val currentUserViewModel: SharedCurrentUserViewModel by activityViewModels()
 
+    private lateinit var context: Context
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,6 +53,13 @@ class HomeFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
+
+
+        context = if(getContext() != null) {
+            requireContext()
+        } else {
+            requireActivity().applicationContext
+        }
 
 
         // ELEMENT VARIABLES
@@ -63,8 +72,10 @@ class HomeFragment : Fragment() {
 
 
         // LAYOUT SETTINGS
-        (activity as MainActivity).setBottomNavVisible(true)
-        (activity as MainActivity).resetBottomNavPosition()
+        val activity = activity as MainActivity
+        activity.setStatusBarColor(CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorPrimary))
+        activity.setBottomNavVisible(true)
+        activity.resetBottomNavPosition()
 
 
         if(currentUserViewModel.displayName.value.isNullOrBlank()) {

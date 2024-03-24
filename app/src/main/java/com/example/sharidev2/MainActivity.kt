@@ -7,6 +7,7 @@ import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -121,6 +122,24 @@ class MainActivity : AppCompatActivity() {
 
     fun resetBottomNavPosition() {
         bottomNavContainer.translationY = 0f
+    }
+
+    fun setStatusBarColor(color: Int) {
+        window.statusBarColor = color
+
+        if(isColorLight(color)) {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        } else {
+            window.decorView.systemUiVisibility = 0
+        }
+    }
+
+
+    private fun isColorLight(color: Int): Boolean {
+        val luminance = (0.2126 * Color.red(color) +
+                        0.7152 * Color.green(color) +
+                        0.0722 * Color.blue(color))
+        return luminance > 128
     }
 
 

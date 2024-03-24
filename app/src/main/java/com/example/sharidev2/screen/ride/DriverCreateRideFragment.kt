@@ -80,10 +80,10 @@ class DriverCreateRideFragment : Fragment() {
 
 
         // VARIABLES INIT
-        if(getContext() != null) {
-            context = requireContext()
+        context = if(getContext() != null) {
+            requireContext()
         } else {
-            context = requireActivity().applicationContext
+            requireActivity().applicationContext
         }
 
 
@@ -102,7 +102,10 @@ class DriverCreateRideFragment : Fragment() {
 
 
         // LAYOUT SETTINGS
-        (activity as MainActivity).setBottomNavVisible(false)
+        val activity = activity as MainActivity
+        activity.setStatusBarColor(CommonUtils().getThemeColor(context, android.R.attr.colorBackground))
+        activity.setBottomNavVisible(false)
+
         setupMap()
         if(createRideViewModel.origin.value?.placeId == null) {
             performOriginCurrentPlaceRequest()      // Get current location

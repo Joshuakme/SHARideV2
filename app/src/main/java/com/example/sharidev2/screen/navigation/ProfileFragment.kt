@@ -1,6 +1,7 @@
 package com.example.sharidev2.screen.navigation
 
 import ProfileViewModel
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -17,6 +18,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentProfileBinding
+import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.FirebaseClient
 import com.example.sharidev2.viewmodel.SharedCurrentUserViewModel
 
@@ -28,12 +30,21 @@ class ProfileFragment : Fragment() {
     // Initialize ViewModel
     private val currentUserViewModel: SharedCurrentUserViewModel by activityViewModels()
 
+    private lateinit var context: Context
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false)
+
+
+        context = if(getContext() != null) {
+            requireContext()
+        } else {
+            requireActivity().applicationContext
+        }
 
         // ELEMENT VARIABLES
         val profileNameText = binding.textProfileDisplayName
@@ -46,8 +57,10 @@ class ProfileFragment : Fragment() {
         val logoutBtn = binding.cardProfileLogoutBtn
 
         // LAYOUT SETTINGS
-        (activity as MainActivity).setBottomNavVisible(true)
-        (activity as MainActivity).resetBottomNavPosition()
+        val activity = activity as MainActivity
+        activity.setStatusBarColor(CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorPrimary))
+        activity.setBottomNavVisible(true)
+        activity.resetBottomNavPosition()
 
         // Observe ViewModel data
         currentUserViewModel.displayName.observe(viewLifecycleOwner) { displayName ->

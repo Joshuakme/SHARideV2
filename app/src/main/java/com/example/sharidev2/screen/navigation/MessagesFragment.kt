@@ -60,8 +60,10 @@ class MessagesFragment : Fragment() {
 
 
         // LAYOUT SETTINGS
-        (activity as MainActivity).setBottomNavVisible(true)
-        (activity as MainActivity).resetBottomNavPosition()
+        val activity = activity as MainActivity
+        activity.setStatusBarColor(CommonUtils().getThemeColor(context, android.R.attr.colorBackground))
+        activity.setBottomNavVisible(true)
+        activity.resetBottomNavPosition()
         loadingMessages(Constants.UI_DATA_LOADING)
 
 

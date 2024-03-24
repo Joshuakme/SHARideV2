@@ -1,5 +1,6 @@
 package com.example.sharidev2.screen.ride
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
@@ -13,6 +14,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentDriverRideConfigBinding
 import com.example.sharidev2.utility.CommonUtils
@@ -33,6 +35,7 @@ class DriverRideConfigFragment : Fragment() {
     private val createRideViewModel: SharedCreateRideViewModel by activityViewModels()
     private val currentLocationViewModel: CurrentLocationViewModel by activityViewModels()
 
+    private lateinit var context: Context
     private val dateFormatter = SimpleDateFormat("yyyy MMM dd", Locale.ENGLISH)
     private val timeFormatter = SimpleDateFormat("hh : mm a", Locale.ENGLISH)
 
@@ -44,9 +47,20 @@ class DriverRideConfigFragment : Fragment() {
        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_driver_ride_config, container, false)
 
 
+        context = if(getContext() != null) {
+            requireContext()
+        } else {
+            requireActivity().applicationContext
+        }
+
+        // LAYOUT SETTINGS
+        val activity = activity as MainActivity
+        activity.setStatusBarColor(CommonUtils().getThemeColor(context, android.R.attr.colorBackground))
+        activity.setBottomNavVisible(false)
+
+
         // ELEMENT VARIABLES
         val backBtn = binding.imgBtnDriverRideConfigNavBack
-
 
 
         setupViewModelObserver()

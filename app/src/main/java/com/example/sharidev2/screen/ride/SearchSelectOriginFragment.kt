@@ -48,10 +48,7 @@ class SearchSelectOriginFragment : Fragment() {
     private lateinit var placesClient: PlacesClient
     private lateinit var mapFragment: SupportMapFragment
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
-    }
 
     @SuppressLint("MissingPermission")
     override fun onCreateView(
@@ -63,10 +60,10 @@ class SearchSelectOriginFragment : Fragment() {
 
 
         // VARIABLES INIT
-        if(getContext() != null) {
-            context = requireContext()
+        context = if(getContext() != null) {
+            requireContext()
         } else {
-            context = requireActivity().applicationContext
+            requireActivity().applicationContext
         }
 
         placesClient = Places.createClient(context)
@@ -80,7 +77,9 @@ class SearchSelectOriginFragment : Fragment() {
 
 
         // LAYOUT SETTINGS
-        (activity as MainActivity).setBottomNavVisible(false)
+        val activity = activity as MainActivity
+        activity.setStatusBarColor(CommonUtils().getThemeColor(context, android.R.attr.colorBackground))
+        activity.setBottomNavVisible(false)
 
         setupMap()
         if(searchRideViewModel.origin.value == null) {

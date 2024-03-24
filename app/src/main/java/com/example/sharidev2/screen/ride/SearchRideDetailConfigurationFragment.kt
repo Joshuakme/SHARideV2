@@ -1,6 +1,7 @@
 package com.example.sharidev2.screen.ride
 
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentSearchRideDetailConfigurationBinding
+import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
 import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
@@ -24,33 +26,35 @@ import java.util.Locale
 class SearchRideDetailConfigurationFragment : Fragment(){
     private lateinit var binding: FragmentSearchRideDetailConfigurationBinding
     private val searchRideViewModel by activityViewModels<SharedSearchRideViewModel>()
-    private val calendar: Calendar = Calendar.getInstance()
+
+    private lateinit var context: Context
     private val dateFormatter = SimpleDateFormat("yyyy MMM dd", Locale.ENGLISH)
     private val timeFormatter = SimpleDateFormat("hh : mm a", Locale.ENGLISH)
-
-    private lateinit var selectedDate: Date
-    private lateinit var selectedTime: LocalTime
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search_ride_detail_configuration, container, false)
 
+
+        context = if(getContext() != null) {
+            requireContext()
+        } else {
+            requireActivity().applicationContext
+        }
+
+
         // ELEMENT VARIABLES
         val backBtn = binding.imgBtnRideDetailConfigBack
-
-
         val findRideButton = binding.btnRideDetailConfigurationCtaFindRide
 
 
         // LAYOUT SETTINGS
-        (activity as MainActivity).setBottomNavVisible(false)
+        val activity = activity as MainActivity
+        activity.setStatusBarColor(CommonUtils().getThemeColor(context, android.R.attr.colorBackground))
+        activity.setBottomNavVisible(false)
 
         // VIEW MODEL OBSERVATION
         setupViewModelObservers()

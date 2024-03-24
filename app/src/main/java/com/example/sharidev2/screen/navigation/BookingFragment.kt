@@ -1,5 +1,6 @@
 package com.example.sharidev2.screen.navigation
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,25 +13,37 @@ import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.adapter.BookingPagerAdapter
 import com.example.sharidev2.databinding.FragmentBookingBinding
+import com.example.sharidev2.utility.CommonUtils
 import com.google.android.material.tabs.TabLayoutMediator
 
 
 class BookingFragment : Fragment() {
     private lateinit var binding: FragmentBookingBinding
 
+    private lateinit var context: Context
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_booking, container, false)
 
 
+        context = if(getContext() != null) {
+            requireContext()
+        } else {
+            requireActivity().applicationContext
+        }
+
         // ELEMENT VARIABLES
 
         // LAYOUT SETTINGS
-        (activity as MainActivity).setBottomNavVisible(true)
-        (activity as MainActivity).resetBottomNavPosition()
+        val activity = activity as MainActivity
+        activity.setStatusBarColor(CommonUtils().getThemeColor(context, android.R.attr.colorBackground))
+        activity.setBottomNavVisible(true)
+        activity.resetBottomNavPosition()
+
 
 
        initTabLayout(this)

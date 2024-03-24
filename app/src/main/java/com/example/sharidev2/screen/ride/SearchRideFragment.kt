@@ -2,6 +2,7 @@ package com.example.sharidev2.screen.ride
 
 import android.Manifest
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
@@ -28,6 +29,7 @@ import com.example.sharidev2.adapter.SearchRideAdapter
 import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.databinding.FragmentSearchRideBinding
 import com.example.sharidev2.utility.CommonUtils
+import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.NetworkUtils
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
 import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
@@ -47,13 +49,15 @@ import kotlin.math.cos
 
 class SearchRideFragment : Fragment() {
     // Global Variables Init
-    private val REQUEST_LOCATION_PERMISSION = 123 // You can use any unique integer value
     private lateinit var binding: FragmentSearchRideBinding
     private val currentLocationViewModel: CurrentLocationViewModel by activityViewModels()
     private val searchRideViewModel: SharedSearchRideViewModel by activityViewModels()
     private lateinit var placesClient: PlacesClient
     private lateinit var searchResultAdapter: SearchRideAdapter
     private lateinit var searchResultRecyclerView: RecyclerView
+
+
+    private lateinit var context: Context
 
     // Flags
     private var isOriginFocused = false
@@ -62,8 +66,15 @@ class SearchRideFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search_ride, container, false)
+
+
+        context = if(getContext() != null) {
+            requireContext()
+        } else {
+            requireActivity().applicationContext
+        }
 
 
         // ELEMENT VARIABLES
@@ -77,7 +88,9 @@ class SearchRideFragment : Fragment() {
         placesClient = Places.createClient(requireContext())
 
         // LAYOUT SETTINGS
-        (activity as MainActivity).setBottomNavVisible(false)
+        val activity = activity as MainActivity
+        activity.setStatusBarColor(CommonUtils().getThemeColor(context, android.R.attr.colorBackground))
+        activity.setBottomNavVisible(false)
 
 
 
@@ -369,7 +382,7 @@ class SearchRideFragment : Fragment() {
             ActivityCompat.requestPermissions(
                 requireActivity(),
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                REQUEST_LOCATION_PERMISSION
+                Constants.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
             )
         } else {
             placesClient.findCurrentPlace(request)
