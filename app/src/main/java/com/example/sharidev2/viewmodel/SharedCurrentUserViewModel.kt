@@ -69,19 +69,10 @@ class SharedCurrentUserViewModel(
 
                 if(user != null) {
                     setUser(user)
-
-                    //user.displayName?.let { setDisplayName(it) }
-                    user.email?.let { setEmail(it) }
-                    user.phoneNumber?.let { setPhoneNumber(it) }
-                    //user.photoUri?.let { setImageUri(it) }
-                    user.rideOption?.let { setRideOption(it) }
-                    user.gender?.let { setGender(it) }
-                    user.fcmToken?.let { setFcmToken(it) }
-                    user.joinedDate?.let { setJoinedDate(it) }
                 }
             }
 
-            startListeningForUserUpdate()
+//            startListeningForUserUpdate()
         }
     }
 
@@ -97,8 +88,6 @@ class SharedCurrentUserViewModel(
             Log.e("Current User ViewModel", "user is null: ${user == null}")
 
             if(user != null) {
-                setUser(user)
-
                 user.displayName?.let { setDisplayName(it) }
                 user.email?.let { setEmail(it) }
                 user.phoneNumber?.let { setPhoneNumber(it) }
@@ -219,24 +208,24 @@ class SharedCurrentUserViewModel(
         savedStateHandle[SIGN_OUT_RESULT_KEY] = false
     }
 
-    private fun startListeningForUserUpdate() {
-        if(user.isInitialized && user.value?.uid != null) {
-            repository.listenForUserUpdate(user.value!!.uid!!, object: (User) -> Unit {
-                override fun invoke(newUser: User) {
-                    setUser(newUser)
-
-                    newUser.displayName?.let { setDisplayName(it) }
-                    newUser.email?.let { setEmail(it) }
-                    newUser.phoneNumber?.let { setPhoneNumber(it) }
-                    newUser.photoUri?.let { setImageUri(it) }
-                    newUser.rideOption?.let { setRideOption(it) }
-                    newUser.gender?.let { setGender(it) }
-                    newUser.fcmToken?.let { setFcmToken(it) }
-                    newUser.joinedDate?.let { setJoinedDate(it) }
-                }
-            })
-        }
-    }
+//    private fun startListeningForUserUpdate() {
+//        if(user.isInitialized && user.value?.uid != null) {
+//            repository.listenForUserUpdate(user.value!!.uid!!, object: (User) -> Unit {
+//                override fun invoke(newUser: User) {
+//                    setUser(newUser)
+//
+//                    newUser.displayName?.let { setDisplayName(it) }
+//                    newUser.email?.let { setEmail(it) }
+//                    newUser.phoneNumber?.let { setPhoneNumber(it) }
+//                    newUser.photoUri?.let { setImageUri(it) }
+//                    newUser.rideOption?.let { setRideOption(it) }
+//                    newUser.gender?.let { setGender(it) }
+//                    newUser.fcmToken?.let { setFcmToken(it) }
+//                    newUser.joinedDate?.let { setJoinedDate(it) }
+//                }
+//            })
+//        }
+//    }
 
     fun isLoggedIn(): Boolean {
         return user.value != null
