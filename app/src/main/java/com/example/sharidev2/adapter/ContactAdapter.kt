@@ -21,6 +21,7 @@ class ContactAdapter(
     class ContactHolder(contactView:View, listener: OnItemClickListener):RecyclerView.ViewHolder(contactView){
         val contactname: TextView = contactView.findViewById(R.id.tv_display_contact_name)
         val contactPhone: TextView = contactView.findViewById(R.id.tv_display_contact_phone)
+        val divider = contactView.findViewById<View>(R.id.divider_emergency_contact_item)
         init{
             contactView.setOnClickListener{
                 listener.onItemClick(adapterPosition)
@@ -40,6 +41,11 @@ class ContactAdapter(
     override fun onBindViewHolder(holder: ContactHolder, position: Int) {
         val currentContact = contactList[position]
         holder.contactname.text = currentContact.contactName.toString()
-        holder.contactPhone.text = "+60" + currentContact.contactPhone.toString()
+        holder.contactPhone.text = "+60 " + currentContact.contactPhone.toString()
+
+
+        if(position == contactList.lastIndex) {
+            holder.divider.visibility = View.INVISIBLE
+        }
     }
 }

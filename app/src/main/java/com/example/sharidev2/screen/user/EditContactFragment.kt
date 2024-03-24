@@ -92,7 +92,7 @@ class EditContactFragment : Fragment() {
         val updateContactButton = binding.btnUpdateContactDetail
         val contactPhoneNo = binding.inputEditEmergencyPhoneNo
         val contactName = binding.inputEditEmergencyName
-        val deleteContactDialog = binding.imageDeleteContact
+        val deleteContactDialog = binding.btnDeleteContact
         val bottomNavBar = activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)
 
 

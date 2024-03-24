@@ -16,48 +16,49 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/ss_screen_top_margin">
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/btn_back_edit_contact"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#00FFFFFF"
+                android:scaleX="@dimen/ss_profile_subfragment_nav_icon_scale"
+
+                android:scaleY="@dimen/ss_profile_subfragment_nav_icon_scale"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-
                 app:layout_constraintHorizontal_bias="0.069"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.454"
-                app:srcCompat="@drawable/baseline_arrow_back_24" />
+                app:srcCompat="@drawable/baseline_arrow_back_24"
+                app:tint="?attr/colorOnBackground" />
 
             <TextView
                 android:id="@+id/tv_edit_emergency_contact_title"
-                android:layout_width="274dp"
-                android:layout_height="47dp"
-                android:fontFamily="@font/poppins_medium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="70dp"
+                android:layout_marginEnd="70dp"
                 android:gravity="center"
                 android:text="Edit Emergency Contact"
                 android:textSize="@dimen/fs_fragment_title"
-                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.452"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="1.0" />
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/image_delete_contact"
-                android:layout_width="29dp"
-                android:layout_height="32dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="24dp"
-                android:scaleX="1.5"
-                android:scaleY="1.5"
-                android:src="@android:drawable/ic_menu_delete"
+            <TextView
+                android:id="@+id/btn_update_contact_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/ss_screen_width_margin"
+                android:text="Update"
+                android:textColor="?attr/colorPrimary"
+                android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/tv_edit_emergency_contact_title"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.5" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -70,7 +71,9 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/cv_contact_details"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                app:cardBackgroundColor="#00FFFFFF"
+                app:cardElevation="0dp">
 
                 <LinearLayout
                     android:id="@+id/ll_edit_emergency_contact_details"
@@ -83,15 +86,15 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginTop="50dp"
-                        android:layout_marginEnd="20dp"
-                        android:hint="        Name"
-                        app:boxCornerRadiusBottomEnd="5dp"
-                        app:boxCornerRadiusBottomStart="5dp"
-                        app:boxCornerRadiusTopEnd="5dp"
-                        app:boxCornerRadiusTopStart="5dp"
-                        app:helperText="    Required*"
+                        android:layout_marginStart="@dimen/ss_screen_width_margin"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginEnd="@dimen/ss_screen_width_margin"
+                        android:hint="Name"
+                        app:boxCornerRadiusBottomEnd="@dimen/ss_rounded_background_corner_radius"
+                        app:boxCornerRadiusBottomStart="@dimen/ss_rounded_background_corner_radius"
+                        app:boxCornerRadiusTopEnd="@dimen/ss_rounded_background_corner_radius"
+                        app:boxCornerRadiusTopStart="@dimen/ss_rounded_background_corner_radius"
+                        app:helperText="Required*"
                         app:helperTextTextColor="@color/md_theme_error"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -102,8 +105,7 @@
                             android:id="@+id/input_edit_emergency_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="24dp"
-                            android:layout_marginEnd="24dp" />
+                            android:paddingVertical="15dp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -111,49 +113,57 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginTop="61dp"
-                        android:layout_marginEnd="20dp"
-                        android:hint="        Phone Number"
+                        android:layout_marginStart="@dimen/ss_screen_width_margin"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginEnd="@dimen/ss_screen_width_margin"
+                        android:hint="Phone Number"
                         android:inputType="number"
                         android:maxLines="1"
-                        app:boxCornerRadiusBottomEnd="5dp"
-                        app:boxCornerRadiusBottomStart="5dp"
-                        app:boxCornerRadiusTopEnd="5dp"
-                        app:boxCornerRadiusTopStart="5dp"
+                        app:boxCornerRadiusBottomEnd="@dimen/ss_rounded_background_corner_radius"
+                        app:boxCornerRadiusBottomStart="@dimen/ss_rounded_background_corner_radius"
+                        app:boxCornerRadiusTopEnd="@dimen/ss_rounded_background_corner_radius"
+                        app:boxCornerRadiusTopStart="@dimen/ss_rounded_background_corner_radius"
                         app:counterEnabled="true"
-                        app:helperText="    Required*"
+                        app:helperText="Required*"
                         app:helperTextTextColor="@color/md_theme_error"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/layout_emergency_name"
-                        app:prefixText="+60"
-                        app:prefixTextColor="@color/black"
+                        app:prefixText="+60 "
+                        app:prefixTextColor="?attr/colorOnBackground"
                         app:startIconDrawable="@drawable/baseline_phone_24">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/input_edit_emergency_phone_no"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="24dp"
-                            android:layout_marginEnd="24dp"
-                            android:inputType="number" />
+                            android:inputType="number"
+                            android:paddingVertical="15dp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
 
-                    <Button
-                        android:id="@+id/btn_update_contact_detail"
+
+                    <!--  Delete Button  -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/btn_delete_contact"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="50dp"
+                        android:layout_marginHorizontal="@dimen/ss_screen_width_margin"
                         android:layout_marginTop="50dp"
-                        android:layout_marginEnd="50dp"
-                        android:text="Update Record"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/layout_edit_emergency_phone_no"
-                        />
+                        app:cardBackgroundColor="?attr/colorError"
+                        app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/poppins_medium"
+                            android:gravity="center"
+                            android:paddingVertical="14dp"
+                            android:text="Delete Contact"
+                            android:textColor="?attr/colorOnPrimary" />
+
+                    </com.google.android.material.card.MaterialCardView>
 
 
                 </LinearLayout>

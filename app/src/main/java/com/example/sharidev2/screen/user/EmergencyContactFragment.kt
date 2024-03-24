@@ -93,6 +93,7 @@ class EmergencyContactFragment : Fragment(),
             binding.btnAddContact.isEnabled = !isMaxContactsReached
             if (isMaxContactsReached) {
                 maxContactAddMessage.visibility = View.VISIBLE
+                addContactButton.visibility = View.INVISIBLE
             }
         }
 
