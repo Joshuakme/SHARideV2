@@ -65,8 +65,6 @@ class SharedCurrentUserViewModel(
             viewModelScope.launch {
                 val user = repository.getCurrentUser()
 
-                Log.e("Current User ViewModel", "user is null: ${user == null}")
-
                 if(user != null) {
                     setUser(user)
                 }
@@ -88,6 +86,7 @@ class SharedCurrentUserViewModel(
             Log.e("Current User ViewModel", "user is null: ${user == null}")
 
             if(user != null) {
+                user.uid?.let { setUserUid(it) }
                 user.displayName?.let { setDisplayName(it) }
                 user.email?.let { setEmail(it) }
                 user.phoneNumber?.let { setPhoneNumber(it) }
