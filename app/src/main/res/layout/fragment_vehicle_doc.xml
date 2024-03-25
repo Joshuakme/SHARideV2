@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="409dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/ss_home_nav_top_padding">
 
@@ -23,49 +23,67 @@
             tools:visibility="gone" />
 
 
-
-        <ImageView
+        <ImageButton
             android:id="@+id/btn_back_vehicle_doc"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tv_vehicle_doc_title"
-            app:layout_constraintHorizontal_bias="0.082"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/ss_screen_width_margin"
+            android:background="#00FFFFFF"
+            android:scaleX="@dimen/ss_profile_subfragment_nav_icon_scale"
+            android:scaleY="@dimen/ss_profile_subfragment_nav_icon_scale"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            app:srcCompat="@drawable/baseline_arrow_back_24" />
+            app:srcCompat="@drawable/baseline_arrow_back_24"
+            app:tint="?attr/colorOnBackground" />
 
         <TextView
             android:id="@+id/tv_vehicle_doc_title"
             android:layout_width="wrap_content"
-            android:layout_height="47dp"
-            android:layout_marginTop="8dp"
+            android:layout_height="wrap_content"
             android:fontFamily="@font/poppins_medium"
             android:text="Vehicle Documentation"
             android:textSize="@dimen/fs_fragment_title"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/btn_add_vehicle_doc"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="50dp"
-            android:layout_marginTop="222dp"
-            android:layout_marginEnd="50dp"
-            android:layout_marginBottom="104dp"
-            android:text="Add Vehicle"
+            android:layout_marginStart="@dimen/ss_screen_width_margin"
+            android:layout_marginEnd="@dimen/ss_screen_width_margin"
+            app:cardBackgroundColor="?attr/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/progress_bar_vehicle_doc" />
+            app:layout_constraintTop_toBottomOf="@+id/progress_bar_vehicle_doc"
+            app:strokeWidth="0dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingVertical="14dp"
+                android:text="Add Vehicle"
+                android:textColor="?attr/colorOnPrimary" />
+        </com.google.android.material.card.MaterialCardView>
+
+<!--        <Button-->
+<!--            android:id="@+id/btn_add_vehicle_doc"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="50dp"-->
+<!--            android:layout_marginTop="222dp"-->
+<!--            android:layout_marginEnd="50dp"-->
+<!--            android:layout_marginBottom="104dp"-->
+<!--            android:text="Add Vehicle"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintHorizontal_bias="0.0"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/progress_bar_vehicle_doc" />-->
 
         <androidx.cardview.widget.CardView
             android:id="@+id/card_vehicle_doc_reminder"
@@ -97,21 +115,23 @@
 
                 <TextView
                     android:id="@+id/tv_vehicle_doc"
-                    android:layout_width="355dp"
-                    android:layout_height="80dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:layout_marginHorizontal="@dimen/ss_screen_width_margin"
                     android:fontFamily="@font/poppins_medium"
                     android:text="@string/message_add_vehicle_doc"
                     android:textAlignment="center"
                     android:textColor="@color/md_theme_outlineVariant_mediumContrast"
                     android:textSize="@dimen/text_margin"
-                    android:textStyle="bold"
                     app:flow_verticalAlign="baseline"
                     app:lineHeight="25dp" />
 
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
+
+
 
         <ProgressBar
             android:id="@+id/progress_bar_vehicle_doc"

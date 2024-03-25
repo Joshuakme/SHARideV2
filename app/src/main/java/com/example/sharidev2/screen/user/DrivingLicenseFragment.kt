@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -42,8 +43,8 @@ class DrivingLicenseFragment : Fragment() {
 
     private lateinit var licenseFrontImageView: ImageView
     private lateinit var licenseBackImageView: ImageView
-    private lateinit var uploadFrontButton: Button
-    private lateinit var uploadBackButton: Button
+    private lateinit var uploadFrontButton: TextView
+    private lateinit var uploadBackButton: TextView
     private lateinit var saveButton: MaterialCardView
     private var frontImageUri: Uri? = null
     private var backImageUri: Uri? = null
@@ -76,27 +77,25 @@ class DrivingLicenseFragment : Fragment() {
         initImageUri()
 
         // Observe ViewModel for image changes
-        licenseUploadViewModel.frontImageUri.observe(viewLifecycleOwner, Observer { uri ->
+        licenseUploadViewModel.frontImageUri.observe(viewLifecycleOwner){ uri ->
             // Update front image view
-            if(uri != null) {
+            if(uri != null && !uri.toString().isNullOrBlank()) {
                 if (isUrl(uri.toString())) {
                     Glide.with(requireContext())
                         .load(uri.toString())
                         .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Disable disk caching
                         .into(licenseFrontImageView)
                 } else {
-                    licenseFrontImageView?.setImageURI(uri)
+                    licenseFrontImageView.setImageURI(uri)
                 }
 
             }
-        })
+        }
 
         licenseUploadViewModel.backImageUri.observe(viewLifecycleOwner, Observer { uri ->
             // Update back image view
-            if(uri != null) {
-
+            if(uri != null  && !uri.toString().isNullOrBlank()) {
                 if (isUrl(uri.toString())) {
-
                     //Toast.makeText(requireContext(), "Back Image: URL", Toast.LENGTH_SHORT).show()
                     Glide.with(requireContext())
                         .load(uri.toString())

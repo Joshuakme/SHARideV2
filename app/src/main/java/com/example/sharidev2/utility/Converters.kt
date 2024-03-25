@@ -345,28 +345,32 @@ class Converters() {
         val manufactureDate = map["manufactureDate"] as Timestamp
 
 
-        val vehicleRegisCertMap = map["vehicleRegisCert"] as Map<String, Any>
-        val vehicleRegisCertList = mutableListOf<Uri>()
+//        val vehicleRegisCertMap = map["vehicleRegisCert"] as Map<String, Any>
+//        val vehicleRegisCertList = mutableListOf<Uri>()
+//
+//        vehicleRegisCertMap.forEach {(s, cert) ->
+//            vehicleRegisCertList.add(Uri.parse(cert as String))
+//        }
 
-        vehicleRegisCertMap.forEach {(s, cert) ->
-            vehicleRegisCertList.add(Uri.parse(cert as String))
-        }
-
-
-        val roadtaxMap = map["roadtax"] as Map<String, Any>
-        val roadtaxList = mutableListOf<Uri>()
-
-        roadtaxMap.forEach {(r, roadtax) ->
-            roadtaxList.add(Uri.parse(roadtax as String))
-        }
+        val vehicleRegisCert = map["vehicleRegisCert"] as String
+        val roadtax = map["roadtax"] as String
+        val insurance = map["insurance"] as String
 
 
-        val insuranceMap = map["insurance"] as Map<String, Any>
-        val insuranceList = mutableListOf<Uri>()
+//        val roadtaxMap = map["roadtax"] as Map<String, Any>
+//        val roadtaxList = mutableListOf<Uri>()
 
-        insuranceMap.forEach {(i, insurance) ->
-            insuranceList.add(Uri.parse(insurance as String))
-        }
+//        roadtaxMap.forEach {(r, roadtax) ->
+//            roadtaxList.add(Uri.parse(roadtax as String))
+//        }
+//
+//
+//        val insuranceMap = map["insurance"] as Map<String, Any>
+//        val insuranceList = mutableListOf<Uri>()
+//
+//        insuranceMap.forEach {(i, insurance) ->
+//            insuranceList.add(Uri.parse(insurance as String))
+//        }
 
 
         val vehicleId = map["vehicleId"] as String
@@ -380,9 +384,9 @@ class Converters() {
             vehicleModel,
             carPlate,
             manufactureDate,
-            vehicleRegisCertList,
-            roadtaxList,
-            insuranceList,
+            vehicleRegisCert,
+            roadtax,
+            insurance,
             vehicleId
 
         )

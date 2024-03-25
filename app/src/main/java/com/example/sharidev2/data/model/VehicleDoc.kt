@@ -14,9 +14,9 @@ data class VehicleDoc(
     val vehicleModel: String? = null,
     val carPlate: String? = null,
     val manufactureDate: Timestamp? = null,
-    val vehicleRegisCert: List<Uri>? = null,
-    val roadtax: List<Uri>? = null,
-    val insurance: List<Uri>? = null,
+    val vehicleRegisCert: String? = null,
+    val roadtax: String? = null,
+    val insurance: String? = null,
     val vehicleId: String? = null
 ) : Parcelable
 

@@ -30,7 +30,7 @@ class AddVehicleDocFragment: Fragment() {
     private lateinit var uploadVehicelRegisCertButton: Button
     private lateinit var uploadRoadtaxButton: Button
     private lateinit var uploadInsuranceButton: Button
-    private lateinit var saveButton: Button
+    private lateinit var saveButton: MaterialCardView
     private var vehicelRegisCertUri: Uri? = null
     private var roadtaxUri: Uri? = null
     private var insuranceUri: Uri? = null

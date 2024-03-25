@@ -18,101 +18,82 @@
 
             <ImageView
                 android:id="@+id/btn_back_edit_mobile"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/ss_screen_width_margin"
+                android:scaleX="@dimen/ss_profile_subfragment_nav_icon_scale"
+                android:scaleY="@dimen/ss_profile_subfragment_nav_icon_scale"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.069"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.454"
-                app:srcCompat="@drawable/baseline_arrow_back_24" />
+                app:srcCompat="@drawable/baseline_arrow_back_24"
+                app:tint="?attr/colorOnBackground" />
 
             <TextView
                 android:id="@+id/tv_edit_mobile_title"
                 android:layout_width="wrap_content"
-                android:layout_height="47dp"
-                android:layout_marginTop="8dp"
+                android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_medium"
                 android:text="Edit Phone Number"
                 android:textSize="@dimen/fs_fragment_title"
-                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-
+            <TextView
+                android:id="@+id/btn_update_mobile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/ss_screen_width_margin"
+                android:text="Save"
+                android:textColor="?attr/colorPrimary"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.5" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+
         <LinearLayout
-            android:id="@+id/ll_cv_edit_mobile"
+            android:id="@+id/ll_edit_mobile"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="698dp"
             android:orientation="vertical">
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cv_mobile"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layout_edit_mobile"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/ss_screen_width_margin"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="@dimen/ss_screen_width_margin"
+                android:digits="@string/edit_username_fragment_allowed_characters"
+                android:hint="@string/edit_user_mobile_fragment_text"
+                android:inputType="text"
+                app:boxCornerRadiusBottomEnd="@dimen/ss_rounded_background_corner_radius"
+                app:boxCornerRadiusBottomStart="@dimen/ss_rounded_background_corner_radius"
+                app:boxCornerRadiusTopEnd="@dimen/ss_rounded_background_corner_radius"
+                app:boxCornerRadiusTopStart="@dimen/ss_rounded_background_corner_radius"
+                app:helperTextTextColor="@color/md_theme_error"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
 
-                <LinearLayout
-                    android:id="@+id/ll_edit_mobile"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_edit_mobile"
                     android:layout_width="match_parent"
-                    android:layout_height="698dp"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:inputType="number"
+                    android:maxLength="11"
+                    android:paddingVertical="15dp"
+                    app:counterEnabled="true" />
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/layout_edit_mobile"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginTop="50dp"
-                        android:layout_marginEnd="20dp"
-                        android:hint="@string/edit_user_mobile_fragment_text"
-                        android:inputType="text"
-                        android:digits="@string/edit_username_fragment_allowed_characters"
-                        app:boxCornerRadiusBottomEnd="5dp"
-                        app:boxCornerRadiusBottomStart="5dp"
-                        app:boxCornerRadiusTopEnd="5dp"
-                        app:boxCornerRadiusTopStart="5dp"
-                        app:helperTextTextColor="@color/md_theme_error"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        >
+            </com.google.android.material.textfield.TextInputLayout>
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/input_edit_mobile"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="24dp"
-                            android:layout_marginEnd="24dp"
-                            android:maxLength="11"
-                            android:inputType="number"
-                            android:layout_weight="1"
-                            app:counterEnabled="true"/>
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <Button
-                        android:id="@+id/btn_update_mobile"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="50dp"
-                        android:layout_marginTop="50dp"
-                        android:layout_marginEnd="50dp"
-                        android:text="Save"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/layout_edit_mobile"
-                        />
-
-
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
         </LinearLayout>
     </LinearLayout>
 </layout>
