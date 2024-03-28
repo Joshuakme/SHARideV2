@@ -9,13 +9,16 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentSearchRideDetailConfigurationBinding
 import com.example.sharidev2.utility.CommonUtils
+import com.example.sharidev2.utility.FareUtils
 import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
 import com.google.firebase.Timestamp
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.time.LocalTime
 import java.util.Calendar

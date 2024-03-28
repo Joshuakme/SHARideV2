@@ -24,6 +24,7 @@ data class Ride (
     val reviews: List<Review> = mutableListOf(),
     val chat:  Chat? = null,
     val completedRoute: MutableList<LatLng>? = mutableListOf(),
+    val fareList: List<Pair<Double, Double>>? = null,
     val createdAt: Timestamp
 ) : Parcelable {
     companion object : Parceler<Ride> {

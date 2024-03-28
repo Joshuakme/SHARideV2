@@ -78,7 +78,7 @@ class RideAdapter (
         if(ride.driver.vehicle?.capacity != null) {
             holder.vehicleCapacityText.text =  holder.itemView.context.getString(
                 R.string.matched_ride_fragment_vehicle_capacity,
-                ride.driver.vehicle.capacity - 1    // exclude driver
+                ride.driver.vehicle.capacity
             )
         } else {
             holder.vehicleCapacityText.visibility = View.GONE
@@ -90,8 +90,6 @@ class RideAdapter (
                 R.string.matched_ride_fragment_ride_available_seats,
             ride.availableSeats
         )
-
-
 
 
 

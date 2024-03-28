@@ -72,13 +72,13 @@ class PassengerCapacityBottomDialogFragment :
     private fun createCapacityListFromVehicle(capacity: Int) : List<Int> {
         val capacityList: MutableList<Int> = mutableListOf()
 
-        if(capacity > 0) {
-            for(i in 1..<capacity) {
+        return if(capacity > 0) {
+            for(i in 1..capacity) {
                 capacityList.add(i)
             }
-            return capacityList
+            capacityList
         } else {
-            return emptyList<Int>()
+            emptyList()
         }
     }
 

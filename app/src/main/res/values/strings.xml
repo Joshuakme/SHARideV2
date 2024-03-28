@@ -115,6 +115,8 @@
     <string name="ride_detail_fragment_ride_detail_date">Ride date:</string>
     <string name="ride_detail_fragment_ride_detail_starting_time">Starting time:</string>
     <string name="ride_detail_fragment_ride_detail_vehicle">Vehicle:</string>
+    <string name="ride_detail_fragment_price_info_one_passenger">Price displayed is based on %d passenger. The fare may change if more passengers join the ride.</string>
+
 
 
     <!--  Booking Fragment  -->
@@ -135,8 +137,8 @@
     <string name="messages_section_title_notification">Notification</string>
     <string name="messages_section_title_chat">Chat</string>
     <string name="messages_messages_error_loading">Sorry, no chat found!</string>
-    <string name="messages_messages_error_user_not_authenticated">Please login to proceed...</string>
-    <string name="messages_messages_chat_input_hint">Type a message...</string>
+    <string name="messages_messages_error_user_not_authenticated">Please login to proceed…</string>
+    <string name="messages_messages_chat_input_hint">Type a message…</string>
 
 
     <!--  Profile Fragment  -->

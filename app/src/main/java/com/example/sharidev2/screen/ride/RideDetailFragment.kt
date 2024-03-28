@@ -1,5 +1,6 @@
 package com.example.sharidev2.screen.ride
 
+import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -27,6 +28,7 @@ import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.databinding.FragmentRideDetailBinding
 import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.Constants
+import com.example.sharidev2.utility.FareUtils
 import com.example.sharidev2.utility.FirebaseClient
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
 import com.example.sharidev2.viewmodel.RideDetailViewModel
@@ -43,13 +45,15 @@ class RideDetailFragment : Fragment() {
     private val rideViewModel: RideViewModel by viewModels()
     private val currentLocationViewModel: CurrentLocationViewModel by activityViewModels()
     private val searchRideViewModel: SharedSearchRideViewModel by activityViewModels()
+
+    private lateinit var context: Context
     private val currentUser = FirebaseClient.firebaseAuth.currentUser
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_ride_detail, container, false)
 
@@ -67,6 +71,14 @@ class RideDetailFragment : Fragment() {
                 }
             }
         }
+
+        context = if(getContext() != null) {
+            requireContext()
+        } else {
+            requireActivity().applicationContext
+        }
+
+
         var estimatedPrice: Double = 0.0
 
 
@@ -85,6 +97,7 @@ class RideDetailFragment : Fragment() {
         val rideDetailRideDateText = binding.textRideDetailRideDate
         val rideDetailStartingTimeText = binding.textRideDetailStartingTime
         val rideDetailVehicleText = binding.textRideDetailVehicle
+        val rideDetailPriceInfo = binding.textRideDetailPriceInfo
         val estimatedPriceText = binding.textRideDetailEstimatedPrice
 
 
@@ -183,9 +196,27 @@ class RideDetailFragment : Fragment() {
                 }
 
 
+                // Price Info
+                if(ride.passengers.isEmpty()) {
+                    rideDetailPriceInfo.text = getString(R.string.ride_detail_fragment_price_info_one_passenger, ride.passengers.size+1)
+                    rideDetailPriceInfo.visibility = View.VISIBLE
+                } else {
+                    rideDetailPriceInfo.visibility = View.INVISIBLE
+                }
+
                 // Price Estimation
-                estimatedPrice = 0.0      // TODO: Calculate price
-                estimatedPriceText.text = getString(R.string.ride_detail_fragment_passengers_estimated_price, estimatedPrice)
+                lifecycleScope.launch {
+                    FareUtils().calculatePassengerFare(context, ride.origin, ride.destination,
+                        object: FareUtils.OnDistanceResponseListener {
+                            override fun onPriceCalculated(fare: Int) {
+                                estimatedPriceText.text = getString(R.string.ride_detail_fragment_passengers_estimated_price, fare.toDouble())
+                            }
+                        }
+                    )
+                }
+
+//                estimatedPrice = 0.0      // TODO: Calculate price
+//                estimatedPriceText.text = getString(R.string.ride_detail_fragment_passengers_estimated_price, estimatedPrice)
 
                 loadingData(false)
             } else {

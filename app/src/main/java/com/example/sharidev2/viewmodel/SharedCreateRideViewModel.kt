@@ -114,12 +114,13 @@ class SharedCreateRideViewModel(
     fun setVehicle(newVehicle: Vehicle) {
         savedStateHandle[VEHICLE_KEY] = newVehicle
         // set default capacity as max possible passenger
-        setCapacity((vehicle.value?.capacity ?: 1) - 1)
+
+        setCapacity(newVehicle.capacity)
     }
 
     // Passenger Capacity
     fun setCapacity(capacity: Int) {
-        if (capacity < vehicle.value?.capacity!!) {
+        if (capacity <= vehicle.value?.capacity!!) {
             savedStateHandle[PASSENGER_CAPACITY_KEY] = capacity
         }
     }

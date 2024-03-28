@@ -74,7 +74,7 @@ class DriverCreateRideFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_driver_create_ride, container, false)
 
@@ -295,7 +295,6 @@ class DriverCreateRideFragment : Fragment() {
         val destinationEditTextCancelButton = binding.imgBtnDriverCreateRideDestinationCancel
 
 
-        val typedValue = TypedValue()
         // Resolve the attribute to get the color value programmatically
         val colorOnBackground = CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorOnBackground)
         val colorOutlineVariant = CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorOutlineVariant)
@@ -337,10 +336,8 @@ class DriverCreateRideFragment : Fragment() {
 
         val typedValue = TypedValue()
         // Resolve the attribute to get the color value programmatically
-        context?.theme?.resolveAttribute(com.google.android.material.R.attr.colorOnBackground, typedValue, true)
-        val colorOnBackground = typedValue.data
-        context?.theme?.resolveAttribute(com.google.android.material.R.attr.colorOutlineVariant, typedValue, true)
-        val colorOutlineVariant = typedValue.data
+        val colorOnBackground = CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorOnBackground)
+        val colorOutlineVariant = CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorOutlineVariant)
 
 
         if (focus) {

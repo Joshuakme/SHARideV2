@@ -2,6 +2,13 @@ package com.example.sharidev2.utility
 
 class Constants {
     companion object {
+        // RIDE FARE PARAMETERS
+        val RIDE_BASE_PRICE = 2.0
+        val RIDE_MIN_FARE_RATE = 5.0
+        val RIDE_FARE_PER_KM = 0.43
+        val RIDE_FARE_PER_MINUTE = 0.25
+
+
         // PERMISIONS
         val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9002
         val PERMISSIONS_REQUEST_ENABLE_GPS = 9003

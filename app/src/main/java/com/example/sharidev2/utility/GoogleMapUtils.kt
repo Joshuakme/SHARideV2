@@ -89,59 +89,6 @@ class GoogleMapUtils {
 
 
     // DIRECTION
-//    fun getRoutesAndDrawOnMap(
-//        context: Context,
-//        googleMap: GoogleMap,
-//        origin: LatLng,
-//        destination: LatLng,
-//        waypoints: List<LatLng>
-//    ) {
-//        // Retrofit client setup
-//        val retrofit = Retrofit.Builder()
-//            .baseUrl("https://maps.googleapis.com/maps/api/")
-//            .addConverterFactory(GsonConverterFactory.create())
-//            .build()
-//        val service = retrofit.create(DirectionsService::class.java)
-//
-//        val originString = "${origin.latitude},${origin.longitude}"
-//        val destinationString = "${destination.latitude},${destination.longitude}"
-//        var waypointsString = ""
-//        for(waypoint in waypoints) {
-//            val waypointString = "${waypoint.latitude},${waypoint.longitude}"
-//
-//            waypointsString = waypointsString.plus("${waypointString}|")
-//        }
-//        waypointsString.dropLast(1) // Drop last character "|"
-//
-//
-//
-//        val call = service.getDirections(originString, destinationString, waypointsString, context.getString(R.string.map_id))
-//        call.enqueue(object : Callback<DirectionsResponse> {
-//            override fun onResponse(call: Call<DirectionsResponse>, response: Response<DirectionsResponse>) {
-//                if (response.isSuccessful) {
-//                    // 2. Receive and Parse the Response
-//                    val directionsResponse = response.body()
-//                    // Parse the response to extract route information
-//                    val routes = directionsResponse?.routes ?: emptyList()
-//
-//                    // drawRoutes
-//                    for (route in routes) {
-//                        val polylinePoints = decodePolyline(route.polyline.points)
-//                        val options = PolylineOptions().width(5f).color(Color.BLUE).geodesic(true)
-//                        options.addAll(polylinePoints)
-//                        googleMap.addPolyline(options)
-//                    }
-//                } else {
-//                    // Handle unsuccessful response
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<DirectionsResponse>, t: Throwable) {
-//                // Handle network errors
-//            }
-//        })
-//    }
-
     fun calculateDirections(context: Context, origin: LatLng, destination: LatLng, alternativeRoute: Boolean, callback: (DirectionsResult?) -> Unit) {
         val geoApiContext = GeoApiContext.Builder()
             .apiKey(context.getString(R.string.google_api_key))
