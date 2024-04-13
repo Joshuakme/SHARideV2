@@ -166,8 +166,8 @@ class DateTimePicker @JvmOverloads constructor(
         timePickerHour.setOnValueChangedListener {  numPicker, oldValue, newValue ->
             selectedHourIndex = newValue
 
-            var prevMinArr: Array<String>
-            var nextMinArr: Array<String>
+            val prevMinArr: Array<String>
+            val nextMinArr: Array<String>
 
             if(newValue == currentHourIndex) {
                 selectedMinIndex = 0

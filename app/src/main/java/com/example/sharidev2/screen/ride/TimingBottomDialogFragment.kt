@@ -2,6 +2,7 @@ package com.example.sharidev2.screen.ride
 
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import com.google.android.material.card.MaterialCardView
 import com.google.firebase.Timestamp
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Date
@@ -57,11 +59,14 @@ class TimingBottomDialogFragment(
         confirmButton.setOnClickListener {
             val selectedDateString = dateTimePicker.getDateValue()
 
+            //Toast.makeText(requireContext(), selectedDateString, Toast.LENGTH_SHORT).show()
+
             val formatter = DateTimeFormatter.ofPattern("yyyy MMM dd, HH:mm", Locale.ENGLISH) // Use Locale.ENGLISH to ensure consistent month names
             val selectedDate = LocalDateTime.parse(selectedDateString, formatter)
 
-            // Pass both the selected date and time to the ViewModel
-            val datetime = Date((selectedDate.toInstant(ZoneOffset.UTC).toEpochMilli()))
+            // Convert LocalDateTime to Date
+            val instant = selectedDate.atZone(ZoneId.systemDefault()).toInstant()
+            val datetime = Date.from(instant)
 
             dialogClickListener.onConfirmClick(Timestamp(datetime))
 
