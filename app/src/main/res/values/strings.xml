@@ -63,6 +63,7 @@
         <item>Terengganu</item>
     </string-array>
 
+    <string name="search_fragment_origin_default" translatable="false" tools:ignore="ExtraTranslation">Current location</string>
     <string name="search_fragment_search_result_place_distance_address">%.2fkm \u200B \u2022 \u200B %s</string>
     <string name="search_fragment_search_result_place_distance_address_0km">%dkm \u200B \u2022 \u200B %s</string>
     <string name="search_fragment_choose_origin_location">Choose This Origin</string>

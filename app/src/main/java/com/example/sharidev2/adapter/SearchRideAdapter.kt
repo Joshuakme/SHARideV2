@@ -18,10 +18,12 @@ class SearchRideAdapter(
     ) : RecyclerView.Adapter<SearchRideAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var topDivider: View
         var placeName: TextView
         var placeDetailedAddress: TextView
 
         init {
+            topDivider = itemView.findViewById(R.id.view_top_item_divider)
             placeName = itemView.findViewById(R.id.text_search_place_result_title)
             placeDetailedAddress = itemView.findViewById(R.id.text_search_place_result_detailed_address)
         }
@@ -43,22 +45,11 @@ class SearchRideAdapter(
         val searchPlace: SearchLocation = searchPlaceList[position]
 
         // Bind data into UI
+        holder.topDivider.visibility = if(position == 0) View.VISIBLE else View.GONE
+
         holder.placeName.text = searchPlace.name
 
         holder.placeDetailedAddress.text = searchPlace.getDistanceAddressText(context)
-//        if(Converters.metersToKiloMeters(searchPlace.distanceMetersFromOrigin).toInt() == 0) {
-//            holder.placeDetailedAddress.text = context.getString(
-//                R.string.search_fragment_search_result_place_distance_address_0km,
-//                Converters.metersToKiloMeters(searchPlace.distanceMetersFromOrigin).toInt(),
-//                searchPlace.detailAddress
-//            )
-//        } else {
-//            holder.placeDetailedAddress.text = context.getString(
-//                R.string.search_fragment_search_result_place_distance_address,
-//                Converters.metersToKiloMeters(searchPlace.distanceMetersFromOrigin),
-//                searchPlace.detailAddress
-//            )
-//        }
 
 
         holder.itemView.setOnClickListener {

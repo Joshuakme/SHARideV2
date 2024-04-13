@@ -224,6 +224,14 @@
                         android:layout_height="match_parent">
 
 
+                        <ImageView
+                            android:id="@+id/img_ride_detail_passenger1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            app:srcCompat="@drawable/baseline_account_circle_24"
+                            tools:visibility="gone" />
+
                         <TextView
                             android:id="@+id/textView11"
                             android:layout_width="0dp"
@@ -242,15 +250,10 @@
                             android:layout_marginTop="12dp"
                             android:layout_weight="1"
                             android:text="@string/ride_detail_fragment_passengers_seat_booked"
+                            app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
 
-                        <ImageView
-                            android:id="@+id/img_ride_detail_passenger1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:visibility="gone"
-                            tools:visibility="gone" />
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/recycler_ride_detail_passengers_image"
@@ -414,15 +417,6 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/cl_ride_detail_loading_modal_background"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:alpha="0.7"
-                    android:foreground="@color/black"
-                    tools:visibility="invisible">
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
         </ScrollView>
 
@@ -485,6 +479,21 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+
+        <!--  Ride Detail Loading  -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_ride_detail_loading_modal_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.7"
+            android:foreground="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5" />
+
         <ProgressBar
             android:id="@+id/progress_bar_ride_detail_loading"
             style="@android:style/Widget.Holo.Light.ProgressBar"
@@ -496,8 +505,9 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.5"
-            tools:visibility="invisible" />
+            app:layout_constraintVertical_bias="0.5" />
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

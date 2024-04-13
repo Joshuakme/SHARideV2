@@ -150,41 +150,6 @@ class SearchSelectOriginFragment : Fragment() {
         }
     }
 
-    @SuppressLint("MissingPermission")
-    private fun getDeviceLocation(
-        fusedLocationProviderClient: FusedLocationProviderClient,
-        onLocationResult: (LatLng) -> Unit,
-        onLocationError: () -> Unit
-    ) {
-        /*
-         * Get the best and most recent location of the device, which may be null in rare
-         * cases when a location is not available.
-         */
-        try {
-            val locationResult = fusedLocationProviderClient.lastLocation
-            locationResult.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val lastKnownLocation = task.result
-                    if (lastKnownLocation != null) {
-                        val latLng = LatLng(lastKnownLocation.latitude, lastKnownLocation.longitude)
-                        onLocationResult.invoke(latLng)
-                    } else {
-                        // Handle the case where lastKnownLocation is null
-                        onLocationError.invoke()
-                    }
-                } else {
-                    // Handle the case where the task is not successful
-                    onLocationError.invoke()
-                    Log.d(ContentValues.TAG, "Current location is null. Using defaults.")
-                }
-            }
-        } catch (e: SecurityException) {
-            // Handle the case where a SecurityException occurs
-            onLocationError.invoke()
-            Log.e("Exception: %s", e.message, e)
-        }
-    }
-
 
     private fun updateMap(originLocation: LatLng? = null) {
         val origin = searchRideViewModel.origin.value?.geolocation

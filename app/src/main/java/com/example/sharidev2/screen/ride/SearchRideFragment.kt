@@ -1,21 +1,15 @@
 package com.example.sharidev2.screen.ride
 
-import android.Manifest
-import android.content.ContentValues.TAG
 import android.content.Context
-import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -29,11 +23,9 @@ import com.example.sharidev2.adapter.SearchRideAdapter
 import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.databinding.FragmentSearchRideBinding
 import com.example.sharidev2.utility.CommonUtils
-import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.NetworkUtils
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
 import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
-import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompletePrediction
@@ -42,10 +34,8 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.model.RectangularBounds
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
-import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.firebase.Timestamp
-import kotlin.math.cos
 
 class SearchRideFragment : Fragment() {
     // Global Variables Init
@@ -70,6 +60,7 @@ class SearchRideFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search_ride, container, false)
 
 
+        // Get Context
         context = if(getContext() != null) {
             requireContext()
         } else {
@@ -82,16 +73,26 @@ class SearchRideFragment : Fragment() {
         val nowBtn = binding.cardSearchNow
         val scheduleBtn = binding.cardSearchSchedule
         val pickUpLocationEditText = binding.editTextOfferRidePickUpLocation
+        val pickUpLocationCancelButton = binding.imgBtnDriverSearchRideOriginCancel
         val destinationLocationEditText = binding.editTextOfferRideDestinationLocation
-        val changeRoleButton = binding.cardSearchChangeRoleContainer
+        val destinationLocationCancelButton = binding.imgBtnDriverSearchRideDestinationCancel
+        val createRideButton = binding.cardSearchCreateRideContainer
         searchResultRecyclerView = binding.recyclerSearchPlaceResult
-        placesClient = Places.createClient(requireContext())
+        placesClient = Places.createClient(context)
 
         // LAYOUT SETTINGS
         val activity = activity as MainActivity
         activity.setStatusBarColor(CommonUtils().getThemeColor(context, android.R.attr.colorBackground))
         activity.setBottomNavVisible(false)
 
+
+        searchRideViewModel.origin.observe(viewLifecycleOwner) {origin ->
+            pickUpLocationEditText.setText(origin?.name)
+        }
+
+        searchRideViewModel.destination.observe(viewLifecycleOwner) {destination ->
+            destinationLocationEditText.setText(destination?.name)
+        }
 
 
         // BEHAVIOUR EVENT LISTENERS
@@ -101,38 +102,83 @@ class SearchRideFragment : Fragment() {
 
         scheduleBtn.setOnClickListener {
             selectSearchNow(false)
-            // TODO: show bottom dialog to choose date and time
             showRideTimingDialog()
         }
 
-
-
         pickUpLocationEditText.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             focusOriginEditText(hasFocus)
+
+            if(pickUpLocationEditText.text.toString() == "Current location") {
+                pickUpLocationEditText.text.clear()
+            }
         }
 
         destinationLocationEditText.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             focusDestinationEditText(hasFocus)
         }
 
+        pickUpLocationCancelButton.setOnClickListener {
+            pickUpLocationEditText.text.clear()
+            searchRideViewModel.clearOrigin()
+        }
+
+        destinationLocationCancelButton.setOnClickListener {
+            destinationLocationEditText.text.clear()
+            searchRideViewModel.clearDestination()
+        }
+
 
         // DATA FETCHING
+        pickUpLocationEditText.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // Unused
+            }
+
+            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+                if(!charSequence.isNullOrBlank()) {
+                    searchResultRecyclerView.visibility = View.VISIBLE
+                    pickUpLocationCancelButton.visibility = View.VISIBLE
+                } else {
+                    searchResultRecyclerView.visibility = View.GONE
+                    pickUpLocationCancelButton.visibility = View.GONE
+                }
+
+                charSequence?.toString()?.let {query ->
+                    currentLocationViewModel.currentLocation.observe(viewLifecycleOwner) {currentLocation ->
+
+                        NetworkUtils(context).showNetworkStatus()
+
+                        performOriginAutocompleteRequest(query, currentLocation)
+                    }
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                // Unused
+            }
+
+        })
+
         destinationLocationEditText.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {
                 // Unused
             }
 
             override fun onTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {
+                if(!charSequence.isNullOrBlank()) {
+                    searchResultRecyclerView.visibility = View.VISIBLE
+                    destinationLocationCancelButton.visibility = View.VISIBLE
+                } else {
+                    searchResultRecyclerView.visibility = View.GONE
+                    destinationLocationCancelButton.visibility = View.GONE
+                }
+
                 // Trigger search on text change
                 charSequence?.toString()?.let { query ->
 
-                    var currentLocation: LatLng? = null
-                    currentLocationViewModel.currentLocation.observe(viewLifecycleOwner) {
+                    currentLocationViewModel.currentLocation.observe(viewLifecycleOwner) {currentLocation ->
 
-
-                        currentLocation = it
-
-                        NetworkUtils(requireContext()).showNetworkStatus()
+                        NetworkUtils(context).showNetworkStatus()
 
                         performDestinationAutocompleteRequest(query, currentLocation)
                     }
@@ -152,7 +198,7 @@ class SearchRideFragment : Fragment() {
         }
 
         // Search Fragment -> Driver Ride Fragment
-        changeRoleButton.setOnClickListener {
+        createRideButton.setOnClickListener {
             findNavController().navigate(R.id.action_searchRideFragment_to_driverCreateRideFragment)
         }
 
@@ -168,11 +214,11 @@ class SearchRideFragment : Fragment() {
         val scheduleBtnText = binding.textSearchSchedule
 
 
-        val colorPrimary = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorPrimary)
-        val colorOnPrimary = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorOnPrimary)
-        val colorOutline = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorOutline)
+        val colorPrimary = CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorPrimary)
+        val colorOnPrimary = CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorOnPrimary)
+        val colorOutline = CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorOutline)
 
-        val poppinsMediumTypeface = ResourcesCompat.getFont(requireContext(), R.font.poppins_medium)
+        val poppinsMediumTypeface = ResourcesCompat.getFont(context, R.font.poppins_medium)
         val poppinsTypeface = resources.getFont(R.font.poppins)
 
 
@@ -197,21 +243,29 @@ class SearchRideFragment : Fragment() {
     }
 
     private fun focusOriginEditText(focus: Boolean) {
+        val pickUpLocationEditText = binding.editTextOfferRidePickUpLocation
         val pickUpLocationEditTextCard = binding.cardOfferRidePickUpLocation
+        val destinationLocationEditText = binding.editTextOfferRideDestinationLocation
         val destinationLocationEditTextCard = binding.cardOfferRideDestinationLocation
 
-        val typedValue = TypedValue()
 
         // Resolve the attribute to get the color value programmatically
-        context?.theme?.resolveAttribute(com.google.android.material.R.attr.colorSurfaceContainer, typedValue, true)
-        val colorSurfaceContainer = typedValue.data
+        val colorSurfaceContainer = CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorSurfaceContainer)
 
         if(focus) {
             pickUpLocationEditTextCard.setCardBackgroundColor(colorSurfaceContainer)
             destinationLocationEditTextCard.setCardBackgroundColor(Color.TRANSPARENT)
+            pickUpLocationEditText.requestFocus()
+            destinationLocationEditText.clearFocus()
+
             isOriginFocused = true
             isDestinationFocused = false
+
+            if(pickUpLocationEditText.text.isNullOrEmpty()) {
+                searchResultRecyclerView.visibility = View.GONE
+            }
         } else {
+            pickUpLocationEditText.clearFocus()
             pickUpLocationEditTextCard.setCardBackgroundColor(Color.TRANSPARENT)
 
             isOriginFocused = false
@@ -220,25 +274,32 @@ class SearchRideFragment : Fragment() {
     }
 
     private fun focusDestinationEditText(focus: Boolean) {
+        val pickUpLocationEditText = binding.editTextOfferRidePickUpLocation
         val pickUpLocationEditTextCard = binding.cardOfferRidePickUpLocation
+        val destinationLocationEditText = binding.editTextOfferRideDestinationLocation
         val destinationLocationEditTextCard = binding.cardOfferRideDestinationLocation
 
-        val typedValue = TypedValue()
-
-        // Resolve the attribute to get the color value programmatically
-        context?.theme?.resolveAttribute(com.google.android.material.R.attr.colorSurfaceContainer, typedValue, true)
-        val colorSurfaceContainer = typedValue.data
+        val colorSurfaceContainer = CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorSurfaceContainer)
 
         if (focus) {
             // Change background color when focused
             destinationLocationEditTextCard.setCardBackgroundColor(colorSurfaceContainer)
             pickUpLocationEditTextCard.setCardBackgroundColor(Color.TRANSPARENT)
+            destinationLocationEditText.requestFocus()
+            pickUpLocationEditText.clearFocus()
 
             isOriginFocused = false
             isDestinationFocused = true
+
+            if(destinationLocationEditText.text.isNullOrBlank()) {
+                searchResultRecyclerView.visibility = View.GONE
+            } else {
+                searchResultRecyclerView.visibility = View.VISIBLE
+            }
         } else {
             // Change background color when not focused
             destinationLocationEditTextCard.setCardBackgroundColor(Color.TRANSPARENT)
+            destinationLocationEditText.clearFocus()
 
             isDestinationFocused = false
         }
@@ -260,222 +321,59 @@ class SearchRideFragment : Fragment() {
         dialogFragment.isCancelable = false
     }
 
-    private fun performOriginAutocompleteRequest(query: String? = null, currentLocation: LatLng?) {
+    private fun performOriginAutocompleteRequest(query: String?, currentLocation: LatLng?) {
         // Perform autocomplete predictions
         val autocompleteToken = AutocompleteSessionToken.newInstance()
 
-        if(currentLocation == null) return
+        if (currentLocation == null) return
 
-        // Build a request for autocomplete predictions based on the current location
-        if(query != null) {
-            val request = buildOriginCurrentPlaceRequest(autocompleteToken, query, currentLocation)
-
-            placesClient.findAutocompletePredictions(request)
-                .addOnSuccessListener { response ->
-                    val predictions: List<AutocompletePrediction> = response.autocompletePredictions
-
-                    Toast.makeText(
-                        requireContext(),
-                        predictions.isEmpty().toString(),
-                        Toast.LENGTH_SHORT
-                    ).show()
-
-                    if (predictions.isNotEmpty()) {
-                        val nearestPlace = predictions[0] // Assuming the first prediction is the nearest
-                        val placeId = nearestPlace.placeId
-
-                        Toast.makeText(
-                            requireContext(),
-                            nearestPlace.getPrimaryText(null),
-                            Toast.LENGTH_SHORT
-                        ).show()
-
-                        // Now, you can use placeId to fetch the details of the place, including latitude and longitude
-                        getLatLngFromPlaceId(placeId) { latLng ->
-                            // Now you have the latitude and longitude of the nearest place
-                            // Update your ViewModel here
-                            searchRideViewModel.setOrigin(
-                                SearchLocation(
-                                    placeId = nearestPlace.placeId,
-                                    name = nearestPlace.getPrimaryText(null).toString(),
-                                    distanceMetersFromOrigin = nearestPlace.distanceMeters ?: 0,
-                                    detailAddress = nearestPlace.getFullText(null).toString(),
-                                ).apply {
-                                geolocation = latLng
-                            }
-                            )
-                        }
-                    }
-                }
-                .addOnFailureListener { exception ->
-                    // Handle failure
-                    Toast.makeText(
-                        requireContext(),
-                        exception.message.toString(),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-        } else {
-
-            val request = buildOriginAutocompleteRequestWithLocation(autocompleteToken, currentLocation)
+        if (query != null) {
+            val request = buildOriginAutocompleteRequestWithLocation(autocompleteToken, query, currentLocation)
 
             placesClient.findAutocompletePredictions(request)
                 .addOnSuccessListener { response ->
                     val predictions: List<AutocompletePrediction> = response.autocompletePredictions
 
-                    Toast.makeText(
-                        requireContext(),
-                        predictions.isEmpty().toString(),
-                        Toast.LENGTH_SHORT
-                    ).show()
-
-                    if (predictions.isNotEmpty()) {
-                        val nearestPlace = predictions[0] // Assuming the first prediction is the nearest
-                        val placeId = nearestPlace.placeId
-
-                        Toast.makeText(
-                            requireContext(),
-                            nearestPlace.getPrimaryText(null),
-                            Toast.LENGTH_SHORT
-                        ).show()
-
-                        // Now, you can use placeId to fetch the details of the place, including latitude and longitude
-                        getLatLngFromPlaceId(placeId) { latLng ->
-                            // Now you have the latitude and longitude of the nearest place
-                            // Update your ViewModel here
-                            searchRideViewModel.setOrigin(
-                                SearchLocation(
-                                    placeId = nearestPlace.placeId,
-                                    name = nearestPlace.getPrimaryText(null).toString(),
-                                    distanceMetersFromOrigin = nearestPlace.distanceMeters ?: 0,
-                                    detailAddress = nearestPlace.getFullText(null).toString(),
-                                ).apply {
+                    val locationList = predictions.map { prediction ->
+                        SearchLocation(
+                            placeId = prediction.placeId,
+                            name = prediction.getPrimaryText(null).toString(),
+                            distanceMetersFromOrigin = prediction.distanceMeters ?: 0,
+                            detailAddress = prediction.getFullText(null).toString(),
+                        ).apply {
+                            getLatLngFromPlaceId(prediction.placeId) { latLng ->
                                 geolocation = latLng
+                                // Notify the adapter that data has changed
+                                searchResultAdapter.notifyDataSetChanged()
                             }
-                            )
                         }
                     }
+
+                    // Pass list of data to adapter
+                    searchResultAdapter =
+                        SearchRideAdapter(context, locationList) { selectedLocation ->
+                            // Determine if the user is focusing on origin or destination
+                            if (isOriginFocused) {
+                                searchRideViewModel.setOrigin(selectedLocation)
+                            } else if (isDestinationFocused) {
+                                searchRideViewModel.setDestination(selectedLocation)
+                            }
+
+                            focusDestinationEditText(true)
+                        }
+                    searchResultRecyclerView.layoutManager = LinearLayoutManager(context)
+                    searchResultRecyclerView.adapter = searchResultAdapter
                 }
                 .addOnFailureListener { exception ->
                     // Handle failure
-                    Toast.makeText(
-                        requireContext(),
-                        exception.message.toString(),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(context, exception.message.toString(), Toast.LENGTH_SHORT).show()
                 }
         }
-
-    }
-
-
-    private fun findNearestPlace(
-        request: FindCurrentPlaceRequest,
-        currentLocation: LatLng
-    ) {
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // Permission is not granted, request it
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                Constants.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
-            )
-        } else {
-            placesClient.findCurrentPlace(request)
-                .addOnSuccessListener { response ->
-                    val placeLikelihoods = response.placeLikelihoods
-
-                    if (placeLikelihoods.isNotEmpty()) {
-                        // Assuming the first place is the nearest
-                        val nearestPlace = placeLikelihoods[0].place
-                        val placeId = nearestPlace.id
-
-                        val distanceMeters = CommonUtils().calculateDistance(
-                            currentLocation.latitude,
-                            currentLocation.longitude,
-                            nearestPlace.latLng?.latitude ?: 0.0,
-                            nearestPlace.latLng?.longitude ?: 0.0
-                        ).toInt()
-
-                        // Now, you can use placeId to fetch the details of the place, including latitude and longitude
-                        if (placeId != null) {
-                            getLatLngFromPlaceId(placeId) { latLng ->
-                                // Now you have the latitude and longitude of the nearest place
-                                // Create a SearchLocation instance
-                                val nearestSearchLocation = SearchLocation(
-                                    placeId = placeId,
-                                    name = nearestPlace.name.toString(),
-                                    distanceMetersFromOrigin = distanceMeters,
-                                    detailAddress = nearestPlace.address.toString()
-                                ).apply {
-                                    geolocation = latLng
-                                }
-
-                                // Use the nearestSearchLocation as needed (e.g., update ViewModel)
-                                searchRideViewModel.setOrigin(nearestSearchLocation)
-                            }
-                        } else {
-                            Toast.makeText(
-                                requireContext(),
-                                "No places found!!!",
-                                Toast.LENGTH_SHORT
-                            )
-                                .show()
-                        }
-                    } else {
-                        // Handle the case where no places are found
-                        Toast.makeText(requireContext(), "No places found", Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                }
-                .addOnFailureListener { exception ->
-                    // Handle failure
-                    Toast.makeText(
-                        requireContext(),
-                        exception.message.toString(),
-                        Toast.LENGTH_SHORT
-                    )
-                        .show()
-                }
-        }
-    }
-
-    private fun buildOriginCurrentPlaceRequest(
-        autocompleteRequest: AutocompleteSessionToken,
-        query: String,
-        currentLocation: LatLng,
-        radiusMeters: Int = 1000
-    ): FindAutocompletePredictionsRequest {
-        val bounds = RectangularBounds.newInstance(
-            LatLng(
-                currentLocation.latitude - radiusMeters / 111000.0,
-                currentLocation.longitude - radiusMeters / (111000.0 * cos(
-                    Math.toRadians(currentLocation.latitude)
-                ))
-            ),
-            LatLng(
-                currentLocation.latitude + radiusMeters / 111000.0,
-                currentLocation.longitude + radiusMeters / (111000.0 * cos(
-                    Math.toRadians(currentLocation.latitude)
-                ))
-            )
-        )
-
-        return FindAutocompletePredictionsRequest.builder()
-                .setSessionToken(autocompleteRequest)
-                .setQuery(query)
-                .setCountries("MY")
-                .setOrigin(currentLocation)
-                .setLocationRestriction(bounds)
-                .build()
     }
 
     private fun buildOriginAutocompleteRequestWithLocation(
         autocompleteRequest: AutocompleteSessionToken,
+        query: String,
         currentLocation: LatLng
     ): FindAutocompletePredictionsRequest {
         val bounds = RectangularBounds.newInstance(
@@ -485,57 +383,11 @@ class SearchRideFragment : Fragment() {
 
         return FindAutocompletePredictionsRequest.builder()
             .setSessionToken(autocompleteRequest)
-            .setQuery("TRX")
+            .setQuery(query)
             .setCountries("MY")
             .setOrigin(currentLocation)
             .setLocationRestriction(bounds)
             .build()
-    }
-
-
-    private fun performOriginCurrentPlaceRequest() {
-        // Use fields to define the data types to return.
-        val placeFields: List<Place.Field> = listOf(
-            Place.Field.NAME,
-            Place.Field.ADDRESS,
-            Place.Field.LAT_LNG,
-            Place.Field.ID)
-
-        // Use the builder to create a FindCurrentPlaceRequest.
-        val request: FindCurrentPlaceRequest = FindCurrentPlaceRequest.newInstance(placeFields)
-
-        // Call findCurrentPlace and handle the response (first check that the user has granted permission).
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) ==
-            PackageManager.PERMISSION_GRANTED) {
-
-            val placeResponse = placesClient.findCurrentPlace(request)
-            placeResponse.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val response = task.result
-                    val highestLikelihoodPlace = response?.placeLikelihoods?.maxByOrNull { it.likelihood }
-
-                    highestLikelihoodPlace?.let {placeLikelihood ->
-                        val originPlace = SearchLocation(
-                                placeId = placeLikelihood.place.id ?: "",
-                                name = placeLikelihood.place.name ?: "Name Not Found",
-                                detailAddress = placeLikelihood.place.address ?: "Address Not Found",
-                                geolocation = placeLikelihood.place.latLng
-                            )
-
-                        searchRideViewModel.setOrigin(originPlace)
-                    }
-                } else {
-                    val exception = task.exception
-                    if (exception is ApiException) {
-                        Log.e(TAG, "Place not found: ${exception.statusCode}")
-                    }
-                }
-            }
-        } else {
-            // A local method to request required permissions;
-            // See https://developer.android.com/training/permissions/requesting
-            //getLocationPermission()
-        }
     }
 
 
@@ -572,7 +424,7 @@ class SearchRideFragment : Fragment() {
 
                 // Pass list of data to adapter
                 searchResultAdapter =
-                    SearchRideAdapter(requireContext(), locationList) { selectedLocation ->
+                    SearchRideAdapter(context, locationList) { selectedLocation ->
                         // Determine if the user is focusing on origin or destination
                         if (isOriginFocused) {
                             searchRideViewModel.setOrigin(selectedLocation)
@@ -582,7 +434,6 @@ class SearchRideFragment : Fragment() {
                         }
 
                         //performOriginAutocompleteRequest(currentLocation = currentLocation)
-                        performOriginCurrentPlaceRequest()
 
                         findNavController().navigate(R.id.action_searchRideFragment_to_searchSelectOriginFragment)
                     }
@@ -591,7 +442,7 @@ class SearchRideFragment : Fragment() {
             }
             .addOnFailureListener { exception ->
                 // Handle errors
-                Toast.makeText(requireContext(), exception.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, exception.toString(), Toast.LENGTH_SHORT).show()
                 Log.e("EXCEPTION BABIIIIII", exception.toString())
             }
     }
@@ -644,8 +495,8 @@ class SearchRideFragment : Fragment() {
             }
             .addOnFailureListener { exception ->
                 // Handle failure to fetch place details
-                Toast.makeText(requireContext(), exception.toString(), Toast.LENGTH_SHORT).show()
-                Log.e("EXCEPTION BABIIIIII", exception.toString())
+                Toast.makeText(context, exception.toString(), Toast.LENGTH_SHORT).show()
+                Log.e("SearchRideFragment: getLatLngFromPlaceId()", exception.toString())
                 callback.invoke(null)
             }
     }

@@ -107,7 +107,7 @@
 
             <!--  Button: Choose Role  -->
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_search_change_role_container"
+                android:id="@+id/card_search_create_ride_container"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
@@ -210,6 +210,17 @@
                         android:text="Current location"
                         android:textSize="14sp" />
 
+                    <ImageButton
+                        android:id="@+id/img_btn_driver_search_ride_origin_cancel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:background="#00FFFFFF"
+                        android:src="@drawable/baseline_close_24"
+                        android:visibility="invisible"
+                        app:tint="?android:attr/textColorHint"
+                        tools:visibility="invisible" />
+
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
@@ -281,6 +292,17 @@
                         android:singleLine="true"
                         android:textColorHint="?android:attr/textColorHint"
                         android:textSize="14sp" />
+
+                    <ImageButton
+                        android:id="@+id/img_btn_driver_search_ride_destination_cancel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:background="#00FFFFFF"
+                        android:src="@drawable/baseline_close_24"
+                        android:visibility="invisible"
+                        app:tint="?android:attr/textColorHint"
+                        tools:visibility="invisible" />
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
@@ -297,7 +319,7 @@
             android:id="@+id/recycler_search_place_result"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
             android:paddingBottom="8dp"
             android:visibility="visible"
             tools:listitem="@layout/recycler_item_search_place_result"
