@@ -108,7 +108,7 @@ class SearchRideFragment : Fragment() {
         pickUpLocationEditText.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             focusOriginEditText(hasFocus)
 
-            if(pickUpLocationEditText.text.toString() == "Current location") {
+            if(pickUpLocationEditText.text.toString() == getString(R.string.search_fragment_origin_default)) {
                 pickUpLocationEditText.text.clear()
             }
         }
@@ -305,7 +305,7 @@ class SearchRideFragment : Fragment() {
             }
 
             if(pickUpLocationEditText.text.isNullOrEmpty()) {
-                pickUpLocationEditText.setText("Current location")
+                pickUpLocationEditText.setText(getString(R.string.search_fragment_origin_default))
                 pickUpLocationCancelButton.visibility = View.GONE
             }
         } else {

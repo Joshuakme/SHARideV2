@@ -207,7 +207,7 @@
                         android:paddingTop="@dimen/ss_home_input_field_vertical_padding"
                         android:paddingEnd="@dimen/ss_home_input_field_horizontal_padding"
                         android:paddingBottom="@dimen/ss_home_input_field_vertical_padding"
-                        android:text="Current location"
+                        android:text="@string/search_fragment_origin_default"
                         android:textSize="14sp" />
 
                     <ImageButton
