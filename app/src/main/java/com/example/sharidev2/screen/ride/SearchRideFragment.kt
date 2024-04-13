@@ -244,6 +244,7 @@ class SearchRideFragment : Fragment() {
 
     private fun focusOriginEditText(focus: Boolean) {
         val pickUpLocationEditText = binding.editTextOfferRidePickUpLocation
+        val pickUpLocationCancelButton = binding.imgBtnDriverSearchRideOriginCancel
         val pickUpLocationEditTextCard = binding.cardOfferRidePickUpLocation
         val destinationLocationEditText = binding.editTextOfferRideDestinationLocation
         val destinationLocationEditTextCard = binding.cardOfferRideDestinationLocation
@@ -263,10 +264,13 @@ class SearchRideFragment : Fragment() {
 
             if(pickUpLocationEditText.text.isNullOrEmpty()) {
                 searchResultRecyclerView.visibility = View.GONE
+            } else {
+                pickUpLocationCancelButton.visibility = View.VISIBLE
             }
         } else {
             pickUpLocationEditText.clearFocus()
             pickUpLocationEditTextCard.setCardBackgroundColor(Color.TRANSPARENT)
+            pickUpLocationCancelButton.visibility = View.GONE
 
             isOriginFocused = false
         }
@@ -275,8 +279,10 @@ class SearchRideFragment : Fragment() {
 
     private fun focusDestinationEditText(focus: Boolean) {
         val pickUpLocationEditText = binding.editTextOfferRidePickUpLocation
+        val pickUpLocationCancelButton = binding.imgBtnDriverSearchRideOriginCancel
         val pickUpLocationEditTextCard = binding.cardOfferRidePickUpLocation
         val destinationLocationEditText = binding.editTextOfferRideDestinationLocation
+        val destinationLocationCancelButton = binding.imgBtnDriverSearchRideDestinationCancel
         val destinationLocationEditTextCard = binding.cardOfferRideDestinationLocation
 
         val colorSurfaceContainer = CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorSurfaceContainer)
@@ -295,11 +301,18 @@ class SearchRideFragment : Fragment() {
                 searchResultRecyclerView.visibility = View.GONE
             } else {
                 searchResultRecyclerView.visibility = View.VISIBLE
+                destinationLocationCancelButton.visibility = View.VISIBLE
+            }
+
+            if(pickUpLocationEditText.text.isNullOrEmpty()) {
+                pickUpLocationEditText.setText("Current location")
+                pickUpLocationCancelButton.visibility = View.GONE
             }
         } else {
             // Change background color when not focused
             destinationLocationEditTextCard.setCardBackgroundColor(Color.TRANSPARENT)
             destinationLocationEditText.clearFocus()
+            destinationLocationCancelButton.visibility = View.GONE
 
             isDestinationFocused = false
         }
