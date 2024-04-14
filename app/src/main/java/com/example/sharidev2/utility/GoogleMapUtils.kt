@@ -131,13 +131,10 @@ class GoogleMapUtils {
     ) {
         googleMap.setOnCameraMoveListener {
             handleCameraMove(googleMap, location, callback)
-            true
         }
 
         myLocationBtn.setOnClickListener {
             GoogleMapUtils().moveMapCamera(googleMap, location)
-
-            true
         }
     }
 

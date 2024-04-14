@@ -75,8 +75,6 @@ class TimingBottomDialogFragment(
         }
 
         // Set up initial hour and minute pickers
-
-
     }
 
 

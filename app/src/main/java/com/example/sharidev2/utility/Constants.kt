@@ -7,6 +7,10 @@ class Constants {
         val RIDE_MIN_FARE_RATE = 5.0
         val RIDE_FARE_PER_KM = 0.43
         val RIDE_FARE_PER_MINUTE = 0.25
+        val RIDE_PASSENGER_DISCOUNT_PAX_ONE = 1.0
+        val RIDE_PASSENGER_DISCOUNT_PAX_TWO = 0.60
+        val RIDE_PASSENGER_DISCOUNT_PAX_THREE = 0.45
+        val RIDE_PASSENGER_DISCOUNT_PAX_FOUR_AND_MORE = 0.4
 
 
         // PERMISIONS

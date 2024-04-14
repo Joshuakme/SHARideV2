@@ -63,16 +63,16 @@ class RideDetailFragment : Fragment() {
         Log.e("", "RideId: $rideId")
 
         lifecycleScope.launch(Dispatchers.Main) {
-            if(rideId != null) {
+            if (rideId != null) {
                 val reqRide = getRide(rideId)
 
-                if(reqRide != null) {
+                if (reqRide != null) {
                     rideDetailViewModel.setRide(reqRide)
                 }
             }
         }
 
-        context = if(getContext() != null) {
+        context = if (getContext() != null) {
             requireContext()
         } else {
             requireActivity().applicationContext
@@ -81,11 +81,21 @@ class RideDetailFragment : Fragment() {
 
         var estimatedPrice: Double = 0.0
 
+        val currentPassenger = Passenger(
+            userUid = currentUser!!.uid,
+            location = currentLocationViewModel.currentLocation.value,
+            origin = searchRideViewModel.origin.value,
+            destination = searchRideViewModel.destination.value,
+            ridePrice = estimatedPrice,
+            requestedDateTime = searchRideViewModel.rideDateTime.value
+        )
+
 
         // ELEMENT VARIABLES
         val backBtn = binding.imgBtnRideDetailNavBack
         val requestBtn = binding.btnRideDetailRequestRide
-        val navController = Navigation.findNavController(requireActivity(), R.id.fragment_container_main)
+        val navController =
+            Navigation.findNavController(requireActivity(), R.id.fragment_container_main)
         val driverImg = binding.imgRideDetailDriver
         val driverNameText = binding.textRideDetailDriverName
         val driverPhoneNumberText = binding.textRideDetailPhoneNumber
@@ -101,42 +111,54 @@ class RideDetailFragment : Fragment() {
         val estimatedPriceText = binding.textRideDetailEstimatedPrice
 
 
-        rideDetailViewModel.ride.observe(viewLifecycleOwner) {ride ->
-            if(ride != null) {
+        rideDetailViewModel.ride.observe(viewLifecycleOwner) { ride ->
+            if (ride != null) {
                 // Driver
-                if(ride.driver.user != null) {
-                    if(ride.driver.user!!.photoUri != null || ride.driver.user!!.photoUri.toString() != "") {
+                if (ride.driver.user != null) {
+                    if (ride.driver.user!!.photoUri != null || ride.driver.user!!.photoUri.toString() != "") {
                         val photoUri = ride.driver.user!!.photoUri
 
                         Log.e("RideDetailFragment", "PhotoUri: " + photoUri.toString())
-                        if(CommonUtils().isUrl(photoUri.toString())) {
+                        if (CommonUtils().isUrl(photoUri.toString())) {
                             Glide.with(requireContext())
                                 .load(photoUri.toString())
                                 .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Disable disk caching
                                 .into(driverImg)
                         }
                     } else {
-                        val colorOutline = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorOutline)
+                        val colorOutline = CommonUtils().getThemeColor(
+                            requireContext(),
+                            com.google.android.material.R.attr.colorOutline
+                        )
                         driverImg.setColorFilter(colorOutline)
                     }
 
                     driverNameText.text = ride.driver.user?.displayName
-                    driverPhoneNumberText.text = CommonUtils.formatHiddenPhoneNumber(ride.driver.user?.phoneNumber ?: "")
-                    driverRatingText.text = getString(R.string.ride_detail_fragment_driver_rating, ride.driver.user?.rating?.toDouble() ?: 0.0)
-                    driverRatingReviewText.text = getString(R.string.ride_detail_fragment_driver_rating_review, 0)
+                    driverPhoneNumberText.text =
+                        CommonUtils.formatHiddenPhoneNumber(ride.driver.user?.phoneNumber ?: "")
+                    driverRatingText.text = getString(
+                        R.string.ride_detail_fragment_driver_rating,
+                        ride.driver.user?.rating?.toDouble() ?: 0.0
+                    )
+                    driverRatingReviewText.text =
+                        getString(R.string.ride_detail_fragment_driver_rating_review, 0)
                 }
 
                 // Passengers
-                if(ride.driver.vehicle != null) {
-                    passengersSeatsBookedText.text = getString(R.string.ride_detail_fragment_passengers_seat_booked, 0, ride.driver.vehicle.capacity-1)
+                if (ride.driver.vehicle != null) {
+                    passengersSeatsBookedText.text = getString(
+                        R.string.ride_detail_fragment_passengers_seat_booked,
+                        0,
+                        ride.driver.vehicle.capacity - 1
+                    )
                     val defaultUserImage = binding.imgRideDetailPassenger1
                     defaultUserImage.tag = "baseline_account_circle_24"
 
-                    if(ride.passengers.isNotEmpty() && ride.passengers != null) {
+                    if (ride.passengers.isNotEmpty() && ride.passengers != null) {
                         passengersSeatsBookedText.text = getString(
                             R.string.ride_detail_fragment_passengers_seat_booked,
                             ride.passengers.size,
-                            ride.driver.vehicle.capacity-1
+                            ride.driver.vehicle.capacity - 1
                         )
 
                         // Passengers Image
@@ -146,36 +168,42 @@ class RideDetailFragment : Fragment() {
                             // Populate with default user images
                             val remainingCapacity = ride.driver.vehicle.capacity - 1
                             repeat(remainingCapacity) {
-                                imageList.add(CommonUtils().getUriFromVectorDrawable(defaultUserImage))
+                                imageList.add(
+                                    CommonUtils().getUriFromVectorDrawable(
+                                        defaultUserImage
+                                    )
+                                )
                             }
                         } else {
                             // Populate with passengers' photos
                             ride.passengers.forEach { passenger ->
-                                val photoUri = passenger.user?.photoUri ?: CommonUtils().getUriFromVectorDrawable(defaultUserImage)
+                                val photoUri = passenger.user?.photoUri
+                                    ?: CommonUtils().getUriFromVectorDrawable(defaultUserImage)
                                 imageList.add(photoUri)
                             }
                         }
 
 
-
                         val adapter = RideDetailPassengerImageAdapter(requireContext(), imageList)
                         passengersImageRecyclerView.adapter = adapter
-                        passengersImageRecyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+                        passengersImageRecyclerView.layoutManager =
+                            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
                     } else {
                         passengersSeatsBookedText.text = getString(
                             R.string.ride_detail_fragment_passengers_seat_booked,
                             0,
-                            ride.driver.vehicle.capacity-1
+                            ride.driver.vehicle.capacity - 1
                         )
 
                         val imageList = mutableListOf<Uri>()
-                        for(i in 1..<ride.driver.vehicle.capacity) {
+                        for (i in 1..<ride.driver.vehicle.capacity) {
                             imageList.add(CommonUtils().getUriFromVectorDrawable(defaultUserImage))
                         }
 
                         val adapter = RideDetailPassengerImageAdapter(requireContext(), imageList)
                         passengersImageRecyclerView.adapter = adapter
-                        passengersImageRecyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+                        passengersImageRecyclerView.layoutManager =
+                            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
                     }
                 }
 
@@ -184,21 +212,26 @@ class RideDetailFragment : Fragment() {
 
                 val rideAdapter = BookingTimeLineAdapter(rideList)
                 rideDetailsTimelineRecyclerView.adapter = rideAdapter
-                rideDetailsTimelineRecyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+                rideDetailsTimelineRecyclerView.layoutManager =
+                    LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
 
 
-                rideDetailRideDateText.text =  ride.datetime.let { CommonUtils.formatDate(it) + if(CommonUtils().isToday(it)) "(Today)" else ""}
-                rideDetailStartingTimeText.text =  CommonUtils.formatTime(ride.datetime)
+                rideDetailRideDateText.text =
+                    ride.datetime.let { CommonUtils.formatDate(it) + if (CommonUtils().isToday(it)) "(Today)" else "" }
+                rideDetailStartingTimeText.text = CommonUtils.formatTime(ride.datetime)
 
-                if(ride.driver.vehicle != null) {
+                if (ride.driver.vehicle != null) {
                     val vehicle = ride.driver.vehicle
                     rideDetailVehicleText.text = "${vehicle.model} (${vehicle.color})"
                 }
 
 
                 // Price Info
-                if(ride.passengers.isEmpty()) {
-                    rideDetailPriceInfo.text = getString(R.string.ride_detail_fragment_price_info_one_passenger, ride.passengers.size+1)
+                if (ride.passengers.isEmpty()) {
+                    rideDetailPriceInfo.text = getString(
+                        R.string.ride_detail_fragment_price_info_one_passenger,
+                        ride.passengers.size + 1
+                    )
                     rideDetailPriceInfo.visibility = View.VISIBLE
                 } else {
                     rideDetailPriceInfo.visibility = View.INVISIBLE
@@ -206,13 +239,24 @@ class RideDetailFragment : Fragment() {
 
                 // Price Estimation
                 lifecycleScope.launch {
-                    FareUtils().calculatePassengerFare(context, ride.origin, ride.destination,
-                        object: FareUtils.OnDistanceResponseListener {
-                            override fun onPriceCalculated(fare: Int) {
+                    // Get Passenger List
+                    val passengerList = ride.passengers.toMutableList()
+                    passengerList.add(currentPassenger)
+
+                    val sortedPassenger =
+                        FareUtils.getSortedPassengerList(ride.origin.geolocation!!, passengerList)
+
+                    FareUtils.calculatePassengerFare(
+                        context,
+                        ride,
+                        currentPassenger,
+                        sortedPassenger,
+                        object : FareUtils.Companion.OnDistanceResponseListener {
+                            override fun onPriceCalculated(fare: Double) {
+                                currentPassenger.ridePrice = fare
                                 estimatedPriceText.text = getString(R.string.ride_detail_fragment_passengers_estimated_price, fare.toDouble())
                             }
-                        }
-                    )
+                        })
                 }
 
 //                estimatedPrice = 0.0      // TODO: Calculate price
@@ -228,27 +272,26 @@ class RideDetailFragment : Fragment() {
         requestBtn.setOnClickListener {
             lifecycleScope.launch(Dispatchers.Main) {
 
-                if((rideId != null) && (currentUser != null)) {
-                    val passenger = Passenger(
-                        userUid = currentUser.uid,
-                        location = currentLocationViewModel.currentLocation.value,
-                        origin = searchRideViewModel.origin.value,
-                        destination = searchRideViewModel.destination.value,
-                        ridePrice = estimatedPrice,
-                        requestedDateTime = searchRideViewModel.rideDateTime.value
-                    )
+                if (rideId != null) {
+                    val responseStatus = rideViewModel.addPassengerToRide(currentPassenger, rideId)
 
-                    val responseStatus = rideViewModel.addPassengerToRide(passenger, rideId)
-
-                    when(responseStatus) {
+                    when (responseStatus) {
                         Constants.FIREBASE_REQUEST_SUCCESS -> {
-                            Toast.makeText(requireContext(), "Ride requested successfully!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                requireContext(),
+                                "Ride requested successfully!",
+                                Toast.LENGTH_SHORT
+                            ).show()
 
                             navController.navigate(R.id.action_rideDetailFragment_to_bookingFragment)
                         }
 
                         Constants.FIREBASE_REQUEST_EXCEPTION -> {
-                            Toast.makeText(requireContext(), "Ride requested failed!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                requireContext(),
+                                "Ride requested failed!",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
                 }
@@ -268,7 +311,7 @@ class RideDetailFragment : Fragment() {
         val loadingProgressBar = binding.progressBarRideDetailLoading
         val loadingBackgroundModal = binding.clRideDetailLoadingModalBackground
 
-        if(loading) {
+        if (loading) {
             loadingProgressBar.visibility = View.VISIBLE
             loadingBackgroundModal.visibility = View.VISIBLE
         } else {

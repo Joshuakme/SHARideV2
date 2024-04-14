@@ -27,7 +27,6 @@ class SearchRideAdapter(
             placeName = itemView.findViewById(R.id.text_search_place_result_title)
             placeDetailedAddress = itemView.findViewById(R.id.text_search_place_result_detailed_address)
         }
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

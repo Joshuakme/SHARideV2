@@ -38,14 +38,14 @@ data class SearchLocation(
     fun getDistanceAddressText(context: Context): String {
         val distanceInKiloMeters = Converters.metersToKiloMeters(distanceMetersFromOrigin)
 
-        if(distanceInKiloMeters.toInt() == 0) {
-            return context.getString(
+        return if(distanceInKiloMeters.toInt() == 0) {
+            context.getString(
                 R.string.search_fragment_search_result_place_distance_address_0km,
                 distanceInKiloMeters.toInt(),
                 detailAddress
             )
         } else {
-            return context.getString(
+            context.getString(
                 R.string.search_fragment_search_result_place_distance_address,
                 distanceInKiloMeters,
                 detailAddress
