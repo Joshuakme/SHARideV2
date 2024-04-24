@@ -10,13 +10,10 @@ data class VehicleDoc(
     val userUid: String? = null,
     val firstName: String? = null,
     val lastName: String? = null,
-    val vehicleType: String? = null,
-    val vehicleModel: String? = null,
-    val carPlate: String? = null,
     val manufactureDate: Timestamp? = null,
-    val vehicleRegisCert: String? = null,
-    val roadtax: String? = null,
-    val insurance: String? = null,
-    val vehicleId: String? = null
+    val vehicleId: String? = null,
+    val vehicleRegisCert: Uri? = null,
+    val roadtax: Uri? = null,
+    val insurance: Uri? = null
 ) : Parcelable
 

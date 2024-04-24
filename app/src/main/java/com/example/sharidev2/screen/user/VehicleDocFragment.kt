@@ -36,6 +36,8 @@ class VehicleDocFragment : Fragment() {
         val vehicleDocRecyclerView = binding.recyclerViewVehicleDoc
         var adapter: VehicleDocAdapter
 
+
+
         // Observe the LiveData from the ViewModel
         viewModel.vehicleDocList.observe(viewLifecycleOwner) { vehicleDocList ->
 

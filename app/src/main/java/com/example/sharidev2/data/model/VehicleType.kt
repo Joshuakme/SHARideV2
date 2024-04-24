@@ -4,5 +4,7 @@ enum class VehicleType {
     Sedan,
     SUV,
     Minivan,
-    Hatchback;
+    Hatchback,
+    Coupe,
+    Crossover;
 }

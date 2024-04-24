@@ -33,7 +33,6 @@ class DrivingLicenseRepository() {
 
                     val frontFileRef = firebaseStorage.reference.child("${storagePath}/$imgRandomName")
 
-
                     val fileSnapshot = frontFileRef.putFile(frontImageUri).await()
 
                     val frontUri = fileSnapshot.storage.downloadUrl.await()

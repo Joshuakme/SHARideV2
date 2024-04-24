@@ -364,6 +364,9 @@
         <action
             android:id="@+id/action_vehicleDocFragment_to_addVehicleDocFragment"
             app:destination="@id/addVehicleDocFragment" />
+        <action
+            android:id="@+id/action_vehicleDocFragment_to_vehicleDoc2Fragment"
+            app:destination="@id/vehicleDoc2Fragment" />
     </fragment>
     <fragment
         android:id="@+id/addVehicleDocFragment"
@@ -375,6 +378,9 @@
         <action
             android:id="@+id/action_addVehicleDocFragment_to_editVehicleDocFragment"
             app:destination="@id/editVehicleDocFragment" />
+        <action
+            android:id="@+id/action_addVehicleDocFragment_to_vehicleDoc2Fragment2"
+            app:destination="@id/vehicleDoc2Fragment2" />
     </fragment>
     <fragment
         android:id="@+id/editVehicleDocFragment"
@@ -382,6 +388,14 @@
         android:label="EditVehicleDocFragment" >
         <action
             android:id="@+id/action_editVehicleDocFragment_to_addVehicleDocFragment"
+            app:destination="@id/addVehicleDocFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/vehicleDoc2Fragment2"
+        android:name="com.example.sharidev2.VehicleDoc2Fragment"
+        android:label="VehicleDoc2Fragment" >
+        <action
+            android:id="@+id/action_vehicleDoc2Fragment2_to_addVehicleDocFragment"
             app:destination="@id/addVehicleDocFragment" />
     </fragment>
 </navigation>

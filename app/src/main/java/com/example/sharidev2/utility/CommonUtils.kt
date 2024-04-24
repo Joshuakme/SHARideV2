@@ -60,7 +60,7 @@ class CommonUtils {
 
     companion object {
         private const val datetimeFormat = "dd MMM yyyy, hh:mm a"
-        private const val dateFormat = "yyyy MMM dd"
+        const val dateFormat = "yyyy MMM dd"
         private const val timeFormat = "hh : mm a"
 
 

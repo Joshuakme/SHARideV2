@@ -222,34 +222,6 @@ class DrivingLicenseFragment : Fragment() {
     }
 
 
-//
-//    // Function to check if the selected file is a PDF
-//    private fun isPDF(context: Context, uri: Uri): Boolean {
-//        return context.contentResolver.getType(uri)?.startsWith("application/pdf") ?: false
-//    }
-//
-//    // Function to handle PDF file
-//    private fun handlePDF(requestCode: Int, uri: Uri) {
-//        if (uri.toString().endsWith(".pdf")) {
-//            // PDF file selected
-//            // Handle PDF file here, for example, you can display a message to the user
-//            Toast.makeText(requireContext(), "PDF file selected: $uri", Toast.LENGTH_SHORT).show()
-//        } else {
-//            // Image file selected
-//            if (requestCode == REQUEST_IMAGE_GALLERY_FRONT) {
-//                // Set front image URI in ViewModel
-//                frontImageUri = uri
-//                licenseUploadViewModel.setFrontImageUri(frontImageUri)
-//            } else {
-//                // Set back image URI in ViewModel
-//                backImageUri = uri
-//                licenseUploadViewModel.setBackImageUri(backImageUri)
-//            }
-//        }
-//    }
-//
-//
-
     private suspend fun saveToFirestore() {
         isLoading(true)
 
@@ -310,3 +282,33 @@ class DrivingLicenseFragment : Fragment() {
         private const val REQUEST_IMAGE_GALLERY_BACK = 202
     }
 }
+
+
+
+//
+//    // Function to check if the selected file is a PDF
+//    private fun isPDF(context: Context, uri: Uri): Boolean {
+//        return context.contentResolver.getType(uri)?.startsWith("application/pdf") ?: false
+//    }
+//
+//    // Function to handle PDF file
+//    private fun handlePDF(requestCode: Int, uri: Uri) {
+//        if (uri.toString().endsWith(".pdf")) {
+//            // PDF file selected
+//            // Handle PDF file here, for example, you can display a message to the user
+//            Toast.makeText(requireContext(), "PDF file selected: $uri", Toast.LENGTH_SHORT).show()
+//        } else {
+//            // Image file selected
+//            if (requestCode == REQUEST_IMAGE_GALLERY_FRONT) {
+//                // Set front image URI in ViewModel
+//                frontImageUri = uri
+//                licenseUploadViewModel.setFrontImageUri(frontImageUri)
+//            } else {
+//                // Set back image URI in ViewModel
+//                backImageUri = uri
+//                licenseUploadViewModel.setBackImageUri(backImageUri)
+//            }
+//        }
+//    }
+//
+//

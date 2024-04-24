@@ -323,6 +323,27 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
+                            <option name="x" value="500" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_editVehicleDocFragment_to_addVehicleDocFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="editVehicleDocFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
                             <option name="x" value="60" />
                             <option name="y" value="1860" />
                           </Point>
@@ -527,6 +548,11 @@
                               </value>
                             </entry>
                             <entry key="action_personalInformationFragment_to_profileFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_personalInformationFragment_to_vehicleDocFragment">
                               <value>
                                 <LayoutPositions />
                               </value>

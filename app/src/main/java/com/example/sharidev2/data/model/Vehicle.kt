@@ -15,4 +15,5 @@ data class Vehicle(
     val color: String? = "",  // Enum of vehicle color
     val photos: MutableList<Uri>? = null,    // Link of image
     val capacity: Int = 0,
+    val documents: VehicleDoc? = null
 ) : Parcelable

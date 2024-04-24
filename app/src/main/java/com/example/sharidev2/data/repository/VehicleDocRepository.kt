@@ -1,81 +1,70 @@
 package com.example.sharidev2.data.repository
 
-import android.app.DatePickerDialog
-import android.content.Context
 import android.net.Uri
 import android.util.Log
-import android.widget.DatePicker
-import androidx.core.content.ContentProviderCompat
-import com.example.sharidev2.data.model.Contact
-import com.example.sharidev2.data.model.Vehicle
 import com.example.sharidev2.data.model.VehicleDoc
 import com.example.sharidev2.databinding.FragmentAddVehicleDocBinding
-import com.example.sharidev2.databinding.FragmentVehicleDocBinding
 import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.Converters
 import com.example.sharidev2.utility.FirebaseClient
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.util.Calendar
 
-class VehicleDocRepository(
-    private val firestore: FirebaseFirestore,
-    private val firebaseAuth: FirebaseAuth,
-    private val firebaseStorage: FirebaseStorage
-) {
+class VehicleDocRepository{
+    private val firestore = FirebaseClient.firestore
+    private val firebaseAuth = FirebaseClient.firebaseAuth
     private val currentUser = firebaseAuth.currentUser
 
+    //Variables
     private val vehicleDocRef = firestore.collection("vehicleDoc")
     private val isUserLogin = currentUser != null
     private val converters = Converters()
 
-    private lateinit var binding: FragmentAddVehicleDocBinding
 
+    private lateinit var binding: FragmentAddVehicleDocBinding
     private lateinit var calendar: Calendar
 
 
-    suspend fun addVehicle(vehicleDoc: VehicleDoc, vehicleRegisCertUri: Uri?, roadtaxUri: Uri?, insuranceUri: Uri?,): Int {
+    suspend fun addVehicle(vehicleDoc: VehicleDoc): Int {
         return withContext(Dispatchers.IO) {
             val currentUser = Firebase.auth.currentUser
+
             if (currentUser != null) {
-                val newVehicleDoc = hashMapOf(
-                    "firstName" to vehicleDoc.firstName,
-                    "lastName" to vehicleDoc.lastName,
-                    "vehicleType" to vehicleDoc.vehicleType,
-                    "vehicleModel" to vehicleDoc.vehicleModel,
-                    "carPlate" to vehicleDoc.carPlate,
-                    "manufactureDate" to vehicleDoc.manufactureDate,
-                    "vehicleRegisCert" to vehicleDoc.vehicleRegisCert,
-                    "roadtax" to vehicleDoc.roadtax,
-                    "insurance" to vehicleDoc.insurance,
-                    "vehicleId" to vehicleDoc.vehicleId,
-                    "userUid" to currentUser.uid
-                )
-                try {
-                    val documentReference =
-                        firestore.collection("vehicleDoc").add(newVehicleDoc).await()
-                    val vehicleId = documentReference.id
+                try{
+                    val vehicleId = vehicleDocRef.document().id
 
-                    // Update the document with the vehicle ID
-                    documentReference.update("vehicleId", vehicleId).await()
+                    val newVehicleDoc = hashMapOf(
+                        "firstName" to vehicleDoc.firstName,
+                        "lastName" to vehicleDoc.lastName,
+                        "manufactureDate" to vehicleDoc.manufactureDate,
+                        "vehicleRegisCert" to vehicleDoc.vehicleRegisCert,
+                        "roadtax" to vehicleDoc.roadtax,
+                        "insurance" to vehicleDoc.insurance,
+                        "vehicleId" to vehicleDoc.vehicleId,
+                        "userUid" to currentUser.uid,
+                    )
 
+                    vehicleDocRef
+                        .document(vehicleId)
+                        .set(newVehicleDoc)
+                        .await()
 
-                    Constants.FIREBASE_REQUEST_SUCCESS    // SUCCESS
+                    Log.e("Add Vehicle", "Added Successfully")
+                    return@withContext Constants.FIREBASE_REQUEST_SUCCESS    // SUCCESS
                 } catch (e: Exception) {
                     // Handle any exceptions here
-                    e.printStackTrace()
+                    Log.e("Add Vehicle Doc", e.message.toString())
 
-                    Constants.FIREBASE_REQUEST_EXCEPTION
+                    return@withContext Constants.FIREBASE_REQUEST_EXCEPTION
                 }
             } else {
-                Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED
+                Log.e("Add Vehicle", "User not login")
+                return@withContext Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED
             }
         }
     }
@@ -92,7 +81,7 @@ class VehicleDocRepository(
 
             // Parse and handle changes in the snapshot
             val vehicleDocs = snapshot?.documents?.mapNotNull { document ->
-                document.toObject<VehicleDoc>()
+                Converters().toVehicleDoc(document)
             }
 
             // Invoke the callback with the updated data
@@ -130,6 +119,33 @@ class VehicleDocRepository(
         }
     }
 
+    suspend fun getVehicleDoc(vehicleId: String): VehicleDoc? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val vehicleQuerySnapshot = vehicleDocRef
+                    .whereEqualTo("vehicleId", vehicleId)
+                    .get()
+                    .await()
+
+                if(!vehicleQuerySnapshot.isEmpty && vehicleQuerySnapshot != null) {
+                    for(doc in vehicleQuerySnapshot.documents) {
+                        val vehicleDocData = doc.data
+
+                        if(vehicleDocData != null) {
+                            return@withContext converters.toVehicleDoc(vehicleDocData)
+                        }
+                    }
+                    null
+                } else {
+                    null
+                }
+            } catch (e:Exception) {
+                Log.d("Get Vehicle Doc", e.message.toString())
+                null
+            }
+        }
+    }
+
 
     //Function to update the vehicle doc to firestore after edited
     suspend fun updateVehicleDoc(newVehicleDoc: VehicleDoc): Int {
@@ -145,12 +161,9 @@ class VehicleDocRepository(
 
                 if(isUserLogin){
                     if (userId == contactUserId) {
-                        // Update the evehicle doc content
+                        // Update the vehicle doc content
                         vehicleDoctRef.update("firstName", newVehicleDoc.firstName).await()
                         vehicleDoctRef.update("lastName", newVehicleDoc.lastName).await()
-                        vehicleDoctRef.update("vehicleType", newVehicleDoc.vehicleType).await()
-                        vehicleDoctRef.update("vehicleModel", newVehicleDoc.vehicleModel).await()
-                        vehicleDoctRef.update("carPlate", newVehicleDoc.carPlate).await()
                         vehicleDoctRef.update("vehicleRegisCert", newVehicleDoc.vehicleRegisCert).await()
                         vehicleDoctRef.update("roadtax", newVehicleDoc.roadtax).await()
                         vehicleDoctRef.update("insurance", newVehicleDoc.insurance).await()
@@ -174,13 +187,13 @@ class VehicleDocRepository(
 
 
     //Function that allow the user to delete vehicle
-    suspend fun deleteVehicle(vehiclreId: String): Int {
+    suspend fun deleteVehicle(vehicleId: String): Int {
         val userUid = firebaseAuth.currentUser
         return withContext(Dispatchers.IO) {
             try {
                 if (userUid != null) {
                     // Check if the contact belongs to the current user
-                    val vehicleDocRef = firestore.collection("vehicleDoc").document(vehiclreId)
+                    val vehicleDocRef = firestore.collection("vehicleDoc").document(vehicleId)
                     val vehicleDocSnapshot = vehicleDocRef.get().await()
                     val userId = vehicleDocSnapshot.getString("userUid")
 
@@ -189,17 +202,17 @@ class VehicleDocRepository(
                         vehicleDocRef.delete().await()
                         0 // Deletion successful
                     } else {
-                        1 // Vehicle doesn't belong to the current user
+                        Constants.FIREBASE_REQUEST_NOT_BELONG_USER // Vehicle doesn't belong to the current user
                     }
                 } else {
-                    2 // User not authenticated
+                    Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED // User not authenticated
                 }
             } catch (e: Exception) {
-                3 // Handle exceptions
+                Constants.FIREBASE_REQUEST_EXCEPTION // Handle exceptions
             }
         }
     }
-
+}
 
 
 //    // Function to show DatePickerDialog with minimum date set
@@ -227,6 +240,3 @@ class VehicleDocRepository(
 //        binding.dateManufacture
 //            .setText(formattedDate)
 //    }
-
-
-}

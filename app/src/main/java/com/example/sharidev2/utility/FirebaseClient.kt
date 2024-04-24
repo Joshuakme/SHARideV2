@@ -18,6 +18,7 @@ import com.example.sharidev2.data.model.RideOption
 import com.example.sharidev2.data.model.RideStatus
 import com.example.sharidev2.data.model.User
 import com.example.sharidev2.data.model.Vehicle
+import com.example.sharidev2.data.model.VehicleDoc
 import com.example.sharidev2.data.model.VehicleType
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.AdditionalUserInfo
@@ -192,6 +193,70 @@ object FirebaseClient {
                 return@withContext Vehicle()
             }
         }
+    }
+
+    suspend fun getVehicleDocFromId(vehicleDocId: String): VehicleDoc? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val vehicleDocData = firestore.collection("vehicleDoc")
+                            .document(vehicleDocId)
+                            .get()
+                            .await()
+                            .data
+
+
+
+                if(vehicleDocData != null) {
+                    val userUid = vehicleDocData["userUid"] as String
+                    val firstName = vehicleDocData["firstName"] as String
+                    val lastName = vehicleDocData["lastName"] as String
+                    val manufactureDate = vehicleDocData["manufactureDate"] as Timestamp
+                    val vehicleId = vehicleDocData["vehicleId"] as String
+
+                    val user = firestore.collection("user")
+                        .document(userUid)
+                        .get()
+                        .await()
+
+                    val vehicleRegisCert = if(user.getString("vehicleRegisCert") != null) {
+                        Uri.parse(user.getString("vehicleRegisCert"))
+                    } else {
+                        null
+                    }
+
+                    val roadtax = if(user.getString("roadtax") != null) {
+                        Uri.parse(user.getString("roadtax"))
+                    } else {
+                        null
+                    }
+
+                    val insurance = if(user.getString("insurance") != null) {
+                        Uri.parse(user.getString("insurance"))
+                    } else {
+                        null
+                    }
+
+
+                    VehicleDoc(
+                        userUid,
+                        firstName,
+                        lastName,
+                        manufactureDate,
+                        vehicleId,
+                        vehicleRegisCert,
+                        roadtax,
+                        insurance
+                    )
+                } else {
+                    null
+                }
+
+            } catch (e:Exception) {
+                Log.e("Get Vehicle From ID", e.message.toString())
+                null
+            }
+        }
+
     }
 
     suspend fun getChatFromChatId(chatId: String): Chat? {

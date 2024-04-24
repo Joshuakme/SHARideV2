@@ -43,7 +43,6 @@ class VehicleDocAdapter(
 
     override fun onBindViewHolder(holder: VehicleDocAdapter.VehicleDocHolder, position: Int) {
         val currentVehicleDoc = vehicleDocList[position]
-        holder.carPlate.text = currentVehicleDoc.carPlate.toString()
-        holder.vehicleModel.text = currentVehicleDoc.vehicleModel.toString()
+
     }
 }

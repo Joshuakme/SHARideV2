@@ -2,7 +2,6 @@ package com.example.sharidev2.viewmodel
 
 import android.net.Uri
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,34 +9,31 @@ import com.example.sharidev2.data.model.VehicleDoc
 import com.example.sharidev2.data.repository.VehicleDocRepository
 import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.FirebaseClient
+import com.google.firebase.Timestamp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
 class VehicleDocViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
-        private val repository = VehicleDocRepository(
-                FirebaseClient.firestore,
-                FirebaseClient.firebaseAuth,
-                FirebaseClient.firebaseStorage)
+        private val repository = VehicleDocRepository()
 
         private val currentUser = FirebaseClient.firebaseAuth.currentUser
 
+
         // DATA KEY CONSTANT
+        private val VEHICLE_DOC_KEY = "vehicle_doc_list"
+        private val FIRST_NAME_KEY = "first_name_list"
+        private val LAST_NAME_KEY = "last_name_list"
+        private val VEHICLE_ID_KEY = "vehicle_id_list"
+        private val MANUFACTURE_DATE_KEY = "manufacture_date_list"
         private val VEHICLE_LIST_KEY = "vehicle_list"
 
 
-
-        private val _vehicleRegisCertUri = MutableLiveData<Uri?>()
-        val vehicleRegisCertUri: LiveData<Uri?>
-                get() = _vehicleRegisCertUri
-
-        private val _roadtaxUri = MutableLiveData<Uri?>()
-        val roadtaxUri: LiveData<Uri?>
-                get() = _roadtaxUri
-
-        private val _insuranceUri = MutableLiveData<Uri?>()
-        val insuranceUri: LiveData<Uri?>
-                get() = _insuranceUri
+        val currentVehicleDoc: LiveData<VehicleDoc> = savedStateHandle.getLiveData(VEHICLE_DOC_KEY)
+        val firstName: LiveData<String> = savedStateHandle.getLiveData(FIRST_NAME_KEY)
+        val lastName: LiveData<String> = savedStateHandle.getLiveData(LAST_NAME_KEY)
+        val vehicleId: LiveData<String> = savedStateHandle.getLiveData(VEHICLE_ID_KEY)
+        val manufactureDate: LiveData<Timestamp> = savedStateHandle.getLiveData(MANUFACTURE_DATE_KEY)
 
 
         // INTERNAL DATA MEMBERS
@@ -51,7 +47,7 @@ class VehicleDocViewModel(private val savedStateHandle: SavedStateHandle): ViewM
                         val vehicleDocs = repository.getAllVehicles().toMutableList()
                         val vehicleDocUriList = repository.getAllVehicles()
 
-                        if(vehicleDocUriList !=null){
+                        if (vehicleDocUriList != null) {
 
                         }
 
@@ -75,117 +71,70 @@ class VehicleDocViewModel(private val savedStateHandle: SavedStateHandle): ViewM
                 }
         }
 
+
         // SETTER in SavedStateHandle
-        // Vehicle
-        suspend fun addVehicle(newVehicle: VehicleDoc,
-                               vehicleRegisCertUri: Uri?,
-                               roadtaxUri: Uri?,
-                               insuranceUri: Uri?): Int {
-                vehicleDocList.value?.add(newVehicle)
-                return repository.addVehicle(newVehicle, vehicleRegisCertUri, roadtaxUri, insuranceUri)
+        fun setVehicleDoc(newVehicleDoc: VehicleDoc) {
+                savedStateHandle[VEHICLE_DOC_KEY] = newVehicleDoc
         }
 
-        // Function to set the vehicle registration cert URI
-        fun setVehicleRegisCertUri(uri: Uri?) {
-                _vehicleRegisCertUri.value = uri
+        fun setFirstName(newFirstName: String) {
+                savedStateHandle[FIRST_NAME_KEY] = newFirstName
         }
 
-        // Function to set the roadtax URI
-        fun setRoadtaxUri(uri: Uri?) {
-                _roadtaxUri.value = uri
+        fun setLastName(newLastName: String) {
+                savedStateHandle[LAST_NAME_KEY] = newLastName
         }
 
-        // Function to set the insurance URI
-        fun setInsuranceUri(uri: Uri?) {
-                _insuranceUri.value = uri
+        fun setVehicleId(newVehicleId: String) {
+                savedStateHandle[VEHICLE_ID_KEY] = newVehicleId
+
+                viewModelScope.launch {
+                        val newVehicleDoc = repository.getVehicleDoc(newVehicleId)
+
+                        if (newVehicleDoc != null) {
+                                setVehicleDoc(newVehicleDoc)
+                        }
+                }
         }
 
-//        suspend fun addImagesToDB(): Int {
-//                val vehicleDocListValue = vehicleDocList.value
-//                val regisCertUriValue = vehicleRegisCertUri.value
-//                val roadtaxUriValue = roadtaxUri.value
-//                val insuranceUriValue = insuranceUri.value
-//
-//                if (vehicleDocListValue != null && regisCertUriValue != null && roadtaxUriValue != null && insuranceUriValue != null) {
-//                        return repository.addVehicle(vehicleDocListValue, regisCertUriValue, roadtaxUriValue, insuranceUriValue)
-//                } else {
-//                        // Handle the case when one or more values are null
-//                        return Constants.FIREBASE_REQUEST_EXCEPTION
-//                }
-//        }
+        fun setManufactureDate(newManufactureDate: Timestamp) {
+                savedStateHandle[MANUFACTURE_DATE_KEY] = newManufactureDate
+        }
 
         fun setVehicleList(newVehicleList: MutableList<VehicleDoc>) {
-                savedStateHandle.set(VEHICLE_LIST_KEY, newVehicleList)
+                savedStateHandle[VEHICLE_LIST_KEY] = newVehicleList
         }
 
-//        suspend fun updateVehicleDoc(newVehicle: VehicleDoc): Int {
-//                return repository.updateVehicleDoc(newVehicle)
-//        }
-//
-//        suspend fun deleteVehicle(vehicleId: String): Int {
-//                return repository.deleteVehicle(vehicleId)
-//        }
+
+        suspend fun saveVehicleDocumentation(): Int {
+                val newVehicleDoc = VehicleDoc(
+                        userUid = currentUser?.uid,
+                        firstName = firstName.value,
+                        lastName = lastName.value,
+                        manufactureDate = manufactureDate.value,
+                        vehicleId = vehicleId.value
+                )
+                // save Vehicle
+                // Handle result and provide feedback to the fragment
+                return repository.updateVehicleDoc(newVehicleDoc)
+        }
+
+
+        // Vehicle
+        suspend fun addVehicleDoc(): Int {
+                if (currentUser?.uid != null) {
+                        val newVehicleDoc = VehicleDoc(
+                                userUid = currentUser.uid,
+                                firstName = firstName.value,
+                                lastName = lastName.value,
+                                manufactureDate = manufactureDate.value,
+                                vehicleId = vehicleId.value
+                        )
+
+                        vehicleDocList.value?.add(newVehicleDoc)
+                        return repository.addVehicle(newVehicleDoc)
+                } else {
+                        return Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED
+                }
+        }
 }
-
-
-
-//    // DATA KEY CONSTANT
-//    private val _firstName = MutableLiveData<String>()
-//    private val _lastName = MutableLiveData<String>()
-//    private val _vehicleType = MutableLiveData<VehicleType>()
-//    private val _vehicleModel = MutableLiveData<String>()
-//    private val _carPlate = MutableLiveData<String>()
-//    private val _manufactureDate = MutableLiveData<Timestamp>()
-//    private val _vehicleRegisCert = MutableLiveData<Uri>()
-//    private val _roadtax= MutableLiveData<Uri>()
-//    private val _insurance = MutableLiveData<Uri>()
-//
-//    //Live Data
-//    val firstName: LiveData<String>
-//        get() = _firstName
-//
-//    val lastName: LiveData<String>
-//        get() = _lastName
-//
-//    val vehicleType: LiveData<VehicleType>
-//        get() = _vehicleType
-//
-//    val vehicleModel: LiveData<String>
-//        get() = _vehicleModel
-//
-//    val carPlate: LiveData<String>
-//        get() = _carPlate
-//
-//    val vehicleRegisCert: LiveData<Uri>
-//        get() = _vehicleRegisCert
-//
-//    val roadtax: LiveData<Uri>
-//        get() = _roadtax
-//
-//    val insurance: LiveData<Uri>
-//        get() = _insurance
-//
-//
-//    init{
-//
-//    }
-//
-//
-//
-//    // Function to set the image URI
-//    fun setVehicleRegisCert(uri: Uri) {
-//        _vehicleRegisCert.value = uri
-//    }
-//
-//    fun setRoadtax(uri: Uri) {
-//        _roadtax.value = uri
-//    }
-//
-//    fun setInsurance(uri: Uri) {
-//        _insurance.value = uri
-//    }
-//
-//
-//    suspend fun updateFirstName(newDisplayName: String) {
-//        displayNameRepository.updateDisplayName(newDisplayName)
-//    }

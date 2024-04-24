@@ -104,7 +104,7 @@ class EditMobileFragment: Fragment() {
                 // Check if the input is a valid number
                 val input = s.toString().replace(" ", "")
                 isValidNumber =
-                    input.isNotEmpty() && input.toDoubleOrNull() != null && (input.length == 10 || input.length == 11)   // Exclude starting "0"
+                    input.isNotEmpty() && input.toDoubleOrNull() != null && (input.length == 11 || input.length == 12)   // Exclude starting "0"
 
                 // Add new spacing
                 val formattedText = formatMobileNumber(input)

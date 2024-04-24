@@ -209,7 +209,8 @@
     <!--  VehicleDoc Fragment -->
     <string name="message_add_vehicle_doc" translatable="false">Let\'s get started! Fill out the details below to add a new vehicle.</string>
     <string name="vehicle_doc_fragment_choose_timing_title">Select your vehicle manufacture date</string>
-
+    <string name="edit_vehicle_doc_fragment_name_allowed_characters">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
+    <string name="edit_vehicle_doc_fragment_car_plate_allowed_characters">ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

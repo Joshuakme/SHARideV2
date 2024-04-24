@@ -55,6 +55,10 @@ class VehicleTypeAdapter(
             VehicleType.SUV -> {
                 holder.vehicleTypeIcon.setImageResource(R.drawable.outline_suv_24)
             }
+
+            else -> {
+
+            }
         }
 
         holder.itemView.setOnClickListener {

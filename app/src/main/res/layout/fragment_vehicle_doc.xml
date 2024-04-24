@@ -107,7 +107,7 @@
 
                 <ImageView
                     android:id="@+id/image_vehicle_doc"
-                    android:layout_width="147dp"
+                    android:layout_width="409dp"
                     android:layout_height="152dp"
                     android:layout_gravity="center"
                     app:srcCompat="@drawable/baseline_directions_car_24"

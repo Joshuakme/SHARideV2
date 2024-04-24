@@ -59,10 +59,10 @@ class PersonalInfoViewModel: ViewModel() {
     }
 
 
-        // Function to set the selected image URI
-        fun setSelectedImageUri(uri: Uri) {
-            _selectedImageUri.value = uri
-        }
+    // Function to set the selected image URI
+    fun setSelectedImageUri(uri: Uri) {
+        _selectedImageUri.value = uri
+    }
 
         // Function to update the profile picture URI in Firestore
         fun updateProfilePictureUri(uri: Uri) {
@@ -99,14 +99,30 @@ class PersonalInfoViewModel: ViewModel() {
             }
         }
 
+    //Checks if the provided display name is valid
+    fun isDisplayNameValid(displayName: String): Boolean {
+        // Define the regex pattern for valid display names
+        val regex = "^[a-zA-Z0-9_\\-\\.\\s]{2,25}$".toRegex()
 
+        // Check if the display name matches the pattern and does not contain invalid characters
+        return regex.matches(displayName) && !displayName.contains("!") &&
+                !displayName.contains("@") && !displayName.contains("#") &&
+                !displayName.contains("$") && !displayName.contains("%") &&
+                !displayName.contains("^") && !displayName.contains("&") &&
+                !displayName.contains("*") && !displayName.contains("(") &&
+                !displayName.contains(")") && !displayName.contains("-") &&
+                !displayName.contains("_") && !displayName.contains("=") &&
+                !displayName.contains("+") && !displayName.contains("/") &&
+                !displayName.contains("<") && !displayName.contains(">") &&
+                !displayName.contains("?") && !displayName.contains("`") &&
+                !displayName.contains("~")
+    }
 
+    // Updates the mobile phone of the user in the repository
+    suspend fun updateMobile(newMobile: String) {
 
-        // Updates the mobile phone of the user in the repository
-        suspend fun updateMobile(newMobile: String) {
-
-            mobileRepository.updateMobile(newMobile)
-        }
+        mobileRepository.updateMobile(newMobile)
+    }
 
         //Fetches the mobile phone of the current user from the database and updates the LiveData
         fun fetchMobileFromDatabase() {
@@ -124,6 +140,10 @@ class PersonalInfoViewModel: ViewModel() {
 
 
 
+    // Updates the gender of the user in the repository
+    suspend fun updateGender(newGender: String) {
+        genderRepository.updateGender(newGender)
+    }
 
         //Fetches the gender of the current user from the database and updates the LiveData
         fun fetchGenderFromDatabase() {

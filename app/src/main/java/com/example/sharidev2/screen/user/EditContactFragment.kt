@@ -164,11 +164,6 @@ class EditContactFragment : Fragment() {
                 Toast.makeText(requireContext(), "Invalid Phone Number", Toast.LENGTH_SHORT).show()
             }
         }
-
-
-
-
-
         return binding.root
 
     }

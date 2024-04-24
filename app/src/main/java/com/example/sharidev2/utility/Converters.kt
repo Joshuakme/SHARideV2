@@ -635,5 +635,55 @@ class Converters() {
         ).toInt()
     }
 
+    fun toVehicleDoc(map: Map<String, Any>): VehicleDoc {
+        val userUid = map["userUid"] as String
+        val firstName = map["firstName"] as String
+        val lastName = map["lastName"] as String
+        val vehicleTypeString = map["type"] as String
+        val vehicleType = VehicleType.valueOf(vehicleTypeString)
+        val vehicleModel = map["vehicleModel"] as String
+        val carPlate = map["carPlate"] as String
+        val manufactureDate = map["manufactureDate"] as Timestamp
+
+
+        val vehicleRegisCert = if(map["vehicleRegisCert"] != null) Uri.parse(map["vehicleRegisCert"] as String) else null
+
+        val roadtax = if(map["roadtax"] != null) Uri.parse(map["roadtax"] as String) else null
+
+        val insurance = if(map["insurance"] != null) Uri.parse(map["insurance"] as String) else null
+
+
+
+        val vehicleId = map["vehicleId"] as String
+
+
+        return VehicleDoc(
+            userUid,
+            firstName,
+            lastName,
+            manufactureDate,
+            vehicleId,
+            vehicleRegisCert,
+            roadtax,
+            insurance
+
+        )
+    }
+
+    fun toVehicleDoc(document: DocumentSnapshot): VehicleDoc? {
+        val docData = document.data
+
+        return if (docData != null) {
+            val userUid = docData["userUid"] as String
+            val firstName = docData["firstName"] as String
+            val lastName = docData["lastName"] as String
+            val manufactureDate = docData["manufactureDate"] as Timestamp
+            val vehicleId = docData["vehicleId"] as String
+
+            VehicleDoc(userUid, firstName, lastName, manufactureDate, vehicleId)
+        } else{
+            null
+        }
+    }
 
 }
