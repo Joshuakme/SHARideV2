@@ -145,7 +145,7 @@ class FareUtils {
             }
         }
 
-        private fun calculateDistance(origin: LatLng, destination: LatLng): Double {
+        fun calculateDistance(origin: LatLng, destination: LatLng): Double {
             val radius = 6371   // Earth radius in kilometers
 
             val lat1 = Math.toRadians(origin.latitude)

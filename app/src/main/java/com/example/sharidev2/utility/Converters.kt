@@ -85,6 +85,7 @@ class Converters() {
 
 
 
+
     // SEARCH LOCATION CONVERTERS
     fun toSearchLocation(map: Map<String, Any>): SearchLocation {
         val placeId = map["placeId"] as String

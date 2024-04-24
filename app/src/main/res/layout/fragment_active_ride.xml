@@ -148,16 +148,45 @@
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/card_active_ride_driver_photo"
                         android:layout_width="40dp"
-                        android:layout_height="40dp">
+                        android:layout_height="40dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.5">
 
 
                         <ImageView
                             android:id="@+id/img_active_ride_driver_photo"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:tint="?attr/colorOnBackground"
                             app:srcCompat="@drawable/baseline_account_circle_24" />
                     </com.google.android.material.card.MaterialCardView>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="16dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/card_active_ride_driver_photo"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:id="@+id/text_active_ride_driver_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintStart_toStartOf="parent"
+                            tools:text="Driver" />
+
+                        <TextView
+                            android:id="@+id/text_active_ride_driver_phone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="?android:attr/textColorHint"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/text_active_ride_driver_name"
+                            tools:text="Driver Phone Number" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -45,7 +45,7 @@ class ChatFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
          binding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat, container, false)
 
 
@@ -78,29 +78,28 @@ class ChatFragment : Fragment() {
 
         // LAYOUT SETTINGS
         (activity as MainActivity).setBottomNavVisible(false)
+        (activity as MainActivity).setStatusBarColor(CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorPrimary))
 
 
-        if(chat != null) {
-            chatViewModel.setActiveChat(chat)
-            chatViewModel.setOldChat(chat)
+        chatViewModel.setActiveChat(chat)
+        chatViewModel.setOldChat(chat)
 
-            chatViewModel.startListeningForChatUpdates(chat.chatId!!, object: (Chat?) -> Unit {
-                override fun invoke(latestChat: Chat?) {
-                    if(latestChat != null) {
-                        chatViewModel.setActiveChat(latestChat)
-                        chatTitle.text = latestChat.chatTitle
+        chatViewModel.startListeningForChatUpdates(chat.chatId!!, object: (Chat?) -> Unit {
+            override fun invoke(latestChat: Chat?) {
+                if(latestChat != null) {
+                    chatViewModel.setActiveChat(latestChat)
+                    chatTitle.text = latestChat.chatTitle
 
-                        // Set Up RecyclerView
-                        messageAdapter = MessageAdapter(context, latestChat.messages!!.toList())
-                        chatMessagesRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-                        chatMessagesRecyclerView.adapter = messageAdapter
-                        chatMessagesRecyclerView.scrollToPosition(messageAdapter!!.itemCount-1)
-                    } else {
-                        findNavController().navigate(R.id.action_chatFragment_to_messagesFragment)
-                    }
+                    // Set Up RecyclerView
+                    messageAdapter = MessageAdapter(context, latestChat.messages!!.toList())
+                    chatMessagesRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+                    chatMessagesRecyclerView.adapter = messageAdapter
+                    chatMessagesRecyclerView.scrollToPosition(messageAdapter!!.itemCount-1)
+                } else {
+                    findNavController().navigate(R.id.action_chatFragment_to_messagesFragment)
                 }
-            })
-        }
+            }
+        })
 
 
         // EVENT LISTENERS

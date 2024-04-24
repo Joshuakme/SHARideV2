@@ -27,10 +27,8 @@ class LicenseUploadViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.Main) {
             val licenseMap = repository.getDrivingLicense()
 
-            if(licenseMap != null) {
-                setFrontImageUri(licenseMap["frontImgUri"]?: Uri.EMPTY)
-                setBackImageUri(licenseMap["backImgUri"]?: Uri.EMPTY)
-            }
+            setFrontImageUri(licenseMap["frontImgUri"]?: Uri.EMPTY)
+            setBackImageUri(licenseMap["backImgUri"]?: Uri.EMPTY)
         }
     }
 

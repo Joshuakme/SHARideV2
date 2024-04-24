@@ -114,8 +114,8 @@ class DateTimePicker @JvmOverloads constructor(
         datePicker.setOnValueChangedListener { numPicker, oldValue, newValue ->
             selectedDateIndex = newValue
 
-            var prevHourArr: Array<String>
-            var nextHourArr: Array<String>
+            val prevHourArr: Array<String>
+            val nextHourArr: Array<String>
 
             if(selectedDateIndex == todayIndex) {
                 selectedHourIndex = 0
@@ -253,12 +253,12 @@ class DateTimePicker @JvmOverloads constructor(
     private fun getMinuteArray(selectedDate: Calendar): Array<String> {
         val currentMinute = selectedDate.get(Calendar.MINUTE)
 
-        if(isLastFiveMinuteOfHour(selectedDate)) {
-            return getMinuteArray()
+        return if(isLastFiveMinuteOfHour(selectedDate)) {
+            getMinuteArray()
         } else {
-             return  (0..11).map { it * 5 }
-                                 .filter { it > currentMinute }
-                                 .map { String.format("%02d", it) }.toTypedArray()
+            (0..11).map { it * 5 }
+                .filter { it > currentMinute }
+                .map { String.format("%02d", it) }.toTypedArray()
         }
     }
 

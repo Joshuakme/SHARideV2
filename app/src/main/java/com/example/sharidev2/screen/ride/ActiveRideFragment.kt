@@ -24,6 +24,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.sharidev2.R
@@ -68,7 +70,7 @@ class ActiveRideFragment: Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_active_ride, container, false)
 
@@ -77,9 +79,7 @@ class ActiveRideFragment: Fragment() {
         try {
             val activeRide = arguments?.get("ride") as Ride
 
-            if(activeRide != null) {
-                activeRideViewModel.setActiveRide(activeRide)
-            }
+            activeRideViewModel.setActiveRide(activeRide)
         } catch (e: Exception) {
             Log.e("Booking Detail Fragment", e.message.toString())
         }
@@ -285,6 +285,8 @@ class ActiveRideFragment: Fragment() {
 
     private fun setupData() {
         val driverPhotoImg = binding.imgActiveRideDriverPhoto
+        val driverName = binding.textActiveRideDriverName
+        val driverContact = binding.textActiveRideDriverPhone
         val rideVehicleModelColor = binding.textActiveRideVehicleModelColor
         val rideVehiclePlateNumber = binding.textActiveRideVehiclePlateNumber
         val passengersRecyclerView = binding.recyclerViewActiveRidePassengers
@@ -294,8 +296,21 @@ class ActiveRideFragment: Fragment() {
             if(activeRide != null) {
                 // Driver
                 if(activeRide.driver.user?.photoUri != null) {
-                    driverPhotoImg.setImageURI(activeRide.driver.user?.photoUri)
+                    val photoUri = activeRide.driver.user?.photoUri
+
+                    if (CommonUtils().isUrl(photoUri.toString())) {
+                        Glide.with(requireContext())
+                            .load(photoUri.toString())
+                            .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Disable disk caching
+                            .into(driverPhotoImg)
+                    }
                 }
+                if(activeRide.driver.user != null) {
+                    driverName.text = activeRide.driver.user!!.displayName
+                    driverContact.text = activeRide.driver.user!!.phoneNumber
+                }
+
+
 
                 // Ride
                 if(activeRide.driver.vehicle != null) {
@@ -310,10 +325,8 @@ class ActiveRideFragment: Fragment() {
                 val adapter = ActiveRidePassengerImageAdapter(requireContext(), passengerList,
                     object: ActiveRidePassengerImageAdapter.OnPassengerImageClickListener {
                         override fun OnPassengerImageClick(passenger: Passenger) {
-                            if(passenger != null) {
-                                googleMapFragment.getMapAsync {googleMap ->
-                                    googleMapUtils.moveMapCamera(googleMap, passenger.location!!)
-                                }
+                            googleMapFragment.getMapAsync {googleMap ->
+                                googleMapUtils.moveMapCamera(googleMap, passenger.location!!)
                             }
                         }
                     })
@@ -400,6 +413,6 @@ class ActiveRideFragment: Fragment() {
     override fun onResume() {
         super.onResume()
 
-        startUserLocationsRunnable()
+        //startUserLocationsRunnable()
     }
 }

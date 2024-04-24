@@ -26,6 +26,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.PolygonOptions
 import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.PolylineOptions
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
@@ -34,7 +35,6 @@ class BookingDetailDriverFragment : Fragment() {
 
     private val bookingDetailViewModel: BookingDetailViewModel by viewModels()
 
-    private val currentUser = FirebaseClient.firebaseAuth.currentUser
     private lateinit var ride: Ride
 
     override fun onCreateView(
@@ -93,10 +93,9 @@ class BookingDetailDriverFragment : Fragment() {
 
 
         // Ride Price
-        var totalPrice = ride.passengers.sumOf {
+        val totalPrice = ride.passengers.sumOf {
                             it.ridePrice ?: 0.0
                         }
-
         ridePriceText.text = getString(R.string.price, totalPrice)
 
 
@@ -209,6 +208,10 @@ class BookingDetailDriverFragment : Fragment() {
 
         // Booking Detail Fragment -> Active Ride Fragment
         startRideBtn.setOnClickListener {
+            lifecycleScope.launch(Dispatchers.IO) {
+                bookingDetailViewModel.startRide(ride.id!!)
+            }
+
             val action = BookingDetailDriverFragmentDirections.actionBookingDetailFragmentToActiveRideFragment(ride)
             findNavController().navigate(action)
         }

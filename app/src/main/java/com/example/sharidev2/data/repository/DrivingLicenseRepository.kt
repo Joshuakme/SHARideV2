@@ -59,30 +59,43 @@ class DrivingLicenseRepository() {
                         .get()
                         .await()
 
-                    val licenseList = licenseSnapshot.documents.filter {
-                        it.getString("userUid") == currentUser.uid
+                    if(!licenseSnapshot.isEmpty) {
+                        val licenseList = licenseSnapshot.documents.filter {
+                            it.getString("userUid") == currentUser.uid
+                        }
+
+                        val licenseId = licenseList[0].id
+                        val oldFrontImageURL = licenseList[0].getString("frontFileUrl")
+                        val oldBackImageURL = licenseList[0].getString("backFileUrl")
+
+                        firestore.collection("license")
+                            .document(licenseId)
+                            .set(licenseData)
+                            .await()
+
+                        if(oldFrontImageURL != null) {
+                            firebaseStorage.getReferenceFromUrl(oldFrontImageURL)
+                                .delete()
+                                .await()
+                        }
+
+                        if(oldBackImageURL != null) {
+                            firebaseStorage.getReferenceFromUrl(oldBackImageURL)
+                                .delete()
+                                .await()
+                        }
+                    } else {
+                        // User has no record in database yet
+
+                        // Create new record
+                        firestore.collection("license")
+                            .add(licenseData)
+                            .await()
                     }
-
-                    val licenseId = licenseList[0].id
-                    val oldFrontImageURL = licenseList[0].getString("frontFileUrl")
-                    val oldBackImageURL = licenseList[0].getString("backFileUrl")
-
-                    firestore.collection("license")
-                        .document(licenseId)
-                        .set(licenseData)
-                        .await()
-
-                    firebaseStorage.getReferenceFromUrl(oldFrontImageURL?: "")
-                        .delete()
-                        .await()
-
-                    firebaseStorage.getReferenceFromUrl(oldBackImageURL?: "")
-                        .delete()
-                        .await()
 
                     Constants.FIREBASE_REQUEST_SUCCESS
                 } catch (e: Exception) {
-                    Log.e("Add Driver License", e.message.toString())
+                    Log.e("DrivingLicenseRepository - Add Driver License", e.message.toString())
                     Constants.FIREBASE_REQUEST_EXCEPTION
                 }
             }

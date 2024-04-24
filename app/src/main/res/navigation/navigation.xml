@@ -20,6 +20,13 @@
             android:id="@+id/action_homeFragment_to_driverCreateRideFragment"
             app:destination="@id/driverCreateRideFragment"
             app:popUpTo="@id/homeFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_rideDetailFragment"
+            app:destination="@id/rideDetailFragment">
+            <argument
+                android:name="rideId"
+                app:argType="string" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/messagesFragment"

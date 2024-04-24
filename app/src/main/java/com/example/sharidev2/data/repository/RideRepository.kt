@@ -7,10 +7,12 @@ import com.example.sharidev2.data.model.Message
 import com.example.sharidev2.data.model.MessageType
 import com.example.sharidev2.data.model.Passenger
 import com.example.sharidev2.data.model.Ride
+import com.example.sharidev2.data.model.RideStatus
 import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.data.model.UserStatus
 import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.Converters
+import com.example.sharidev2.utility.FareUtils
 import com.example.sharidev2.utility.FirebaseClient
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.Timestamp
@@ -253,6 +255,20 @@ class RideRepository() {
         }
     }
 
+    suspend fun startRide(rideId: String): Int {
+        return withContext(Dispatchers.IO) {
+            try {
+                rideCollectionRef.document(rideId)
+                    .update("rideStatus", RideStatus.IN_PROGRESS)
+                    .await()
+
+                Constants.FIREBASE_REQUEST_SUCCESS
+            } catch(e: Exception) {
+                Log.e("Add Route Path", e.message.toString())
+                Constants.FIREBASE_REQUEST_EXCEPTION
+            }
+        }
+    }
 
     // RETRIEVE METHODS
     suspend fun getAllRides(): List<Ride> {
@@ -348,6 +364,22 @@ class RideRepository() {
                 null
             }
         }
+    }
+
+    suspend fun getNearbyRides(origin: LatLng): List<Ride> {
+        val querySnapshot = rideCollectionRef
+            .whereGreaterThanOrEqualTo("availableSeats", 1)
+            .get()
+            .await()
+
+        val availableRideList = createRideListFromQuerySnapshot(querySnapshot)
+
+        val nearbyRides = availableRideList.filter { ride ->
+            Log.e("Ride Repository", "Distance: ${FareUtils.calculateDistance(ride.origin.geolocation!!, origin)}")
+            FareUtils.calculateDistance(ride.origin.geolocation!!, origin) < 100
+        }
+
+        return nearbyRides.subList(0, 3)
     }
 
 

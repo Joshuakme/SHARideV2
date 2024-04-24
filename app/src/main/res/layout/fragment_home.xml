@@ -383,23 +383,28 @@
                         android:text="@string/home_section_nearby_rides_title" />
 
 
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/materialCardView3"
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_home_nearby_rides"
                         android:layout_width="match_parent"
-                        android:layout_height="100dp"
-                        app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius">
-
-
-                    </com.google.android.material.card.MaterialCardView>
+                        android:layout_height="match_parent"
+                        android:visibility="gone"
+                        tools:visibility="gone" />
 
                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/card_home_error_load_nearby_rides"
                         android:layout_width="match_parent"
                         android:layout_height="100dp"
-                        android:layout_marginTop="16dp"
-                        app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius">
+                        android:minHeight="16dp"
+                        app:strokeWidth="0dp">
 
+                        <TextView
+                            android:id="@+id/textView18"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="No nearby rides found"
+                            android:textColor="@color/md_theme_outline" />
                     </com.google.android.material.card.MaterialCardView>
-
 
                 </LinearLayout>
 

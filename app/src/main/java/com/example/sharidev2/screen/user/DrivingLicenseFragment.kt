@@ -94,7 +94,7 @@ class DrivingLicenseFragment : Fragment() {
 
         licenseUploadViewModel.backImageUri.observe(viewLifecycleOwner, Observer { uri ->
             // Update back image view
-            if(uri != null  && !uri.toString().isNullOrBlank()) {
+            if((uri != null) && uri.toString().isNotBlank()) {
                 if (isUrl(uri.toString())) {
                     //Toast.makeText(requireContext(), "Back Image: URL", Toast.LENGTH_SHORT).show()
                     Glide.with(requireContext())
@@ -117,15 +117,15 @@ class DrivingLicenseFragment : Fragment() {
 
     private fun setupOnClickListeners() {
         // Set click listeners
-        uploadFrontButton?.setOnClickListener {
+        uploadFrontButton.setOnClickListener {
             isFrontImage = true
             checkCameraPermissionAndOpenCamera()
         }
-        uploadBackButton?.setOnClickListener {
+        uploadBackButton.setOnClickListener {
             isFrontImage = false
             checkCameraPermissionAndOpenCamera()
         }
-        saveButton?.setOnClickListener {
+        saveButton.setOnClickListener {
             if(frontImageUri != null && backImageUri != null) {
                 lifecycleScope.launch(Dispatchers.Main) {
                     saveToFirestore()

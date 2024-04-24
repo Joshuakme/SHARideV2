@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.databinding.DataBindingUtil
@@ -21,14 +22,21 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
+import com.example.sharidev2.adapter.RideAdapter
+import com.example.sharidev2.data.model.Ride
+import com.example.sharidev2.data.model.RideStatus
 import com.example.sharidev2.databinding.FragmentHomeBinding
+import com.example.sharidev2.screen.ride.MatchedRideFragmentDirections
 import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
+import com.example.sharidev2.viewmodel.NearbyRideViewModel
 import com.example.sharidev2.viewmodel.PersonalInfoViewModel
 import com.example.sharidev2.viewmodel.SharedCurrentUserViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -44,6 +52,7 @@ class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private val currentLocationViewModel: CurrentLocationViewModel by activityViewModels()
     private val currentUserViewModel: SharedCurrentUserViewModel by activityViewModels()
+    private val nearbyRideViewModel: NearbyRideViewModel by viewModels()
 
     private lateinit var context: Context
 
@@ -65,6 +74,8 @@ class HomeFragment : Fragment() {
         // ELEMENT VARIABLES
         val profilePicImg = binding.imgUserProfilePic
         val welcomeHomeText = binding.textHomeWelcomeUser
+        val nearbyRidesRecyclerView = binding.rvHomeNearbyRides
+        val nearbyRidesErrorCard = binding.cardHomeErrorLoadNearbyRides
 
 
         // AUTH VARIABLES
@@ -106,13 +117,35 @@ class HomeFragment : Fragment() {
                     .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Disable disk caching
                     .into(profilePicImg)
             } else {
-                profilePicImg.setImageDrawable(requireContext().getDrawable(R.drawable.baseline_account_circle_24))
+                profilePicImg.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.baseline_account_circle_24))
+            }
+        }
+
+        // Set Nearby Rides
+        nearbyRideViewModel.nearbyRides.observe(viewLifecycleOwner) { nearbyRides ->
+            if(nearbyRides.isNotEmpty()) {
+                nearbyRidesRecyclerView.visibility = View.VISIBLE
+                nearbyRidesErrorCard.visibility = View.GONE
+
+                val adapter = RideAdapter(context,nearbyRides, object: RideAdapter.OnRideClickListener {
+                    override fun onRideClick(ride: Ride) {
+                        if(ride.id != null) {
+                            val action = HomeFragmentDirections.actionHomeFragmentToRideDetailFragment(ride.id)
+                            findNavController().navigate(action)
+                        }
+                    }
+                } )
+
+                nearbyRidesRecyclerView.adapter = adapter
+                nearbyRidesRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            } else {
+                nearbyRidesRecyclerView.visibility = View.GONE
+                nearbyRidesErrorCard.visibility = View.VISIBLE
             }
         }
 
 
         setOnScrollListener()
-
         setOnClickListeners()
 
 

@@ -48,10 +48,8 @@ class ActiveRideViewModel(
                 setActiveRideCurrentUserRole("driver")
             } else {
                 for(passenger in newActiveRide.passengers){
-                    if(passenger != null) {
-                        if(passenger.userUid == currentUser.uid) {
-                            setActiveRideCurrentUserRole("passenger")
-                        }
+                    if(passenger.userUid == currentUser.uid) {
+                        setActiveRideCurrentUserRole("passenger")
                     }
                 }
             }

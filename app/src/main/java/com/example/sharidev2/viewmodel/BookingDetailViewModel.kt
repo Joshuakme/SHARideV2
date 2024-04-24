@@ -25,6 +25,10 @@ class BookingDetailViewModel(
         return rideRepository.getRideRoute(originName, destName)
     }
 
+    suspend fun startRide(rideId: String): Int {
+        return rideRepository.startRide(rideId)
+    }
+
 
     // SETTER in SavedStateHandle
     // Ride Route
