@@ -119,10 +119,6 @@ class PersonalInfoViewModel: ViewModel() {
     }
 
     // Updates the mobile phone of the user in the repository
-    suspend fun updateMobile(newMobile: String) {
-
-        mobileRepository.updateMobile(newMobile)
-    }
 
         //Fetches the mobile phone of the current user from the database and updates the LiveData
         fun fetchMobileFromDatabase() {
@@ -139,11 +135,6 @@ class PersonalInfoViewModel: ViewModel() {
         }
 
 
-
-    // Updates the gender of the user in the repository
-    suspend fun updateGender(newGender: String) {
-        genderRepository.updateGender(newGender)
-    }
 
         //Fetches the gender of the current user from the database and updates the LiveData
         fun fetchGenderFromDatabase() {

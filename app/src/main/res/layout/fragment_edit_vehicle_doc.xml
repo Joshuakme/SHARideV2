@@ -130,7 +130,7 @@
 
                 <!--  Vehicle Info  -->
                 <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cv_vehicle_info"
+                    android:id="@+id/cv_driving_license"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"

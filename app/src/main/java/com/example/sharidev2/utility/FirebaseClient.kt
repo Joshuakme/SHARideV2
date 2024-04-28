@@ -26,7 +26,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.messaging.FirebaseMessaging
+//import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.Dispatchers
@@ -48,9 +48,9 @@ object FirebaseClient {
         FirebaseStorage.getInstance()
     }
 
-    val firebaseMessaging : FirebaseMessaging by lazy {
-        FirebaseMessaging.getInstance()
-    }
+//    val firebaseMessaging : FirebaseMessaging by lazy {
+//        FirebaseMessaging.getInstance()
+//    }
 
 
     // Variables
@@ -218,23 +218,11 @@ object FirebaseClient {
                         .get()
                         .await()
 
-                    val vehicleRegisCert = if(user.getString("vehicleRegisCert") != null) {
-                        Uri.parse(user.getString("vehicleRegisCert"))
-                    } else {
-                        null
-                    }
+                    val vehicleRegisCert = user.getString("vehicleRegisCert")
 
-                    val roadtax = if(user.getString("roadtax") != null) {
-                        Uri.parse(user.getString("roadtax"))
-                    } else {
-                        null
-                    }
+                    val roadtax = user.getString("roadtax")
 
-                    val insurance = if(user.getString("insurance") != null) {
-                        Uri.parse(user.getString("insurance"))
-                    } else {
-                        null
-                    }
+                    val insurance = user.getString("insurance")
 
 
                     VehicleDoc(

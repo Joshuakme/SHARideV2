@@ -84,13 +84,17 @@ class AddVehicleDocFragment: Fragment() {
     private fun setupOnClickListeners() {
         // ELEMENT VARIABLES
         val manufactureDate = binding.dateManufacture
-        val verifyVehicle = binding.verifyVehicleRecord
+        val verifyVehicle = binding.cardVerifyVehicleDoc
+        val backButton = binding.btnBackAddVehicleDoc
 
 
         manufactureDate.setOnClickListener {
             showManufactureDateDialog()
         }
 
+        backButton.setOnClickListener {
+            findNavController().navigate(R.id.action_addVehicleDocFragment_to_vehicleDocFragment)
+        }
 
         // Save vehicle documentation data
         verifyVehicle.setOnClickListener {
@@ -117,7 +121,7 @@ class AddVehicleDocFragment: Fragment() {
                     }
                 }
             }
-            findNavController().navigate(R.id.action_addVehicleDocFragment_to_vehicleDoc2Fragment2)
+            findNavController().navigate(R.id.action_addVehicleDocFragment_to_addVehicleDocImgFragment)
         }
     }
 
@@ -135,7 +139,7 @@ class AddVehicleDocFragment: Fragment() {
 
                     // Update the UI with the selected manufacture date
                     val formattedDate = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(date.toDate())
-                    binding.dateManufacture.text = formattedDate
+                    binding.dateManufacture.setText(formattedDate)
                 }
             })
         dialogFragment.show(childFragmentManager, dialogFragment.tag)

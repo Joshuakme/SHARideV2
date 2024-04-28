@@ -9,7 +9,6 @@ import com.example.sharidev2.data.model.VehicleDoc
 import com.example.sharidev2.data.repository.VehicleDocRepository
 import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.FirebaseClient
-import com.google.firebase.Timestamp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -31,9 +30,9 @@ class VehicleDoc2ViewModel(private val savedStateHandle: SavedStateHandle): View
 
     val currentVehicleDoc: LiveData<VehicleDoc> = savedStateHandle.getLiveData(VEHICLE_DOC_KEY)
     val vehicleId: LiveData<String> = savedStateHandle.getLiveData(VEHICLE_ID_KEY)
-    val vehicleRegisCertUri: LiveData<Uri> = savedStateHandle.getLiveData(REGISTER_CERT_KEY)
-    val roadtaxUri: LiveData<Uri> = savedStateHandle.getLiveData(REGISTER_CERT_KEY)
-    val insuranceUri: LiveData<Uri> = savedStateHandle.getLiveData(REGISTER_CERT_KEY)
+    val vehicleRegisCertUri: LiveData<String> = savedStateHandle.getLiveData(REGISTER_CERT_KEY)
+    val roadtaxUri: LiveData<String> = savedStateHandle.getLiveData(REGISTER_CERT_KEY)
+    val insuranceUri: LiveData<String> = savedStateHandle.getLiveData(REGISTER_CERT_KEY)
 
 
     // INTERNAL DATA MEMBERS

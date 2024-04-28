@@ -7,6 +7,7 @@ import com.example.sharidev2.databinding.FragmentAddVehicleDocBinding
 import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.Converters
 import com.example.sharidev2.utility.FirebaseClient
+import com.example.sharidev2.utility.FirebaseClient.firebaseStorage
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
@@ -14,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.util.Calendar
+import java.util.UUID
 
 class VehicleDocRepository{
     private val firestore = FirebaseClient.firestore
@@ -24,6 +26,7 @@ class VehicleDocRepository{
     private val vehicleDocRef = firestore.collection("vehicleDoc")
     private val isUserLogin = currentUser != null
     private val converters = Converters()
+    private val storagePath = "images/${currentUser?.uid}"
 
 
     private lateinit var binding: FragmentAddVehicleDocBinding
@@ -209,6 +212,134 @@ class VehicleDocRepository{
                 }
             } catch (e: Exception) {
                 Constants.FIREBASE_REQUEST_EXCEPTION // Handle exceptions
+            }
+        }
+    }
+
+
+    suspend fun addVehicleDocImg(registerCertUri: Uri?, insuranceUri: Uri?, roadtaxUri:Uri?):Int{
+        if (registerCertUri != null && insuranceUri != null && roadtaxUri != null && currentUser != null){
+            return withContext(Dispatchers.IO) {
+                try {
+                    val vehicleDocImgRandomName = UUID.randomUUID()
+
+                    val registerCertFileRef =
+                        firebaseStorage.reference.child("${storagePath}/$vehicleDocImgRandomName")
+                    val registerCertSnapshot = registerCertFileRef.putFile(registerCertUri).await()
+                    val regisCertUri = registerCertSnapshot.storage.downloadUrl.await()
+                    val registerCertFileUrl = regisCertUri.toString()
+
+                    val insuranceFileRef =
+                        firebaseStorage.reference.child("${storagePath}/$vehicleDocImgRandomName")
+                    val insuranceSnapshot = insuranceFileRef.putFile(insuranceUri).await()
+                    val insuranceUri = insuranceSnapshot.storage.downloadUrl.await()
+                    val insuranceFileUrl = insuranceUri.toString()
+
+                    val roadtaxFileRef =
+                        firebaseStorage.reference.child("${storagePath}/$vehicleDocImgRandomName")
+                    val roadtaxSnapshot = roadtaxFileRef.putFile(roadtaxUri).await()
+                    val roadtaxUri = roadtaxSnapshot.storage.downloadUrl.await()
+                    val roadtaxFileUrl = roadtaxUri.toString()
+
+                    val vehicleDocImgData = hashMapOf(
+                        "registerCertFileUrl" to registerCertFileUrl,
+                        "insuranceFileUrl" to insuranceFileUrl,
+                        "roadtaxFileUrl" to roadtaxFileUrl,
+                        "userUid" to currentUser.uid
+                    )
+
+                    val vehicleDocImgSnapshot = firestore.collection("vehicleDoc")
+                        .whereEqualTo("userUid", currentUser.uid)
+                        .get()
+                        .await()
+
+
+                    if (!vehicleDocImgSnapshot.isEmpty) {
+                        val vehicleDocImgList = vehicleDocImgSnapshot.documents.filter {
+                            it.getString("userUid") == currentUser.uid
+                        }
+
+                        val vehicleId = vehicleDocImgList[0].id
+                        val oldRegisterCertImageURL =
+                            vehicleDocImgList[0].getString("vehicleRegisCert")
+                        val oldInsuranceImageURL = vehicleDocImgList[0].getString("insurance")
+                        val oldRoadtaxImageURL = vehicleDocImgList[0].getString("roadtax")
+
+
+                        firestore.collection("vehicleDoc")
+                            .document(vehicleId)
+                            .set(vehicleDocImgData)
+                            .await()
+
+                        if (oldRegisterCertImageURL != null) {
+                            firebaseStorage.getReferenceFromUrl(oldRegisterCertImageURL)
+                                .delete()
+                                .await()
+                        }
+
+                        if (oldInsuranceImageURL != null) {
+                            firebaseStorage.getReferenceFromUrl(oldInsuranceImageURL)
+                                .delete()
+                                .await()
+                        }
+
+                        if (oldRoadtaxImageURL != null) {
+                            firebaseStorage.getReferenceFromUrl(oldRoadtaxImageURL)
+                                .delete()
+                                .await()
+                        }
+                    } else {
+                        // User has no record in database yet
+
+                        // Create new record
+                        firestore.collection("vehicleDoc")
+                            .add(vehicleDocImgData)
+                            .await()
+                    }
+
+                    Constants.FIREBASE_REQUEST_SUCCESS
+                }catch (e: Exception){
+                    Log.e("VehicleDocRepository - Add Vehicle Doc Image", e.message.toString())
+                    Constants.FIREBASE_REQUEST_EXCEPTION
+                }
+            }
+        }
+        else if(currentUser == null){
+            return Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED
+        }
+        else{
+            return Constants.FIREBASE_REQUEST_DATA_NOT_VALID
+        }
+    }
+
+
+    suspend fun getVehicleDocImg(): Map<String, Uri> {
+        return withContext(Dispatchers.IO) {
+            val vehicleDocImgList = mutableListOf<Map<String, Uri>>()
+
+            val vehicleDocImgSnapshot = firestore.collection("vehicleDoc")
+                .whereEqualTo("userUid", currentUser?.uid)
+                .get()
+                .await()
+
+            for(document in vehicleDocImgSnapshot.documents) {
+                val registerCertImgURL = document.getString("vehicleRegisCert")
+                val insuranceImgURL = document.getString("insurance")
+                val roadtaxImgURL = document.getString("roadtax")
+
+                val vehicleDocImgMap = mutableMapOf<String, Uri>()
+                vehicleDocImgMap["vehicleRegisCertUri"] = Uri.parse(registerCertImgURL?: "")
+                vehicleDocImgMap["insuranceUri"] = Uri.parse(insuranceImgURL?: "")
+                vehicleDocImgMap["roadtaxUri"] = Uri.parse(roadtaxImgURL?: "")
+
+
+                vehicleDocImgList.add(vehicleDocImgMap)
+            }
+
+            if(!vehicleDocImgList.isNullOrEmpty()) {
+                vehicleDocImgList[0]
+            } else {
+                emptyMap()
             }
         }
     }

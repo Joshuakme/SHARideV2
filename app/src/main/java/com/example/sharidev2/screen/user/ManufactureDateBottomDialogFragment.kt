@@ -59,7 +59,7 @@ class ManufactureDateBottomDialogFragment(
             datePicker.minDate = minDate.timeInMillis
             datePicker.maxDate = maxDate.timeInMillis
 
-            datePicker.setOnDateChangedListener {view, year, month, dayOfMonth ->
+            datePicker.setOnDateChangedListener {pview, year, month, dayOfMonth ->
                 selectedDateCalendar.set(Calendar.YEAR, year)
                 selectedDateCalendar.set(Calendar.MONTH, month)
                 selectedDateCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
