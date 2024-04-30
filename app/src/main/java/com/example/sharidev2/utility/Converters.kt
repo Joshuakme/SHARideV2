@@ -582,7 +582,6 @@ class Converters() {
         val vehicleTypeString = map["type"] as String
         val manufactureDate = map["manufactureDate"] as Timestamp
 
-
         val vehicleRegisCert = map["vehicleRegisCert"] as String
 
         val roadtax =map["roadtax"] as String
@@ -612,12 +611,11 @@ class Converters() {
             val firstName = docData["firstName"] as String
             val lastName = docData["lastName"] as String
             val manufactureDate = docData["manufactureDate"] as Timestamp
-            val vehicleId = docData["vehicleId"] as String
+            //val vehicleId = docData["vehicleId"] as String
 
-            VehicleDoc(userUid, firstName, lastName, manufactureDate, vehicleId)
+            VehicleDoc(userUid, firstName, lastName, manufactureDate, "")
         } else{
             null
         }
     }
-
 }

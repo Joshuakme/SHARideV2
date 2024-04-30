@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -40,8 +41,6 @@ class AddVehicleDocFragment: Fragment() {
         // Gather user input
         setupTextChangeListeners()
         setupOnClickListeners()
-
-
         return binding.root
     }
 
@@ -84,7 +83,7 @@ class AddVehicleDocFragment: Fragment() {
     private fun setupOnClickListeners() {
         // ELEMENT VARIABLES
         val manufactureDate = binding.dateManufacture
-        val verifyVehicle = binding.cardVerifyVehicleDoc
+        val nextVehicle = binding.cardNextVehicleDoc
         val backButton = binding.btnBackAddVehicleDoc
 
 
@@ -97,7 +96,7 @@ class AddVehicleDocFragment: Fragment() {
         }
 
         // Save vehicle documentation data
-        verifyVehicle.setOnClickListener {
+        nextVehicle.setOnClickListener {
             // TODO: check if all fields are valid
             if(isAllFieldValid()) {
 
@@ -107,7 +106,8 @@ class AddVehicleDocFragment: Fragment() {
                     when(response) {
                         Constants.FIREBASE_REQUEST_SUCCESS -> {
                             // Success message
-                            Toast.makeText(context, "Vehicle Documentation Submitted", Toast.LENGTH_SHORT).show()
+//                            Toast.makeText(context, "Vehicle Documentation Submitted", Toast.LENGTH_SHORT).show()
+                            findNavController().navigate(R.id.action_addVehicleDocFragment_to_addVehicleDocImgFragment)
                         }
 
                         Constants.FIREBASE_REQUEST_FAILED -> {
@@ -121,7 +121,6 @@ class AddVehicleDocFragment: Fragment() {
                     }
                 }
             }
-            findNavController().navigate(R.id.action_addVehicleDocFragment_to_addVehicleDocImgFragment)
         }
     }
 
@@ -149,6 +148,9 @@ class AddVehicleDocFragment: Fragment() {
     private fun isAllFieldValid(): Boolean {
         val firstName = binding.inputVehicleFirstName.text.toString()
         val lastName = binding.inputVehicleLastName.text.toString()
+        val vehicleBrand = binding.inputVehicleBrand.text.toString()
+        val vehicleColor = binding.inputVehicleColor.text.toString()
+        val vehicleCapacity = binding.inputVehicleCapacity.text.toString()
         val carPlate = binding.inputCarPlate.text.toString()
         val selectedVehicleType = binding.spinnerVehicleType.selectedItem.toString()
         val vehicleModel = binding.inputVehicleModel.text.toString()
@@ -158,7 +160,7 @@ class AddVehicleDocFragment: Fragment() {
         if (firstName.isEmpty()) {
             Toast.makeText(context, "Please enter first name", Toast.LENGTH_SHORT).show()
             return false
-        } else if (!firstName.matches(Regex("^[a-zA-Z]*$"))) {
+        } else if (!firstName.matches(Regex("^[a-zA-Z ]*$"))) {
             binding.inputVehicleFirstName.error = "First name must only contain characters"
             return false
         }
@@ -167,7 +169,7 @@ class AddVehicleDocFragment: Fragment() {
         if (lastName.isEmpty()) {
             Toast.makeText(context, "Please enter last name", Toast.LENGTH_SHORT).show()
             return false
-        } else if (!lastName.matches(Regex("^[a-zA-Z]*$"))) {
+        } else if (!lastName.matches(Regex("^[a-zA-Z ]*$"))) {
             binding.inputVehicleLastName.error = "Last name must only contain characters"
             return false
         }
@@ -178,12 +180,34 @@ class AddVehicleDocFragment: Fragment() {
             return false
         }
 
-        // Validate car plate
-        if (carPlate.isEmpty()) {
-            Toast.makeText(context, "Please enter car plate number", Toast.LENGTH_SHORT).show()
+        // Validate vehicle brand
+        if (vehicleBrand.isEmpty()) {
+            Toast.makeText(context, "Please enter vehicle brand", Toast.LENGTH_SHORT).show()
             return false
-        } else if (!carPlate.matches(Regex("^[a-zA-Z0-9]*$"))) {
-            binding.inputCarPlate.error = "Car plate must contain only letters and numbers"
+        } else if (!lastName.matches(Regex("^[a-zA-Z]*$"))) {
+            binding.inputVehicleBrand.error = "Vehicle brand must only contain characters"
+            return false
+        }
+
+        // Validate vehicle color
+        if (vehicleColor.isEmpty()) {
+            Toast.makeText(context, "Please enter vehicle color", Toast.LENGTH_SHORT).show()
+            return false
+        } else if (!lastName.matches(Regex("^[a-zA-Z]*$"))) {
+            binding.inputVehicleColor.error = "Vehicle color must only contain characters"
+            return false
+        }
+
+        // Validate vehicle capacity
+        if (vehicleCapacity.isEmpty()) {
+            Toast.makeText(context, "Please enter vehicle capacity", Toast.LENGTH_SHORT).show()
+            return false
+        } else if (!vehicleCapacity.matches(Regex("^[1-9]*$"))) {
+            if(vehicleCapacity.isEmpty()){
+                binding.inputVehicleCapacity.error = "Please enter the vehicle capacity"
+            }else{
+                binding.inputVehicleCapacity.error = "Vehicle capacity must only contain number"
+            }
             return false
         }
 
@@ -196,6 +220,15 @@ class AddVehicleDocFragment: Fragment() {
             return false
         }
 
+        // Validate car plate
+        if (carPlate.isEmpty()) {
+            Toast.makeText(context, "Please enter car plate number", Toast.LENGTH_SHORT).show()
+            return false
+        } else if (!carPlate.matches(Regex("^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]*$"))) {
+            binding.inputCarPlate.error = "Car plate must contain at least one letter and one number"
+            return false
+        }
+
         // Validate manufacture date
         if (manufactureDate.isEmpty()) {
             Toast.makeText(context, "Please select manufacture date", Toast.LENGTH_SHORT).show()
@@ -205,8 +238,13 @@ class AddVehicleDocFragment: Fragment() {
             val calendar = Calendar.getInstance()
             calendar.time = selectedDate
             if (calendar.get(Calendar.YEAR) < 2011) {
-                Toast.makeText(context, "Only vehicle that ", Toast.LENGTH_SHORT).show()
+                // Set red text color for the manufacture date field
+                binding.dateManufacture.setTextColor(ContextCompat.getColor(requireContext(), R.color.error_color))
+                Toast.makeText(context, "Manufacture date must be after 2011", Toast.LENGTH_SHORT).show()
                 return false
+            } else {
+                // Reset the text color if the date is valid
+                binding.dateManufacture.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.black))
             }
         }
 

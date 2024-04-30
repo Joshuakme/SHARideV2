@@ -139,16 +139,22 @@ class AddVehicleDocImgFragment : Fragment() {
         // Set click listeners
         uploadCertButton.setOnClickListener {
             isRegisterCertImage = true
+            isInsuracneImage = false
+            isRoadtaxImage = false
             checkCameraPermissionAndOpenCamera()
         }
 
         uploadInsuranceButton.setOnClickListener {
-            isInsuracneImage = false
+            isRegisterCertImage = false
+            isInsuracneImage = true
+            isRoadtaxImage = false
             checkCameraPermissionAndOpenCamera()
         }
 
         uploadRoadtaxButton.setOnClickListener {
+            isRegisterCertImage = false
             isInsuracneImage = false
+            isRoadtaxImage = true
             checkCameraPermissionAndOpenCamera()
         }
 

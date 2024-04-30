@@ -41,7 +41,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_medium"
-                    android:text="Vehicle Documentations"
+                    android:text="Vehicle Details"
                     android:textAlignment="center"
                     android:textSize="@dimen/fs_fragment_title"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -161,22 +161,21 @@
                         </com.google.android.material.card.MaterialCardView>
 
                         <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/layout_car_plate"
+                            android:id="@+id/layout_vehicle_brand"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_marginBottom="8dp"
                             app:boxBackgroundColor="?attr/colorSurfaceContainer"
                             app:boxBackgroundMode="filled"
-                            android:digits="@string/edit_vehicle_doc_fragment_car_plate_allowed_characters"
+                            android:digits="@string/edit_vehicle_doc_fragment_name_allowed_characters"
                             android:paddingTop="@dimen/ss_input_field_vertical_padding"
                             android:paddingBottom="@dimen/ss_input_field_vertical_padding">
 
                             <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/input_car_plate"
+                                android:id="@+id/input_vehicle_brand"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="Car Plate" />
-
+                                android:hint="Vehicle Brand" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
@@ -197,6 +196,61 @@
                                 android:hint="Vehicle Model" />
                         </com.google.android.material.textfield.TextInputLayout>
 
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/layout_vehicle_color"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="8dp"
+                            app:boxBackgroundColor="?attr/colorSurfaceContainer"
+                            app:boxBackgroundMode="filled"
+                            android:digits="@string/edit_vehicle_doc_fragment_name_allowed_characters"
+                            android:paddingTop="@dimen/ss_input_field_vertical_padding"
+                            android:paddingBottom="@dimen/ss_input_field_vertical_padding">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/input_vehicle_color"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="Vehicle Color" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/layout_vehicle_capacity"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="8dp"
+                            app:boxBackgroundColor="?attr/colorSurfaceContainer"
+                            app:boxBackgroundMode="filled"
+                            android:paddingTop="@dimen/ss_input_field_vertical_padding"
+                            android:paddingBottom="@dimen/ss_input_field_vertical_padding">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/input_vehicle_capacity"
+                                android:layout_width="match_parent"
+                                android:inputType="number"
+                                android:layout_height="wrap_content"
+                                android:hint="Vehicle Capacity" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/layout_car_plate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            app:boxBackgroundColor="?attr/colorSurfaceContainer"
+                            app:boxBackgroundMode="filled"
+                            android:digits="@string/edit_vehicle_doc_fragment_car_plate_allowed_characters"
+                            android:paddingTop="@dimen/ss_input_field_vertical_padding"
+                            android:paddingBottom="@dimen/ss_input_field_vertical_padding">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/input_car_plate"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="Car Plate" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
                         <TextView
                             android:id="@+id/date_manufacture"
                             android:layout_width="match_parent"
@@ -206,13 +260,14 @@
                             android:inputType="number"
                             android:minHeight="48dp"
                             android:paddingTop="@dimen/ss_input_field_vertical_padding"
-                            android:paddingBottom="@dimen/ss_input_field_vertical_padding" />
+                            android:paddingBottom="@dimen/ss_input_field_vertical_padding"
+                            />
 
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_verify_vehicle_doc"
+                    android:id="@+id/card_next_vehicle_doc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="50dp"
@@ -221,12 +276,12 @@
                     app:strokeWidth="0dp">
 
                     <TextView
-                        android:id="@+id/text_verify_vehicle_doc"
+                        android:id="@+id/text_next_vehicle_doc"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:text="Verify"
+                        android:text="Next"
                         android:textColor="?attr/colorOnPrimary" />
 
                     <ProgressBar

@@ -2,6 +2,7 @@ package com.example.sharidev2.data.repository
 
 import android.net.Uri
 import android.util.Log
+import com.example.sharidev2.data.model.Vehicle
 import com.example.sharidev2.data.model.VehicleDoc
 import com.example.sharidev2.databinding.FragmentAddVehicleDocBinding
 import com.example.sharidev2.utility.Constants
@@ -9,7 +10,6 @@ import com.example.sharidev2.utility.Converters
 import com.example.sharidev2.utility.FirebaseClient
 import com.example.sharidev2.utility.FirebaseClient.firebaseStorage
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
@@ -33,7 +33,7 @@ class VehicleDocRepository{
     private lateinit var calendar: Calendar
 
 
-    suspend fun addVehicle(vehicleDoc: VehicleDoc): Int {
+    suspend fun addVehicleDoc(vehicleDoc: VehicleDoc): Int {
         return withContext(Dispatchers.IO) {
             val currentUser = Firebase.auth.currentUser
 
@@ -57,11 +57,51 @@ class VehicleDocRepository{
                         .set(newVehicleDoc)
                         .await()
 
-                    Log.e("Add Vehicle", "Added Successfully")
+                    Log.e("Add Vehicle Doc", "Added Successfully")
                     return@withContext Constants.FIREBASE_REQUEST_SUCCESS    // SUCCESS
                 } catch (e: Exception) {
                     // Handle any exceptions here
                     Log.e("Add Vehicle Doc", e.message.toString())
+
+                    return@withContext Constants.FIREBASE_REQUEST_EXCEPTION
+                }
+            } else {
+                Log.e("Add Vehicle Doc", "User not login")
+                return@withContext Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED
+            }
+        }
+    }
+
+    suspend fun addVehicle(vehicleDetails: Vehicle):Int{
+        return withContext(Dispatchers.IO) {
+            val currentUser = Firebase.auth.currentUser
+
+            if (currentUser != null) {
+                try{
+                    val vehicleId = vehicleDocRef.document().id
+
+                    val newVehicleDetails = hashMapOf(
+                        "vehicleId" to vehicleDetails.vehicleID,
+                        "userUid" to currentUser.uid,
+                        "vehicleType" to vehicleDetails.type,
+                        "vehicleModel" to vehicleDetails.model,
+                        "vehicleBrand" to vehicleDetails.brand,
+                        "vehicleColor" to vehicleDetails.color,
+                        "vehicleCapacity" to vehicleDetails.capacity,
+                        "vehiclePhotos" to vehicleDetails.photos,
+                        "vehiclePlate" to vehicleDetails.plateNumber
+                    )
+
+                    vehicleDocRef
+                        .document(vehicleId)
+                        .set(newVehicleDetails)
+                        .await()
+
+                    Log.e("Add Vehicle ", "Added Successfully")
+                    return@withContext Constants.FIREBASE_REQUEST_SUCCESS    // SUCCESS
+                } catch (e: Exception) {
+                    // Handle any exceptions here
+                    Log.e("Add Vehicle Details", e.message.toString())
 
                     return@withContext Constants.FIREBASE_REQUEST_EXCEPTION
                 }
@@ -71,7 +111,6 @@ class VehicleDocRepository{
             }
         }
     }
-
 
     // Retrieve Vehicle Doc
     fun listenForVehicleDocChanges(callback: (List<VehicleDoc>?, Exception?) -> Unit) {

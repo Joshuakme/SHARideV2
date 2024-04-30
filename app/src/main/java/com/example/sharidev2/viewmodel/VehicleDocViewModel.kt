@@ -1,6 +1,5 @@
 package com.example.sharidev2.viewmodel
 
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -16,7 +15,6 @@ import kotlinx.coroutines.launch
 
 class VehicleDocViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
         private val repository = VehicleDocRepository()
-
         private val currentUser = FirebaseClient.firebaseAuth.currentUser
 
 
@@ -26,7 +24,8 @@ class VehicleDocViewModel(private val savedStateHandle: SavedStateHandle): ViewM
         private val LAST_NAME_KEY = "last_name_list"
         private val VEHICLE_ID_KEY = "vehicle_id_list"
         private val MANUFACTURE_DATE_KEY = "manufacture_date_list"
-        private val VEHICLE_LIST_KEY = "vehicle_list"
+        private val VEHICLE_DOC_LIST_KEY = "vehicle_doc_list"
+
 
 
         val currentVehicleDoc: LiveData<VehicleDoc> = savedStateHandle.getLiveData(VEHICLE_DOC_KEY)
@@ -39,8 +38,7 @@ class VehicleDocViewModel(private val savedStateHandle: SavedStateHandle): ViewM
         // INTERNAL DATA MEMBERS
         // vehicle doc
         val vehicleDocList: LiveData<MutableList<VehicleDoc>> =
-                savedStateHandle.getLiveData(VEHICLE_LIST_KEY)
-
+                savedStateHandle.getLiveData(VEHICLE_DOC_LIST_KEY)
 
         init {
                 viewModelScope.launch(Dispatchers.Main) {
@@ -52,8 +50,6 @@ class VehicleDocViewModel(private val savedStateHandle: SavedStateHandle): ViewM
                         }
 
                         setVehicleList(vehicleDocs)
-
-
                 }
 
                 repository.listenForVehicleDocChanges { vehicles, exception ->
@@ -97,12 +93,14 @@ class VehicleDocViewModel(private val savedStateHandle: SavedStateHandle): ViewM
                 }
         }
 
+
+
         fun setManufactureDate(newManufactureDate: Timestamp) {
                 savedStateHandle[MANUFACTURE_DATE_KEY] = newManufactureDate
         }
 
         fun setVehicleList(newVehicleList: MutableList<VehicleDoc>) {
-                savedStateHandle[VEHICLE_LIST_KEY] = newVehicleList
+                savedStateHandle[VEHICLE_DOC_LIST_KEY] = newVehicleList
         }
 
 
@@ -122,19 +120,19 @@ class VehicleDocViewModel(private val savedStateHandle: SavedStateHandle): ViewM
 
         // Vehicle
         suspend fun addVehicleDoc(): Int {
-                if (currentUser?.uid != null) {
+                return if (currentUser?.uid != null) {
                         val newVehicleDoc = VehicleDoc(
                                 userUid = currentUser.uid,
                                 firstName = firstName.value,
                                 lastName = lastName.value,
                                 manufactureDate = manufactureDate.value,
-                                vehicleId = vehicleId.value
+                                vehicleId = vehicleId.value     // vehicleId is null
                         )
 
                         vehicleDocList.value?.add(newVehicleDoc)
-                        return repository.addVehicle(newVehicleDoc)
+                        repository.addVehicleDoc(newVehicleDoc)
                 } else {
-                        return Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED
+                        Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED
                 }
         }
 }
