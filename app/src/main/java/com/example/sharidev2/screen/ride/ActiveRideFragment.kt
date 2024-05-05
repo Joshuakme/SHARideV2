@@ -1,7 +1,9 @@
 package com.example.sharidev2.screen.ride
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.ContentValues.TAG
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -16,7 +18,6 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -39,11 +40,9 @@ import com.example.sharidev2.databinding.FragmentActiveRideBinding
 import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.FirebaseClient
-import com.example.sharidev2.utility.FirebaseClient.convertFirebaseImageToBitmap
 import com.example.sharidev2.utility.GoogleMapUtils
 import com.example.sharidev2.viewmodel.ActiveRideViewModel
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
-import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Polyline
@@ -69,7 +68,7 @@ class ActiveRideFragment : Fragment() {
     private val googleMapUtils = GoogleMapUtils()
     private val mHandler: Handler = Handler()
     private lateinit var mRunnable: Runnable
-    private val LOCATION_UPDATE_INTERVAL = 8000 as Long
+    private val LOCATION_UPDATE_INTERVAL = 8000.toLong()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -373,7 +372,7 @@ class ActiveRideFragment : Fragment() {
                 destinationDetailsDetailedAddress.text = activeRide.destination.detailAddress
 
 
-                setupListener(activeRide)
+                setupOnClickListener(activeRide)
             }
         }
 
@@ -381,13 +380,14 @@ class ActiveRideFragment : Fragment() {
     }
 
 
-    private fun setupListener(activeRide: Ride) {
-        val rideInfoScrolLView = binding.svActiveRideRideInfo
+    private fun setupOnClickListener(activeRide: Ride) {
+        val rideInfoScrollLView = binding.svActiveRideRideInfo
         val expandMapBtn = binding.imgBtnActiveRideExpandRideDetail
         val shareRideBtn = binding.btnActiveRideShareRide
         val sosCallBtn = binding.btnActiveRideSosCall
         val callDriverBtn = binding.btnActiveRideCallDriver
         val messageDriverBtn = binding.btnActiveRideMessageDriver
+        val cancelRideBtn = binding.btnActiveRideCancelBooking
 
         // Drawer Open Status
         var drawerOpen = false
@@ -396,11 +396,11 @@ class ActiveRideFragment : Fragment() {
             // TODO: Expand the ride info segment
 
 
-            val params = rideInfoScrolLView.layoutParams
+            val params = rideInfoScrollLView.layoutParams
             params.height =
                 if (drawerOpen) resources.getDimensionPixelSize(R.dimen.ss_height_350dp) else ViewGroup.LayoutParams.MATCH_PARENT
 
-            rideInfoScrolLView.layoutParams = params
+            rideInfoScrollLView.layoutParams = params
 
             expandMapBtn.rotation = if (drawerOpen) 0f else 180f
 
@@ -409,6 +409,15 @@ class ActiveRideFragment : Fragment() {
 
         shareRideBtn.setOnClickListener {
             // TODO: Share link to other app
+            val activeRideLink = "sharide.com/active/${activeRide.id}"
+
+            val sendIntent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, activeRideLink)
+                type = "text/plain"
+            }
+            val shareIntent = Intent.createChooser(sendIntent, null)
+            startActivity(shareIntent)
         }
 
         sosCallBtn.setOnClickListener {
@@ -424,7 +433,38 @@ class ActiveRideFragment : Fragment() {
         }
 
         messageDriverBtn.setOnClickListener {
-            // TODO: Navigate to message chat fragment
+            // Navigate to message chat fragment
+            if(activeRide.chat != null) {
+                ActiveRideFragmentDirections.actionActiveRideFragmentToChatFragment(activeRide.chat)
+            } else {
+                if(activeRide.driver.user?.phoneNumber != null) {
+                    val messageIntent = Intent(Intent.ACTION_VIEW)
+                    val defaultMsg = "Hello, I would like to get in touch regarding my ride."
+                    val url = "https://api.whatsapp.com/send?phone=${activeRide.driver.user!!.phoneNumber}&text=${Uri.encode(defaultMsg)}"
+                    messageIntent.data = Uri.parse(url)
+                    startActivity(messageIntent)
+                }
+            }
+        }
+
+        cancelRideBtn.setOnClickListener {
+            // Prompt confirmation (Remind to charge RM3 for cancellation, RM5 fee after ride started 5 mins)
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setTitle("Cancel this ride?")
+                .setMessage("Are you sure you want to proceed? If you cancel your ride now, a cancellation fee of RM3 will be charged to your account.")
+                .setPositiveButton("Cancel") { dialogInterface: DialogInterface, _: Int ->
+
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        // Set passenger status to UserStatus.CANCELLED
+                        // Set fare of that passenger to RM3 / RM5
+                        activeRideViewModel.cancelRide()
+                    }
+
+                    dialogInterface.dismiss() // Dismiss the dialog
+                }
+                .setNegativeButton("Dismiss") { dialogInterface: DialogInterface, _: Int ->
+                    dialogInterface.dismiss() // Dismiss the dialog
+                }
         }
     }
 
@@ -497,4 +537,6 @@ class ActiveRideFragment : Fragment() {
             }
         }
     }
+
+
 }

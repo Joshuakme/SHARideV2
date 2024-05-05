@@ -3,8 +3,12 @@ package com.example.sharidev2.data.repository
 import android.util.Log
 import com.example.sharidev2.data.model.Driver
 import com.example.sharidev2.data.model.Passenger
+import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.data.model.RideParticipant
 import com.example.sharidev2.data.model.UserLocation
+import com.example.sharidev2.data.model.UserStatus
+import com.example.sharidev2.utility.Constants
+import com.example.sharidev2.utility.Converters
 import com.example.sharidev2.utility.FirebaseClient
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +23,7 @@ class ActiveRideRepository {
 
     private val currentUser = FirebaseClient.firebaseAuth.currentUser
     private val rideCollectionRef = firestore.collection("ride")
-
+    private val constants = Constants
 
     // CREATE
     suspend fun addRoutePathList(rideId: String, routePathList: MutableList<MutableList<LatLng>>) {
@@ -141,6 +145,58 @@ class ActiveRideRepository {
     }
 
 
+    // UPDATE
+    suspend fun cancelRideByPassenger(ride: Ride, passengerId: String): Int {
+        return withContext(Dispatchers.IO) {
+            try {
+                if(ride.id != null) {
+                    ride.passengers.forEach { passenger ->
+                        if(passenger.userUid == passengerId) {
+                            passenger.status = UserStatus.CANCELED
+                            passenger.ridePrice = 3.0
+                        }
 
+                    }
 
+                    rideCollectionRef.document(ride.id)
+                        .update(Converters().toRideHashMap(ride))
+                        .await()
+
+                    constants.FIREBASE_REQUEST_SUCCESS
+                } else {
+                    constants.FIREBASE_REQUEST_DATA_NOT_VALID
+                }
+
+                constants.FIREBASE_REQUEST_FAILED
+            }catch (e: Exception) {
+                Log.e("Get User Location", e.message.toString(), e)
+                constants.FIREBASE_REQUEST_FAILED
+            }
+        }
+
+    }
+
+    suspend fun cancelRideByDriver(ride: Ride, driverId: String): Int {
+        return withContext(Dispatchers.IO) {
+            try {
+                if(ride.id != null) {
+                    ride.driver.status = UserStatus.CANCELED
+
+                    rideCollectionRef.document(ride.id)
+                        .update(Converters().toRideHashMap(ride))
+                        .await()
+
+                    constants.FIREBASE_REQUEST_SUCCESS
+                } else {
+                    constants.FIREBASE_REQUEST_DATA_NOT_VALID
+                }
+
+                constants.FIREBASE_REQUEST_FAILED
+            }catch (e: Exception) {
+                Log.e("Get User Location", e.message.toString(), e)
+                constants.FIREBASE_REQUEST_FAILED
+            }
+        }
+
+    }
 }

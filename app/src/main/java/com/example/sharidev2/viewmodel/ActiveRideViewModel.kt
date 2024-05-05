@@ -10,6 +10,7 @@ import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.data.model.User
 import com.example.sharidev2.data.model.UserLocation
 import com.example.sharidev2.data.repository.ActiveRideRepository
+import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.FirebaseClient
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.Timestamp
@@ -29,6 +30,7 @@ class ActiveRideViewModel(
     private val ACTIVE_RIDE_USER_LOCATION_KEY = "active_ride_user_location"
     private val ACTIVE_RIDE_CURRENT_USER_KEY = "active_ride_current_user"
     private val ACTIVE_RIDE_CURRENT_USER_ROLE_KEY = "active_ride_current_user_role"
+
 
 
 
@@ -121,6 +123,17 @@ class ActiveRideViewModel(
                 activeRideRepository.addRoutePathList(activeRide.value!!.id!!, routePathList)
             }
         }
+    }
+
+    suspend fun cancelRide(): Int {
+        if(activeRideCurrentUserId.isInitialized) {
+            if(activeRideCurrentUserRole.value == "passenger") {
+                return activeRideRepository.cancelRideByPassenger(activeRide.value!!, activeRideCurrentUserId.value!!)
+            } else {
+                return activeRideRepository.cancelRideByPassenger(activeRide.value!!, activeRideCurrentUserId.value!!)
+            }
+        }
+        return Constants.FIREBASE_REQUEST_FAILED
     }
 
     fun startRide() {

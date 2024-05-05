@@ -393,7 +393,7 @@ object FirebaseClient {
 
 
                 // Chat Sub-Collection
-                //val chat = FirebaseClient.getChatFromChatId(getString("chat") ?: "")
+                val chat = getChatFromChatId(document.get("chat") as String ?: "")
                 //val chat = converters.toChat(document.get("chat") as Map<String, Any>)
 
 
@@ -419,7 +419,7 @@ object FirebaseClient {
                     completeTime = completeTime,
                     availableSeats = availableSeats,
                     reviews = reviewList,
-                    chat = null,
+                    chat = chat,
                     completedRoute = completedRoute,
                     createdAt = createdAt
                 )

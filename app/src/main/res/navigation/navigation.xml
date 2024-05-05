@@ -282,7 +282,14 @@
     <fragment
         android:id="@+id/activeRideFragment"
         android:name="com.example.sharidev2.screen.ride.ActiveRideFragment"
-        android:label="ActiveRideFragment" />
+        android:label="ActiveRideFragment" >
+        <action
+            android:id="@+id/action_activeRideFragment_to_chatFragment"
+            app:destination="@id/chatFragment">
+            <argument android:name="chat"
+                app:argType="com.example.sharidev2.data.model.Chat" />
+        </action>
+    </fragment>
 
     <fragment
         android:id="@+id/emergencyContactFragment"

@@ -9,6 +9,6 @@ data class Driver(
     override val userUid: String? = null,
     override var user: User? = null,
     override val location: LatLng? = null,
-    override val status: UserStatus = UserStatus.REQUESTED,
+    override var status: UserStatus = UserStatus.REQUESTED,
     val vehicle: Vehicle? = null, // Additional driver-specific property
 ) : RideParticipant(userUid, user, location, status), Parcelable
