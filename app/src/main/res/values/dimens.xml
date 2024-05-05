@@ -12,6 +12,7 @@
     <dimen name="ss_input_field_horizontal_padding">14dp</dimen>
     <dimen name="ss_bottom_dialog_top_indicator_height">3dp</dimen>
     <dimen name="ss_map_padding">40dp</dimen>
+    <dimen name="ss_height_350dp">350dp</dimen>
 
     <!--  Home Fragment  -->
     <dimen name="ss_home_nav_top_padding">16dp</dimen>
@@ -46,6 +47,9 @@
 
     <!--  Ride Detail Configuration Fragment  -->
     <dimen name="ss_ride_detail_config_item_margin_bottom">8dp</dimen>
+
+    <!--  Active Ride Fragment  -->
+
 
 
     <!--  Profile Fragment  -->

@@ -119,7 +119,6 @@
     <string name="ride_detail_fragment_price_info_one_passenger">Price displayed is based on %d passenger. The fare may change if more passengers join the ride.</string>
 
 
-
     <!--  Booking Fragment  -->
     <string name="booking_fragment_title_booking">Booking</string>
     <string name="booking_section_title_recent">Recent</string>

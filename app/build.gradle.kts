@@ -144,6 +144,7 @@ dependencies {
     // Glide
     implementation("com.github.bumptech.glide:glide:4.12.0")
     ksp("com.github.bumptech.glide:ksp:4.14.2")
+    implementation("jp.wasabeef:glide-transformations:4.3.0")
 
 
     // Testing

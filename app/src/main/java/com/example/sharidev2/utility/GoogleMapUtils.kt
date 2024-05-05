@@ -2,6 +2,7 @@ package com.example.sharidev2.utility
 
 import android.content.ContentValues.TAG
 import android.content.Context
+import android.graphics.Bitmap
 import android.location.Location
 import android.util.Log
 import com.example.sharidev2.R
@@ -10,6 +11,9 @@ import com.example.sharidev2.data.model.Route
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.GroundOverlay
+import com.google.android.gms.maps.model.GroundOverlayOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
@@ -37,6 +41,13 @@ class GoogleMapUtils {
 
     }
 
+    fun addOverlayToMap(googleMap: GoogleMap, bitmap: Bitmap, location: LatLng, width: Float, height: Float) {
+        val overlay = googleMap.addGroundOverlay(
+            GroundOverlayOptions()
+                .image(BitmapDescriptorFactory.fromBitmap(bitmap))
+                .position(LatLng(location.latitude, location.longitude), width, height)
+        ) as GroundOverlay
+    }
 
     // MAP CAMERA
     private fun handleCameraMove(
@@ -138,7 +149,7 @@ class GoogleMapUtils {
         }
     }
 
-    fun isMapOnCurrentLocation(
+    private fun isMapOnCurrentLocation(
         currentCameraPosition: LatLng,
         currentLocation: LatLng
     ): Boolean {

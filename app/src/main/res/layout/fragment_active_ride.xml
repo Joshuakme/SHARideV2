@@ -14,7 +14,7 @@
             class="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/scrollView2"
+            app:layout_constraintBottom_toTopOf="@+id/sv_active_ride_ride_info"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -23,6 +23,7 @@
 
         <!--  Fragment Back Button  -->
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/btn_active_ride_nav_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/ss_screen_width_margin"
@@ -78,14 +79,15 @@
         </com.google.android.material.card.MaterialCardView>
 
         <ScrollView
-            android:id="@+id/scrollView2"
+            android:id="@+id/sv_active_ride_ride_info"
             android:layout_width="match_parent"
-            android:layout_height="320dp"
+            android:layout_height="350dp"
             android:scrollIndicators="none"
             android:scrollbars="none"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/map_active_ride_container">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -102,20 +104,6 @@
                     android:paddingHorizontal="@dimen/ss_screen_width_margin"
                     android:paddingTop="8dp"
                     android:paddingBottom="16dp">
-
-                    <ImageButton
-                        android:id="@+id/img_btn_active_ride_expand_ride_detail"
-                        android:layout_width="35dp"
-                        android:layout_height="wrap_content"
-                        android:background="#00FFFFFF"
-                        android:scaleX="2.5"
-                        android:scaleY="1.2"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/baseline_keyboard_arrow_up_24"
-                        app:tint="?attr/colorOutline" />
 
                     <TextView
                         android:id="@+id/text_active_ride_status"
@@ -134,6 +122,82 @@
                         android:text="~ %d min \u2022 %d km"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/text_active_ride_status" />
+
+                    <ImageButton
+                        android:id="@+id/img_btn_active_ride_expand_ride_detail"
+                        android:layout_width="35dp"
+                        android:layout_height="wrap_content"
+                        android:background="#00FFFFFF"
+                        android:scaleX="2.5"
+                        android:scaleY="1.2"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/baseline_keyboard_arrow_up_24"
+                        app:tint="?attr/colorOutline" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toBottomOf="@+id/text_active_ride_estimated_time_distance"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/text_active_ride_status">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/btn_active_ride_share_ride"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            app:contentPadding="6dp">
+
+                            <ImageButton
+                                android:id="@+id/imageButton8"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="#00FFFFFF"
+                                android:src="@drawable/baseline_share_24" />
+                        </com.google.android.material.card.MaterialCardView>
+
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/btn_active_ride_sos_call"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:cardBackgroundColor="?attr/colorError"
+                            app:contentPadding="6dp"
+                            app:contentPaddingLeft="10dp"
+                            app:contentPaddingRight="10dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="horizontal">
+
+                                <ImageButton
+                                    android:id="@+id/imageButton10"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="6dp"
+                                    android:background="#00FFFFFF"
+                                    android:scaleX="0.8"
+                                    android:scaleY="0.8"
+                                    android:src="@drawable/baseline_security_24"
+                                    app:tint="?attr/colorOnError" />
+
+                                <TextView
+                                    android:id="@+id/textView29"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="SOS call"
+                                    android:textColor="?attr/colorOnError" />
+                            </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
+                    </LinearLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -159,6 +223,7 @@
                             android:id="@+id/img_active_ride_driver_photo"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
                             app:srcCompat="@drawable/baseline_account_circle_24" />
                     </com.google.android.material.card.MaterialCardView>
 
@@ -171,21 +236,53 @@
                         app:layout_constraintStart_toEndOf="@+id/card_active_ride_driver_photo"
                         app:layout_constraintTop_toTopOf="parent">
 
-                        <TextView
-                            android:id="@+id/text_active_ride_driver_name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/btn_active_ride_call_driver"
                             app:layout_constraintStart_toStartOf="parent"
-                            tools:text="Driver" />
+                            app:layout_constraintTop_toTopOf="parent">
 
-                        <TextView
-                            android:id="@+id/text_active_ride_driver_phone"
+                            <TextView
+                                android:id="@+id/text_active_ride_driver_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                tools:text="Driver" />
+
+                            <TextView
+                                android:id="@+id/text_active_ride_driver_phone"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="?android:attr/textColorHint"
+                                tools:text="Driver Phone Number" />
+                        </LinearLayout>
+
+                        <ImageButton
+                            android:id="@+id/btn_active_ride_call_driver"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="?android:attr/textColorHint"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/text_active_ride_driver_name"
-                            tools:text="Driver Phone Number" />
+                            android:layout_marginEnd="24dp"
+                            android:background="#00FFFFFF"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/btn_active_ride_message_driver"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="0.5"
+                            app:srcCompat="@drawable/baseline_phone_24"
+                            app:tint="?attr/colorSecondary" />
+
+                        <ImageButton
+                            android:id="@+id/btn_active_ride_message_driver"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="#00FFFFFF"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="0.5"
+                            app:srcCompat="@drawable/baseline_message_24"
+                            app:tint="?attr/colorOnSurfaceVariant" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -276,8 +373,20 @@
 
                 <!--  Passengers Details  -->
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_active_ride_passengers"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/text_active_ride_passengers_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/ss_screen_width_margin"
+                        android:layout_marginTop="16dp"
+                        android:fontFamily="@font/poppins_medium"
+                        android:text="Passengers"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <View
                         android:id="@+id/view_active_ride_passengers_divider"
@@ -293,16 +402,136 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/ss_screen_width_margin"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="8dp"
                         android:layout_marginEnd="@dimen/ss_screen_width_margin"
                         android:orientation="horizontal"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/text_active_ride_passengers_title"
                         tools:visibility="gone" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+                <!--  Pickup Details  -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_active_ride_pick_up_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+
+                    <TextView
+                        android:id="@+id/text_active_ride_pick_up_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/ss_screen_width_margin"
+                        android:layout_marginTop="24dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="Pick-up" />
+
+                    <TextView
+                        android:id="@+id/text_active_ride_pick_up_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/ss_screen_width_margin"
+                        android:fontFamily="@font/poppins_medium"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/text_active_ride_pick_up_title"
+                        tools:text="PV 9 Residence" />
+
+                    <TextView
+                        android:id="@+id/text_active_ride_pick_up_detailed_address"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/ss_screen_width_margin"
+                        android:layout_marginEnd="@dimen/ss_screen_width_margin"
+                        android:textColor="?attr/colorOutline"
+                        android:textSize="13sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/text_active_ride_pick_up_name"
+                        tools:text="Detailed Address, Kuala Lumpur, Malaysia" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <!--  Destination Details  -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_active_ride_destination_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+
+                    <TextView
+                        android:id="@+id/text_active_ride_destination_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/ss_screen_width_margin"
+                        android:layout_marginTop="16dp"
+                        android:text="Destination"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/text_active_ride_destination_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/ss_screen_width_margin"
+                        android:fontFamily="@font/poppins_medium"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/text_active_ride_destination_title"
+                        tools:text="PV 9 Residence" />
+
+                    <TextView
+                        android:id="@+id/text_active_ride_destination_detailed_address"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/ss_screen_width_margin"
+                        android:layout_marginEnd="@dimen/ss_screen_width_margin"
+                        android:textColor="?attr/colorOutline"
+                        android:textSize="13sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/text_active_ride_destination_name"
+                        tools:text="Detailed Address, Kuala Lumpur, Malaysia" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <!--  Note To Driver  -->
+
+
+                <!--  Cancel Booking  -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_active_ride_cancel_booking"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginBottom="24dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/btn_active_ride_cancel_booking"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.5"
+                        app:strokeColor="?attr/colorOutline">
+
+                        <TextView
+                            android:id="@+id/text_active_ride_cancel_booking"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="6dp"
+                            android:text="Cancel booking"
+                            android:textColor="?attr/colorOutline" />
+                    </com.google.android.material.card.MaterialCardView>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
         </ScrollView>
 

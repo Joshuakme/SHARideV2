@@ -2,10 +2,12 @@ package com.example.sharidev2.screen.ride
 
 import android.Manifest
 import android.content.ContentValues.TAG
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -35,6 +37,7 @@ import com.example.sharidev2.data.model.PolylineData
 import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.databinding.FragmentActiveRideBinding
 import com.example.sharidev2.utility.CommonUtils
+import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.FirebaseClient
 import com.example.sharidev2.utility.FirebaseClient.convertFirebaseImageToBitmap
 import com.example.sharidev2.utility.GoogleMapUtils
@@ -46,11 +49,12 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.maps.internal.PolylineEncoding
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-class ActiveRideFragment: Fragment() {
+class ActiveRideFragment : Fragment() {
     private lateinit var binding: FragmentActiveRideBinding
     private val activeRideViewModel: ActiveRideViewModel by viewModels()
     private val currentLocationViewModel: CurrentLocationViewModel by activityViewModels()
@@ -59,13 +63,13 @@ class ActiveRideFragment: Fragment() {
 
     private val currentUser = FirebaseClient.firebaseAuth.currentUser
     private val passengerList = mutableListOf<Passenger>()
-    private  val polylineList = mutableListOf<PolylineData>()
+    private val polylineList = mutableListOf<PolylineData>()
 
 
     private val googleMapUtils = GoogleMapUtils()
     private val mHandler: Handler = Handler()
     private lateinit var mRunnable: Runnable
-    private val LOCATION_UPDATE_INTERVAL = 3000 as Long
+    private val LOCATION_UPDATE_INTERVAL = 8000 as Long
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -86,14 +90,15 @@ class ActiveRideFragment: Fragment() {
 
 
         // ELEMENT VARIABLES
-        googleMapFragment = childFragmentManager.findFragmentById(R.id.map_active_ride_container) as SupportMapFragment
-
-
+        googleMapFragment =
+            childFragmentManager.findFragmentById(R.id.map_active_ride_container) as SupportMapFragment
 
 
 
         setupMap()
         setupData()
+
+
 
         return binding.root
     }
@@ -146,11 +151,15 @@ class ActiveRideFragment: Fragment() {
             }
 
             // Add User Markers into map
-            activeRideViewModel.activeRide.observe(viewLifecycleOwner) {activeRide ->
-                if(activeRide != null) {
+            activeRideViewModel.activeRide.observe(viewLifecycleOwner) { activeRide ->
+                if (activeRide != null) {
                     // Origin
                     val typedValue = TypedValue()
-                    context?.theme?.resolveAttribute(com.google.android.material.R.attr.colorPrimary, typedValue, true)
+                    context?.theme?.resolveAttribute(
+                        com.google.android.material.R.attr.colorPrimary,
+                        typedValue,
+                        true
+                    )
                     val colorPrimary = typedValue.data
 
                     GoogleMapUtils().addMarker(
@@ -160,7 +169,11 @@ class ActiveRideFragment: Fragment() {
                     )
 
                     // Destination
-                    context?.theme?.resolveAttribute(com.google.android.material.R.attr.colorError, typedValue, true)
+                    context?.theme?.resolveAttribute(
+                        com.google.android.material.R.attr.colorError,
+                        typedValue,
+                        true
+                    )
                     val colorError = typedValue.data
 
                     GoogleMapUtils().addMarker(
@@ -170,44 +183,53 @@ class ActiveRideFragment: Fragment() {
                     )
 
 
-                    if(currentUser != null) {
+                    if (currentUser != null) {
                         // Driver
-                        if( activeRide.driver.location != null) {
+                        if (activeRide.driver.location != null) {
                             // Resolve the attribute to get the color value programmatically
-                            context?.theme?.resolveAttribute(com.google.android.material.R.attr.colorPrimaryDark, typedValue, true)
+                            context?.theme?.resolveAttribute(
+                                com.google.android.material.R.attr.colorPrimaryDark,
+                                typedValue,
+                                true
+                            )
                             val colorPrimaryDark = typedValue.data
 
-                            val icon = CommonUtils().getLocationBitmapFromVector(requireContext(), colorPrimaryDark)
+                            val icon = CommonUtils().getLocationBitmapFromVector(
+                                requireContext(),
+                                colorPrimaryDark
+                            )
                             GoogleMapUtils().addMarker(googleMap, activeRide.driver.location, icon)
                         }
 
 
                         // Passengers
-                        activeRide.passengers.forEach() {passenger ->
-                            if(passenger?.location != null) {
-                                val icon = CommonUtils().getLocationBitmapFromVector(requireContext(), Color.BLUE)
+                        activeRide.passengers.forEach() { passenger ->
+                            if (passenger?.location != null) {
 
                                 // Add a marker to the map
-                                if(passenger.userUid == currentUser.uid) {
+                                if (passenger.userUid == currentUser.uid) {
 
                                 }
 
-                                GoogleMapUtils().addMarker(googleMap, passenger.location, icon)
                                 GoogleMapUtils().moveMapCamera(googleMap, passenger.location)
 
                                 Glide.with(requireContext())
                                     .asBitmap()
                                     .load(passenger.user?.photoUri) // Replace profilePictureUrl with the actual URL
+                                    .transform(RoundedCornersTransformation(8, 2))
                                     .into(object : CustomTarget<Bitmap>() {
-                                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                                            // Set the loaded bitmap as the marker image
-//                                        val markerView: View = LayoutInflater.from(context).inflate(R.layout.marker_custom_layout, null)
-//                                        markerView.findViewById<ImageView>(R.id.image_marker).setImageBitmap(resource)
-//
-//                                        // Convert the marker view to a BitmapDescriptor
-//                                        val icon = BitmapDescriptorFactory.fromBitmap(CommonUtils().createDrawableFromView(requireContext(), markerView))
+                                        override fun onResourceReady(
+                                            resource: Bitmap,
+                                            transition: Transition<in Bitmap>?
+                                        ) {
 
-//                                        GoogleMapUtils().addMarker(googleMap, passenger.location, icon)
+                                            GoogleMapUtils().addOverlayToMap(
+                                                googleMap,
+                                                resource,
+                                                passenger.location,
+                                                30f,
+                                                30f
+                                            )
                                         }
 
                                         override fun onLoadCleared(placeholder: Drawable?) {
@@ -223,11 +245,11 @@ class ActiveRideFragment: Fragment() {
                         activeRide.origin.geolocation!!,
                         activeRide.destination.geolocation!!,
                         true
-                    ) {result ->
+                    ) { result ->
                         if (result != null) {
                             Handler(Looper.getMainLooper()).post {
-                                if(polylineList.isNotEmpty()) {
-                                    for(polylineData in polylineList) {
+                                if (polylineList.isNotEmpty()) {
+                                    for (polylineData in polylineList) {
                                         polylineData.polyline.remove()
                                     }
                                     polylineList.clear()
@@ -268,7 +290,10 @@ class ActiveRideFragment: Fragment() {
             }
 
             googleMap.setOnPolylineClickListener {
-                val colorSecondary = CommonUtils().getThemeColor(requireContext(), com.google.android.material.R.attr.colorSecondary)
+                val colorSecondary = CommonUtils().getThemeColor(
+                    requireContext(),
+                    com.google.android.material.R.attr.colorSecondary
+                )
 
                 for (polylineData in polylineList) {
                     if (it.id == polylineData.polyline.id) {
@@ -290,12 +315,16 @@ class ActiveRideFragment: Fragment() {
         val rideVehicleModelColor = binding.textActiveRideVehicleModelColor
         val rideVehiclePlateNumber = binding.textActiveRideVehiclePlateNumber
         val passengersRecyclerView = binding.recyclerViewActiveRidePassengers
+        val pickUpDetailsName = binding.textActiveRidePickUpName
+        val pickUpDetailsDetailedAddress = binding.textActiveRidePickUpDetailedAddress
+        val destinationDetailsName = binding.textActiveRideDestinationName
+        val destinationDetailsDetailedAddress = binding.textActiveRideDestinationDetailedAddress
 
 
-        activeRideViewModel.activeRide.observe(viewLifecycleOwner) {activeRide ->
-            if(activeRide != null) {
+        activeRideViewModel.activeRide.observe(viewLifecycleOwner) { activeRide ->
+            if (activeRide != null) {
                 // Driver
-                if(activeRide.driver.user?.photoUri != null) {
+                if (activeRide.driver.user?.photoUri != null) {
                     val photoUri = activeRide.driver.user?.photoUri
 
                     if (CommonUtils().isUrl(photoUri.toString())) {
@@ -305,37 +334,98 @@ class ActiveRideFragment: Fragment() {
                             .into(driverPhotoImg)
                     }
                 }
-                if(activeRide.driver.user != null) {
+                if (activeRide.driver.user != null) {
                     driverName.text = activeRide.driver.user!!.displayName
                     driverContact.text = activeRide.driver.user!!.phoneNumber
                 }
 
 
-
-                // Ride
-                if(activeRide.driver.vehicle != null) {
-                    rideVehicleModelColor.text = "${activeRide.driver.vehicle.model} (${activeRide.driver.vehicle.color})"
+                // Ride Vehicle
+                if (activeRide.driver.vehicle != null) {
+                    rideVehicleModelColor.text =
+                        "${activeRide.driver.vehicle.model} (${activeRide.driver.vehicle.color})"
                     rideVehiclePlateNumber.text = activeRide.driver.vehicle.plateNumber
                 }
 
                 // Passengers
-                activeRide.passengers.forEach { passenger ->
-                    passengerList.add(passenger)
-                }
-                val adapter = ActiveRidePassengerImageAdapter(requireContext(), passengerList,
-                    object: ActiveRidePassengerImageAdapter.OnPassengerImageClickListener {
-                        override fun OnPassengerImageClick(passenger: Passenger) {
-                            googleMapFragment.getMapAsync {googleMap ->
-                                googleMapUtils.moveMapCamera(googleMap, passenger.location!!)
+
+                val adapter =
+                    ActiveRidePassengerImageAdapter(requireContext(), activeRide.passengers,
+                        object : ActiveRidePassengerImageAdapter.OnPassengerImageClickListener {
+                            override fun OnPassengerImageClick(passenger: Passenger) {
+                                googleMapFragment.getMapAsync { googleMap ->
+                                    googleMapUtils.moveMapCamera(googleMap, passenger.location!!)
+                                }
                             }
-                        }
-                    })
+                        })
                 passengersRecyclerView.adapter = adapter
-                passengersRecyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+                passengersRecyclerView.layoutManager =
+                    LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+
+
+                // Pick Up Details
+                pickUpDetailsName.text = activeRide.origin.name
+                pickUpDetailsDetailedAddress.text = activeRide.origin.detailAddress
+
+
+                // Destination Details
+                destinationDetailsName.text = activeRide.destination.name
+                destinationDetailsDetailedAddress.text = activeRide.destination.detailAddress
+
+
+                setupListener(activeRide)
             }
         }
 
 
+    }
+
+
+    private fun setupListener(activeRide: Ride) {
+        val rideInfoScrolLView = binding.svActiveRideRideInfo
+        val expandMapBtn = binding.imgBtnActiveRideExpandRideDetail
+        val shareRideBtn = binding.btnActiveRideShareRide
+        val sosCallBtn = binding.btnActiveRideSosCall
+        val callDriverBtn = binding.btnActiveRideCallDriver
+        val messageDriverBtn = binding.btnActiveRideMessageDriver
+
+        // Drawer Open Status
+        var drawerOpen = false
+
+        expandMapBtn.setOnClickListener {
+            // TODO: Expand the ride info segment
+
+
+            val params = rideInfoScrolLView.layoutParams
+            params.height =
+                if (drawerOpen) resources.getDimensionPixelSize(R.dimen.ss_height_350dp) else ViewGroup.LayoutParams.MATCH_PARENT
+
+            rideInfoScrolLView.layoutParams = params
+
+            expandMapBtn.rotation = if (drawerOpen) 0f else 180f
+
+            drawerOpen = !drawerOpen
+        }
+
+        shareRideBtn.setOnClickListener {
+            // TODO: Share link to other app
+        }
+
+        sosCallBtn.setOnClickListener {
+            // TODO: Handle SOS accordingly
+        }
+
+        callDriverBtn.setOnClickListener {
+            val intent = Intent(Intent.ACTION_CALL)
+
+            if (activeRide.driver.user?.phoneNumber != null) {
+                intent.data = Uri.parse("tel:${activeRide.driver.user!!.phoneNumber}")
+            }
+        }
+
+        messageDriverBtn.setOnClickListener {
+            // TODO: Navigate to message chat fragment
+        }
     }
 
     private fun getUserLocation() {
@@ -346,54 +436,30 @@ class ActiveRideFragment: Fragment() {
                         if (location.location != null) {
                             googleMap.clear()
 
-
-                            val currentUserColor = CommonUtils().getThemeColor(
-                                requireContext(),
-                                com.google.android.material.R.attr.colorPrimary
-                            )
-                            val otherUserColor = CommonUtils().getThemeColor(
-                                requireContext(),
-                                com.google.android.material.R.attr.colorSecondary
-                            )
-
-                            val firebaseStorage = FirebaseClient.firebaseStorage
-                            val storageRef =
-                                firebaseStorage.reference.child(location.user?.photoUri.toString())
-
-
-                            convertFirebaseImageToBitmap(storageRef,
-                                onSuccess = { bitmap ->
-                                    val userIcon =
-                                        if (location.user?.uid == FirebaseClient.firebaseAuth.uid) {
-                                            CommonUtils().createMarkerWithCircularImage(
-                                                requireContext(),
-                                                bitmap,
-                                                currentUserColor
-                                            )
-                                        } else {
-                                            CommonUtils().createMarkerWithCircularImage(
-                                                requireContext(),
-                                                bitmap,
-                                                otherUserColor
+                            if (location.user?.photoUri != null) {
+                                Glide.with(requireContext())
+                                    .asBitmap()
+                                    .load(location.user!!.photoUri.toString()) // Replace profilePictureUrl with the actual URL
+                                    .transform(RoundedCornersTransformation(8, 2))
+                                    .into(object : CustomTarget<Bitmap>() {
+                                        override fun onResourceReady(
+                                            resource: Bitmap,
+                                            transition: Transition<in Bitmap>?
+                                        ) {
+                                            GoogleMapUtils().addOverlayToMap(
+                                                googleMap,
+                                                resource,
+                                                location.location,
+                                                30f,
+                                                30f
                                             )
                                         }
 
-//                                    val userIcon = if(activeRideViewModel.activeRideCurrentUserRole.value != "driver") {
-//
-//                                    } else {
-//                                        CommonUtils().createMarkerWithCircularImage(requireContext(), bitmap, otherUserColor)
-//                                    }
-
-                                    googleMapUtils.addMarker(
-                                        googleMap,
-                                        location.location,
-                                        userIcon
-                                    )
-                                },
-                                onFailure = { exception ->
-                                    // Error occurred, handle it
-                                }
-                            )
+                                        override fun onLoadCleared(placeholder: Drawable?) {
+                                            // Handle resource clearing if needed
+                                        }
+                                    })
+                            }
 
                         }
                     }
@@ -414,5 +480,21 @@ class ActiveRideFragment: Fragment() {
         super.onResume()
 
         //startUserLocationsRunnable()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == Constants.PERMISSIONS_REQUEST_CALL) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Do nothing
+            } else {
+                // Permission denied, handle accordingly
+            }
+        }
     }
 }

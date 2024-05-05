@@ -166,7 +166,7 @@ class RideDetailFragment : Fragment() {
                         // Check if there are passengers
                         if (ride.passengers.isEmpty()) {
                             // Populate with default user images
-                            val remainingCapacity = ride.driver.vehicle.capacity - 1
+                            val remainingCapacity = ride.driver.vehicle.capacity
                             repeat(remainingCapacity) {
                                 imageList.add(
                                     CommonUtils().getUriFromVectorDrawable(

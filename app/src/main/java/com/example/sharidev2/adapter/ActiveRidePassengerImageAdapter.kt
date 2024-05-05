@@ -13,6 +13,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.example.sharidev2.R
 import com.example.sharidev2.data.model.Passenger
 import com.example.sharidev2.data.model.UserStatus
@@ -60,10 +63,15 @@ class ActiveRidePassengerImageAdapter(
 
         // Image
         if(passenger.user?.photoUri != null) {
-            holder.passengerImg.setImageURI(passenger.user!!.photoUri)
+            Glide.with(context)
+                .load(passenger.user!!.photoUri.toString())
+                .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Disable disk caching
+                .into(holder.passengerImg)
         } else {
             holder.passengerImg.setImageResource(R.drawable.baseline_account_circle_24)
         }
+
+
 
         // Name
         if(passenger.user?.displayName != null) {
