@@ -405,5 +405,16 @@
         <action
             android:id="@+id/action_addVehicleDocImgFragment_to_addVehicleDocFragment"
             app:destination="@id/addVehicleDocFragment" />
+        <action
+            android:id="@+id/action_addVehicleDocImgFragment_to_addVehicleImgFragment"
+            app:destination="@id/addVehicleImgFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addVehicleImgFragment"
+        android:name="com.example.sharidev2.screen.user.AddVehicleImgFragment"
+        android:label="AddVehicleImgFragment" >
+        <action
+            android:id="@+id/action_addVehicleImgFragment_to_addVehicleDocImgFragment"
+            app:destination="@id/addVehicleDocImgFragment" />
     </fragment>
 </navigation>

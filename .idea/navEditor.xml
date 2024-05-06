@@ -46,18 +46,18 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-52" />
-                            <option name="y" value="1323" />
+                            <option name="x" value="-91" />
+                            <option name="y" value="1263" />
                           </Point>
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="action_addVehicleDocFragment_to_editVehicleDocFragment">
+                            <entry key="action_addVehicleDocFragment_to_addVehicleDocImgFragment">
                               <value>
                                 <LayoutPositions />
                               </value>
                             </entry>
-                            <entry key="action_addVehicleDocFragment_to_vehicleDoc2Fragment2">
+                            <entry key="action_addVehicleDocFragment_to_editVehicleDocFragment">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -77,8 +77,29 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="272" />
-                            <option name="y" value="1309" />
+                            <option name="x" value="181" />
+                            <option name="y" value="1232" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_addVehicleDocImgFragment_to_addVehicleDocFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="addVehicleImgFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="433" />
+                            <option name="y" value="1232" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -718,8 +739,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="40" />
-                            <option name="y" value="134" />
+                            <option name="x" value="-596" />
+                            <option name="y" value="226" />
                           </Point>
                         </option>
                         <option name="myPositions">

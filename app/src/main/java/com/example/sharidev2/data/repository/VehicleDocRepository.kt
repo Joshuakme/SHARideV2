@@ -210,7 +210,7 @@ class VehicleDocRepository{
                         vehicleDoctRef.update("roadtax", newVehicleDoc.roadtax).await()
                         vehicleDoctRef.update("insurance", newVehicleDoc.insurance).await()
 
-                        Log.d("UPDATE VEHICLE DOC", "SUCESSFUL")
+                        Log.d("UPDATE VEHICLE DOC", "SUCCESSFUL")
 
                         Constants.FIREBASE_REQUEST_SUCCESS // Update successful
                     } else {
@@ -281,9 +281,9 @@ class VehicleDocRepository{
                     val roadtaxFileUrl = roadtaxUri.toString()
 
                     val vehicleDocImgData = hashMapOf(
-                        "registerCertFileUrl" to registerCertFileUrl,
-                        "insuranceFileUrl" to insuranceFileUrl,
-                        "roadtaxFileUrl" to roadtaxFileUrl,
+                        "vehicleRegisCert" to registerCertFileUrl,
+                        "insurance" to insuranceFileUrl,
+                        "roadtax" to roadtaxFileUrl,
                         "userUid" to currentUser.uid
                     )
 
@@ -307,7 +307,7 @@ class VehicleDocRepository{
 
                         firestore.collection("vehicleDoc")
                             .document(vehicleId)
-                            .set(vehicleDocImgData)
+                            .update(vehicleDocImgData as Map<String, Any>)
                             .await()
 
                         if (oldRegisterCertImageURL != null) {
@@ -382,6 +382,183 @@ class VehicleDocRepository{
             }
         }
     }
+
+
+
+    suspend fun getVehicleImage(): Map<String, Uri> {
+        return withContext(Dispatchers.IO) {
+            val vehicleImageList = mutableListOf<Map<String, Uri>>()
+
+            val vehicleImageSnapshot = firestore.collection("vehicle")
+                .whereEqualTo("userUid", currentUser?.uid)
+                .get()
+                .await()
+
+//            ######################################################################################
+//            ######################################################################################
+//            ######################################################################################
+//            ######################################################################################
+            for(document in vehicleImageSnapshot.documents) {
+                val frontVehicleImgURL = document.getString("photo")        //need to change
+                val backVehicleImgURL = document.getString("photo")
+
+
+                val licenseMap = mutableMapOf<String, Uri>()
+                licenseMap["vehicleFrontImgUri"] = Uri.parse(frontVehicleImgURL?: "")
+                licenseMap["vehicleBackImgUri"] = Uri.parse(backVehicleImgURL?: "")
+
+                vehicleImageList.add(licenseMap)
+            }
+
+            if(!vehicleImageList.isNullOrEmpty()) {
+                vehicleImageList[0]
+            } else {
+                emptyMap()
+            }
+        }
+    }
+
+    suspend fun addVehicleImage(vehicleFrontImageUri: Uri?, vehicleBackImageUri: Uri?): Int {
+        if (vehicleFrontImageUri != null && vehicleBackImageUri != null && currentUser != null) {
+            return withContext(Dispatchers.IO) {
+                try {
+                    val imgRandomName = UUID.randomUUID()
+
+                    val vehicleFrontFileRef = firebaseStorage.reference.child("$storagePath/$imgRandomName")
+                    val vehicleFrontFileSnapshot = vehicleFrontFileRef.putFile(vehicleFrontImageUri).await()
+                    val vehicleFrontUri = vehicleFrontFileSnapshot.storage.downloadUrl.await()
+                    val vehicleFrontFileUrl = vehicleFrontUri.toString()
+
+                    val vehicleBackFileRef = firebaseStorage.reference.child("$storagePath/$imgRandomName")
+                    val vehicleBackFileSnapshot = vehicleBackFileRef.putFile(vehicleBackImageUri).await()
+                    val vehicleBackUri = vehicleBackFileSnapshot.storage.downloadUrl.await()
+                    val vehicleBackFileUrl = vehicleBackUri.toString()
+
+                    val vehicleImageData = hashMapOf(
+                        "frontPhoto" to vehicleFrontFileUrl,
+                        "backPhoto" to vehicleBackFileUrl
+                    )
+
+                    val vehicleSnapshot = firestore.collection("vehicles")
+                        .whereEqualTo("userUid", currentUser.uid)
+                        .get()
+                        .await()
+
+                    if (!vehicleSnapshot.isEmpty) {
+                        val vehicleDoc = vehicleSnapshot.documents.first()
+                        val existingPhotos = vehicleDoc.get("photo") as? ArrayList<String> ?: arrayListOf()
+                        existingPhotos.add(vehicleFrontFileUrl)
+                        existingPhotos.add(vehicleBackFileUrl)
+
+                        firestore.collection("vehicles")
+                            .document(vehicleDoc.id)
+                            .update("photo", existingPhotos)
+                            .await()
+                    } else {
+                        // Handle case when no vehicle document exists for the user
+                        Log.e("VehicleDocRepository", "No vehicle document found for the user")
+                    }
+
+                    Constants.FIREBASE_REQUEST_SUCCESS
+                } catch (e: Exception) {
+                    Log.e("VehicleDocRepository", "Add Vehicle Image: ${e.message}")
+                    Constants.FIREBASE_REQUEST_EXCEPTION
+                }
+            }
+        } else {
+            return if (currentUser == null) {
+                Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED
+            } else {
+                Constants.FIREBASE_REQUEST_DATA_NOT_VALID
+            }
+        }
+    }
+
+
+
+//    suspend fun addVehicleImage(vehicleFrontImageUri: Uri?, vehicleBackImageUri: Uri?): Int {
+//        if (vehicleFrontImageUri != null && vehicleBackImageUri != null && currentUser != null) {
+//            return withContext(Dispatchers.IO) {
+//                try {
+//
+//                    val imgRandomName = UUID.randomUUID()
+//
+//                    val vehicleFrontFileRef = firebaseStorage.reference.child("${storagePath}/$imgRandomName")
+//
+//                    val vehicleFrontFileSnapshot = vehicleFrontFileRef.putFile(vehicleFrontImageUri).await()
+//
+//                    val vehicleFrontUri = vehicleFrontFileSnapshot.storage.downloadUrl.await()
+//
+//                    val vehicleFrontFileUrl = vehicleFrontUri.toString()
+//
+//                    val vehicleBackFileRef = firebaseStorage.reference.child("${storagePath}/$imgRandomName")
+//
+//                    val vehicleBackFileSnapshot = vehicleBackFileRef.putFile(vehicleBackImageUri).await()
+//
+//                    val backDownloadUri = vehicleBackFileSnapshot.storage.downloadUrl.await()
+//
+//                    val vehicleBackFileUrl = backDownloadUri.toString()
+//
+//                    val vehicleImageData = hashMapOf(
+//                        "frontFileUrl" to vehicleFrontFileUrl,
+//                        "backFileUrl" to vehicleBackFileUrl,
+//                        "userUid" to currentUser.uid
+//                    )
+//
+//                    val vehicleImageSnapshot = firestore.collection("vehicle")
+//                        .whereEqualTo("userUid", currentUser.uid)
+//                        .get()
+//                        .await()
+//
+//                    if(!vehicleImageSnapshot.isEmpty) {
+//                        val vehicleImageList = vehicleImageSnapshot.documents.filter {
+//                            it.getString("userUid") == currentUser.uid
+//                        }
+//
+//                        val vehicleId = vehicleImageList[0].id
+//                        val oldVehicleFrontImageURL = vehicleImageList[0].getString("photo")
+//                        val oldVehicleBackImageURL = vehicleImageList[0].getString("photo")
+//
+//                        firestore.collection("vehicle")
+//                            .document(vehicleId)
+//                            .set(vehicleImageData)
+//                            .await()
+//
+//                        if(oldVehicleFrontImageURL != null) {
+//                            firebaseStorage.getReferenceFromUrl(oldVehicleFrontImageURL)
+//                                .delete()
+//                                .await()
+//                        }
+//
+//                        if(oldVehicleBackImageURL != null) {
+//                            firebaseStorage.getReferenceFromUrl(oldVehicleBackImageURL)
+//                                .delete()
+//                                .await()
+//                        }
+//                    } else {
+//                        // User has no record in database yet
+//
+//                        // Create new record
+//                        firestore.collection("vehicle")
+//                            .add(vehicleImageData)
+//                            .await()
+//                    }
+//
+//                    Constants.FIREBASE_REQUEST_SUCCESS
+//                } catch (e: Exception) {
+//                    Log.e("VehicleDocRepository - Add Vehicle Image", e.message.toString())
+//                    Constants.FIREBASE_REQUEST_EXCEPTION
+//                }
+//            }
+//        }
+//        else if(currentUser == null){
+//            return Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED
+//        }
+//        else {
+//            return Constants.FIREBASE_REQUEST_DATA_NOT_VALID
+//            //Toast.makeText(requireContext(), "Please select both front and back driving license images", Toast.LENGTH_SHORT).show()
+//        }
+//    }
 }
 
 
