@@ -27,16 +27,19 @@ import com.example.sharidev2.R
 import com.example.sharidev2.databinding.FragmentAddVehicleImgBinding
 import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.FirebaseClient
-import com.example.sharidev2.viewmodel.VehicleImageViewModel
 import com.google.android.material.card.MaterialCardView
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 import android.Manifest
+import com.example.sharidev2.databinding.FragmentAddVehicleDocBinding
+import com.example.sharidev2.databinding.FragmentAddVehicleDocImgBinding
+import com.example.sharidev2.viewmodel.VehicleDocViewModel
 
 class AddVehicleImgFragment : Fragment() {
-    private lateinit var binding: FragmentAddVehicleImgBinding
-    private val VehicleImageViewModel: VehicleImageViewModel by viewModels()
+    private lateinit var vehicleImgBinding: FragmentAddVehicleImgBinding
+    private lateinit var vehicleDocBinding: FragmentAddVehicleDocBinding
+    private lateinit var vehicleDocImgBinding: FragmentAddVehicleDocImgBinding
+    private val vehicleViewModel: VehicleDocViewModel by viewModels()
     private lateinit var takePictureLauncher: ActivityResultLauncher<Uri>
 
 
@@ -61,16 +64,16 @@ class AddVehicleImgFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentAddVehicleImgBinding.inflate(inflater, container, false)
+        vehicleImgBinding = FragmentAddVehicleImgBinding.inflate(inflater, container, false)
 
         // Initialize views
-        vehicleFrontImageView = binding.vehicleFront
-        vehicleBackImageView = binding.vehicleBack
-        uploadVehicleFrontButton = binding.btnUploadVehicleFront
-        uploadVehicleBackButton = binding.btnUploadVehicleBack
-        saveButton = binding.cardSaveVehicleImg
+        vehicleFrontImageView = vehicleImgBinding.vehicleFront
+        vehicleBackImageView = vehicleImgBinding.vehicleBack
+        uploadVehicleFrontButton = vehicleImgBinding.btnUploadVehicleFront
+        uploadVehicleBackButton = vehicleImgBinding.btnUploadVehicleBack
+        saveButton = vehicleImgBinding.cardSaveVehicleImg
 
-        val backButton = binding.btnBackVehicleImg
+        val backButton = vehicleImgBinding.btnBackVehicleImg
 
 
         backButton.setOnClickListener {
@@ -80,7 +83,7 @@ class AddVehicleImgFragment : Fragment() {
         initImageUri()
 
         // Observe ViewModel for image changes
-        VehicleImageViewModel.vehicleFrontImageUri.observe(viewLifecycleOwner){ uri ->
+        vehicleViewModel.vehicleFrontImageUri.observe(viewLifecycleOwner){ uri ->
             // Update front image view
             if(uri != null && !uri.toString().isNullOrBlank()) {
                 if (isUrl(uri.toString())) {
@@ -95,7 +98,7 @@ class AddVehicleImgFragment : Fragment() {
             }
         }
 
-        VehicleImageViewModel.vehicleBackImageUri.observe(viewLifecycleOwner, Observer { uri ->
+        vehicleViewModel.vehicleBackImageUri.observe(viewLifecycleOwner, Observer { uri ->
             // Update back image view
             if((uri != null) && uri.toString().isNotBlank()) {
                 if (isUrl(uri.toString())) {
@@ -108,13 +111,13 @@ class AddVehicleImgFragment : Fragment() {
                     vehicleBackImageView.setImageURI(uri)
                 }
             } else {
-                Log.e("Driver License View Model", "KOPI AIS KOSONG")
+                Log.e("Vehicle Doc View Model", "SOMETHING WRONG IN VEHICLE DOC VIEW MODEL")
             }
         })
 
         setupOnClickListeners()
 
-        return binding.root
+        return vehicleImgBinding.root
     }
 
 
@@ -124,17 +127,42 @@ class AddVehicleImgFragment : Fragment() {
             isFrontImage = true
             checkCameraPermissionAndOpenCamera()
         }
+
         uploadVehicleBackButton.setOnClickListener {
             isFrontImage = false
             checkCameraPermissionAndOpenCamera()
         }
+
+
+
+        //怎样save完它全部的东西哦， 还有VehicleID还没有给
         saveButton.setOnClickListener {
-            if(vehicleFrontImageUri != null && vehicleBackImageUri != null) {
-                lifecycleScope.launch(Dispatchers.Main) {
-                    saveToFirestore()
+            if(isAllFieldValid()) {
+                lifecycleScope.launch {
+                    val response = vehicleViewModel.addVehicle()
+                    val vehicleDocResponse = vehicleViewModel.addVehicleDoc(response.data)
+
+
+                    // when(response) {
+                    // Constants.FIREBASE_REQUEST_SUCCESS -> {
+                    // Success message
+//                            Toast.makeText(context, "Vehicle Documentation Submitted", Toast.LENGTH_SHORT).show()
+                    findNavController().navigate(R.id.action_addVehicleDocFragment_to_addVehicleDocImgFragment)
+//                        }
+//
+//                        Constants.FIREBASE_REQUEST_FAILED -> {
+//                            // Failed message
+//                            Toast.makeText(context, "Please Try Again", Toast.LENGTH_SHORT).show()
+//                        }
+//
+//                        else -> {
+//                            Toast.makeText(context, "Please enter all fields", Toast.LENGTH_SHORT).show()
+//                        }
                 }
             }
         }
+
+
     }
 
 
@@ -171,9 +199,9 @@ class AddVehicleImgFragment : Fragment() {
             if(success) {
                 try{
                     if (isFrontImage) {
-                        VehicleImageViewModel.setVehicleFrontImageUri(vehicleFrontImageUri)
+                        vehicleViewModel.setVehicleFrontImageUri(vehicleFrontImageUri)
                     } else {
-                        VehicleImageViewModel.setVehicleBackImageUri(vehicleBackImageUri)
+                        vehicleViewModel.setVehicleBackImageUri(vehicleBackImageUri)
                     }
                 } catch (e: Exception) {
                     Log.e("Register Picture Launcher", e.message.toString())
@@ -224,49 +252,49 @@ class AddVehicleImgFragment : Fragment() {
     }
 
 
-    private suspend fun saveToFirestore() {
-        isLoading(true)
-
-        if(vehicleFrontImageUri != null && vehicleBackImageUri != null) {
-            val response = VehicleImageViewModel.addImagesToDB()
-
-            when(response) {
-                Constants.FIREBASE_REQUEST_SUCCESS -> {
-                    isLoading(false)
-
-                    Toast.makeText(
-                        requireContext(),
-                        "Vehicle data saved successfully",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
-                Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED ->{
-                    isLoading(false)
-                    Toast.makeText(requireContext(), "User not authenticated. Please log in again.",Toast.LENGTH_SHORT).show()
-                }
-
-                Constants.FIREBASE_REQUEST_NOT_BELONG_USER ->{
-                    isLoading(false)
-                    Toast.makeText(requireContext(), "Please log in your account",Toast.LENGTH_SHORT).show()
-                }
-
-                Constants.FIREBASE_REQUEST_DATA_NOT_VALID ->{
-                    isLoading(false)
-                    Toast.makeText(requireContext(), "Please take your front and back part of vehicle by image",Toast.LENGTH_SHORT).show()
-                }
-
-            }
-        } else {
-            isLoading(false)
-            Toast.makeText(requireContext(), "Please take image of your front and back part of vehicle",Toast.LENGTH_SHORT).show()
-        }
-
-    }
+//    private suspend fun saveToFirestore() {
+//        isLoading(true)
+//
+//        if(vehicleFrontImageUri != null && vehicleBackImageUri != null) {
+//            //val response = vehicleViewModel.addImagesToDB()
+//
+//            when(response) {
+//                Constants.FIREBASE_REQUEST_SUCCESS -> {
+//                    isLoading(false)
+//
+//                    Toast.makeText(
+//                        requireContext(),
+//                        "Vehicle data saved successfully",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
+//                }
+//
+//                Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED ->{
+//                    isLoading(false)
+//                    Toast.makeText(requireContext(), "User not authenticated. Please log in again.",Toast.LENGTH_SHORT).show()
+//                }
+//
+//                Constants.FIREBASE_REQUEST_NOT_BELONG_USER ->{
+//                    isLoading(false)
+//                    Toast.makeText(requireContext(), "Please log in your account",Toast.LENGTH_SHORT).show()
+//                }
+//
+//                Constants.FIREBASE_REQUEST_DATA_NOT_VALID ->{
+//                    isLoading(false)
+//                    Toast.makeText(requireContext(), "Please take your front and back part of vehicle by image",Toast.LENGTH_SHORT).show()
+//                }
+//
+//            }
+//        } else {
+//            isLoading(false)
+//            Toast.makeText(requireContext(), "Please take image of your front and back part of vehicle",Toast.LENGTH_SHORT).show()
+//        }
+//
+//    }
 
     private fun isLoading(loading: Boolean) {
-        val saveLicenseBtnText = binding.textSaveVehicleImg
-        val loadingProgressBar = binding.progressBarSaveVehicleImg
+        val saveLicenseBtnText = vehicleImgBinding.textSaveVehicleImg
+        val loadingProgressBar = vehicleImgBinding.progressBarSaveVehicleImg
 
 
         if(loading) {
@@ -277,6 +305,47 @@ class AddVehicleImgFragment : Fragment() {
             saveLicenseBtnText.visibility = View.VISIBLE
         }
     }
+
+
+
+    private fun isAllFieldValid(): Boolean {
+        val firstName = vehicleDocBinding.inputVehicleFirstName.text.toString()
+        val lastName = vehicleDocBinding.inputVehicleLastName.text.toString()
+        val vehicleBrand = vehicleDocBinding.inputVehicleBrand.text.toString()
+        val vehicleColor = vehicleDocBinding.inputVehicleColor.text.toString()
+        val vehicleCapacity = vehicleDocBinding.inputVehicleCapacity.text.toString()
+        val carPlate = vehicleDocBinding.inputCarPlate.text.toString()
+        val selectedVehicleType = vehicleDocBinding.spinnerVehicleType.selectedItem.toString()
+        val vehicleModel = vehicleDocBinding.inputVehicleModel.text.toString()
+        val manufactureDate = vehicleDocBinding.dateManufacture.text.toString()
+
+        val vehicleCert = vehicleDocImgBinding.imgVehicleRegisterCert
+        val vehicleInsurance = vehicleDocImgBinding.imgInsurance
+        val vehicleRoadtax = vehicleDocImgBinding.imgRoadtax
+
+        val vehicleFront = vehicleImgBinding.vehicleFront
+        val vehicleBack = vehicleImgBinding.vehicleBack
+
+        if (firstName.isNotEmpty() && lastName.isNotEmpty() && vehicleBrand.isNotEmpty() &&
+            vehicleColor.isNotEmpty() && vehicleCapacity.isNotEmpty() && carPlate.isNotEmpty() &&
+            selectedVehicleType.isNotEmpty() && vehicleModel.isNotEmpty() && manufactureDate.isNotEmpty() &&
+            vehicleCert != null && vehicleInsurance != null && vehicleRoadtax != null &&
+            vehicleFront != null && vehicleBack != null
+        ) {
+
+            return true
+        } else {
+
+            return false
+            Toast.makeText(
+                context,
+                "Please make sure all the documents are provided",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+
     companion object {
         private const val REQUEST_IMAGE_CAPTURE_FRONT = 101
         private const val REQUEST_IMAGE_CAPTURE_BACK = 102

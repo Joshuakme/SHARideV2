@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.sharidev2.data.model.FirebaseResponse
 import com.example.sharidev2.data.model.Vehicle
 import com.example.sharidev2.data.model.VehicleDoc
 import com.example.sharidev2.data.model.VehicleType
@@ -131,7 +132,7 @@ class VehicleDetailsViewModel(private val savedStateHandle: SavedStateHandle): V
     }
 
 
-    suspend fun saveVehicleDocumentation(): Int {
+    suspend fun saveVehicleDocumentation(): FirebaseResponse<String> {
         val newVehicleDetails = Vehicle(
             vehicleID = vehicleId.value,
             brand = vehicleBrand.value,
@@ -149,7 +150,7 @@ class VehicleDetailsViewModel(private val savedStateHandle: SavedStateHandle): V
 
 
     // Vehicle
-    suspend fun addVehicleDetails(): Int {
+    suspend fun addVehicleDetails(): FirebaseResponse<String>  {
         if (currentUser?.uid != null) {
             val newVehicleDetails = Vehicle(
                 vehicleID = vehicleId.value,
@@ -165,7 +166,7 @@ class VehicleDetailsViewModel(private val savedStateHandle: SavedStateHandle): V
             vehicleDetailsList.value?.add(newVehicleDetails)
             return repository.addVehicle(newVehicleDetails)
         } else {
-            return Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED
+            return FirebaseResponse(status = Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED)
         }
     }
 }

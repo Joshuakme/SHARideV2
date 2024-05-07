@@ -31,7 +31,7 @@ class VehicleImageViewModel: ViewModel() {
     }
 
 
-    // Function to set the front image URI
+    // SETTER to set the front image URI
     fun setVehicleFrontImageUri(uri: Uri?) {
         _vehicleFrontImageUri.value = uri
     }

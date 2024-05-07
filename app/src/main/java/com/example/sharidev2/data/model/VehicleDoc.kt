@@ -1,6 +1,5 @@
 package com.example.sharidev2.data.model
 
-import android.net.Uri
 import android.os.Parcelable
 import com.google.firebase.Timestamp
 import kotlinx.parcelize.Parcelize

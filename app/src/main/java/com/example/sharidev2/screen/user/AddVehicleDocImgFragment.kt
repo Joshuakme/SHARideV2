@@ -9,6 +9,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -50,6 +52,7 @@ class AddVehicleDocImgFragment : Fragment() {
     private lateinit var uploadInsuranceButton: TextView
     private lateinit var uploadRoadtaxButton: TextView
     private lateinit var nextButton: MaterialCardView
+    private lateinit var backButton: ImageButton
     private var registerCertImageUri: Uri? = null
     private var insuranceImageUri: Uri? = null
     private var roadtaxImageUri: Uri? = null
@@ -76,6 +79,7 @@ class AddVehicleDocImgFragment : Fragment() {
         uploadInsuranceButton = binding.btnUploadInsurance
         uploadRoadtaxButton = binding.btnUploadRoadtax
         nextButton = binding.cardNextVehicleDocImgCta
+        backButton = binding.btnBackVehicleDocImg
 
         val backButton = binding.btnBackVehicleDocImg
 
@@ -161,9 +165,15 @@ class AddVehicleDocImgFragment : Fragment() {
         nextButton.setOnClickListener {
             if (registerCertImageUri != null && insuranceImageUri != null && roadtaxImageUri != null) {
                 lifecycleScope.launch(Dispatchers.Main) {
-                    saveToFirestore()
+                    val response = vehicleDocImgViewModel.addImagesToDB()
                 }
+                findNavController().navigate(R.id.action_addVehicleDocImgFragment_to_addVehicleImgFragment)
             }
+        }
+
+        backButton.setOnClickListener {
+            findNavController().navigate(R.id.action_addVehicleDocImgFragment_to_addVehicleDocFragment)
+
         }
     }
 
@@ -320,6 +330,8 @@ class AddVehicleDocImgFragment : Fragment() {
             nextButton.visibility = View.VISIBLE
         }
     }
+
+
 
     companion object {
         private const val REQUEST_IMAGE_CAPTURE_CERT = 101

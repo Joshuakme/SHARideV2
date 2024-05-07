@@ -2,6 +2,7 @@ package com.example.sharidev2.data.repository
 
 import android.net.Uri
 import android.util.Log
+import com.example.sharidev2.data.model.FirebaseResponse
 import com.example.sharidev2.data.model.Vehicle
 import com.example.sharidev2.data.model.VehicleDoc
 import com.example.sharidev2.databinding.FragmentAddVehicleDocBinding
@@ -24,6 +25,7 @@ class VehicleDocRepository{
 
     //Variables
     private val vehicleDocRef = firestore.collection("vehicleDoc")
+    private val vehicleRef = firestore.collection("vehicle")
     private val isUserLogin = currentUser != null
     private val converters = Converters()
     private val storagePath = "images/${currentUser?.uid}"
@@ -39,7 +41,7 @@ class VehicleDocRepository{
 
             if (currentUser != null) {
                 try{
-                    val vehicleId = vehicleDocRef.document().id
+                    val vehicleDocId = vehicleDocRef.document().id
 
                     val newVehicleDoc = hashMapOf(
                         "firstName" to vehicleDoc.firstName,
@@ -53,9 +55,15 @@ class VehicleDocRepository{
                     )
 
                     vehicleDocRef
-                        .document(vehicleId)
+                        .document(vehicleDocId)
                         .set(newVehicleDoc)
                         .await()
+
+                    if(vehicleDoc.vehicleId != null) {
+                        vehicleRef.document(vehicleDoc.vehicleId)
+                            .update("document", vehicleDocId)
+                            .await()
+                    }
 
                     Log.e("Add Vehicle Doc", "Added Successfully")
                     return@withContext Constants.FIREBASE_REQUEST_SUCCESS    // SUCCESS
@@ -72,13 +80,13 @@ class VehicleDocRepository{
         }
     }
 
-    suspend fun addVehicle(vehicleDetails: Vehicle):Int{
+    suspend fun addVehicle(vehicleDetails: Vehicle):FirebaseResponse<String>{
         return withContext(Dispatchers.IO) {
             val currentUser = Firebase.auth.currentUser
 
             if (currentUser != null) {
                 try{
-                    val vehicleId = vehicleDocRef.document().id
+                    val vehicleId = vehicleRef.document().id
 
                     val newVehicleDetails = hashMapOf(
                         "vehicleId" to vehicleDetails.vehicleID,
@@ -92,22 +100,22 @@ class VehicleDocRepository{
                         "vehiclePlate" to vehicleDetails.plateNumber
                     )
 
-                    vehicleDocRef
+                    vehicleRef
                         .document(vehicleId)
                         .set(newVehicleDetails)
                         .await()
 
                     Log.e("Add Vehicle ", "Added Successfully")
-                    return@withContext Constants.FIREBASE_REQUEST_SUCCESS    // SUCCESS
+                    return@withContext FirebaseResponse(status = Constants.FIREBASE_REQUEST_SUCCESS, data = vehicleId)    // SUCCESS
                 } catch (e: Exception) {
                     // Handle any exceptions here
                     Log.e("Add Vehicle Details", e.message.toString())
 
-                    return@withContext Constants.FIREBASE_REQUEST_EXCEPTION
+                    return@withContext FirebaseResponse(status = Constants.FIREBASE_REQUEST_EXCEPTION)
                 }
             } else {
                 Log.e("Add Vehicle", "User not login")
-                return@withContext Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED
+                return@withContext FirebaseResponse(status = Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED)
             }
         }
     }

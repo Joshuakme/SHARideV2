@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -128,7 +127,7 @@ class DrivingLicenseFragment : Fragment() {
         saveButton.setOnClickListener {
             if(frontImageUri != null && backImageUri != null) {
                 lifecycleScope.launch(Dispatchers.Main) {
-                    saveToFirestore()
+                    uploadLicense()
                 }
             }
         }
@@ -221,7 +220,7 @@ class DrivingLicenseFragment : Fragment() {
     }
 
 
-    private suspend fun saveToFirestore() {
+    private suspend fun uploadLicense() {
         isLoading(true)
 
         if(frontImageUri != null && backImageUri != null) {

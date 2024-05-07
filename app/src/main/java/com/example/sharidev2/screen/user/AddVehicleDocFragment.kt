@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -97,32 +98,32 @@ class AddVehicleDocFragment: Fragment() {
 
         // Save vehicle documentation data
         nextVehicle.setOnClickListener {
-            // TODO: check if all fields are valid
+            //check if all fields are valid
             if(isAllFieldValid()) {
 
                 lifecycleScope.launch {
-                    val response = viewModel.addVehicleDoc()
+                    //val response = viewModel.addVehicleDoc()
 
-                    when(response) {
-                        Constants.FIREBASE_REQUEST_SUCCESS -> {
+                   // when(response) {
+                       // Constants.FIREBASE_REQUEST_SUCCESS -> {
                             // Success message
 //                            Toast.makeText(context, "Vehicle Documentation Submitted", Toast.LENGTH_SHORT).show()
                             findNavController().navigate(R.id.action_addVehicleDocFragment_to_addVehicleDocImgFragment)
-                        }
-
-                        Constants.FIREBASE_REQUEST_FAILED -> {
-                            // Failed message
-                            Toast.makeText(context, "Please Try Again", Toast.LENGTH_SHORT).show()
-                        }
-
-                        else -> {
-                            Toast.makeText(context, "Please enter all fields", Toast.LENGTH_SHORT).show()
-                        }
+//                        }
+//
+//                        Constants.FIREBASE_REQUEST_FAILED -> {
+//                            // Failed message
+//                            Toast.makeText(context, "Please Try Again", Toast.LENGTH_SHORT).show()
+//                        }
+//
+//                        else -> {
+//                            Toast.makeText(context, "Please enter all fields", Toast.LENGTH_SHORT).show()
+//                        }
                     }
                 }
             }
         }
-    }
+
 
 
     // Initialize and show the bottom dialog fragment to select manufacture date
@@ -253,6 +254,9 @@ class AddVehicleDocFragment: Fragment() {
     }
 
 }
+
+
+
 
 //    fun onDateSet(view: DateTimePicker?, year: Int, month: Int, dayOfMonth: Int) {
 //        val calendar = Calendar.getInstance()
