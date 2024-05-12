@@ -84,7 +84,7 @@
                             app:boxBackgroundMode="filled"
                             app:boxStrokeColor="@color/mtrl_outlined_stroke_color"
                             android:layout_marginBottom="@dimen/ss_profile_title_top_margin"
-                            android:digits="@string/edit_vehicle_doc_fragment_name_allowed_characters"
+                            inp="@string/edit_vehicle_doc_fragment_name_allowed_characters"
                             android:paddingTop="@dimen/ss_input_field_vertical_padding">
 
                             <com.google.android.material.textfield.TextInputEditText
@@ -92,6 +92,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:hint="First Name"
+                                android:inputType="text"
                                 android:paddingVertical="15dp" />
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -111,6 +112,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:hint="Last Name"
+                                android:inputType="text"
                                 android:paddingVertical="15dp" />
 
                         </com.google.android.material.textfield.TextInputLayout>

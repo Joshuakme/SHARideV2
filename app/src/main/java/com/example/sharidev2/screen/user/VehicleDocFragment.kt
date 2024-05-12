@@ -4,13 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.sharidev2.R
-import com.example.sharidev2.adapter.VehicleDocAdapter
+import com.example.sharidev2.adapter.VehicleAdapter
+import com.example.sharidev2.adapter.ViewVehicleAdapter
+import com.example.sharidev2.data.model.Vehicle
+import com.example.sharidev2.data.model.VehicleDoc
 import com.example.sharidev2.databinding.FragmentVehicleDocBinding
 import com.example.sharidev2.viewmodel.VehicleDocViewModel
 
@@ -23,7 +28,7 @@ class VehicleDocFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_vehicle_doc, container, false)
 
@@ -34,37 +39,46 @@ class VehicleDocFragment : Fragment() {
         val reminderAddVehicleDocCard = binding.cardVehicleDocReminder
         val vehicleDocProgressBar = binding.progressBarVehicleDoc
         val vehicleDocRecyclerView = binding.recyclerViewVehicleDoc
-        var adapter: VehicleDocAdapter
+        var adapter: ViewVehicleAdapter
 
 
 
         // Observe the LiveData from the ViewModel
-        viewModel.vehicleDocList.observe(viewLifecycleOwner) { vehicleDocList ->
+        viewModel.vehicleList.observe(viewLifecycleOwner) { vehicleList ->
+            val vehicleDocList = viewModel.vehicleDocList.value
 
-
-            if(vehicleDocList == null) {
+            if(vehicleList == null || vehicleDocList == null) {
                 vehicleDocProgressBar.visibility = View.VISIBLE
                 vehicleDocRecyclerView.visibility = View.GONE
-                reminderAddVehicleDocCard.visibility = View.GONE
+                reminderAddVehicleDocCard.visibility = View.VISIBLE
+
+                Toast.makeText(context,"No Vehicle Found", Toast.LENGTH_SHORT).show()
             } else {
-                vehicleDocList?.let { list ->
-                    if (list.isNotEmpty()) {
-                        adapter = VehicleDocAdapter(list, this)
-                        vehicleDocRecyclerView.layoutManager = LinearLayoutManager(context)
+                   if (vehicleList.isNotEmpty() && vehicleDocList.isNotEmpty()) {
+                        adapter = ViewVehicleAdapter(vehicleList, vehicleDocList = vehicleDocList.toList(), clickListener = object:  ViewVehicleAdapter.OnVehicleClickListener {
+                            override fun onVehicleClick(vehicle: Vehicle) {
+                                val directions = VehicleDocFragmentDirections.actionVehicleDocFragmentToViewVehicleFragment(vehicle)
+                                findNavController().navigate(directions)
+                            }
+
+                        })
+                        vehicleDocRecyclerView.layoutManager = LinearLayoutManager(context,  RecyclerView.VERTICAL, false)
                         vehicleDocRecyclerView.adapter = adapter
 
                         vehicleDocProgressBar.visibility = View.GONE
                         vehicleDocRecyclerView.visibility = View.VISIBLE
                         reminderAddVehicleDocCard.visibility = View.GONE
+                       Toast.makeText(context,"Got List", Toast.LENGTH_SHORT).show()
                     } else {
                         // If the list is empty, hide the RecyclerView and show the reminder card
                         vehicleDocProgressBar.visibility = View.GONE
                         vehicleDocRecyclerView.visibility = View.GONE
                         reminderAddVehicleDocCard.visibility = View.VISIBLE
+                       Toast.makeText(context,"No Vehicle Found", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
-        }
+
 
 
         // EVENT LISTENERS

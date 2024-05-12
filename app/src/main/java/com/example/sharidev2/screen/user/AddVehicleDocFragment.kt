@@ -6,26 +6,30 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.Toast
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.sharidev2.R
+import com.example.sharidev2.data.model.VehicleType
 import com.example.sharidev2.databinding.FragmentAddVehicleDocBinding
 import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.viewmodel.VehicleDocViewModel
 import com.google.firebase.Timestamp
 import kotlinx.coroutines.launch
+import java.text.FieldPosition
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
 class AddVehicleDocFragment: Fragment() {
     private lateinit var binding: FragmentAddVehicleDocBinding
-    private val viewModel: VehicleDocViewModel by viewModels()
+    private val viewModel: VehicleDocViewModel by activityViewModels()
     private var vehicleId: String? = null
 
     override fun onCreateView(
@@ -35,9 +39,7 @@ class AddVehicleDocFragment: Fragment() {
         binding = FragmentAddVehicleDocBinding.inflate(inflater, container, false)
         vehicleId = arguments?.getString("vehicleId")
 
-        if(vehicleId != null) {
-            viewModel.setVehicleId(vehicleId!!)
-        }
+
 
         // Gather user input
         setupTextChangeListeners()
@@ -48,8 +50,25 @@ class AddVehicleDocFragment: Fragment() {
     private fun setupTextChangeListeners() {
         val firstNameTextField = binding.inputVehicleFirstName
         val lastNameTextField = binding.inputVehicleLastName
+        val vehicleCapacityTextField = binding.inputVehicleCapacity
         val carPlateTextField = binding.inputCarPlate
+        val vehicleBrandTextField = binding.inputVehicleBrand
         val vehicleModelTextField = binding.inputVehicleModel
+        val vehicleColorTextField = binding.inputVehicleColor
+        val vehicleTypeSpinner = binding.spinnerVehicleType
+
+
+        vehicleTypeSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val selectedVehicleType = parent?.getItemAtPosition(position).toString()
+                viewModel.setVehicleType(VehicleType.valueOf(selectedVehicleType))
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                // do nothing
+            }
+
+        }
 
         // OnTextChange Listener
         firstNameTextField.addTextChangedListener(object: TextWatcher {
@@ -77,6 +96,77 @@ class AddVehicleDocFragment: Fragment() {
 
             override fun afterTextChanged(e: Editable?) {
                 viewModel.setLastName(e.toString())
+            }
+        })
+
+        vehicleCapacityTextField.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                // Do nothing
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                // Do nothing
+            }
+
+            override fun afterTextChanged(e: Editable?) {
+                viewModel.setCapacity(e.toString().toInt())
+            }
+        })
+
+        vehicleBrandTextField.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                // Do nothing
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                // Do nothing
+            }
+
+            override fun afterTextChanged(e: Editable?) {
+                viewModel.setVehicleBrand(e.toString())
+            }
+        })
+
+        vehicleModelTextField.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                // Do nothing
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                // Do nothing
+            }
+
+            override fun afterTextChanged(e: Editable?) {
+                viewModel.setVehicleModel(e.toString())
+            }
+        })
+
+        vehicleColorTextField.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                // Do nothing
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                // Do nothing
+            }
+
+            override fun afterTextChanged(e: Editable?) {
+                viewModel.setVehicleColor(e.toString())
+            }
+        })
+
+
+        carPlateTextField.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                // Do nothing
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                // Do nothing
+            }
+
+            override fun afterTextChanged(e: Editable?) {
+                viewModel.setPlateNumber(e.toString())
             }
         })
     }

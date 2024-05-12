@@ -17,6 +17,15 @@
                             <option name="y" value="-370" />
                           </Point>
                         </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_activeRideFragment_to_chatFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
                       </LayoutPositions>
                     </value>
                   </entry>
@@ -88,6 +97,11 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
+                            <entry key="action_addVehicleDocImgFragment_to_addVehicleImgFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                           </map>
                         </option>
                       </LayoutPositions>
@@ -98,9 +112,23 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="433" />
-                            <option name="y" value="1232" />
+                            <option name="x" value="573" />
+                            <option name="y" value="1276" />
                           </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_addVehicleImgFragment_to_addVehicleDocImgFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_addVehicleImgFragment_to_vehicleDocFragment2">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
                         </option>
                       </LayoutPositions>
                     </value>
@@ -755,6 +783,11 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
+                            <entry key="action_vehicleDocFragment_to_viewVehicleFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                           </map>
                         </option>
                       </LayoutPositions>
@@ -767,6 +800,18 @@
                           <Point>
                             <option name="x" value="337" />
                             <option name="y" value="-855" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="viewVehicleFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="-928" />
+                            <option name="y" value="250" />
                           </Point>
                         </option>
                       </LayoutPositions>

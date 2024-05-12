@@ -371,6 +371,14 @@
         <action
             android:id="@+id/action_vehicleDocFragment_to_addVehicleDocFragment"
             app:destination="@id/addVehicleDocFragment" />
+        <action
+            android:id="@+id/action_vehicleDocFragment_to_viewVehicleFragment"
+            app:destination="@id/viewVehicleFragment">
+            <argument android:name="vehicle"
+                app:argType="com.example.sharidev2.data.model.Vehicle"/>
+        </action>
+
+
         <!--        <action-->
 <!--            android:id="@+id/action_vehicleDocFragment_to_vehicleDoc2Fragment"-->
 <!--            app:destination="@id/vehicleDoc2Fragment" />-->
@@ -416,5 +424,16 @@
         <action
             android:id="@+id/action_addVehicleImgFragment_to_addVehicleDocImgFragment"
             app:destination="@id/addVehicleDocImgFragment" />
+        <action
+            android:id="@+id/action_addVehicleImgFragment_to_vehicleDocFragment"
+            app:destination="@id/vehicleDocFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/viewVehicleFragment"
+        android:name="com.example.sharidev2.screen.user.ViewVehicleFragment"
+        android:label="ViewVehicleFragment" >
+        <action
+            android:id="@+id/action_viewVehicleFragment_to_vehicleDocFragment"
+            app:destination="@id/vehicleDocFragment" />
     </fragment>
 </navigation>

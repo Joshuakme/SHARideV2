@@ -18,7 +18,7 @@ import kotlinx.coroutines.withContext
 import java.util.Calendar
 import java.util.UUID
 
-class VehicleDocRepository{
+class VehicleDocRepository {
     private val firestore = FirebaseClient.firestore
     private val firebaseAuth = FirebaseClient.firebaseAuth
     private val currentUser = firebaseAuth.currentUser
@@ -40,7 +40,7 @@ class VehicleDocRepository{
             val currentUser = Firebase.auth.currentUser
 
             if (currentUser != null) {
-                try{
+                try {
                     val vehicleDocId = vehicleDocRef.document().id
 
                     val newVehicleDoc = hashMapOf(
@@ -59,11 +59,19 @@ class VehicleDocRepository{
                         .set(newVehicleDoc)
                         .await()
 
-                    if(vehicleDoc.vehicleId != null) {
+                    if (vehicleDoc.vehicleId != null) {
                         vehicleRef.document(vehicleDoc.vehicleId)
                             .update("document", vehicleDocId)
                             .await()
+
+                        addVehicleDocImg(
+                            registerCertUri = Uri.parse(vehicleDoc.vehicleRegisCert),
+                            insuranceUri = Uri.parse(vehicleDoc.insurance),
+                            roadtaxUri = Uri.parse(vehicleDoc.roadtax),
+                            vehicleId = vehicleDoc.vehicleId
+                        )
                     }
+
 
                     Log.e("Add Vehicle Doc", "Added Successfully")
                     return@withContext Constants.FIREBASE_REQUEST_SUCCESS    // SUCCESS
@@ -80,24 +88,25 @@ class VehicleDocRepository{
         }
     }
 
-    suspend fun addVehicle(vehicleDetails: Vehicle):FirebaseResponse<String>{
+    suspend fun addVehicle(vehicleDetails: Vehicle): FirebaseResponse<String> {
         return withContext(Dispatchers.IO) {
             val currentUser = Firebase.auth.currentUser
 
             if (currentUser != null) {
-                try{
+                try {
                     val vehicleId = vehicleRef.document().id
 
                     val newVehicleDetails = hashMapOf(
-                        "vehicleId" to vehicleDetails.vehicleID,
+                        "vehicleId" to vehicleId,
                         "userUid" to currentUser.uid,
-                        "vehicleType" to vehicleDetails.type,
-                        "vehicleModel" to vehicleDetails.model,
-                        "vehicleBrand" to vehicleDetails.brand,
-                        "vehicleColor" to vehicleDetails.color,
-                        "vehicleCapacity" to vehicleDetails.capacity,
-                        "vehiclePhotos" to vehicleDetails.photos,
-                        "vehiclePlate" to vehicleDetails.plateNumber
+                        "type" to vehicleDetails.type,
+                        "model" to vehicleDetails.model,
+                        "brand" to vehicleDetails.brand,
+                        "color" to vehicleDetails.color,
+                        "capacity" to vehicleDetails.capacity,
+                        "photos" to vehicleDetails.photos,
+                        "plateNumber" to vehicleDetails.plateNumber,
+                        "document" to vehicleDetails.documentId
                     )
 
                     vehicleRef
@@ -106,7 +115,10 @@ class VehicleDocRepository{
                         .await()
 
                     Log.e("Add Vehicle ", "Added Successfully")
-                    return@withContext FirebaseResponse(status = Constants.FIREBASE_REQUEST_SUCCESS, data = vehicleId)    // SUCCESS
+                    return@withContext FirebaseResponse(
+                        status = Constants.FIREBASE_REQUEST_SUCCESS,
+                        data = vehicleId
+                    )    // SUCCESS
                 } catch (e: Exception) {
                     // Handle any exceptions here
                     Log.e("Add Vehicle Details", e.message.toString())
@@ -120,6 +132,45 @@ class VehicleDocRepository{
         }
     }
 
+    suspend fun getVehicleList(): List<Vehicle> {
+        return withContext(Dispatchers.IO) {
+            val currentUser = Firebase.auth.currentUser
+            val vehicleList = mutableListOf<Vehicle>()
+
+            if (currentUser != null) {
+                try {
+                    val vehicleQuerySnapshot = vehicleRef
+                        .whereEqualTo("userUid", currentUser.uid)
+                        .get()
+                        .await()
+
+                    if (vehicleQuerySnapshot.isEmpty) {
+                        vehicleList
+                    } else {
+                        val vehicleDocSnapshot = vehicleQuerySnapshot.documents
+
+                        vehicleDocSnapshot.forEach { document ->
+                            val vehicleMap = document.data
+
+                            if(vehicleMap?.toMap() != null) {
+                                val vehicle = Converters().toVehicle(vehicleMap.toMap())
+                                vehicleList.add(vehicle)
+                            }
+
+                        }
+                        vehicleList
+                    }
+                } catch (e: Exception) {
+                    // Handle any exceptions here
+                    Log.e("Failed to Get Vehicle", e.message.toString())
+                }
+
+            }
+            vehicleList
+        }
+    }
+
+
     // Retrieve Vehicle Doc
     fun listenForVehicleDocChanges(callback: (List<VehicleDoc>?, Exception?) -> Unit) {
         vehicleDocRef.addSnapshotListener { snapshot, exception ->
@@ -130,7 +181,9 @@ class VehicleDocRepository{
             }
 
             // Parse and handle changes in the snapshot
-            val vehicleDocs = snapshot?.documents?.mapNotNull { document ->
+            val vehicleDocs = snapshot?.documents?.filter { document ->
+                (document?.data?.get("userUid") as String) == currentUser?.uid
+            }?.mapNotNull { document ->
                 Converters().toVehicleDoc(document)
             }
 
@@ -139,8 +192,29 @@ class VehicleDocRepository{
         }
     }
 
+    // Retrieve Vehicle
+    fun listenForVehicleChanges(callback: (List<Vehicle>?, Exception?) -> Unit) {
+        vehicleRef.addSnapshotListener { snapshot, exception ->
+            if (exception != null) {
+                // Handle error
+                callback(null, exception)
+                return@addSnapshotListener
+            }
 
-    suspend fun getAllVehicles(): List<VehicleDoc> {
+            // Parse and handle changes in the snapshot
+            val vehicleList = snapshot?.documents?.filter { document ->
+                (document?.data?.get("userUid") as String) == currentUser?.uid
+            }?.mapNotNull { document ->
+                document.data?.let { Converters().toVehicle(it) }
+            }
+
+            // Invoke the callback with the updated data
+            callback(vehicleList, null)
+        }
+    }
+
+
+    suspend fun getAllVehicleDoc(): List<VehicleDoc> {
         return withContext(Dispatchers.IO) {
             val vehicleDocList = mutableListOf<VehicleDoc>()
 
@@ -157,17 +231,18 @@ class VehicleDocRepository{
 
                     } else {
                         Log.e(
-                            "Get Vehicles",
-                            "Vehicle data is null for document ID: ${document.id}"
+                            "Get Vehicle Docs",
+                            "Vehicle Doc data is null for document ID: ${document.id}"
                         )
                     }
                 }
             } catch (e: Exception) {
-                Log.e("Get Vehicle", "Error fetching vehicle: ${e.message}")
+                Log.e("Get Vehicle Docs", "Error fetching vehicleDoc ${e.message}")
             }
             vehicleDocList
         }
     }
+
 
     suspend fun getVehicleDoc(vehicleId: String): VehicleDoc? {
         return withContext(Dispatchers.IO) {
@@ -177,11 +252,11 @@ class VehicleDocRepository{
                     .get()
                     .await()
 
-                if(!vehicleQuerySnapshot.isEmpty && vehicleQuerySnapshot != null) {
-                    for(doc in vehicleQuerySnapshot.documents) {
+                if (!vehicleQuerySnapshot.isEmpty && vehicleQuerySnapshot != null) {
+                    for (doc in vehicleQuerySnapshot.documents) {
                         val vehicleDocData = doc.data
 
-                        if(vehicleDocData != null) {
+                        if (vehicleDocData != null) {
                             return@withContext converters.toVehicleDoc(vehicleDocData)
                         }
                     }
@@ -189,7 +264,7 @@ class VehicleDocRepository{
                 } else {
                     null
                 }
-            } catch (e:Exception) {
+            } catch (e: Exception) {
                 Log.d("Get Vehicle Doc", e.message.toString())
                 null
             }
@@ -204,17 +279,18 @@ class VehicleDocRepository{
                 val vehicleId = newVehicleDoc.vehicleId
                 val contactUserId = newVehicleDoc.userUid
 
-                val vehicleDoctRef = firestore.collection("vehicleDoc").document(vehicleId?: "")
+                val vehicleDoctRef = firestore.collection("vehicleDoc").document(vehicleId ?: "")
                 val vehicleDocSnapshot = vehicleDoctRef.get().await()
                 val userId = vehicleDocSnapshot.getString("userUid")
 
 
-                if(isUserLogin){
+                if (isUserLogin) {
                     if (userId == contactUserId) {
                         // Update the vehicle doc content
                         vehicleDoctRef.update("firstName", newVehicleDoc.firstName).await()
                         vehicleDoctRef.update("lastName", newVehicleDoc.lastName).await()
-                        vehicleDoctRef.update("vehicleRegisCert", newVehicleDoc.vehicleRegisCert).await()
+                        vehicleDoctRef.update("vehicleRegisCert", newVehicleDoc.vehicleRegisCert)
+                            .await()
                         vehicleDoctRef.update("roadtax", newVehicleDoc.roadtax).await()
                         vehicleDoctRef.update("insurance", newVehicleDoc.insurance).await()
 
@@ -238,19 +314,27 @@ class VehicleDocRepository{
 
     //Function that allow the user to delete vehicle
     suspend fun deleteVehicle(vehicleId: String): Int {
+        Log.e("deleteVehicle", "vehicleId ${vehicleId}")
         val userUid = firebaseAuth.currentUser
         return withContext(Dispatchers.IO) {
             try {
                 if (userUid != null) {
-                    // Check if the contact belongs to the current user
-                    val vehicleDocRef = firestore.collection("vehicleDoc").document(vehicleId)
-                    val vehicleDocSnapshot = vehicleDocRef.get().await()
-                    val userId = vehicleDocSnapshot.getString("userUid")
+                    // Check if the vehicle belongs to the current user
+                    val vehicleRef = firestore.collection("vehicle").document(vehicleId)
+                    val vehicleSnapshot = vehicleRef.get().await()
+                    val userId = vehicleSnapshot.getString("userUid")
+
 
                     if (userId == userUid.uid) {
-                        // Delete the emergency contact
+                        if (vehicleSnapshot.getString("document") != null) {
+                            val vehicleDocRef = firestore.collection("vehicleDoc")
+                                .document(vehicleSnapshot.getString("document")!!)
+
+                        // Delete the vehicle
+                        vehicleRef.delete().await()
                         vehicleDocRef.delete().await()
-                        0 // Deletion successful
+                    }
+                        Constants.FIREBASE_REQUEST_SUCCESS // Delete successful
                     } else {
                         Constants.FIREBASE_REQUEST_NOT_BELONG_USER // Vehicle doesn't belong to the current user
                     }
@@ -259,13 +343,19 @@ class VehicleDocRepository{
                 }
             } catch (e: Exception) {
                 Constants.FIREBASE_REQUEST_EXCEPTION // Handle exceptions
+                Log.e("deleteVehicle", "Failed to delete: ${e.message}")
             }
         }
     }
 
 
-    suspend fun addVehicleDocImg(registerCertUri: Uri?, insuranceUri: Uri?, roadtaxUri:Uri?):Int{
-        if (registerCertUri != null && insuranceUri != null && roadtaxUri != null && currentUser != null){
+    suspend fun addVehicleDocImg(
+        registerCertUri: Uri?,
+        insuranceUri: Uri?,
+        roadtaxUri: Uri?,
+        vehicleId: String
+    ): Int {
+        if (registerCertUri != null && insuranceUri != null && roadtaxUri != null && currentUser != null) {
             return withContext(Dispatchers.IO) {
                 try {
                     val vehicleDocImgRandomName = UUID.randomUUID()
@@ -297,20 +387,35 @@ class VehicleDocRepository{
 
                     val vehicleDocImgSnapshot = firestore.collection("vehicleDoc")
                         .whereEqualTo("userUid", currentUser.uid)
+                        .whereEqualTo("vehicleId", vehicleId)
+                        .limit(1)
                         .get()
                         .await()
 
 
                     if (!vehicleDocImgSnapshot.isEmpty) {
-                        val vehicleDocImgList = vehicleDocImgSnapshot.documents.filter {
-                            it.getString("userUid") == currentUser.uid
+                        val document = vehicleDocImgSnapshot.documents[0]
+                        val oldRegisterCertImageURL = document.getString("vehicleRegisCert")
+                        val oldInsuranceImageURL = document.getString("insurance")
+                        val oldRoadtaxImageURL = document.getString("roadtax")
+
+                        if (!oldRegisterCertImageURL.isNullOrEmpty()) {
+                            firebaseStorage.getReferenceFromUrl(oldRegisterCertImageURL)
+                                .delete()
+                                .await()
                         }
 
-                        val vehicleId = vehicleDocImgList[0].id
-                        val oldRegisterCertImageURL =
-                            vehicleDocImgList[0].getString("vehicleRegisCert")
-                        val oldInsuranceImageURL = vehicleDocImgList[0].getString("insurance")
-                        val oldRoadtaxImageURL = vehicleDocImgList[0].getString("roadtax")
+                        if (!oldInsuranceImageURL.isNullOrEmpty()) {
+                            firebaseStorage.getReferenceFromUrl(oldInsuranceImageURL)
+                                .delete()
+                                .await()
+                        }
+
+                        if (!oldRoadtaxImageURL.isNullOrEmpty()) {
+                            firebaseStorage.getReferenceFromUrl(oldRoadtaxImageURL)
+                                .delete()
+                                .await()
+                        }
 
 
                         firestore.collection("vehicleDoc")
@@ -318,23 +423,7 @@ class VehicleDocRepository{
                             .update(vehicleDocImgData as Map<String, Any>)
                             .await()
 
-                        if (oldRegisterCertImageURL != null) {
-                            firebaseStorage.getReferenceFromUrl(oldRegisterCertImageURL)
-                                .delete()
-                                .await()
-                        }
 
-                        if (oldInsuranceImageURL != null) {
-                            firebaseStorage.getReferenceFromUrl(oldInsuranceImageURL)
-                                .delete()
-                                .await()
-                        }
-
-                        if (oldRoadtaxImageURL != null) {
-                            firebaseStorage.getReferenceFromUrl(oldRoadtaxImageURL)
-                                .delete()
-                                .await()
-                        }
                     } else {
                         // User has no record in database yet
 
@@ -345,16 +434,14 @@ class VehicleDocRepository{
                     }
 
                     Constants.FIREBASE_REQUEST_SUCCESS
-                }catch (e: Exception){
+                } catch (e: Exception) {
                     Log.e("VehicleDocRepository - Add Vehicle Doc Image", e.message.toString())
                     Constants.FIREBASE_REQUEST_EXCEPTION
                 }
             }
-        }
-        else if(currentUser == null){
+        } else if (currentUser == null) {
             return Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED
-        }
-        else{
+        } else {
             return Constants.FIREBASE_REQUEST_DATA_NOT_VALID
         }
     }
@@ -369,21 +456,21 @@ class VehicleDocRepository{
                 .get()
                 .await()
 
-            for(document in vehicleDocImgSnapshot.documents) {
+            for (document in vehicleDocImgSnapshot.documents) {
                 val registerCertImgURL = document.getString("vehicleRegisCert")
                 val insuranceImgURL = document.getString("insurance")
                 val roadtaxImgURL = document.getString("roadtax")
 
                 val vehicleDocImgMap = mutableMapOf<String, Uri>()
-                vehicleDocImgMap["vehicleRegisCertUri"] = Uri.parse(registerCertImgURL?: "")
-                vehicleDocImgMap["insuranceUri"] = Uri.parse(insuranceImgURL?: "")
-                vehicleDocImgMap["roadtaxUri"] = Uri.parse(roadtaxImgURL?: "")
+                vehicleDocImgMap["vehicleRegisCertUri"] = Uri.parse(registerCertImgURL ?: "")
+                vehicleDocImgMap["insuranceUri"] = Uri.parse(insuranceImgURL ?: "")
+                vehicleDocImgMap["roadtaxUri"] = Uri.parse(roadtaxImgURL ?: "")
 
 
                 vehicleDocImgList.add(vehicleDocImgMap)
             }
 
-            if(!vehicleDocImgList.isNullOrEmpty()) {
+            if (!vehicleDocImgList.isNullOrEmpty()) {
                 vehicleDocImgList[0]
             } else {
                 emptyMap()
@@ -392,53 +479,23 @@ class VehicleDocRepository{
     }
 
 
-
-    suspend fun getVehicleImage(): Map<String, Uri> {
-        return withContext(Dispatchers.IO) {
-            val vehicleImageList = mutableListOf<Map<String, Uri>>()
-
-            val vehicleImageSnapshot = firestore.collection("vehicle")
-                .whereEqualTo("userUid", currentUser?.uid)
-                .get()
-                .await()
-
-//            ######################################################################################
-//            ######################################################################################
-//            ######################################################################################
-//            ######################################################################################
-            for(document in vehicleImageSnapshot.documents) {
-                val frontVehicleImgURL = document.getString("photo")        //need to change
-                val backVehicleImgURL = document.getString("photo")
-
-
-                val licenseMap = mutableMapOf<String, Uri>()
-                licenseMap["vehicleFrontImgUri"] = Uri.parse(frontVehicleImgURL?: "")
-                licenseMap["vehicleBackImgUri"] = Uri.parse(backVehicleImgURL?: "")
-
-                vehicleImageList.add(licenseMap)
-            }
-
-            if(!vehicleImageList.isNullOrEmpty()) {
-                vehicleImageList[0]
-            } else {
-                emptyMap()
-            }
-        }
-    }
-
     suspend fun addVehicleImage(vehicleFrontImageUri: Uri?, vehicleBackImageUri: Uri?): Int {
         if (vehicleFrontImageUri != null && vehicleBackImageUri != null && currentUser != null) {
             return withContext(Dispatchers.IO) {
                 try {
                     val imgRandomName = UUID.randomUUID()
 
-                    val vehicleFrontFileRef = firebaseStorage.reference.child("$storagePath/$imgRandomName")
-                    val vehicleFrontFileSnapshot = vehicleFrontFileRef.putFile(vehicleFrontImageUri).await()
+                    val vehicleFrontFileRef =
+                        firebaseStorage.reference.child("$storagePath/$imgRandomName")
+                    val vehicleFrontFileSnapshot =
+                        vehicleFrontFileRef.putFile(vehicleFrontImageUri).await()
                     val vehicleFrontUri = vehicleFrontFileSnapshot.storage.downloadUrl.await()
                     val vehicleFrontFileUrl = vehicleFrontUri.toString()
 
-                    val vehicleBackFileRef = firebaseStorage.reference.child("$storagePath/$imgRandomName")
-                    val vehicleBackFileSnapshot = vehicleBackFileRef.putFile(vehicleBackImageUri).await()
+                    val vehicleBackFileRef =
+                        firebaseStorage.reference.child("$storagePath/$imgRandomName")
+                    val vehicleBackFileSnapshot =
+                        vehicleBackFileRef.putFile(vehicleBackImageUri).await()
                     val vehicleBackUri = vehicleBackFileSnapshot.storage.downloadUrl.await()
                     val vehicleBackFileUrl = vehicleBackUri.toString()
 
@@ -454,7 +511,8 @@ class VehicleDocRepository{
 
                     if (!vehicleSnapshot.isEmpty) {
                         val vehicleDoc = vehicleSnapshot.documents.first()
-                        val existingPhotos = vehicleDoc.get("photo") as? ArrayList<String> ?: arrayListOf()
+                        val existingPhotos =
+                            vehicleDoc.get("photo") as? ArrayList<String> ?: arrayListOf()
                         existingPhotos.add(vehicleFrontFileUrl)
                         existingPhotos.add(vehicleBackFileUrl)
 
@@ -481,7 +539,6 @@ class VehicleDocRepository{
             }
         }
     }
-
 
 
 //    suspend fun addVehicleImage(vehicleFrontImageUri: Uri?, vehicleBackImageUri: Uri?): Int {

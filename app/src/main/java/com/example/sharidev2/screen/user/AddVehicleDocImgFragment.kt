@@ -9,7 +9,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -19,27 +18,22 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentContainer
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.example.sharidev2.R
-import com.example.sharidev2.databinding.FragmentAddVehicleDocBinding
 import com.example.sharidev2.databinding.FragmentAddVehicleDocImgBinding
-import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.FirebaseClient
-import com.example.sharidev2.viewmodel.VehicleDocImgViewModel
+import com.example.sharidev2.viewmodel.VehicleDocViewModel
 import com.google.android.material.card.MaterialCardView
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.io.File
 
 class AddVehicleDocImgFragment : Fragment() {
     private lateinit var binding: FragmentAddVehicleDocImgBinding
-    private val vehicleDocImgViewModel: VehicleDocImgViewModel by viewModels()
+    private val vehicleDocViewModel: VehicleDocViewModel by activityViewModels()
     private lateinit var takePictureLauncher: ActivityResultLauncher<Uri>
 
     private val auth = FirebaseClient.firebaseAuth
@@ -90,7 +84,7 @@ class AddVehicleDocImgFragment : Fragment() {
         initImageUri()
 
         // Observe ViewModel for image changes
-        vehicleDocImgViewModel.regisCertUri.observe(viewLifecycleOwner) { uri ->
+        vehicleDocViewModel.regisCertUri.observe(viewLifecycleOwner) { uri ->
             // Update vehicle registration certification image view
             if (uri != null && !uri.toString().isNullOrBlank()) {
                 if (isUrl(uri.toString())) {
@@ -104,7 +98,7 @@ class AddVehicleDocImgFragment : Fragment() {
             }
         }
 
-        vehicleDocImgViewModel.insuranceUri.observe(viewLifecycleOwner) { uri ->
+        vehicleDocViewModel.insuranceUri.observe(viewLifecycleOwner) { uri ->
             // Update vehicle insurance image view
             if (uri != null && !uri.toString().isNullOrBlank()) {
                 if (isUrl(uri.toString())) {
@@ -118,7 +112,7 @@ class AddVehicleDocImgFragment : Fragment() {
             }
         }
 
-        vehicleDocImgViewModel.roadtaxUri.observe(viewLifecycleOwner) { uri ->
+        vehicleDocViewModel.roadtaxUri.observe(viewLifecycleOwner) { uri ->
             // Update vehicle insurance image view
             if (uri != null && !uri.toString().isNullOrBlank()) {
                 if (isUrl(uri.toString())) {
@@ -164,9 +158,7 @@ class AddVehicleDocImgFragment : Fragment() {
 
         nextButton.setOnClickListener {
             if (registerCertImageUri != null && insuranceImageUri != null && roadtaxImageUri != null) {
-                lifecycleScope.launch(Dispatchers.Main) {
-                    val response = vehicleDocImgViewModel.addImagesToDB()
-                }
+
                 findNavController().navigate(R.id.action_addVehicleDocImgFragment_to_addVehicleImgFragment)
             }
         }
@@ -215,12 +207,12 @@ class AddVehicleDocImgFragment : Fragment() {
             if(success) {
                 try{
                     if (isRegisterCertImage) {
-                        vehicleDocImgViewModel.setRegisterCertImageUri(registerCertImageUri)
+                        vehicleDocViewModel.setRegisterCertImageUri(registerCertImageUri)
                     } else if (isInsuracneImage){
-                        vehicleDocImgViewModel.setInsuranceImageUri(insuranceImageUri)
+                        vehicleDocViewModel.setInsuranceImageUri(insuranceImageUri)
                     }
                     else{
-                        vehicleDocImgViewModel.setRoadtaxImageUri(roadtaxImageUri)
+                        vehicleDocViewModel.setRoadtaxImageUri(roadtaxImageUri)
                     }
                 } catch (e: Exception) {
                     Log.e("Register Picture Launcher", e.message.toString())
@@ -277,45 +269,45 @@ class AddVehicleDocImgFragment : Fragment() {
     }
 
 
-    private suspend fun saveToFirestore() {
-        isLoading(true)
-
-        if(registerCertImageUri != null && insuranceImageUri != null && roadtaxImageUri != null) {
-            val response = vehicleDocImgViewModel.addImagesToDB()
-
-            when(response) {
-                Constants.FIREBASE_REQUEST_SUCCESS -> {
-                    isLoading(false)
-
-                    Toast.makeText(
-                        requireContext(),
-                        "Vehicle Doc Image saved successfully",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
-                Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED ->{
-                    isLoading(false)
-                    Toast.makeText(requireContext(), "User not authenticated. Please log in again.",Toast.LENGTH_SHORT).show()
-                }
-
-                Constants.FIREBASE_REQUEST_NOT_BELONG_USER ->{
-                    isLoading(false)
-                    Toast.makeText(requireContext(), "Please log in your account",Toast.LENGTH_SHORT).show()
-                }
-
-                Constants.FIREBASE_REQUEST_DATA_NOT_VALID ->{
-                    isLoading(false)
-                    Toast.makeText(requireContext(), "Please take your front and back driving license by image",Toast.LENGTH_SHORT).show()
-                }
-
-            }
-        } else {
-            isLoading(false)
-            Toast.makeText(requireContext(), "Please take image of your vehicle documentations",Toast.LENGTH_SHORT).show()
-        }
-
-    }
+//    private suspend fun saveToFirestore() {
+//        isLoading(true)
+//
+//        if(registerCertImageUri != null && insuranceImageUri != null && roadtaxImageUri != null) {
+//            val response = vehicleDocImgViewModel.addImagesToDB()
+//
+//            when(response) {
+//                Constants.FIREBASE_REQUEST_SUCCESS -> {
+//                    isLoading(false)
+//
+//                    Toast.makeText(
+//                        requireContext(),
+//                        "Vehicle Doc Image saved successfully",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
+//                }
+//
+//                Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED ->{
+//                    isLoading(false)
+//                    Toast.makeText(requireContext(), "User not authenticated. Please log in again.",Toast.LENGTH_SHORT).show()
+//                }
+//
+//                Constants.FIREBASE_REQUEST_NOT_BELONG_USER ->{
+//                    isLoading(false)
+//                    Toast.makeText(requireContext(), "Please log in your account",Toast.LENGTH_SHORT).show()
+//                }
+//
+//                Constants.FIREBASE_REQUEST_DATA_NOT_VALID ->{
+//                    isLoading(false)
+//                    Toast.makeText(requireContext(), "Please take your front and back driving license by image",Toast.LENGTH_SHORT).show()
+//                }
+//
+//            }
+//        } else {
+//            isLoading(false)
+//            Toast.makeText(requireContext(), "Please take image of your vehicle documentations",Toast.LENGTH_SHORT).show()
+//        }
+//
+//    }
 
     private fun isLoading(loading: Boolean) {
         val nextButton = binding.cardNextVehicleDocImgCta

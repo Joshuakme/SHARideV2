@@ -34,6 +34,7 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
+import kotlin.math.log
 
 object FirebaseClient {
     val firestore: FirebaseFirestore by lazy {
@@ -61,12 +62,13 @@ object FirebaseClient {
     suspend fun getCurrentUser(): User? {
         val currentUser = firebaseAuth.currentUser
 
-        if(currentUser != null) {
+        if (currentUser != null) {
             return getUserFromUid(currentUser.uid)
         }
 
         return null
     }
+
     suspend fun getUserFromUid(userUid: String): User? {
         return withContext(Dispatchers.IO) {
             try {
@@ -75,13 +77,13 @@ object FirebaseClient {
                     .get()
                     .await().data
 
-                if(userData != null) {
+                if (userData != null) {
                     val uid = userData["uid"] as String
                     val displayName = userData["displayName"] as String
                     val email = userData["email"] as String?
                     val phoneNumber = userData["phoneNumber"] as String
 
-                    val photoUri = if(userData["photoUrl"] != null) {
+                    val photoUri = if (userData["photoUrl"] != null) {
                         Uri.parse(userData["photoUrl"] as String)
                     } else {
                         null
@@ -94,7 +96,7 @@ object FirebaseClient {
 
                     val rideOption = RideOption(driverGender, vehicleType, petFriendly)
 
-                    val rating = if(userData["rating"] != null) {
+                    val rating = if (userData["rating"] != null) {
                         (userData["rating"] as Long).toDouble()
                     } else {
                         null
@@ -105,7 +107,7 @@ object FirebaseClient {
 //                    converters.toSearchLocationList(user.get("savedAddress") as List<Map<String, Any>>)
 //                        .toMutableList()
 
-                    val gender = if(userData["gender"] != null) {
+                    val gender = if (userData["gender"] != null) {
                         Gender.valueOf(userData["gender"] as String)
                     } else {
                         null
@@ -199,14 +201,14 @@ object FirebaseClient {
         return withContext(Dispatchers.IO) {
             try {
                 val vehicleDocData = firestore.collection("vehicleDoc")
-                            .document(vehicleDocId)
-                            .get()
-                            .await()
-                            .data
+                    .document(vehicleDocId)
+                    .get()
+                    .await()
+                    .data
 
 
 
-                if(vehicleDocData != null) {
+                if (vehicleDocData != null) {
                     val userUid = vehicleDocData["userUid"] as String
                     val firstName = vehicleDocData["firstName"] as String
                     val lastName = vehicleDocData["lastName"] as String
@@ -239,7 +241,7 @@ object FirebaseClient {
                     null
                 }
 
-            } catch (e:Exception) {
+            } catch (e: Exception) {
                 Log.e("Get Vehicle From ID", e.message.toString())
                 null
             }
@@ -263,14 +265,14 @@ object FirebaseClient {
             val members = chatData["members"] as? List<String> ?: emptyList()
 
             val membersUserList = mutableListOf<User>()
-            for(member in members) {
+            for (member in members) {
                 getUserFromUid(member)?.let { membersUserList.add(it) }
             }
 
             val memberFcmTokens = chatData["memberFcmTokens"] as? List<String> ?: emptyList()
 
             val memberFcmTokenList = mutableListOf<String>()
-            for(memberFcmToken in memberFcmTokens) {
+            for (memberFcmToken in memberFcmTokens) {
                 memberFcmTokenList.add(memberFcmToken)
             }
 
@@ -284,7 +286,7 @@ object FirebaseClient {
             val messageList = mutableListOf<Message>()
             // Retrieve messages with proper suspend handling
             try {
-                if(messages != null) {
+                if (messages != null) {
                     messages.forEach { messageMap ->
                         val message = Message(
                             messageId = messageMap["messageId"] as? String ?: "",
@@ -364,16 +366,40 @@ object FirebaseClient {
         }
     }
 
+    suspend fun getVehicleDoc(documentId: String): VehicleDoc? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val vehicleDocSnapShot = firestore.collection("vehicleDoc").document(documentId)
+                    .get().await()
+
+                val vehicleDocData = vehicleDocSnapShot.data
+
+                if (vehicleDocData != null) {
+                    converters.toVehicleDoc(vehicleDocData)
+                } else {
+                     null
+                }
+
+
+            } catch (e: Exception) {
+                Log.e("Get Vehicle", e.message.toString())
+                null
+            }
+        }
+    }
+
+
     suspend fun createRideFromDocumentSnapshot(document: DocumentSnapshot): Ride? {
         return withContext(Dispatchers.IO) {
             try {
                 val origin = converters.toSearchLocation(document.get("origin") as Map<String, Any>)
-                val destination = converters.toSearchLocation(document.get("destination") as Map<String, Any>)
+                val destination =
+                    converters.toSearchLocation(document.get("destination") as Map<String, Any>)
                 val datetime = document.getTimestamp("datetime")!!
                 val driver = converters.toDriver(document.get("driver") as Map<String, Any>)
 
                 // Passengers
-                val passengers = if(document.get("passengers") != null) {
+                val passengers = if (document.get("passengers") != null) {
                     converters.toPassengerList(document.get("passengers") as List<Map<String, Any>>)
                 } else {
                     emptyList()
@@ -385,7 +411,7 @@ object FirebaseClient {
                 val availableSeats = (document.get("availableSeats") as Long).toInt()
 
                 // Reviews
-                val reviewList = if(document.get("reviews") != null) {
+                val reviewList = if (document.get("reviews") != null) {
                     converters.toReviewList(document.get("reviews") as List<Map<String, Any>>)
                 } else {
                     emptyList()
@@ -398,7 +424,7 @@ object FirebaseClient {
 
 
                 // Completed Route
-                val completedRoute = if(document.get("completedRoute") != null) {
+                val completedRoute = if (document.get("completedRoute") != null) {
                     converters.toLatLngList(document.get("completedRoute") as List<Map<String, Any>>)
                 } else {
                     mutableListOf()
@@ -424,7 +450,7 @@ object FirebaseClient {
                     createdAt = createdAt
                 )
 
-               ride
+                ride
             } catch (e: Exception) {
                 Log.e("Create Ride List From Query Snapshot", e.message.toString())
 

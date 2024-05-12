@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="32dp">
+
+
+            <!--  Top Nav  -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/ss_home_nav_top_padding"
+                android:layout_marginBottom="16dp">
+
+                <ImageButton
+                    android:id="@+id/btn_back_view_vehicle_doc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/ss_screen_width_margin"
+                    android:background="#00FFFFFF"
+                    android:scaleX="@dimen/ss_profile_subfragment_nav_icon_scale"
+                    android:scaleY="@dimen/ss_profile_subfragment_nav_icon_scale"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.5"
+                    app:srcCompat="@drawable/baseline_arrow_back_24"
+                    app:tint="?attr/colorOnBackground" />
+
+                <TextView
+                    android:id="@+id/tv_view_vehicle_doc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:text="Vehicle Details"
+                    android:textAlignment="center"
+                    android:textSize="@dimen/fs_fragment_title"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.5" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/ss_screen_width_margin">
+
+                <!--  Personal Info  -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cv_view_personal_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="?attr/colorSurfaceContainer"
+                    app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
+                    app:contentPadding="8dp"
+                    app:contentPaddingBottom="8dp"
+                    app:contentPaddingTop="8dp"
+                    app:strokeWidth="0dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tv_first_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="First Name"
+                            android:textColor="?attr/colorOnBackground" />
+
+                        <TextView
+                            android:id="@+id/layout_view_vehicle_first_name"
+                            inp="@string/edit_vehicle_doc_fragment_name_allowed_characters"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/ss_bottom_dialog_top_indicator_height"
+                            android:layout_marginBottom="@dimen/ss_messages_chat_user_pic"
+                            android:paddingTop="@dimen/ss_input_field_vertical_padding"
+                            app:boxBackgroundColor="?attr/colorSurfaceContainer"
+                            app:boxBackgroundMode="filled"
+                            app:boxStrokeColor="@color/mtrl_outlined_stroke_color" />
+
+
+                        <TextView
+                            android:id="@+id/tv_last_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Last Name"
+                            android:textColor="?attr/colorOnBackground" />
+
+                        <TextView
+                            android:id="@+id/layout_view_vehicle_last_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/ss_bottom_dialog_top_indicator_height"
+                            android:layout_marginBottom="@dimen/ss_messages_chat_user_pic"
+                            android:digits="@string/edit_vehicle_doc_fragment_name_allowed_characters"
+                            android:paddingTop="@dimen/ss_input_field_vertical_padding"
+                            android:paddingBottom="@dimen/ss_input_field_vertical_padding"
+                            app:boxBackgroundColor="?attr/colorSurfaceContainer"
+                            app:boxBackgroundMode="filled"
+                            app:boxStrokeColor="@color/mtrl_outlined_stroke_color" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <!--  Vehicle Info  -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cv_view_driving_license"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    app:cardBackgroundColor="?attr/colorSurfaceContainer"
+                    app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
+                    app:contentPadding="12dp"
+                    app:contentPaddingLeft="12dp"
+                    app:contentPaddingRight="12dp"
+                    app:strokeWidth="0dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tv_view_vehicle_type"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Vehicle Type"
+                            android:textColor="?attr/colorOnBackground" />
+
+                        <TextView
+                            android:id="@+id/spinner_view_vehicle_type"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/ss_bottom_dialog_top_indicator_height"
+                            android:layout_marginBottom="@dimen/ss_messages_chat_user_pic"
+                            android:clickable="true"
+                            android:entries="@array/name"
+                            android:scrollbarSize="5dp" />
+
+                        <TextView
+                            android:id="@+id/tv_vehicle_brand"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Brand"
+                            android:textColor="?attr/colorOnBackground" />
+
+                        <TextView
+                            android:id="@+id/layout_view_vehicle_brand"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/ss_bottom_dialog_top_indicator_height"
+                            android:layout_marginBottom="@dimen/ss_messages_chat_user_pic"
+                            android:digits="@string/edit_vehicle_doc_fragment_name_allowed_characters"
+
+                            app:boxBackgroundColor="?attr/colorSurfaceContainer"
+                            app:boxBackgroundMode="filled" />
+
+
+                        <TextView
+                            android:id="@+id/tv_view_vehicle_model"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Model"
+                            android:textColor="?attr/colorOnBackground" />
+
+                        <TextView
+                            android:id="@+id/layout_view_vehicle_model"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="@dimen/ss_bottom_dialog_top_indicator_height"
+                            android:layout_marginBottom="@dimen/ss_messages_chat_user_pic"
+                            android:digits="@string/edit_vehicle_doc_fragment_name_allowed_characters"
+
+                            app:boxBackgroundColor="?attr/colorSurfaceContainer"
+                            app:boxBackgroundMode="filled" />
+
+                        <TextView
+                            android:id="@+id/tv_view_vehicle_color"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Color"
+                            android:textColor="?attr/colorOnBackground" />
+
+                        <TextView
+                            android:id="@+id/layout_view_vehicle_color"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="@dimen/ss_bottom_dialog_top_indicator_height"
+                            android:layout_marginBottom="@dimen/ss_messages_chat_user_pic"
+                            android:digits="@string/edit_vehicle_doc_fragment_name_allowed_characters"
+                            app:boxBackgroundColor="?attr/colorSurfaceContainer"
+                            app:boxBackgroundMode="filled" />
+
+
+                        <TextView
+                            android:id="@+id/tv_view_vehicle_capacity"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Capacity"
+                            android:textColor="?attr/colorOnBackground" />
+
+                        <TextView
+                            android:id="@+id/layout_view_vehicle_capacity"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="@dimen/ss_bottom_dialog_top_indicator_height"
+                            android:layout_marginBottom="@dimen/ss_messages_chat_user_pic"
+
+                            app:boxBackgroundColor="?attr/colorSurfaceContainer"
+                            app:boxBackgroundMode="filled" />
+
+                        <TextView
+                            android:id="@+id/tv_view_vehicle_plate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Plate Number"
+                            android:textColor="?attr/colorOnBackground" />
+
+                        <TextView
+                            android:id="@+id/layout_view_car_plate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/ss_bottom_dialog_top_indicator_height"
+                            android:layout_marginBottom="@dimen/ss_messages_chat_user_pic"
+                            android:digits="@string/edit_vehicle_doc_fragment_car_plate_allowed_characters"
+                            app:boxBackgroundColor="?attr/colorSurfaceContainer"
+                            app:boxBackgroundMode="filled" />
+
+
+                        <TextView
+                            android:id="@+id/tv_view_manufacture_date"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Manufacture Date"
+                            android:textColor="?attr/colorOnBackground" />
+
+                        <TextView
+                            android:id="@+id/view_date_manufacture"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/ss_bottom_dialog_top_indicator_height"
+                            android:layout_marginBottom="@dimen/ss_messages_chat_user_pic"
+                            android:ems="10"
+                            android:inputType="number"
+                            android:minHeight="20dp" />
+
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!--  Delete Button  -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btn_delete_vehicle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/ss_screen_width_margin"
+                    android:layout_marginTop="50dp"
+                    app:cardBackgroundColor="?attr/colorError"
+                    app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/poppins_medium"
+                        android:gravity="center"
+                        android:paddingVertical="14dp"
+                        android:text="Delete Vehicle"
+                        android:textColor="?attr/colorOnPrimary" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+</layout>

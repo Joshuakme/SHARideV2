@@ -1,13 +1,12 @@
 package com.example.sharidev2.data.model
 
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Vehicle(
-    val vehicleID: String? = "",
+    val vehicleId: String? = "",
     val brand: String? = "",
     val model: String? = "",
     val type: VehicleType = VehicleType.Sedan,
@@ -15,5 +14,7 @@ data class Vehicle(
     val color: String? = "",  // Enum of vehicle color
     val photos: MutableList<Uri>? = null,    // Link of image
     val capacity: Int = 0,
-    val document: VehicleDoc? = null
+    val document: VehicleDoc? = null,
+    val documentId: String? = "",
+    val userUid: String? = ""
 ) : Parcelable

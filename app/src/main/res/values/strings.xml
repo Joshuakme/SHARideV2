@@ -1,8 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">SHARideV2</string>
-    <string name="web_client_id">178112270595-mbkueg137033n1edkrmd2ocepfk6b2ig.apps.googleusercontent.com</string>
-    <string name="map_id" translatable="false">ed88a81f472d4f02</string>
-    <string name="google_api_key" translatable="false">AIzaSyCfsP1xX9W9IMQ7JJdusjltI9G6X3ODLA0</string>
+    <string name="map_id" translatable="false">fb2a22796f931852</string>
+    <string name="google_api_key" translatable="false">AIzaSyCI1a3sB2ZDQPgazr74W5qVoFs7eAy13yo</string>
     <string name="share_app_link" translatable="false">joshuakme.github.io/SHARide-Web/</string>
 
 

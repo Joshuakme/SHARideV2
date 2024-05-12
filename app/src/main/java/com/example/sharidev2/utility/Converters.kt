@@ -304,7 +304,7 @@ class Converters() {
 
     // VEHICLE CONVERTERS
     fun toVehicle(map: Map<String, Any>): Vehicle {
-        val vehicleID = map["vehicleID"] as String
+        val vehicleId = map["vehicleId"] as String
         val brand = map["brand"] as String
         val model = map["model"] as String
         val type = VehicleType.valueOf(map["type"] as String)
@@ -318,16 +318,21 @@ class Converters() {
         }
 
         val capacity = (map["capacity"] as Long).toInt()
+        val documentId = map["document"] as String
+        val userUid = map["userUid"] as String
 
         return Vehicle(
-            vehicleID,
-            brand,
-            model,
-            type,
-            plateNumber,
-            color,
-            photos,
-            capacity
+            vehicleId = vehicleId,
+            brand = brand,
+            model = model,
+            type = type,
+            plateNumber = plateNumber,
+            color = color,
+            photos = photos,
+            capacity = capacity,
+            document = null,
+            documentId = documentId,
+            userUid = userUid
         )
     }
 
@@ -579,7 +584,6 @@ class Converters() {
         val userUid = map["userUid"] as String
         val firstName = map["firstName"] as String
         val lastName = map["lastName"] as String
-        val vehicleTypeString = map["type"] as String
         val manufactureDate = map["manufactureDate"] as Timestamp
 
         val vehicleRegisCert = map["vehicleRegisCert"] as String
@@ -588,18 +592,18 @@ class Converters() {
 
         val insurance = map["insurance"]as String
 
-        val vehicleId = map["vehicleId"] as String
+        val vehicleId = map["vehicleId"] as String?
 
 
         return VehicleDoc(
-            userUid,
-            firstName,
-            lastName,
-            manufactureDate,
-            vehicleId,
-            vehicleRegisCert,
-            roadtax,
-            insurance
+            userUid = userUid,
+            firstName = firstName,
+            lastName = lastName,
+            manufactureDate = manufactureDate,
+            vehicleId = vehicleId,
+            vehicleRegisCert = vehicleRegisCert,
+            roadtax = roadtax,
+            insurance = insurance
         )
     }
 
@@ -607,13 +611,13 @@ class Converters() {
         val docData = document.data
 
         return if (docData != null) {
-            val userUid = docData["userUid"] as String
-            val firstName = docData["firstName"] as String
-            val lastName = docData["lastName"] as String
+            //val userUid = docData["userUid"] as String
+//            val firstName = docData["firstName"] as String
+//            val lastName = docData["lastName"] as String
             val manufactureDate = docData["manufactureDate"] as Timestamp
             //val vehicleId = docData["vehicleId"] as String
 
-            VehicleDoc(userUid, firstName, lastName, manufactureDate, "")
+            VehicleDoc("", "","", manufactureDate, "")
         } else{
             null
         }
