@@ -264,11 +264,10 @@
                 android:name="passengers"
                 app:argType="com.example.sharidev2.data.model.Passenger[]" />
         </action>
+
         <action
-            android:id="@+id/action_bookingDetailFragment_to_activeRideFragment"
-            app:destination="@id/activeRideFragment"
-            app:popUpTo="@id/homeFragment"
-            app:popUpToInclusive="true">
+            android:id="@+id/action_bookingDetailFragment_to_activeDriverRideFragment"
+            app:destination="@id/activeDriverRideFragment" >
             <argument
                 android:name="ride"
                 app:argType="com.example.sharidev2.data.model.Ride" />
@@ -359,7 +358,11 @@
         android:label="BookingDetailPassengerFragment" >
         <action
             android:id="@+id/action_bookingDetailPassengerFragment_to_activeRideFragment"
-            app:destination="@id/activeRideFragment" />
+            app:destination="@id/activeRideFragment">
+            <argument
+                android:name="ride"
+                app:argType="com.example.sharidev2.data.model.Ride" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/vehicleDocFragment"
@@ -435,5 +438,14 @@
         <action
             android:id="@+id/action_viewVehicleFragment_to_vehicleDocFragment"
             app:destination="@id/vehicleDocFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/activeDriverRideFragment"
+        android:name="com.example.sharidev2.screen.ride.ActiveDriverRideFragment"
+        android:label="fragment_active_driver_ride"
+        tools:layout="@layout/fragment_active_driver_ride" >
+        <action
+            android:id="@+id/action_activeDriverRideFragment_to_bookingFragment"
+            app:destination="@id/bookingFragment" />
     </fragment>
 </navigation>

@@ -1,14 +1,560 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".screen.ride.ActiveDriverRideFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        tools:context=".screen.ride.ActiveDriverRideFragment">
 
-</FrameLayout>
+
+        <fragment
+            android:id="@+id/map_active_driver_ride_container"
+            class="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/sv_active_driver_ride_ride_info"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:mapId="@string/map_id" />
+
+        <!--  Fragment Back Button  -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/btn_active_driver_ride_nav_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/ss_screen_width_margin"
+            android:layout_marginTop="@dimen/ss_screen_top_margin"
+            app:cardBackgroundColor="?attr/scrimBackground"
+            app:cardCornerRadius="@dimen/ss_rounded_background_corner_radius"
+            app:contentPadding="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:strokeWidth="0dp">
+
+            <ImageButton
+                android:id="@+id/img_btn_active_driver_ride_nav_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#00000000"
+                android:scaleX="@dimen/ss_profile_subfragment_nav_icon_scale"
+                android:scaleY="@dimen/ss_profile_subfragment_nav_icon_scale"
+                android:src="@drawable/baseline_arrow_back_24"
+
+                app:tint="?attr/colorOutlineVariant" />
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <!--  Google Map Section  -->
+
+        <!--  "My Location" Button  -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_active_driver_ride_my_location_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone"
+            app:cardBackgroundColor="?attr/colorSurface"
+            app:cardCornerRadius="10000dp"
+            app:cardElevation="1dp"
+            app:layout_constraintBottom_toBottomOf="@+id/map_active_driver_ride_container"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:strokeWidth="0dp"
+            tools:visibility="visible">
+
+            <ImageButton
+                android:id="@+id/img_btn_active_driver_ride_my_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#00FFFFFF"
+                android:clickable="false"
+                android:padding="6dp"
+                android:src="@drawable/baseline_my_location_24"
+                app:tint="?attr/colorOnSurface" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <ScrollView
+            android:id="@+id/sv_active_driver_ride_ride_info"
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            android:scrollIndicators="none"
+            android:scrollbars="none"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/map_active_driver_ride_container">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="8dp">
+
+                <!--  Ride Status  -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_active_ride_ride_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/colorSurfaceContainer"
+                    android:paddingHorizontal="@dimen/ss_screen_width_margin"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="16dp">
+
+                    <TextView
+                        android:id="@+id/text_active_ride_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="On The Way"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/img_btn_active_ride_expand_ride_detail" />
+
+                    <TextView
+                        android:id="@+id/text_active_ride_estimated_time_distance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="~ %d min \u2022 %d km"
+                        android:visibility="gone"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/text_active_ride_status"
+                        tools:visibility="gone" />
+
+                    <ImageButton
+                        android:id="@+id/img_btn_active_ride_expand_ride_detail"
+                        android:layout_width="35dp"
+                        android:layout_height="wrap_content"
+                        android:background="#00FFFFFF"
+                        android:scaleX="2.5"
+                        android:scaleY="1.2"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/baseline_keyboard_arrow_up_24"
+                        app:tint="?attr/colorOutline" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toBottomOf="@+id/text_active_ride_estimated_time_distance"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/text_active_ride_status">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/btn_active_ride_share_ride"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="8dp"
+                            app:cardBackgroundColor="#00FFFFFF"
+                            app:contentPadding="6dp">
+
+                            <ImageButton
+                                android:id="@+id/imageButton8"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="#00FFFFFF"
+                                android:src="@drawable/baseline_share_24"
+                                app:tint="?attr/colorOnBackground" />
+                        </com.google.android.material.card.MaterialCardView>
+
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/btn_active_ride_sos_call"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:cardBackgroundColor="?attr/colorError"
+                            app:contentPadding="6dp"
+                            app:contentPaddingLeft="10dp"
+                            app:contentPaddingRight="10dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <ImageButton
+                                    android:id="@+id/imageButton10"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="6dp"
+                                    android:background="#00FFFFFF"
+                                    android:scaleX="0.8"
+                                    android:scaleY="0.8"
+                                    android:src="@drawable/baseline_security_24"
+                                    app:tint="?attr/colorOnError" />
+
+                                <TextView
+                                    android:id="@+id/textView29"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="SOS call"
+                                    android:textColor="?attr/colorOnError" />
+                            </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
+                    </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <!--  Passenger Details  -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_active_driver_ride_passenger_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/ss_screen_width_margin"
+                    android:paddingVertical="16dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/card_active_driver_ride_passenger_photo"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+
+                        <ImageView
+                            android:id="@+id/img_active_driver_ride_passenger_photo"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/baseline_account_circle_24" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/constraintLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="16dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/card_active_driver_ride_passenger_photo"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/btn_active_driver_ride_call_passenger"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <TextView
+                                android:id="@+id/text_active_driver_ride_passenger_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                tools:text="Passenger" />
+
+                            <TextView
+                                android:id="@+id/text_active_driver_ride_passenger_phone"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="?android:attr/textColorHint"
+                                tools:text="Passenger Phone Number" />
+                        </LinearLayout>
+
+                        <ImageButton
+                            android:id="@+id/btn_active_driver_ride_call_passenger"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="24dp"
+                            android:background="#00FFFFFF"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/btn_active_driver_ride_message_passenger"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="0.5"
+                            app:srcCompat="@drawable/baseline_phone_24"
+                            app:tint="?attr/colorSecondary" />
+
+                        <ImageButton
+                            android:id="@+id/btn_active_driver_ride_message_passenger"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="#00FFFFFF"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="0.5"
+                            app:srcCompat="@drawable/baseline_message_24"
+                            app:tint="?attr/colorOnSurfaceVariant" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!--  Pick up Button  -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/btn_active_driver_driver_ride_pick_up_passenger"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        app:cardBackgroundColor="?attr/colorSecondaryContainer"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+                        app:strokeWidth="0dp">
+
+                        <TextView
+                            android:id="@+id/text_active_driver_ride_pick_up_passenger"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:clickable="false"
+                            android:contextClickable="false"
+                            android:fontFamily="@font/poppins_medium"
+                            android:gravity="center"
+                            android:linksClickable="false"
+                            android:longClickable="false"
+                            android:paddingHorizontal="24dp"
+                            android:paddingVertical="12dp"
+                            android:text="Pick up" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!--  Drop off Button  -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/btn_active_driver_driver_ride_drop_off_passenger"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:visibility="invisible"
+                        app:cardBackgroundColor="?attr/colorSecondaryContainer"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+                        app:strokeWidth="0dp"
+                        tools:visibility="invisible">
+
+                        <TextView
+                            android:id="@+id/text_active_driver_ride_drop_off_passenger"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:clickable="false"
+                            android:contextClickable="false"
+                            android:fontFamily="@font/poppins_medium"
+                            android:gravity="center"
+                            android:linksClickable="false"
+                            android:longClickable="false"
+                            android:paddingHorizontal="24dp"
+                            android:paddingVertical="12dp"
+                            android:text="Drop off" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+                <!--  Passengers Details  -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_active_driver_ride_passengers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/text_active_driver_ride_passengers_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/ss_screen_width_margin"
+                        android:layout_marginTop="16dp"
+                        android:fontFamily="@font/poppins_medium"
+                        android:text="Passengers"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <View
+                        android:id="@+id/view_active_driver_ride_passengers_divider"
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dp"
+                        android:background="?android:attr/listDivider"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_view_active_driver_ride_passengers"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/ss_screen_width_margin"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="@dimen/ss_screen_width_margin"
+                        android:orientation="horizontal"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/text_active_driver_ride_passengers_title"
+                        tools:visibility="gone" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <!--  Pickup Details  -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_active_driver_ride_pick_up_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+
+                    <TextView
+                        android:id="@+id/text_active_driver_ride_pick_up_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/ss_screen_width_margin"
+                        android:layout_marginTop="24dp"
+                        android:text="Pick-up"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/text_active_driver_ride_pick_up_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/ss_screen_width_margin"
+                        android:fontFamily="@font/poppins_medium"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/text_active_driver_ride_pick_up_title"
+                        tools:text="PV 9 Residence" />
+
+                    <TextView
+                        android:id="@+id/text_active_driver_ride_pick_up_detailed_address"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/ss_screen_width_margin"
+                        android:layout_marginEnd="@dimen/ss_screen_width_margin"
+                        android:textColor="?attr/colorOutline"
+                        android:textSize="13sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/text_active_driver_ride_pick_up_name"
+                        tools:text="Detailed Address, Kuala Lumpur, Malaysia" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <!--  Destination Details  -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_active_driver_ride_destination_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+
+                    <TextView
+                        android:id="@+id/text_active_driver_ride_destination_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/ss_screen_width_margin"
+                        android:layout_marginTop="16dp"
+                        android:text="Destination"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/text_active_driver_ride_destination_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/ss_screen_width_margin"
+                        android:fontFamily="@font/poppins_medium"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/text_active_driver_ride_destination_title"
+                        tools:text="PV 9 Residence" />
+
+                    <TextView
+                        android:id="@+id/text_active_driver_ride_destination_detailed_address"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/ss_screen_width_margin"
+                        android:layout_marginEnd="@dimen/ss_screen_width_margin"
+                        android:textColor="?attr/colorOutline"
+                        android:textSize="13sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/text_active_driver_ride_destination_name"
+                        tools:text="Detailed Address, Kuala Lumpur, Malaysia" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <!--  Finish Ride  -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_active_driver_ride_finish_booking"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    >
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/btn_active_driver_ride_finish_booking"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/ss_screen_width_margin"
+                        android:layout_marginEnd="@dimen/ss_screen_width_margin"
+                        app:cardBackgroundColor="?attr/colorPrimary"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.5"
+                        app:strokeColor="?attr/colorOutline"
+                        app:strokeWidth="0dp">
+
+                        <TextView
+                            android:id="@+id/text_active_driver_ride_finish_booking"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:contextClickable="false"
+                            android:fontFamily="@font/poppins_medium"
+                            android:gravity="center"
+                            android:linksClickable="false"
+                            android:paddingHorizontal="20dp"
+                            android:paddingVertical="12dp"
+                            android:text="Complete booking"
+                            android:textColor="?attr/colorOnPrimary" />
+                    </com.google.android.material.card.MaterialCardView>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <!--  Cancel Booking  -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_active_driver_ride_cancel_booking"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="24dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/btn_active_driver_ride_cancel_booking"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.5"
+                        app:strokeColor="?attr/colorOutline">
+
+                        <TextView
+                            android:id="@+id/text_active_driver_ride_cancel_booking"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:clickable="false"
+                            android:contextClickable="false"
+                            android:linksClickable="false"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="6dp"
+                            android:text="Cancel booking"
+                            android:textColor="?attr/colorOutline" />
+                    </com.google.android.material.card.MaterialCardView>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
+        </ScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

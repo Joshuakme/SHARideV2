@@ -92,7 +92,7 @@ class BookingAdapter (
                     holder.priceText.text = "ongoing"
                 }
 
-                else -> holder.priceText.text = driver.status.toString().lowercase()
+                else -> holder.priceText.text = booking.rideStatus.toString().lowercase()
             }
         } else if(isPassenger(booking)) {
             val colorError = CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorError)

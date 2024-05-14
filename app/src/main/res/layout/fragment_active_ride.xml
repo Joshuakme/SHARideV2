@@ -12,11 +12,10 @@
         <fragment
             android:id="@+id/map_active_ride_container"
             class="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@+id/sv_active_ride_ride_info"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:mapId="@string/map_id" />
@@ -149,8 +148,9 @@
                         <com.google.android.material.card.MaterialCardView
                             android:id="@+id/btn_active_ride_share_ride"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_marginEnd="8dp"
+                            app:cardBackgroundColor="#00FFFFFF"
                             app:contentPadding="6dp">
 
                             <ImageButton
@@ -159,7 +159,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:background="#00FFFFFF"
-                                android:src="@drawable/baseline_share_24" />
+                                android:src="@drawable/baseline_share_24"
+                                app:tint="?attr/colorOnBackground" />
                         </com.google.android.material.card.MaterialCardView>
 
 
@@ -175,6 +176,7 @@
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
+                                android:gravity="center_vertical"
                                 android:orientation="horizontal">
 
                                 <ImageButton
@@ -426,9 +428,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/ss_screen_width_margin"
                         android:layout_marginTop="24dp"
+                        android:text="Pick-up"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:text="Pick-up" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/text_active_ride_pick_up_name"
@@ -524,6 +526,8 @@
                             android:id="@+id/text_active_ride_cancel_booking"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:contextClickable="false"
+                            android:linksClickable="false"
                             android:paddingHorizontal="12dp"
                             android:paddingVertical="6dp"
                             android:text="Cancel booking"

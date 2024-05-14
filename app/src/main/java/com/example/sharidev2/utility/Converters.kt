@@ -14,8 +14,10 @@ import com.example.sharidev2.data.model.Passenger
 import com.example.sharidev2.data.model.Review
 import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.data.model.RideOption
+import com.example.sharidev2.data.model.RideStatus
 import com.example.sharidev2.data.model.SearchLocation
 import com.example.sharidev2.data.model.User
+import com.example.sharidev2.data.model.UserLocation
 import com.example.sharidev2.data.model.UserStatus
 import com.example.sharidev2.data.model.Vehicle
 import com.example.sharidev2.data.model.VehicleDoc
@@ -38,6 +40,68 @@ class Converters() {
 
 
     // RIDE
+    suspend fun toRide(document: DocumentSnapshot): Ride {
+        val origin = toSearchLocation(document.get("origin") as Map<String, Any>)
+        val destination =
+            toSearchLocation(document.get("destination") as Map<String, Any>)
+        val datetime = document.getTimestamp("datetime")!!
+        val driver = toDriver(document.get("driver") as Map<String, Any>)
+
+        // Passengers
+        val passengers = if (document.get("passengers") != null) {
+            toPassengerList(document.get("passengers") as List<Map<String, Any>>)
+        } else {
+            emptyList()
+        }
+
+        val rideStatus = RideStatus.valueOf(document.getString("rideStatus") ?: "")
+        val startTime = document.getTimestamp("startTime")
+        val completeTime = document.getTimestamp("completeTime")
+        val availableSeats = (document.get("availableSeats") as Long).toInt()
+
+        // Reviews
+        val reviewList = if (document.get("reviews") != null) {
+            toReviewList(document.get("reviews") as List<Map<String, Any>>)
+        } else {
+            emptyList()
+        }
+
+
+        // Chat Sub-Collection
+//        val chat = FirebaseClient.getChatFromChatId(document.get("chatId") as String ?: "")
+        val chat = toChat(document.get("chat") as Map<String, Any>)
+
+
+        // Completed Route
+        val completedRoute = if (document.get("completedRoute") != null) {
+            toLatLngList(document.get("completedRoute") as List<Map<String, Any>>)
+        } else {
+            mutableListOf()
+        }
+
+        val createdAt = document.getTimestamp("createdAt")!!
+
+
+        val ride = Ride(
+            id = document.id,
+            origin = origin,
+            destination = destination,
+            datetime = datetime,
+            driver = driver,
+            passengers = passengers,
+            rideStatus = rideStatus,
+            startTime = startTime,
+            completeTime = completeTime,
+            availableSeats = availableSeats,
+            reviews = reviewList,
+            chat = chat,
+            completedRoute = completedRoute,
+            createdAt = createdAt
+        )
+
+        return ride
+    }
+
     fun toRideHashMap(ride: Ride): HashMap<String, *> {
         return hashMapOf(
             "rideId" to ride.id,
@@ -52,6 +116,7 @@ class Converters() {
             "availableSeats" to ride.availableSeats,
             "reviews" to ride.reviews,
             "chat" to ride.chat,
+            "chatId" to ride.chat!!.chatId,
             "completedRoute" to ride.completedRoute,
             "createdAt" to ride.createdAt
         )
@@ -190,6 +255,7 @@ class Converters() {
             status,
             vehicle
         )
+        return Driver()
     }
 
     private fun toDriverHashMapWithoutUser(driver: Driver): HashMap<String, *> {
@@ -203,7 +269,7 @@ class Converters() {
         )
     }
 
-    private suspend fun toPassenger(map: Map<String, Any>): Passenger {
+    private suspend fun toPassengerFromFirebase(map: Map<String, Any>): Passenger {
         val userUid = map["userUid"] as String
         val user = FirebaseClient.getUserFromUid(userUid)
 
@@ -246,7 +312,87 @@ class Converters() {
         )
     }
 
-    suspend fun toPassengerList(mapList: List<Map<String, Any>>): List<Passenger> {
+    private fun toPassenger(map: Map<String, Any>): Passenger {
+        val userUid = map["userUid"] as String
+        val user = toUser(map["user"] as Map<String,Any>)
+
+        val locationMap = map["location"] as Map<String, Any>?
+        val location = if(locationMap != null) {
+            val latitude = locationMap["latitude"] as Double
+            val longitude = locationMap["longitude"] as Double
+
+            LatLng(latitude, longitude)
+        } else {
+            null
+        }
+
+        val origin = if(map["origin"] as Map<String, Any>? != null) {
+            toSearchLocation(map["origin"] as Map<String, Any>)
+        } else {
+            null
+        }
+
+        val destination = if(map["destination"] as Map<String, Any> != null) {
+            toSearchLocation(map["destination"] as Map<String, Any>)
+        } else {
+            null
+        }
+
+        val status = UserStatus.valueOf((map["status"] as String))
+        val ridePrice = map["ridePrice"] as? Double?
+
+        val requestedDateTime = map["requestedDateTime"] as Timestamp?
+
+        return Passenger(
+            userUid = userUid,
+            user = user,
+            location = location,
+            origin = origin,
+            destination = destination,
+            status = status,
+            ridePrice = ridePrice,
+            requestedDateTime = requestedDateTime
+        )
+    }
+    fun toUserLocation(document: DocumentSnapshot): UserLocation? {
+        val userLocationDataMap = document.data
+
+        if(!userLocationDataMap.isNullOrEmpty()) {
+            val locationMap = userLocationDataMap["location"] as Map<String, Any>
+            val latitude = locationMap["latitude"] as Double
+            val longitude = locationMap["longitude"] as Double
+
+            val timestamp = userLocationDataMap["timestamp"] as Timestamp
+
+            val userMap = userLocationDataMap["user"] as Map<String, Any>?
+
+            val user  = if(userMap != null) {
+                toUser(userMap)
+            } else {
+                null
+            }
+
+            return UserLocation(
+                location = LatLng(latitude, longitude),
+                user = user,
+                timestamp = timestamp.toDate()
+            )
+        } else {
+            return null
+        }
+    }
+
+    suspend fun toPassengerListFromFirebase(mapList: List<Map<String, Any>>): List<Passenger> {
+        val passengerList = mutableListOf<Passenger>()
+
+        for(map in mapList) {
+            passengerList.add(toPassengerFromFirebase(map))
+        }
+
+        return passengerList
+    }
+
+    fun toPassengerList(mapList: List<Map<String, Any>>): List<Passenger> {
         val passengerList = mutableListOf<Passenger>()
 
         for(map in mapList) {
@@ -311,14 +457,16 @@ class Converters() {
         val plateNumber = map["plateNumber"] as String
         val color = map["color"] as String
 
-        val photosString = map["photos"] as List<String>
+        val photosString = map["photos"] as List<String>?
         val photos = mutableListOf<Uri>()
-        for (photo in photosString) {
-            photos.add(Uri.parse(photo))
+        if(photosString != null) {
+            for (photo in photosString) {
+                photos.add(Uri.parse(photo))
+            }
         }
 
         val capacity = (map["capacity"] as Long).toInt()
-        val documentId = map["document"] as String
+        val documentId = map["documentId"] as String
         val userUid = map["userUid"] as String
 
         return Vehicle(

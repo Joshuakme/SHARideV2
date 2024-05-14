@@ -4,11 +4,12 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.app.Person
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -16,11 +17,9 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
-import android.graphics.drawable.Icon
 import android.graphics.drawable.VectorDrawable
 import android.location.Location
 import android.net.Uri
-import android.os.Build
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
@@ -28,13 +27,10 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
-import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
-import com.example.sharidev2.data.model.Chat
 import com.example.sharidev2.data.model.Message
 import com.example.sharidev2.utility.Constants.Companion.NOTIF_MESSAGE_CHANNEL
 import com.google.android.gms.maps.model.BitmapDescriptor
@@ -382,5 +378,14 @@ class CommonUtils {
         notificationManager.notify(notificationId, builder.build())
     }
 
-
+    fun isAppInstalled(context: Context, packageName: String): Boolean {
+        return try {
+            context.packageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES)
+            Log.e("isAppInstalled()", "true")
+            true
+        } catch (e: PackageManager.NameNotFoundException) {
+            Log.e("isAppInstalled()", "false")
+            false
+        }
+    }
 }

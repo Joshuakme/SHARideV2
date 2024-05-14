@@ -23,6 +23,7 @@ import com.example.sharidev2.R
 import com.example.sharidev2.adapter.BookingTimeLineAdapter
 import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.data.model.Ride.Companion.write
+import com.example.sharidev2.data.model.RideStatus
 import com.example.sharidev2.data.repository.RideRepository
 import com.example.sharidev2.databinding.FragmentBookingDetailPassengerBinding
 import com.example.sharidev2.utility.CommonUtils
@@ -89,6 +90,8 @@ class BookingDetailPassengerFragment : Fragment() {
         val mapFragment = childFragmentManager.findFragmentById(R.id.map_booking_detail_passenger_container) as SupportMapFragment
         val rideDistanceHourMinText = binding.textBookingDetailPassengerDistanceHourMin
         val rideTimelineRecyclerView = binding.recyclerViewBookingPassengerDetailTimeline
+        val cancelRideText = binding.textBookingDetailPassengerCancelRide
+        val viewRideBtn = binding.cardBookingDetailPassengerCtaStartBtn
         val ratingText = binding.textBookingDetailRating
 
 
@@ -187,6 +190,24 @@ class BookingDetailPassengerFragment : Fragment() {
         val adapter = BookingTimeLineAdapter(locationList)
         rideTimelineRecyclerView.adapter = adapter
         rideTimelineRecyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+
+
+        when(ride.rideStatus) {
+            RideStatus.IN_PROGRESS -> {
+                viewRideBtn.visibility = View.VISIBLE
+                cancelRideText.visibility = View.VISIBLE
+
+                viewRideBtn.setOnClickListener {
+                    val directions = BookingDetailPassengerFragmentDirections.actionBookingDetailPassengerFragmentToActiveRideFragment(ride)
+                    findNavController().navigate(directions)
+                }
+            }
+
+            else -> {
+                viewRideBtn.visibility = View.GONE
+                cancelRideText.visibility = View.GONE
+            }
+        }
 
 
 

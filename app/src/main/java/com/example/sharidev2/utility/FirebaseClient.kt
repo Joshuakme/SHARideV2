@@ -34,7 +34,6 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
-import kotlin.math.log
 
 object FirebaseClient {
     val firestore: FirebaseFirestore by lazy {
@@ -400,7 +399,7 @@ object FirebaseClient {
 
                 // Passengers
                 val passengers = if (document.get("passengers") != null) {
-                    converters.toPassengerList(document.get("passengers") as List<Map<String, Any>>)
+                    converters.toPassengerListFromFirebase(document.get("passengers") as List<Map<String, Any>>)
                 } else {
                     emptyList()
                 }
@@ -419,7 +418,7 @@ object FirebaseClient {
 
 
                 // Chat Sub-Collection
-                val chat = getChatFromChatId(document.get("chat") as String ?: "")
+                val chat = getChatFromChatId(document.get("chatId") as String ?: "")
                 //val chat = converters.toChat(document.get("chat") as Map<String, Any>)
 
 

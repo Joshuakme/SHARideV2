@@ -3,6 +3,7 @@ package com.example.sharidev2.screen.ride
 import android.Manifest
 import android.app.AlertDialog
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -16,14 +17,18 @@ import android.os.Looper
 import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -51,6 +56,7 @@ import com.google.maps.internal.PolylineEncoding
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.net.URLEncoder
 
 
 class ActiveRideFragment : Fragment() {
@@ -61,14 +67,15 @@ class ActiveRideFragment : Fragment() {
     private lateinit var googleMapFragment: SupportMapFragment
 
     private val currentUser = FirebaseClient.firebaseAuth.currentUser
-    private val passengerList = mutableListOf<Passenger>()
     private val polylineList = mutableListOf<PolylineData>()
-
+    private lateinit var context: Context
 
     private val googleMapUtils = GoogleMapUtils()
     private val mHandler: Handler = Handler()
     private lateinit var mRunnable: Runnable
     private val LOCATION_UPDATE_INTERVAL = 8000.toLong()
+
+    private var isSosButtonLongPressed = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -87,6 +94,12 @@ class ActiveRideFragment : Fragment() {
             Log.e("Booking Detail Fragment", e.message.toString())
         }
 
+        context = if(isAdded) {
+            requireContext()
+        } else {
+            requireActivity().applicationContext
+        }
+
 
         // ELEMENT VARIABLES
         googleMapFragment =
@@ -97,7 +110,7 @@ class ActiveRideFragment : Fragment() {
         setupMap()
         setupData()
 
-
+        startUserLocationsRunnable()
 
         return binding.root
     }
@@ -381,6 +394,7 @@ class ActiveRideFragment : Fragment() {
 
 
     private fun setupOnClickListener(activeRide: Ride) {
+        val backBtn = binding.btnActiveRideNavBack
         val rideInfoScrollLView = binding.svActiveRideRideInfo
         val expandMapBtn = binding.imgBtnActiveRideExpandRideDetail
         val shareRideBtn = binding.btnActiveRideShareRide
@@ -392,10 +406,12 @@ class ActiveRideFragment : Fragment() {
         // Drawer Open Status
         var drawerOpen = false
 
+        backBtn.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
         expandMapBtn.setOnClickListener {
-            // TODO: Expand the ride info segment
-
-
+            // Expand the ride info segment
             val params = rideInfoScrollLView.layoutParams
             params.height =
                 if (drawerOpen) resources.getDimensionPixelSize(R.dimen.ss_height_350dp) else ViewGroup.LayoutParams.MATCH_PARENT
@@ -408,7 +424,7 @@ class ActiveRideFragment : Fragment() {
         }
 
         shareRideBtn.setOnClickListener {
-            // TODO: Share link to other app
+            //Share link to other app
             val activeRideLink = "sharide.com/active/${activeRide.id}"
 
             val sendIntent = Intent().apply {
@@ -420,9 +436,29 @@ class ActiveRideFragment : Fragment() {
             startActivity(shareIntent)
         }
 
-        sosCallBtn.setOnClickListener {
-            // TODO: Handle SOS accordingly
-        }
+        // Handle SOS accordingly
+
+
+        sosCallBtn.setOnTouchListener{view, event ->
+                when (event!!.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        isSosButtonLongPressed = true
+                        mHandler.postDelayed(
+                            sosLongPressRunnable,
+                            3000
+                        ) // Start checking after 3 seconds
+                    }
+
+                    MotionEvent.ACTION_UP -> {
+                        isSosButtonLongPressed = false
+                        Toast.makeText(context, "Please hold 3 seconds to activate emergency button", Toast.LENGTH_SHORT).show()
+                        mHandler.removeCallbacks(sosLongPressRunnable) // Stop checking if released before 3 seconds
+                    }
+                }
+                true
+            }
+
+
 
         callDriverBtn.setOnClickListener {
             val intent = Intent(Intent.ACTION_CALL)
@@ -434,13 +470,16 @@ class ActiveRideFragment : Fragment() {
 
         messageDriverBtn.setOnClickListener {
             // Navigate to message chat fragment
-            if(activeRide.chat != null) {
+            if (activeRide.chat != null) {
                 ActiveRideFragmentDirections.actionActiveRideFragmentToChatFragment(activeRide.chat)
             } else {
-                if(activeRide.driver.user?.phoneNumber != null) {
+                if (activeRide.driver.user?.phoneNumber != null) {
                     val messageIntent = Intent(Intent.ACTION_VIEW)
                     val defaultMsg = "Hello, I would like to get in touch regarding my ride."
-                    val url = "https://api.whatsapp.com/send?phone=${activeRide.driver.user!!.phoneNumber}&text=${Uri.encode(defaultMsg)}"
+                    val url =
+                        "https://api.whatsapp.com/send?phone=${activeRide.driver.user!!.phoneNumber}&text=${
+                            Uri.encode(defaultMsg)
+                        }"
                     messageIntent.data = Uri.parse(url)
                     startActivity(messageIntent)
                 }
@@ -465,10 +504,14 @@ class ActiveRideFragment : Fragment() {
                 .setNegativeButton("Dismiss") { dialogInterface: DialogInterface, _: Int ->
                     dialogInterface.dismiss() // Dismiss the dialog
                 }
+                    .create()
         }
     }
 
     private fun getUserLocation() {
+        activeRideViewModel.getCurrentUserLocation()
+        activeRideViewModel.getUsersLocation()
+
         googleMapFragment.getMapAsync { googleMap ->
             activeRideViewModel.activeRideUserLocationList.observe(viewLifecycleOwner) { locationList ->
                 if (locationList != null) {
@@ -508,6 +551,64 @@ class ActiveRideFragment : Fragment() {
         }
     }
 
+    private fun checkAndSendSms() {
+        // Check Send SMS Permission
+        if (ContextCompat.checkSelfPermission(this.requireActivity(),
+                Manifest.permission.SEND_SMS)
+            == PackageManager.PERMISSION_GRANTED) {
+
+            val userLocation = activeRideViewModel.userLocation.value
+
+            val locationMessage = if (userLocation?.location != null) {
+                "My current location is " + "(${userLocation.location.latitude}, ${userLocation.location.longitude}). "
+            } else {
+                ""
+            }
+            val emergencyMessage =
+                "Emergency Alert: I'm in distress and need assistance. " + locationMessage + "Please come to my aid immediately. Thank you. [Generated by system]"
+
+
+            activeRideViewModel.contactList.value?.forEach { contact ->
+                sendMessage(contact.contactPhone!!, emergencyMessage)
+            }
+
+        } else {
+            ActivityCompat.requestPermissions(this.requireActivity(),
+                arrayOf(Manifest.permission.SEND_SMS), Constants.PERMISSIONS_REQUEST_SEND_SMS
+            )
+        }
+    }
+
+    private val sosLongPressRunnable = Runnable {
+        if (isSosButtonLongPressed) {
+            // Button is pressed for 3 seconds
+            checkAndSendSms()
+        }
+    }
+
+    private fun sendMessage(phoneNumber: String, message: String) {
+        // Check if Whatsapp is installed
+        if(CommonUtils().isAppInstalled(context, "com.whatsapp")) {
+            val intent = Intent(Intent.ACTION_VIEW)
+            val url = "https://api.whatsapp.com/send?phone=60$phoneNumber&text=${URLEncoder.encode(message, "UTF-8")}"
+
+            intent.setPackage("com.whatsapp")
+            intent.data = Uri.parse(url)
+
+            if(intent.resolveActivity(context.packageManager) != null) {
+                startActivity(intent)
+                Toast.makeText(context, "Emergency Message Sent", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            val uri = Uri.parse("smsto:$phoneNumber")
+            val intent = Intent(Intent.ACTION_SENDTO, uri).apply {
+                putExtra("sms_body", message)
+            }
+            startActivity(intent)
+            Toast.makeText(context, "Emergency Message Sent", Toast.LENGTH_SHORT).show()
+        }
+    }
+
 
     private fun showMyLocationBtn(show: Boolean) {
         val myLocationBtn = binding.cardActiveRideMyLocationContainer
@@ -519,8 +620,15 @@ class ActiveRideFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        //startUserLocationsRunnable()
+        startUserLocationsRunnable()
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        stopLocationUpdates()
+    }
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int,

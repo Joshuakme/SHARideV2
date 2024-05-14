@@ -8,13 +8,34 @@
             <LayoutPositions>
               <option name="myPositions">
                 <map>
+                  <entry key="activeDriverRideFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="684" />
+                            <option name="y" value="-834" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_activeDriverRideFragment_to_bookingFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="activeRideFragment">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="786" />
-                            <option name="y" value="-370" />
+                            <option name="x" value="692" />
+                            <option name="y" value="-516" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -123,7 +144,7 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
-                            <entry key="action_addVehicleImgFragment_to_vehicleDocFragment2">
+                            <entry key="action_addVehicleImgFragment_to_vehicleDocFragment">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -144,6 +165,11 @@
                         </option>
                         <option name="myPositions">
                           <map>
+                            <entry key="action_bookingDetailFragment_to_activeDriverRideFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="action_bookingDetailFragment_to_activeRideFragment">
                               <value>
                                 <LayoutPositions />
@@ -164,7 +190,7 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-282" />
+                            <option name="x" value="-244" />
                             <option name="y" value="-846" />
                           </Point>
                         </option>
@@ -813,6 +839,15 @@
                             <option name="x" value="-928" />
                             <option name="y" value="250" />
                           </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_viewVehicleFragment_to_vehicleDocFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
                         </option>
                       </LayoutPositions>
                     </value>

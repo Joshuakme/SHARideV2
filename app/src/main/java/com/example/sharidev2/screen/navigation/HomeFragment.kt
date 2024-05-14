@@ -35,6 +35,7 @@ import com.example.sharidev2.data.model.RideStatus
 import com.example.sharidev2.databinding.FragmentHomeBinding
 import com.example.sharidev2.screen.ride.MatchedRideFragmentDirections
 import com.example.sharidev2.utility.CommonUtils
+import com.example.sharidev2.utility.FirebaseClient
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
 import com.example.sharidev2.viewmodel.NearbyRideViewModel
 import com.example.sharidev2.viewmodel.PersonalInfoViewModel
@@ -89,13 +90,18 @@ class HomeFragment : Fragment() {
         activity.resetBottomNavPosition()
 
 
-        if(currentUserViewModel.displayName.value.isNullOrBlank()) {
-            welcomeHomeText.text = getString(R.string.home_fragment_welcome_user, "guest")
-        }
+//        if(currentUserViewModel.displayName.value.isNullOrBlank()) {
+//            welcomeHomeText.text = getString(R.string.home_fragment_welcome_user, "guest")
+//        }
 
-        currentUserViewModel.displayName.observe(viewLifecycleOwner) {displayName ->
-            welcomeHomeText.text = getString(R.string.home_fragment_welcome_user, displayName?: "guest")
-        }
+        if(FirebaseClient.firebaseAuth.currentUser?.displayName != null) {
+            welcomeHomeText.text = getString(R.string.home_fragment_welcome_user, FirebaseClient.firebaseAuth.currentUser!!.displayName?: "guest")
+        } else {welcomeHomeText.text = getString(R.string.home_fragment_welcome_user, "guest")}
+
+
+//        currentUserViewModel.displayName.observe(viewLifecycleOwner) {displayName ->
+//            welcomeHomeText.text = getString(R.string.home_fragment_welcome_user, displayName?: "guest")
+//        }
 
 
         // Get User Current Location

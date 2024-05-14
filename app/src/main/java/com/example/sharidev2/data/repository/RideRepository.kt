@@ -16,6 +16,7 @@ import com.example.sharidev2.utility.FareUtils
 import com.example.sharidev2.utility.FirebaseClient
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.Dispatchers
@@ -132,7 +133,7 @@ class RideRepository() {
 
 
                 val rideDoc = rideRef.get().await()
-                val passengers = converters.toPassengerList(
+                val passengers = converters.toPassengerListFromFirebase(
                     rideDoc.get("passengers") as? List<Map<String, Any>>?: mutableListOf()
                 ).toMutableList()
 
@@ -159,7 +160,7 @@ class RideRepository() {
                 val rideRef = rideCollectionRef.document(rideId)
 
                 val rideDoc = rideRef.get().await()
-                val passengers = converters.toPassengerList(
+                val passengers = converters.toPassengerListFromFirebase(
                     rideDoc.get("passengers") as? List<Map<String, Any>>?: mutableListOf()
                 ).toMutableList()
 
@@ -306,7 +307,6 @@ class RideRepository() {
         }
     }
 
-
     suspend fun getAvailableRideList(): List<Ride> {
         return withContext(Dispatchers.Main) {
             try {
@@ -396,7 +396,7 @@ class RideRepository() {
                 val rideRef = rideCollectionRef.document(rideId)
 
                 val rideDoc = rideRef.get().await()
-                val passengers = converters.toPassengerList(
+                val passengers = converters.toPassengerListFromFirebase(
                     rideDoc.get("passengers") as? List<Map<String, Any>>?: mutableListOf()
                 ).toMutableList()
 

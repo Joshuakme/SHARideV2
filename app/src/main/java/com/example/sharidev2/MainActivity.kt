@@ -19,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.sharidev2.databinding.ActivityMainBinding
@@ -27,16 +26,13 @@ import com.example.sharidev2.service.LocationService
 import com.example.sharidev2.service.NetworkService
 import com.example.sharidev2.utility.Constants.Companion.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
 import com.example.sharidev2.utility.Constants.Companion.PERMISSIONS_REQUEST_POST_NOTIFICATION
-import com.example.sharidev2.utility.FirebaseClient
-import com.example.sharidev2.viewmodel.ChatViewModel
+import com.example.sharidev2.utility.Constants.Companion.PERMISSIONS_REQUEST_SEND_SMS
 import com.example.sharidev2.viewmodel.CurrentLocationViewModel
 import com.example.sharidev2.viewmodel.SharedCurrentUserViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
@@ -47,8 +43,11 @@ class MainActivity : AppCompatActivity() {
     private val currentUserViewModel: SharedCurrentUserViewModel by viewModels()
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    // Permission Flags
     private var locationPermissionGranted = false
     private var postNotificationPermissionGranted = false
+    private var sendSmsPermissionGranted = false
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,7 +68,7 @@ class MainActivity : AppCompatActivity() {
         bottomNav.setupWithNavController(navController)
 
 
-        Places.initialize(applicationContext, getString(R.string.google_api_key))
+        Places.initialize(applicationContext, getString(R.string.google_map_key))
 
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -83,6 +82,12 @@ class MainActivity : AppCompatActivity() {
             // Do nothing
         } else {
             getPostNotificationPermission()
+        }
+
+        if(sendSmsPermissionGranted) {
+            // Do nothing
+        } else {
+            getSendSmsPermission()
         }
 
         // Check Network Connection
@@ -170,7 +175,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-        startLocationService()
+//        startLocationService()
     }
 
 
@@ -185,6 +190,19 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(this,
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
+    }
+
+    private fun getSendSmsPermission() {
+        if (ContextCompat.checkSelfPermission(this.applicationContext,
+                Manifest.permission.SEND_SMS)
+            == PackageManager.PERMISSION_GRANTED) {
+            sendSmsPermissionGranted = true;
+
+            // Do nothing
+        } else {
+            ActivityCompat.requestPermissions(this,
+                arrayOf(Manifest.permission.SEND_SMS), PERMISSIONS_REQUEST_SEND_SMS)
         }
     }
 
@@ -208,6 +226,14 @@ class MainActivity : AppCompatActivity() {
             PERMISSIONS_REQUEST_POST_NOTIFICATION -> {
                 if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     postNotificationPermissionGranted = true
+                } else {
+                    // Do nothing
+                }
+            }
+
+            PERMISSIONS_REQUEST_SEND_SMS -> {
+                if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    sendSmsPermissionGranted = true
                 } else {
                     // Do nothing
                 }

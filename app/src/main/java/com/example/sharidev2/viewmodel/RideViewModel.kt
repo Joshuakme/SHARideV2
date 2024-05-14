@@ -7,9 +7,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.sharidev2.data.model.Passenger
 import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.data.repository.RideRepository
+import com.example.sharidev2.utility.Converters
+import com.example.sharidev2.utility.FirebaseClient.firestore
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class RideViewModel(
     private val savedStateHandle: SavedStateHandle
@@ -70,6 +75,7 @@ class RideViewModel(
             }
         } ?: emptyList()
     }
+
 
 
     enum class FilterType {

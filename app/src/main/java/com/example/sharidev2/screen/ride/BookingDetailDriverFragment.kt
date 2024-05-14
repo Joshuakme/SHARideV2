@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -17,14 +16,13 @@ import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.adapter.BookingTimeLineAdapter
 import com.example.sharidev2.data.model.Ride
+import com.example.sharidev2.data.model.RideStatus
 import com.example.sharidev2.databinding.FragmentBookingDetailDriverBinding
 import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.FirebaseClient
 import com.example.sharidev2.utility.GoogleMapUtils
 import com.example.sharidev2.viewmodel.BookingDetailViewModel
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.PolygonOptions
-import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.PolylineOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -35,6 +33,7 @@ class BookingDetailDriverFragment : Fragment() {
 
     private val bookingDetailViewModel: BookingDetailViewModel by viewModels()
 
+    private val currentUser = FirebaseClient.firebaseAuth.currentUser
     private lateinit var ride: Ride
 
     override fun onCreateView(
@@ -48,6 +47,7 @@ class BookingDetailDriverFragment : Fragment() {
         // DATA
         try {
             ride = arguments?.get("ride") as Ride
+
         } catch (e: Exception) {
             Log.e("Booking Detail Fragment", e.message.toString())
         }
@@ -188,8 +188,9 @@ class BookingDetailDriverFragment : Fragment() {
 
     private fun setupOnClickListeners() {
         val backBtn = binding.imgBtnBookingDetailDriverNavBack
-        val bookingDetailViewRequests = binding.textBookingDetailViewRequests
+        val bookingDetailViewRequestsText = binding.textBookingDetailViewRequests
         val startRideBtn = binding.cardBookingDetailCtaStartBtn
+        val startRideBtnText = binding.textBookingDetailCtaStartBtn
 
 
         // NAVIGATION LISTENERS
@@ -198,22 +199,36 @@ class BookingDetailDriverFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-
-        // Booking Detail Fragment -> View Booking Request Fragment
-        bookingDetailViewRequests.setOnClickListener {
-            val action = BookingDetailDriverFragmentDirections
-                .actionBookingDetailFragmentToViewBookingRequestsFragment(ride.id!!, ride.passengers.toTypedArray())
-            findNavController().navigate(action)
-        }
-
-        // Booking Detail Fragment -> Active Ride Fragment
-        startRideBtn.setOnClickListener {
-            lifecycleScope.launch(Dispatchers.IO) {
-                bookingDetailViewModel.startRide(ride.id!!)
+        when(ride.rideStatus) {
+            RideStatus.COMPLETED, RideStatus.CANCELED -> {
+                bookingDetailViewRequestsText.visibility = View.GONE
+                startRideBtn.visibility = View.GONE
             }
 
-            val action = BookingDetailDriverFragmentDirections.actionBookingDetailFragmentToActiveRideFragment(ride)
-            findNavController().navigate(action)
+            else -> {
+                bookingDetailViewRequestsText.visibility = if(ride.rideStatus == RideStatus.IN_PROGRESS) View.GONE else View.VISIBLE
+                startRideBtn.visibility = View.VISIBLE
+                startRideBtnText.text = if(ride.rideStatus != RideStatus.IN_PROGRESS) "Start" else "View"
+
+
+
+                // Booking Detail Fragment -> View Booking Request Fragment
+                bookingDetailViewRequestsText.setOnClickListener {
+                    val action = BookingDetailDriverFragmentDirections
+                        .actionBookingDetailFragmentToViewBookingRequestsFragment(ride.id!!, ride.passengers.toTypedArray())
+                    findNavController().navigate(action)
+                }
+
+                // Booking Detail Fragment -> Active Ride Fragment
+                startRideBtn.setOnClickListener {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        bookingDetailViewModel.startRide(ride.id!!)
+                    }
+
+                    val action = BookingDetailDriverFragmentDirections.actionBookingDetailFragmentToActiveDriverRideFragment(ride)
+                    findNavController().navigate(action)
+                }
+            }
         }
     }
 

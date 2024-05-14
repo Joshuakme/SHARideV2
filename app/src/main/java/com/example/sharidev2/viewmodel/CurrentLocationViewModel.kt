@@ -7,6 +7,7 @@ import com.example.sharidev2.data.model.UserLocation
 import com.example.sharidev2.data.repository.UserLocationRepository
 import com.example.sharidev2.utility.FirebaseClient
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.Timestamp
 import kotlinx.coroutines.launch
 
 class CurrentLocationViewModel(): ViewModel() {
@@ -17,15 +18,16 @@ class CurrentLocationViewModel(): ViewModel() {
     val currentLocation: MutableLiveData<LatLng> get() = _currentLocation
 
 
+
     fun setLocation(location: LatLng) {
         _currentLocation.value = location
-
 
         viewModelScope.launch {
             if(FirebaseClient.getCurrentUser() != null) {
                 val currentUserLocation = UserLocation(
                     location = _currentLocation.value,
-                    user = FirebaseClient.getCurrentUser()
+                    user = FirebaseClient.getCurrentUser(),
+                    timestamp = Timestamp.now().toDate()
                 )
 
                 locationRepo.updateUserLocation(currentUserLocation)

@@ -7,7 +7,6 @@ import com.example.sharidev2.data.model.DistanceMatrixApi
 import com.example.sharidev2.data.model.DistanceMatrixResponse
 import com.example.sharidev2.data.model.Passenger
 import com.example.sharidev2.data.model.Ride
-import com.example.sharidev2.data.model.SearchLocation
 import com.google.android.gms.maps.model.LatLng
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -228,7 +227,7 @@ class FareUtils {
                 units = "metric",
                 origins = origin,
                 destinations = destination,
-                apiKey = context.getString(R.string.google_api_key)
+                apiKey = context.getString(R.string.google_map_key)
             )
         }
 

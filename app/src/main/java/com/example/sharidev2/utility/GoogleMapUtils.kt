@@ -1,6 +1,5 @@
 package com.example.sharidev2.utility
 
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.graphics.Bitmap
 import android.location.Location
@@ -21,7 +20,6 @@ import com.google.android.material.card.MaterialCardView
 import com.google.maps.DirectionsApiRequest
 import com.google.maps.GeoApiContext
 import com.google.maps.PendingResult
-import com.google.maps.internal.PolylineEncoding
 import com.google.maps.model.DirectionsResult
 import retrofit2.Call
 import retrofit2.http.GET
@@ -102,7 +100,7 @@ class GoogleMapUtils {
     // DIRECTION
     fun calculateDirections(context: Context, origin: LatLng, destination: LatLng, alternativeRoute: Boolean, callback: (DirectionsResult?) -> Unit) {
         val geoApiContext = GeoApiContext.Builder()
-            .apiKey(context.getString(R.string.google_api_key))
+            .apiKey(context.getString(R.string.google_map_key))
             .build()
 
 
