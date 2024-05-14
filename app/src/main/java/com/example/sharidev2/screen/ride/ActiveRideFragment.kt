@@ -41,6 +41,8 @@ import com.example.sharidev2.adapter.ActiveRidePassengerImageAdapter
 import com.example.sharidev2.data.model.Passenger
 import com.example.sharidev2.data.model.PolylineData
 import com.example.sharidev2.data.model.Ride
+import com.example.sharidev2.data.model.RideStatus
+import com.example.sharidev2.data.model.UserStatus
 import com.example.sharidev2.databinding.FragmentActiveRideBinding
 import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.Constants
@@ -89,7 +91,8 @@ class ActiveRideFragment : Fragment() {
         try {
             val activeRide = arguments?.get("ride") as Ride
 
-            activeRideViewModel.setActiveRide(activeRide)
+            activeRideViewModel.startActiveRide(activeRide)
+            startUserLocationsRunnable()
         } catch (e: Exception) {
             Log.e("Booking Detail Fragment", e.message.toString())
         }
@@ -227,7 +230,7 @@ class ActiveRideFragment : Fragment() {
 
                                 Glide.with(requireContext())
                                     .asBitmap()
-                                    .load(passenger.user?.photoUri) // Replace profilePictureUrl with the actual URL
+                                    .load(passenger.user?.photoUrl) // Replace profilePictureUrl with the actual URL
                                     .transform(RoundedCornersTransformation(8, 2))
                                     .into(object : CustomTarget<Bitmap>() {
                                         override fun onResourceReady(
@@ -321,6 +324,7 @@ class ActiveRideFragment : Fragment() {
     }
 
     private fun setupData() {
+        val rideStatus = binding.textActiveRideStatus
         val driverPhotoImg = binding.imgActiveRideDriverPhoto
         val driverName = binding.textActiveRideDriverName
         val driverContact = binding.textActiveRideDriverPhone
@@ -335,9 +339,45 @@ class ActiveRideFragment : Fragment() {
 
         activeRideViewModel.activeRide.observe(viewLifecycleOwner) { activeRide ->
             if (activeRide != null) {
+                // Ride Status
+                when(activeRide.rideStatus) {
+                    RideStatus.COMPLETED, RideStatus.CANCELED -> {
+                        findNavController().navigate(R.id.action_activeRideFragment_to_bookingFragment)
+                    }
+
+                    else -> {
+                        // Do nothing
+                    }
+                }
+
+
+                // User Status
+                for (passenger in activeRide.passengers) {
+                    if(passenger.userUid == currentUser!!.uid) {
+                        rideStatus.text = when(passenger.status) {
+                            UserStatus.ACCEPTED -> {
+                                "On The Way"
+                            }
+
+                            UserStatus.IN_VEHICLE -> {
+                                "Heading to destination"
+                            }
+
+                            UserStatus.COMPLETED -> {
+                                "Dropped off"
+                            }
+
+                            else -> {
+                                ""
+                            }
+                        }
+                    }
+                }
+
+
                 // Driver
-                if (activeRide.driver.user?.photoUri != null) {
-                    val photoUri = activeRide.driver.user?.photoUri
+                if (activeRide.driver.user?.photoUrl != null) {
+                    val photoUri = activeRide.driver.user?.photoUrl
 
                     if (CommonUtils().isUrl(photoUri.toString())) {
                         Glide.with(requireContext())
@@ -360,7 +400,6 @@ class ActiveRideFragment : Fragment() {
                 }
 
                 // Passengers
-
                 val adapter =
                     ActiveRidePassengerImageAdapter(requireContext(), activeRide.passengers,
                         object : ActiveRidePassengerImageAdapter.OnPassengerImageClickListener {
@@ -437,8 +476,6 @@ class ActiveRideFragment : Fragment() {
         }
 
         // Handle SOS accordingly
-
-
         sosCallBtn.setOnTouchListener{view, event ->
                 when (event!!.action) {
                     MotionEvent.ACTION_DOWN -> {
@@ -509,41 +546,43 @@ class ActiveRideFragment : Fragment() {
     }
 
     private fun getUserLocation() {
-        activeRideViewModel.getCurrentUserLocation()
-        activeRideViewModel.getUsersLocation()
+        if(isAdded) {
+            activeRideViewModel.getCurrentUserLocation()
+            activeRideViewModel.getUsersLocation()
 
-        googleMapFragment.getMapAsync { googleMap ->
-            activeRideViewModel.activeRideUserLocationList.observe(viewLifecycleOwner) { locationList ->
-                if (locationList != null) {
-                    for (location in locationList) {
-                        if (location.location != null) {
-                            googleMap.clear()
+            googleMapFragment.getMapAsync { googleMap ->
+                activeRideViewModel.activeRideUserLocationList.observe(viewLifecycleOwner) { locationList ->
+                    if (locationList != null) {
+                        for (location in locationList) {
+                            if (location.location != null) {
+                                googleMap.clear()
 
-                            if (location.user?.photoUri != null) {
-                                Glide.with(requireContext())
-                                    .asBitmap()
-                                    .load(location.user!!.photoUri.toString()) // Replace profilePictureUrl with the actual URL
-                                    .transform(RoundedCornersTransformation(8, 2))
-                                    .into(object : CustomTarget<Bitmap>() {
-                                        override fun onResourceReady(
-                                            resource: Bitmap,
-                                            transition: Transition<in Bitmap>?
-                                        ) {
-                                            GoogleMapUtils().addOverlayToMap(
-                                                googleMap,
-                                                resource,
-                                                location.location,
-                                                30f,
-                                                30f
-                                            )
-                                        }
+                                if (location.user?.photoUrl != null) {
+                                    Glide.with(requireContext())
+                                        .asBitmap()
+                                        .load(location.user!!.photoUrl.toString()) // Replace profilePictureUrl with the actual URL
+                                        .transform(RoundedCornersTransformation(8, 2))
+                                        .into(object : CustomTarget<Bitmap>() {
+                                            override fun onResourceReady(
+                                                resource: Bitmap,
+                                                transition: Transition<in Bitmap>?
+                                            ) {
+                                                GoogleMapUtils().addOverlayToMap(
+                                                    googleMap,
+                                                    resource,
+                                                    location.location,
+                                                    30f,
+                                                    30f
+                                                )
+                                            }
 
-                                        override fun onLoadCleared(placeholder: Drawable?) {
-                                            // Handle resource clearing if needed
-                                        }
-                                    })
+                                            override fun onLoadCleared(placeholder: Drawable?) {
+                                                // Handle resource clearing if needed
+                                            }
+                                        })
+                                }
+
                             }
-
                         }
                     }
                 }

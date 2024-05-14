@@ -1,7 +1,6 @@
 package com.example.sharidev2.adapter
 
 import android.content.Context
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,8 +57,8 @@ class RideAdapter (
         val bookingDateFormatter = SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.ENGLISH)
 
         // Bind data into UI
-        if(ride.driver.user?.photoUri != null) {
-            val photoUri = ride.driver.user?.photoUri
+        if(ride.driver.user?.photoUrl != null) {
+            val photoUri = ride.driver.user?.photoUrl
 
             Glide.with(context)
                 .load(photoUri.toString())

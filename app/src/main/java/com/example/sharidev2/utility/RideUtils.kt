@@ -109,6 +109,8 @@ class RideUtils {
         val fare = distanceInKm
 
 
+
+
         passenger.ridePrice = fare
 
         // 3. Send confirmation notifications to both driver and passenger

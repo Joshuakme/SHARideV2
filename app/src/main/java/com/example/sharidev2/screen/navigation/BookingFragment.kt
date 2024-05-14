@@ -68,8 +68,8 @@ class BookingFragment : Fragment() {
                 0 -> {
                     tab.text = "Active"
                     tab.customView = null  // Reset custom view
-                    tab.view?.minimumWidth = 0  // Reset minimum width
-                    tab.view?.layoutParams = LinearLayout.LayoutParams(
+                    tab.view.minimumWidth = 0  // Reset minimum width
+                    tab.view.layoutParams = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         LinearLayout.LayoutParams.MATCH_PARENT
                     )
@@ -77,8 +77,8 @@ class BookingFragment : Fragment() {
                 1 -> {
                     tab.text = "Past"
                     tab.customView = null  // Reset custom view
-                    tab.view?.minimumWidth = 0  // Reset minimum width
-                    tab.view?.layoutParams = LinearLayout.LayoutParams(
+                    tab.view.minimumWidth = 0  // Reset minimum width
+                    tab.view.layoutParams = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         LinearLayout.LayoutParams.MATCH_PARENT
                     )

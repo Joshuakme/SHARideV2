@@ -39,21 +39,19 @@ class LocationService: Service() {
         super.onCreate()
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        if (Build.VERSION.SDK_INT >= 26) {
-            val CHANNEL_ID = "my_channel_01"
-            val channel = NotificationChannel(
-                CHANNEL_ID,
-                "My Channel",
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
-            (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?)!!.createNotificationChannel(
-                channel
-            )
-            val notification: Notification = Notification.Builder(this, CHANNEL_ID)
-                .setContentTitle("")
-                .setContentText("").build()
-            startForeground(1, notification)
-        }
+        val CHANNEL_ID = "my_channel_01"
+        val channel = NotificationChannel(
+            CHANNEL_ID,
+            "My Channel",
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?)!!.createNotificationChannel(
+            channel
+        )
+        val notification: Notification = Notification.Builder(this, CHANNEL_ID)
+            .setContentTitle("GPS is running")
+            .setContentText("").build()
+        startForeground(1, notification)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -89,15 +87,13 @@ class LocationService: Service() {
                 // Get the latest location from the result
                 val location = locationResult.lastLocation
 
-                if (location != null) {
-                    val currentLocation = LatLng(location.latitude, location.longitude)
+                val currentLocation = LatLng(location.latitude, location.longitude)
 
-                    if(currentUser != null) {
+                if(currentUser != null) {
 
-                        currentLocationViewModel.setLocation(currentLocation)
-                    } else {
-                        //stopSelf()
-                    }
+                    currentLocationViewModel.setLocation(currentLocation)
+                } else {
+                    //stopSelf()
                 }
             }
         }, Looper.myLooper())   // Looper.myLooper tells this to repeat forever until thread is destroyed
@@ -108,8 +104,8 @@ class LocationService: Service() {
 
     companion object {
         private const val TAG = "LocationService"
-        private const val UPDATE_INTERVAL = (4 * 1000 /* 4 secs */).toLong()
-        private const val FASTEST_INTERVAL: Long = 2000 /* 2 sec */
+        private const val UPDATE_INTERVAL = (8 * 1000 /* 4 secs */).toLong()
+        private const val FASTEST_INTERVAL: Long = 5000 /* 2 sec */
     }
 
 }

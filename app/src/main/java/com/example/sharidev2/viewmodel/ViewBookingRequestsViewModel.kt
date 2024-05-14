@@ -1,5 +1,6 @@
 package com.example.sharidev2.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -13,21 +14,35 @@ class ViewBookingRequestsViewModel(
     private val rideRepository = RideRepository()
 
     // DATA KEY CONSTANT
-    private val PASSENGER_LIST_KEY = "passenger_list"
+    private val RIDE_ID_KEY = "ride_id"
+    private val REQUESTED_PASSENGER_LIST_KEY = "requested_passenger_list"
 
 
     // INTERNAL DATA MEMBERS
     // Ride List Location
-    val passengerList: LiveData<List<Passenger>> = savedStateHandle.getLiveData(PASSENGER_LIST_KEY, emptyList())
+    val rideId: LiveData<String> = savedStateHandle.getLiveData(RIDE_ID_KEY, "")
+    val requestedPassengerList: LiveData<List<Passenger>> = savedStateHandle.getLiveData(REQUESTED_PASSENGER_LIST_KEY, emptyList())
 
 
     // SETTER in SavedStateHandle
-    fun setPassengerList(newPassenger: List<Passenger>) {
-        savedStateHandle[PASSENGER_LIST_KEY] = newPassenger
+    fun setRideId(newRideId: String) {
+        savedStateHandle[RIDE_ID_KEY] = newRideId
+
+        rideRepository.listenForBookingRequests(newRideId) {passengerList ->
+            setRequestedPassengerList(passengerList)
+        }
+    }
+
+    fun setRequestedPassengerList(newPassengerList: List<Passenger>) {
+        val requestedPassengerList = newPassengerList.filter {passenger ->
+            passenger.status == UserStatus.REQUESTED
+        }
+
+        savedStateHandle[REQUESTED_PASSENGER_LIST_KEY] = requestedPassengerList
     }
 
     suspend fun acceptPassengerToRide(acceptedPassenger: Passenger, rideId: String): Int {
-        passengerList.value!!.forEach { passenger ->
+        requestedPassengerList.value!!.forEach { passenger ->
             if(passenger.userUid == acceptedPassenger.userUid) {
                 passenger.status = UserStatus.ACCEPTED
             }
@@ -37,7 +52,7 @@ class ViewBookingRequestsViewModel(
     }
 
     suspend fun rejectPassengerToRide(rejectedPassenger: Passenger, rideId: String): Int {
-        passengerList.value!!.forEach { passenger ->
+        requestedPassengerList.value!!.forEach { passenger ->
             if(passenger.userUid == rejectedPassenger.userUid) {
                 passenger.status = UserStatus.REJECTED
             }

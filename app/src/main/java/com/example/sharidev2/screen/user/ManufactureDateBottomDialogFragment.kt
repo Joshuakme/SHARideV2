@@ -56,6 +56,7 @@ class ManufactureDateBottomDialogFragment(
         minDate.set(1900, Calendar.JANUARY, 1)
         val maxDate = Calendar.getInstance()    // Today
 
+        datePicker.spinnersShown = false
         datePicker.minDate = minDate.timeInMillis
         datePicker.maxDate = maxDate.timeInMillis
 

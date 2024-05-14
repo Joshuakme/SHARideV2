@@ -65,7 +65,7 @@ class HomeFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
 
 
-        context = if(getContext() != null) {
+        context = if(isAdded) {
             requireContext()
         } else {
             requireActivity().applicationContext
@@ -75,12 +75,12 @@ class HomeFragment : Fragment() {
         // ELEMENT VARIABLES
         val profilePicImg = binding.imgUserProfilePic
         val welcomeHomeText = binding.textHomeWelcomeUser
+        val popularLocationRecyclerView = binding.rvPopularLocation
         val nearbyRidesRecyclerView = binding.rvHomeNearbyRides
         val nearbyRidesErrorCard = binding.cardHomeErrorLoadNearbyRides
 
 
         // AUTH VARIABLES
-        val currentUser = currentUserViewModel.user.value
 
 
         // LAYOUT SETTINGS
@@ -132,6 +132,10 @@ class HomeFragment : Fragment() {
                     .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Disable disk caching
                     .into(profilePicImg)
         } else {profilePicImg.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.baseline_account_circle_24))}
+
+
+        // Popular Locations
+
 
 
         // Set Nearby Rides

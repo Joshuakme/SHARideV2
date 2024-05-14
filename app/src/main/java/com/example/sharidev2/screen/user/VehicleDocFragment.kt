@@ -51,8 +51,6 @@ class VehicleDocFragment : Fragment() {
                 vehicleDocProgressBar.visibility = View.VISIBLE
                 vehicleDocRecyclerView.visibility = View.GONE
                 reminderAddVehicleDocCard.visibility = View.VISIBLE
-
-                Toast.makeText(context,"No Vehicle Found", Toast.LENGTH_SHORT).show()
             } else {
                    if (vehicleList.isNotEmpty() && vehicleDocList.isNotEmpty()) {
                         adapter = ViewVehicleAdapter(vehicleList, vehicleDocList = vehicleDocList.toList(), clickListener = object:  ViewVehicleAdapter.OnVehicleClickListener {
@@ -74,7 +72,7 @@ class VehicleDocFragment : Fragment() {
                         vehicleDocProgressBar.visibility = View.GONE
                         vehicleDocRecyclerView.visibility = View.GONE
                         reminderAddVehicleDocCard.visibility = View.VISIBLE
-                       Toast.makeText(context,"No Vehicle Found", Toast.LENGTH_SHORT).show()
+                      // Toast.makeText(context,"No Vehicle Found", Toast.LENGTH_SHORT).show()
                     }
                 }
             }

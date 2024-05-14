@@ -54,7 +54,6 @@ class FareUtils {
 
 
             try {
-
                 if (newPassenger.origin!!.placeId == origin.placeId) {
                     // same origin, then calculate from origin-destination
                     val fare = calculateFareFromOriginToDestination(
@@ -190,11 +189,12 @@ class FareUtils {
             passengerList: MutableList<Passenger>
         ): List<Passenger> {
             var minDistance = Double.MAX_VALUE
-            var nearestPassenger: Passenger = Passenger()
+            var nearestPassenger = Passenger()
+            val clonedPassengerList = passengerList.toMutableList()
             val sortedList = mutableListOf<Passenger>()
 
-            while (passengerList.isNotEmpty()) {
-                for (passenger in passengerList) {
+            while (clonedPassengerList.isNotEmpty()) {
+                for (passenger in clonedPassengerList) {
                     if (passenger.location != null) {
                         val distance = if (sortedList.isEmpty()) {
                             calculateDistance(origin, passenger.location)
@@ -209,7 +209,7 @@ class FareUtils {
                     }
                 }
 
-                passengerList.remove(nearestPassenger)
+                clonedPassengerList.remove(nearestPassenger)
                 sortedList.add(nearestPassenger)
             }
 

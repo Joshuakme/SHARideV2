@@ -13,6 +13,7 @@ import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.utility.Converters
 import com.example.sharidev2.utility.FirebaseClient
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.Timestamp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -206,6 +207,20 @@ class ActiveRideRepository {
         }
     }
 
+    fun listenForActiveRideChanges(rideId: String, listener: (Ride) -> Unit) {
+        rideCollectionRef.document(rideId).addSnapshotListener {snapshot, err ->
+            if(err != null) {
+                // Handle error
+                return@addSnapshotListener
+            }
+
+            if (snapshot != null) {
+                val ride = Converters().toRide(snapshot)
+                listener(ride)
+            }
+        }
+    }
+
 
     // UPDATE
     suspend fun cancelRideByPassenger(ride: Ride, passengerId: String): Int {
@@ -323,6 +338,7 @@ class ActiveRideRepository {
             try {
                 if (ride.id != null) {
                    ride.rideStatus = RideStatus.COMPLETED
+                    ride.completeTime = Timestamp.now()
 
                     rideCollectionRef.document(ride.id)
                         .update(Converters().toRideHashMap(ride))

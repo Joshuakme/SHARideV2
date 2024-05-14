@@ -1,5 +1,6 @@
 package com.example.sharidev2.screen.user
 
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Toast
+import androidx.core.content.ContentProviderCompat
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -18,6 +20,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.sharidev2.R
 import com.example.sharidev2.data.model.VehicleType
 import com.example.sharidev2.databinding.FragmentAddVehicleDocBinding
+import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.Constants
 import com.example.sharidev2.viewmodel.VehicleDocViewModel
 import com.google.firebase.Timestamp
@@ -25,6 +28,7 @@ import kotlinx.coroutines.launch
 import java.text.FieldPosition
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 class AddVehicleDocFragment: Fragment() {
@@ -35,7 +39,7 @@ class AddVehicleDocFragment: Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentAddVehicleDocBinding.inflate(inflater, container, false)
         vehicleId = arguments?.getString("vehicleId")
 
@@ -169,6 +173,10 @@ class AddVehicleDocFragment: Fragment() {
                 viewModel.setPlateNumber(e.toString())
             }
         })
+
+        viewModel.manufactureDate.observe(viewLifecycleOwner) {manufactureDate ->
+            binding.dateManufacture.text = "Manufacture Date: " + CommonUtils.formatDate(manufactureDate, "yyyy-MM-dd") + " \u2193"
+        }
     }
 
     private fun setupOnClickListeners() {
@@ -179,7 +187,7 @@ class AddVehicleDocFragment: Fragment() {
 
 
         manufactureDate.setOnClickListener {
-            showManufactureDateDialog()
+            showDatePicker()
         }
 
         backButton.setOnClickListener {
@@ -215,25 +223,6 @@ class AddVehicleDocFragment: Fragment() {
         }
 
 
-
-    // Initialize and show the bottom dialog fragment to select manufacture date
-    private fun showManufactureDateDialog() {
-        val dialogFragment = ManufactureDateBottomDialogFragment(
-            object: ManufactureDateBottomDialogFragment.DialogClickListener{
-                override fun onCancelClick() {
-                    // Do nothing
-                }
-
-                override fun onSaveClick(date: Timestamp) {
-                    viewModel.setManufactureDate(date)
-
-                    // Update the UI with the selected manufacture date
-                    val formattedDate = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(date.toDate())
-                    binding.dateManufacture.setText(formattedDate)
-                }
-            })
-        dialogFragment.show(childFragmentManager, dialogFragment.tag)
-    }
 
 
     private fun isAllFieldValid(): Boolean {
@@ -343,7 +332,44 @@ class AddVehicleDocFragment: Fragment() {
         return true
     }
 
+    private fun showDatePicker() {
+        val today = Calendar.getInstance()
+
+        val initialYear = today.get(Calendar.YEAR)
+        val initialMonth = today.get(Calendar.MONTH)
+        val initialDayOfMonth = today.get(Calendar.DAY_OF_MONTH)
+
+        val datePickerDialog = DatePickerDialog(
+            requireContext(),
+            DatePickerDialog.OnDateSetListener {view, year, month, dayOfMonth ->
+                val selectedCalendar = Calendar.getInstance().apply {
+                    set(year, month,dayOfMonth)
+                }
+                val selectedInstant = selectedCalendar.toInstant()
+
+                val timestamp = Timestamp(Date.from(selectedInstant))
+
+                viewModel.setManufactureDate(timestamp)
+
+            },initialYear, initialMonth, initialDayOfMonth
+        )
+
+
+        val minDate = Calendar.getInstance()    // set minimum date to 1990 Jan 01
+        minDate.set(1900, Calendar.JANUARY, 1)
+        val maxDate = Calendar.getInstance()    // Today
+
+        datePickerDialog.datePicker.minDate = minDate.timeInMillis
+        datePickerDialog.datePicker.maxDate = maxDate.timeInMillis
+        datePickerDialog.datePicker.calendarViewShown = true
+        datePickerDialog.datePicker.spinnersShown = false
+
+
+        datePickerDialog.show()
+    }
 }
+
+
 
 
 

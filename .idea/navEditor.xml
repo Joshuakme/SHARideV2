@@ -13,8 +13,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="684" />
-                            <option name="y" value="-834" />
+                            <option name="x" value="681" />
+                            <option name="y" value="-946" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -166,11 +166,6 @@
                         <option name="myPositions">
                           <map>
                             <entry key="action_bookingDetailFragment_to_activeDriverRideFragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                            <entry key="action_bookingDetailFragment_to_activeRideFragment">
                               <value>
                                 <LayoutPositions />
                               </value>

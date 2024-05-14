@@ -2,6 +2,7 @@ package com.example.sharidev2.utility
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import android.util.TypedValue
 import com.example.sharidev2.data.model.Chat
 import com.example.sharidev2.data.model.ChatStatus
@@ -40,7 +41,7 @@ class Converters() {
 
 
     // RIDE
-    suspend fun toRide(document: DocumentSnapshot): Ride {
+    fun toRide(document: DocumentSnapshot): Ride {
         val origin = toSearchLocation(document.get("origin") as Map<String, Any>)
         val destination =
             toSearchLocation(document.get("destination") as Map<String, Any>)
@@ -69,7 +70,14 @@ class Converters() {
 
         // Chat Sub-Collection
 //        val chat = FirebaseClient.getChatFromChatId(document.get("chatId") as String ?: "")
-        val chat = toChat(document.get("chat") as Map<String, Any>)
+        val chatMap = document.get("chat") as Map<String, Any>?
+        val chat = if(chatMap != null) {
+            toChat(chatMap)
+        } else {
+            null
+        }
+
+        val chatId = document.getString("chatId")
 
 
         // Completed Route
@@ -95,6 +103,7 @@ class Converters() {
             availableSeats = availableSeats,
             reviews = reviewList,
             chat = chat,
+            chatId = chatId,
             completedRoute = completedRoute,
             createdAt = createdAt
         )
@@ -108,7 +117,7 @@ class Converters() {
             "origin" to ride.origin,
             "destination" to ride.destination,
             "datetime" to ride.datetime,
-            "driver" to toDriverHashMapWithoutUser(ride.driver),
+            "driver" to ride.driver,
             "passengers" to ride.passengers,
             "rideStatus" to ride.rideStatus,
             "startTime" to ride.startTime,
@@ -116,7 +125,7 @@ class Converters() {
             "availableSeats" to ride.availableSeats,
             "reviews" to ride.reviews,
             "chat" to ride.chat,
-            "chatId" to ride.chat!!.chatId,
+            "chatId" to ride.chatId,
             "completedRoute" to ride.completedRoute,
             "createdAt" to ride.createdAt
         )
@@ -134,7 +143,7 @@ class Converters() {
             "origin" to ride.origin,
             "destination" to ride.destination,
             "datetime" to ride.datetime,
-            "driver" to toDriverHashMapWithoutUser(ride.driver),
+            "driver" to toDriverHashMap(ride.driver),
             "passengers" to ride.passengers,
             "passengerIds" to passengerIds,
             "rideStatus" to ride.rideStatus,
@@ -142,7 +151,8 @@ class Converters() {
             "completeTime" to ride.completeTime,
             "availableSeats" to ride.availableSeats,
             "reviews" to ride.reviews,
-            "chat" to chatId,
+            "chatId" to chatId,
+            "chat" to ride.chat,
             "completedRoute" to ride.completedRoute,
             "createdAt" to ride.createdAt
         )
@@ -195,7 +205,20 @@ class Converters() {
         val petFriendly = if(rideOptionMap["petFriendly"] != null) rideOptionMap["petFriendly"] as Boolean else null
         val rideOption = RideOption(driverGender, vehicleType, petFriendly)
 
-        val rating = if(map["rating"] != null) map["rating"] as Double else null
+
+        val ratingValue = map["rating"]
+        val rating = if(ratingValue != null) {
+            if(ratingValue is Long?) {
+                ratingValue.toDouble()
+            } else if(ratingValue is Double) {
+                ratingValue
+            } else {
+                ratingValue.toString().toDouble()
+            }
+        } else {
+            null
+        }
+
         //val savedAddresses = toSearchLocationList(map["savedAddresses"] as List<Map<String, Any>>).toMutableList()
         val savedAddresses = mapOf<String, SearchLocation>()
         val gender = if(map["gender"] != null) Gender.valueOf(map["gender"] as String) else null
@@ -229,11 +252,17 @@ class Converters() {
         return userList
     }
 
-    suspend fun toDriver(map: Map<String, Any>): Driver {
+    fun toDriver(map: Map<String, Any>): Driver {
         val userUid = map["userUid"] as String
 
-//        val driverUser = toUser(map["user"] as Map<String, Any>)
-        val driverUser = FirebaseClient.getUserFromUid(userUid)
+        val driverUserMap = map["user"] as Map<String, Any>?
+        val driverUser = if(driverUserMap != null) {
+            toUser(driverUserMap)
+        } else {
+            null
+        }
+
+//        val driverUser = FirebaseClient.getUserFromUid(userUid)
 
         val locationMap = map["location"] as Map<String, Any>?
         val location = if(locationMap != null) {
@@ -255,7 +284,16 @@ class Converters() {
             status,
             vehicle
         )
-        return Driver()
+    }
+
+    private fun toDriverHashMap(driver: Driver): HashMap<String, *> {
+        return hashMapOf(
+            "userUid" to driver.userUid,
+            "user" to driver.user,
+            "location" to driver.location,
+            "status" to driver.status,
+            "vehicle" to driver.vehicle
+        )
     }
 
     private fun toDriverHashMapWithoutUser(driver: Driver): HashMap<String, *> {
@@ -466,7 +504,7 @@ class Converters() {
         }
 
         val capacity = (map["capacity"] as Long).toInt()
-//        val documentId = map["documentId"] as String
+        val documentId = map["documentId"] as String
         val userUid = map["userUid"] as String
 
         return Vehicle(
@@ -479,7 +517,7 @@ class Converters() {
             photos = photos,
             capacity = capacity,
             document = null,
-            documentId = "documentId",
+            documentId = documentId,
             userUid = userUid
         )
     }

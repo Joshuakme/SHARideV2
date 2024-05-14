@@ -52,6 +52,12 @@ class ActiveRideViewModel(
     val userLocation: LiveData<UserLocation> = savedStateHandle.getLiveData(USER_LOCATION_KEY)
 
     // SETTER in SavedStateHandle
+    fun startActiveRide(newActiveRide: Ride) {
+        activeRideRepository.listenForActiveRideChanges(newActiveRide.id!!) {ride ->
+            setActiveRide(ride)
+        }
+    }
+
     fun setActiveRide(newActiveRide: Ride) {
         savedStateHandle[ACTIVE_RIDE_KEY] = newActiveRide
 
@@ -96,7 +102,13 @@ class ActiveRideViewModel(
                 }
 
                 if(passengers.isNotEmpty()) {
-                    setDriverActiveRideSelectedPassenger(passengers[0])
+                    if(activeDriverRideSelectedPassenger.value != null) {
+                        passengers.forEach { passenger ->
+                            if(passenger.userUid!! == activeDriverRideSelectedPassenger.value!!.userUid!!) setDriverActiveRideSelectedPassenger(passenger)
+                        }
+                    } else {
+                        setDriverActiveRideSelectedPassenger(passengers[0])
+                    }
                 }
 
                 setActiveRideUserLocationList(userLocationList)

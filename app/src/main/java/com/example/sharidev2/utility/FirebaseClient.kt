@@ -82,7 +82,7 @@ object FirebaseClient {
                     val email = userData["email"] as String?
                     val phoneNumber = userData["phoneNumber"] as String
 
-                    val photoUri = if (userData["photoUrl"] != null) {
+                    val photoUrl = if (userData["photoUrl"] != null) {
                         Uri.parse(userData["photoUrl"] as String)
                     } else {
                         null
@@ -91,7 +91,7 @@ object FirebaseClient {
                     val rideOptionMap = userData["rideOption"] as Map<String, String>
                     val driverGender = rideOptionMap["driverGender"]?.let { Gender.valueOf(it) }
                     val vehicleType = rideOptionMap["vehicleType"]?.let { VehicleType.valueOf(it) }
-                    val petFriendly = rideOptionMap["petFriendly"] as? Boolean
+                    val petFriendly = rideOptionMap["petFriendly"] as? Boolean?
 
                     val rideOption = RideOption(driverGender, vehicleType, petFriendly)
 
@@ -112,7 +112,7 @@ object FirebaseClient {
                         null
                     }
 
-                    val fcmToken = userData["fcmToken"] as String
+                    val fcmToken = userData["fcmToken"] as String?
 
                     val joinedDate = userData["joinedDate"] as Timestamp
 
@@ -122,7 +122,7 @@ object FirebaseClient {
                         displayName = displayName,
                         email = email,
                         phoneNumber = phoneNumber,
-                        photoUri = photoUri,
+                        photoUrl = photoUrl,
                         rideOption = rideOption,
                         rating = rating,
                         savedAddress = null,

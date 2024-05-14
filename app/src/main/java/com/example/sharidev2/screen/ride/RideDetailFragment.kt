@@ -115,8 +115,8 @@ class RideDetailFragment : Fragment() {
             if (ride != null) {
                 // Driver
                 if (ride.driver.user != null) {
-                    if (ride.driver.user!!.photoUri != null || ride.driver.user!!.photoUri.toString() != "") {
-                        val photoUri = ride.driver.user!!.photoUri
+                    if (ride.driver.user!!.photoUrl != null || ride.driver.user!!.photoUrl.toString() != "") {
+                        val photoUri = ride.driver.user!!.photoUrl
 
                         Log.e("RideDetailFragment", "PhotoUri: " + photoUri.toString())
                         if (CommonUtils().isUrl(photoUri.toString())) {
@@ -148,63 +148,51 @@ class RideDetailFragment : Fragment() {
                 if (ride.driver.vehicle != null) {
                     passengersSeatsBookedText.text = getString(
                         R.string.ride_detail_fragment_passengers_seat_booked,
-                        0,
-                        ride.driver.vehicle.capacity - 1
+                        (ride.driver.vehicle.capacity - ride.availableSeats),
+                        ride.driver.vehicle.capacity
                     )
                     val defaultUserImage = binding.imgRideDetailPassenger1
                     defaultUserImage.tag = "baseline_account_circle_24"
 
-                    if (ride.passengers.isNotEmpty() && ride.passengers != null) {
-                        passengersSeatsBookedText.text = getString(
-                            R.string.ride_detail_fragment_passengers_seat_booked,
-                            ride.passengers.size,
-                            ride.driver.vehicle.capacity - 1
-                        )
 
-                        // Passengers Image
-                        val imageList = mutableListOf<Uri>()
-                        // Check if there are passengers
-                        if (ride.passengers.isEmpty()) {
-                            // Populate with default user images
-                            val remainingCapacity = ride.driver.vehicle.capacity
-                            repeat(remainingCapacity) {
-                                imageList.add(
-                                    CommonUtils().getUriFromVectorDrawable(
-                                        defaultUserImage
-                                    )
-                                )
-                            }
-                        } else {
-                            // Populate with passengers' photos
-                            ride.passengers.forEach { passenger ->
-                                val photoUri = passenger.user?.photoUri
-                                    ?: CommonUtils().getUriFromVectorDrawable(defaultUserImage)
-                                imageList.add(photoUri)
-                            }
+                    // Passenger Number Booked Text
+                    passengersSeatsBookedText.text = getString(
+                        R.string.ride_detail_fragment_passengers_seat_booked,
+                        ride.passengers.size,
+                        ride.driver.vehicle.capacity
+                    )
+
+                    // Passenger Images List
+                    val imageList = mutableListOf<Uri>()
+
+                    if (ride.passengers.isNotEmpty()) {
+                        // Populate with passengers' photos
+                        ride.passengers.forEach { passenger ->
+                            val photoUri = passenger.user?.photoUrl
+                                ?: CommonUtils().getUriFromVectorDrawable(defaultUserImage)
+                            imageList.add(photoUri)
                         }
 
-
-                        val adapter = RideDetailPassengerImageAdapter(requireContext(), imageList)
-                        passengersImageRecyclerView.adapter = adapter
-                        passengersImageRecyclerView.layoutManager =
-                            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+                        // Populate remaining seats with default user image
+                        repeat(ride.availableSeats) {
+                            imageList.add(
+                                CommonUtils().getUriFromVectorDrawable(
+                                    defaultUserImage
+                                )
+                            )
+                        }
                     } else {
-                        passengersSeatsBookedText.text = getString(
-                            R.string.ride_detail_fragment_passengers_seat_booked,
-                            0,
-                            ride.driver.vehicle.capacity - 1
-                        )
+                        // PassengerList is empty / No passenger
 
-                        val imageList = mutableListOf<Uri>()
-                        for (i in 1..<ride.driver.vehicle.capacity) {
+                        for (i in 1..ride.driver.vehicle.capacity) {
                             imageList.add(CommonUtils().getUriFromVectorDrawable(defaultUserImage))
                         }
-
-                        val adapter = RideDetailPassengerImageAdapter(requireContext(), imageList)
-                        passengersImageRecyclerView.adapter = adapter
-                        passengersImageRecyclerView.layoutManager =
-                            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
                     }
+
+                    val adapter = RideDetailPassengerImageAdapter(requireContext(), imageList)
+                    passengersImageRecyclerView.adapter = adapter
+                    passengersImageRecyclerView.layoutManager =
+                        LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
                 }
 
                 // Ride Details
@@ -237,15 +225,16 @@ class RideDetailFragment : Fragment() {
                     rideDetailPriceInfo.visibility = View.INVISIBLE
                 }
 
+
+                // Get Passenger List
+                val passengerList = ride.passengers.toMutableList()
+                passengerList.add(currentPassenger)
+
+                val sortedPassenger =
+                    FareUtils.getSortedPassengerList(ride.origin.geolocation!!, passengerList)
+
                 // Price Estimation
                 lifecycleScope.launch {
-                    // Get Passenger List
-                    val passengerList = ride.passengers.toMutableList()
-                    passengerList.add(currentPassenger)
-
-                    val sortedPassenger =
-                        FareUtils.getSortedPassengerList(ride.origin.geolocation!!, passengerList)
-
                     FareUtils.calculatePassengerFare(
                         context,
                         ride,
@@ -254,13 +243,15 @@ class RideDetailFragment : Fragment() {
                         object : FareUtils.Companion.OnDistanceResponseListener {
                             override fun onPriceCalculated(fare: Double) {
                                 currentPassenger.ridePrice = fare
-                                estimatedPriceText.text = getString(R.string.ride_detail_fragment_passengers_estimated_price, fare.toDouble())
-                            }
-                        })
-                }
 
-//                estimatedPrice = 0.0      // TODO: Calculate price
-//                estimatedPriceText.text = getString(R.string.ride_detail_fragment_passengers_estimated_price, estimatedPrice)
+                                estimatedPriceText.text = getString(
+                                    R.string.ride_detail_fragment_passengers_estimated_price,
+                                    fare
+                                )
+                            }
+                        }
+                    )
+                }
 
                 loadingData(false)
             } else {

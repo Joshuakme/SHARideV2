@@ -168,7 +168,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="@dimen/ss_screen_width_margin"
                 android:fontFamily="@font/poppins_semibold"
-                android:text="@string/home_section_recent_rides_title"
+                android:text="@string/home_section_popular_location_title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cl_home_user_info" />
@@ -356,6 +356,18 @@
                     </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
             </HorizontalScrollView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_popular_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_home_recent_rides_section"
+                tools:listitem="@layout/recycler_item_home_popular_location"
+                tools:visibility="gone" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_home_section_nearby_rides"

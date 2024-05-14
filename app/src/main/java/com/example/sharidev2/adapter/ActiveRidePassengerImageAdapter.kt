@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -62,9 +61,9 @@ class ActiveRidePassengerImageAdapter(
         val passenger = passengerImgList[position]
 
         // Image
-        if(passenger.user?.photoUri != null) {
+        if(passenger.user?.photoUrl != null) {
             Glide.with(context)
-                .load(passenger.user!!.photoUri.toString())
+                .load(passenger.user!!.photoUrl.toString())
                 .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Disable disk caching
                 .into(holder.passengerImg)
         } else {

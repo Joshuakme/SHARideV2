@@ -7,10 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.toLowerCase
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sharidev2.R
 import com.example.sharidev2.data.model.Ride
+import com.example.sharidev2.data.model.RideStatus
 import com.example.sharidev2.data.model.UserStatus
 import com.example.sharidev2.utility.CommonUtils
 import java.text.SimpleDateFormat
@@ -73,9 +75,8 @@ class BookingAdapter (
 
 
             // Price/Status Text
-            val driver = booking.driver
-            when(driver.status) {
-                UserStatus.COMPLETED -> {
+            when(booking.rideStatus) {
+                RideStatus.COMPLETED -> {
                     val totalPrice = if(booking.passengers.isNotEmpty()) {
                         var totalPrice = 0.0
                         for(passenger in booking.passengers) {
@@ -88,11 +89,12 @@ class BookingAdapter (
                     holder.priceText.text = holder.itemView.context.getString(R.string.booking_item_price, totalPrice)
                 }
 
-                UserStatus.IN_VEHICLE -> {
-                    holder.priceText.text = "ongoing"
+                RideStatus.IN_PROGRESS -> {
+                    holder.priceText.text = "On going"
                 }
 
-                else -> holder.priceText.text = booking.rideStatus.toString().lowercase()
+                else -> holder.priceText.text = booking.rideStatus.toString().toLowerCase(Locale.getDefault())
+                    .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
             }
         } else if(isPassenger(booking)) {
             val colorError = CommonUtils().getThemeColor(context, com.google.android.material.R.attr.colorError)

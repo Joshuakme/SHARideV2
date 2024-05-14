@@ -59,9 +59,9 @@ class PassengerRequestAdapter(
         val passenger = passengerList[position]
 
         // Passenger Image
-        if(passenger.user?.photoUri != null) {
+        if(passenger.user?.photoUrl != null) {
             Glide.with(context)
-                .load(passenger.user!!.photoUri.toString())
+                .load(passenger.user!!.photoUrl.toString())
                 .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Disable disk caching
                 .into(holder.passengerImg)
         }
