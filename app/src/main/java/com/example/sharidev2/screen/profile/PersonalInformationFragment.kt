@@ -158,7 +158,7 @@ class PersonalInformationFragment : Fragment() {
         // NAVIGATION EVENT LISTENERS
         // Personal Information Fragment -> Profile Fragment
         backBtn.setOnClickListener {
-            findNavController().popBackStack()
+            findNavController().navigate(R.id.action_personalInformationFragment_to_profileFragment)
         }
 
         // Personal Information Fragment -> Add Profile Pic with Image Picker

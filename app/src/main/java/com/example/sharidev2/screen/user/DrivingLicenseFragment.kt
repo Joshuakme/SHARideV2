@@ -157,7 +157,7 @@ class DrivingLicenseFragment : Fragment() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "*/*"
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
-        startActivityForResult(Intent.createChooser(intent, "Select Picture or PDF"), if (isFrontImage) REQUEST_IMAGE_GALLERY_FRONT else REQUEST_IMAGE_GALLERY_BACK)
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), if (isFrontImage) REQUEST_IMAGE_GALLERY_FRONT else REQUEST_IMAGE_GALLERY_BACK)
     }
 
     private fun registerPictureLauncher() {
@@ -219,46 +219,97 @@ class DrivingLicenseFragment : Fragment() {
         return !isUrl(imagePath) // Assume that if it's not a URL, it's a URI
     }
 
-
-    private suspend fun uploadLicense() {
+    private suspend fun uploadLicense(): Int {
         isLoading(true)
 
-        if(frontImageUri != null && backImageUri != null) {
+        if (frontImageUri != null && backImageUri != null) {
             val response = licenseUploadViewModel.addImagesToDB()
 
-            when(response) {
+            return when (response) {
                 Constants.FIREBASE_REQUEST_SUCCESS -> {
                     isLoading(false)
-
                     Toast.makeText(
                         requireContext(),
                         "License data saved successfully",
                         Toast.LENGTH_SHORT
                     ).show()
+                    findNavController().popBackStack()
+                    response
                 }
 
-                Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED ->{
+                Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED -> {
                     isLoading(false)
-                    Toast.makeText(requireContext(), "User not authenticated. Please log in again.",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "User not authenticated. Please log in again.", Toast.LENGTH_SHORT).show()
+                    response
                 }
 
-                Constants.FIREBASE_REQUEST_NOT_BELONG_USER ->{
+                Constants.FIREBASE_REQUEST_NOT_BELONG_USER -> {
                     isLoading(false)
-                    Toast.makeText(requireContext(), "Please log in your account",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Please log in your account", Toast.LENGTH_SHORT).show()
+                    response
                 }
 
-                Constants.FIREBASE_REQUEST_DATA_NOT_VALID ->{
+                Constants.FIREBASE_REQUEST_DATA_NOT_VALID -> {
                     isLoading(false)
-                    Toast.makeText(requireContext(), "Please take your front and back driving license by image",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Please take your front and back driving license by image", Toast.LENGTH_SHORT).show()
+                    response
                 }
 
+                else -> {
+                    isLoading(false)
+                    Toast.makeText(requireContext(), "An unexpected error occurred", Toast.LENGTH_SHORT).show()
+                    response
+                }
             }
         } else {
             isLoading(false)
-            Toast.makeText(requireContext(), "Please take image of your front and back driving license",Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Please take image of your front and back driving license", Toast.LENGTH_SHORT).show()
+            return Constants.FIREBASE_REQUEST_DATA_NOT_VALID
         }
-
     }
+
+
+//    private suspend fun uploadLicense() {
+//        isLoading(true)
+//
+//        if(frontImageUri != null && backImageUri != null) {
+//            val response = licenseUploadViewModel.addImagesToDB()
+//
+//            when(response) {
+//                Constants.FIREBASE_REQUEST_SUCCESS -> {
+//                    isLoading(false)
+//
+//                    Toast.makeText(
+//                        requireContext(),
+//                        "License data saved successfully",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
+//
+//                    findNavController().popBackStack()
+//                }
+//
+//                Constants.FIREBASE_REQUEST_USER_NOT_AUTHENTICATED ->{
+//                    isLoading(false)
+//                    Toast.makeText(requireContext(), "User not authenticated. Please log in again.",Toast.LENGTH_SHORT).show()
+//                }
+//
+//                Constants.FIREBASE_REQUEST_NOT_BELONG_USER ->{
+//                    isLoading(false)
+//                    Toast.makeText(requireContext(), "Please log in your account",Toast.LENGTH_SHORT).show()
+//                }
+//
+//                Constants.FIREBASE_REQUEST_DATA_NOT_VALID ->{
+//                    isLoading(false)
+//                    Toast.makeText(requireContext(), "Please take your front and back driving license by image",Toast.LENGTH_SHORT).show()
+//                }
+//
+//            }
+//        } else {
+//            isLoading(false)
+//            Toast.makeText(requireContext(), "Please take image of your front and back driving license",Toast.LENGTH_SHORT).show()
+//        }
+//
+//    }
 
     private fun isLoading(loading: Boolean) {
         val saveLicenseBtnText = binding.textSaveLicenseCta

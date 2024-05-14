@@ -1,6 +1,7 @@
 package com.example.sharidev2.screen.navigation
 
 import ProfileViewModel
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -114,7 +115,7 @@ class ProfileFragment : Fragment() {
 
         // Profile Fragment -> Addresses Fragment
         addressesBtn.setOnClickListener {
-            // TODO: Set up nav graph (addresses)
+            //  set up nav graph (addresses)
         }
 
         // Profile Fragment -> Emergency Contact Fragment
@@ -124,13 +125,28 @@ class ProfileFragment : Fragment() {
 
         // Log out
         logoutBtn.setOnClickListener {
-            // TODO: Dialog to confirm user to logout
-            currentUserViewModel.signOut()
+            showLogoutConfirmationDialog()
 
-            Toast.makeText(requireContext(), "Logged out!", Toast.LENGTH_SHORT).show()
-            findNavController().navigate(R.id.action_profileFragment_to_homeFragment)
         }
 
         return binding.root
     }
+
+    private fun showLogoutConfirmationDialog() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Confirm Logout")
+            .setMessage("Are you sure you want to log out?")
+            .setPositiveButton("Yes") { _, _ ->
+                // Perform logout action
+                currentUserViewModel.signOut()
+                Toast.makeText(requireContext(), "Logged out!", Toast.LENGTH_SHORT).show()
+                findNavController().navigate(R.id.action_profileFragment_to_homeFragment)
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                // Dismiss the dialog
+                dialog.dismiss()
+            }
+            .show()
+    }
 }
+
