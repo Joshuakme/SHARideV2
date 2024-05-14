@@ -57,8 +57,7 @@ class VehicleDocViewModel(private val savedStateHandle: SavedStateHandle) : View
     val lastName: LiveData<String> = savedStateHandle.getLiveData(LAST_NAME_KEY, "")
     val vehicleId: LiveData<String> = savedStateHandle.getLiveData(VEHICLE_ID_KEY, "")
     val manufactureDate: LiveData<Timestamp> = savedStateHandle.getLiveData(MANUFACTURE_DATE_KEY,
-        Timestamp(Date(2023,2,14)
-    ))
+        Timestamp.now())
 
 
     // VEHICLE

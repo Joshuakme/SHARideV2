@@ -456,7 +456,7 @@ class LoginFragment : Fragment() {
                         displayName = task.result.user?.displayName,
                         email = task.result.user?.email,
                         phoneNumber = task.result.user?.phoneNumber,
-                        photoUri = task.result.user?.photoUrl,
+                        photoUrl = task.result.user?.photoUrl,
                         rideOption = RideOption(),
                         savedAddress = mapOf(),
                         joinedDate = Timestamp.now()

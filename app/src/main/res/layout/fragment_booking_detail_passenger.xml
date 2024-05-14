@@ -291,6 +291,56 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
+                <!--  Ride Passengers  -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="?attr/colorSurface"
+                    android:paddingHorizontal="@dimen/ss_screen_width_margin"
+                    android:paddingVertical="16dp">
+
+                    <ImageView
+                        android:id="@+id/img_ride_detail_passenger2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/baseline_account_circle_24"
+                        tools:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/text_booking_detail_passengers_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Passengers"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                    <TextView
+                        android:id="@+id/text_booking_detail_passenger_seat_booked"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="@string/ride_detail_fragment_passengers_seat_booked"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/text_booking_detail_passengers_title" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_booking_detail_passengers_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:orientation="horizontal"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/text_booking_detail_passenger_seat_booked"
+                        tools:listitem="@layout/recycler_item_ride_detail_passenger_image"
+                        tools:visibility="gone" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
                 <!--  Ride Rating  -->
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/cl_booking_detail_passenger_ride_rating"

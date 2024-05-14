@@ -31,7 +31,7 @@
     <string name="home_fragment_add_ride_cta">Add Ride</string>
     <string name="home_fragment_offer_ride_vehicle">Vehicle</string>
     <string name="home_fragment_search_hint">Enter destination or starting point</string>
-    <string name="home_section_recent_rides_title">Recent rides</string>
+    <string name="home_section_popular_location_title">Popular Locations</string>
 
     <string name="home_section_categories_rides_title">Categories</string>
 

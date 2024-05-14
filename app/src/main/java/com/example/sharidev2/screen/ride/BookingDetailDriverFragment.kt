@@ -1,5 +1,6 @@
 package com.example.sharidev2.screen.ride
 
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -12,11 +13,17 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.adapter.BookingTimeLineAdapter
+import com.example.sharidev2.adapter.RideDetailPassengerImageAdapter
+import com.example.sharidev2.data.model.Passenger
 import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.data.model.RideStatus
+import com.example.sharidev2.data.model.UserStatus
 import com.example.sharidev2.databinding.FragmentBookingDetailDriverBinding
 import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.FirebaseClient
@@ -74,12 +81,15 @@ class BookingDetailDriverFragment : Fragment() {
     private fun setupTextData() {
         val bookingDateTimeText = binding.textBookingDetailDriverFragmentTitleDate
         val bookingIdText = binding.textBookingDetailBookingId
+        val driverImg = binding.imgBookingDetailPassengerDriver
         val driverNameText = binding.textBookingDetailDriverName
         val driverPhoneNumberText = binding.textBookingDetailDriverPhoneNumber
         val ridePriceText = binding.textBokingDetailRidePrice
         val mapFragment = childFragmentManager.findFragmentById(R.id.map_booking_detail_driver_container) as SupportMapFragment
         val rideDistanceHourMinText = binding.textBookingDetailDistanceHourMin
         val rideTimelineRecyclerView = binding.recyclerViewBookingDetailTimeline
+        val passengersSeatsBookedText = binding.textDriverRideDetailSeatBooked
+        val passengersImageRecyclerView = binding.recyclerDriverRideDetailPassengersImage
         val ratingText = binding.textBookingDetailRating
 
 
@@ -88,8 +98,16 @@ class BookingDetailDriverFragment : Fragment() {
         bookingIdText.text = ride.id
 
         // Driver
+        ride.driver.user?.let {
+            Glide.with(requireContext())
+                .load(it.photoUrl.toString())
+                .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Disable disk caching
+                .into(driverImg)
+            driverImg.clearColorFilter()
+        }
         driverNameText.text = ride.driver.user?.displayName ?: ""
         driverPhoneNumberText.text = CommonUtils.formatHiddenPhoneNumber(ride.driver.user?.phoneNumber ?: "")
+
 
 
         // Ride Price
@@ -174,6 +192,57 @@ class BookingDetailDriverFragment : Fragment() {
 
 
 
+        // Passengers
+        if (ride.driver.vehicle != null) {
+            passengersSeatsBookedText.text = getString(
+                R.string.ride_detail_fragment_passengers_seat_booked,
+                (ride.driver.vehicle!!.capacity - ride.availableSeats),
+                ride.driver.vehicle!!.capacity
+            )
+            val defaultUserImage = binding.imgBookingDetailPassengerDriver
+            defaultUserImage.tag = "baseline_account_circle_24"
+
+
+            // Passenger Number Booked Text
+            passengersSeatsBookedText.text = getString(
+                R.string.ride_detail_fragment_passengers_seat_booked,
+                ride.passengers.size,
+                ride.passengers.size + ride.availableSeats
+            )
+
+            // Passenger Images List
+            val imageList = mutableListOf<Uri>()
+
+            if (ride.passengers.isNotEmpty()) {
+                // Populate with passengers' photos
+                ride.passengers.forEach { passenger ->
+                    val photoUri = passenger.user?.photoUrl
+                        ?: CommonUtils().getUriFromVectorDrawable(defaultUserImage)
+                    imageList.add(photoUri)
+                }
+
+                // Populate remaining seats with default user image
+                repeat(ride.availableSeats) {
+                    imageList.add(
+                        CommonUtils().getUriFromVectorDrawable(
+                            defaultUserImage
+                        )
+                    )
+                }
+            } else {
+                // PassengerList is empty / No passenger
+
+                for (i in 1..ride.availableSeats) {
+                    imageList.add(CommonUtils().getUriFromVectorDrawable(defaultUserImage))
+                }
+            }
+
+            val imageAdapter = RideDetailPassengerImageAdapter(requireContext(), imageList)
+            passengersImageRecyclerView.adapter = imageAdapter
+            passengersImageRecyclerView.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+        }
+
 
         // Rating
         var rating = 0.0F
@@ -189,6 +258,7 @@ class BookingDetailDriverFragment : Fragment() {
     private fun setupOnClickListeners() {
         val backBtn = binding.imgBtnBookingDetailDriverNavBack
         val bookingDetailViewRequestsText = binding.textBookingDetailViewRequests
+        val viewRequestsBadge = binding.badge
         val startRideBtn = binding.cardBookingDetailCtaStartBtn
         val startRideBtnText = binding.textBookingDetailCtaStartBtn
 
@@ -202,11 +272,13 @@ class BookingDetailDriverFragment : Fragment() {
         when(ride.rideStatus) {
             RideStatus.COMPLETED, RideStatus.CANCELED -> {
                 bookingDetailViewRequestsText.visibility = View.GONE
+                viewRequestsBadge.visibility = View.GONE
                 startRideBtn.visibility = View.GONE
             }
 
             else -> {
                 bookingDetailViewRequestsText.visibility = if(ride.rideStatus == RideStatus.IN_PROGRESS) View.GONE else View.VISIBLE
+                viewRequestsBadge.visibility = if(ride.rideStatus == RideStatus.CREATED && hasRideRequest(ride.passengers)) View.VISIBLE else View.GONE
                 startRideBtn.visibility = View.VISIBLE
                 startRideBtnText.text = if(ride.rideStatus != RideStatus.IN_PROGRESS) "Start" else "View"
 
@@ -222,7 +294,7 @@ class BookingDetailDriverFragment : Fragment() {
                 // Booking Detail Fragment -> Active Ride Fragment
                 startRideBtn.setOnClickListener {
                     lifecycleScope.launch(Dispatchers.IO) {
-                        bookingDetailViewModel.startRide(ride.id!!)
+                        bookingDetailViewModel.startRide(ride)
                     }
 
                     val action = BookingDetailDriverFragmentDirections.actionBookingDetailFragmentToActiveDriverRideFragment(ride)
@@ -232,4 +304,11 @@ class BookingDetailDriverFragment : Fragment() {
         }
     }
 
+    private fun hasRideRequest(passengerList: List<Passenger>): Boolean {
+        passengerList.forEach { passenger ->
+            return passenger.status == UserStatus.REQUESTED
+        }
+
+        return false
+    }
 }

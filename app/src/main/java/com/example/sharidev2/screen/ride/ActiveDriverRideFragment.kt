@@ -15,7 +15,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.util.TypedValue
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -27,8 +26,8 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -78,6 +77,7 @@ class ActiveDriverRideFragment : Fragment() {
     private val LOCATION_UPDATE_INTERVAL = 8000.toLong()
 
     private var isSosButtonLongPressed = false
+    private var activeRideObserver: Observer<Ride>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -96,7 +96,8 @@ class ActiveDriverRideFragment : Fragment() {
         try {
             val activeRide = arguments?.get("ride") as Ride
 
-            activeRideViewModel.setActiveRide(activeRide)
+            activeRideViewModel.startActiveRide(activeRide)
+            startUserLocationsRunnable()
         } catch (e: Exception) {
             Log.e("Booking Detail Fragment", e.message.toString())
         }
@@ -116,7 +117,7 @@ class ActiveDriverRideFragment : Fragment() {
         setupMap()
         setupData()
 
-        startUserLocationsRunnable()
+
 
         return binding.root
     }
@@ -202,7 +203,7 @@ class ActiveDriverRideFragment : Fragment() {
 
                                 Glide.with(requireContext())
                                     .asBitmap()
-                                    .load(passenger.user?.photoUri) // Replace profilePictureUrl with the actual URL
+                                    .load(passenger.user?.photoUrl) // Replace profilePictureUrl with the actual URL
                                     .transform(RoundedCornersTransformation(8, 2))
                                     .into(object : CustomTarget<Bitmap>() {
                                         override fun onResourceReady(
@@ -267,7 +268,7 @@ class ActiveDriverRideFragment : Fragment() {
                                 }
 
 
-                                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                                lifecycleScope.launch(Dispatchers.IO) {
                                     activeRideViewModel.addRoutePathList(routePathsList)
                                 }
                             }
@@ -309,7 +310,7 @@ class ActiveDriverRideFragment : Fragment() {
 
         // Selected Passenger
         activeRideViewModel.activeDriverRideSelectedPassenger.observe(viewLifecycleOwner) { selectedPassenger ->
-            val photoUri = selectedPassenger.user?.photoUri
+            val photoUri = selectedPassenger.user?.photoUrl
 
             if (photoUri != null) {
                 if (CommonUtils().isUrl(photoUri.toString())) {
@@ -331,7 +332,7 @@ class ActiveDriverRideFragment : Fragment() {
             setupSelectedPassengerOnClickListener(selectedPassenger)
         }
 
-        activeRideViewModel.activeRide.observe(viewLifecycleOwner) { activeRide ->
+        activeRideObserver = Observer { activeRide ->
             if (activeRide != null) {
                 // Passengers
                 val adapter =
@@ -363,7 +364,7 @@ class ActiveDriverRideFragment : Fragment() {
             }
         }
 
-
+        activeRideViewModel.activeRide.observe(viewLifecycleOwner, activeRideObserver!!)
     }
 
     private fun setupOnClickListener(activeRide: Ride) {
@@ -455,6 +456,57 @@ class ActiveDriverRideFragment : Fragment() {
                 .create()
         }
 
+
+        pickUpPassengerBtn.setOnClickListener {
+            lifecycleScope.launch {
+                val response = activeRideViewModel.pickUpPassenger()
+                activeRide.passengers = activeRide.passengers.map { passenger ->
+                    if(passenger.userUid == activeRideViewModel.activeDriverRideSelectedPassenger.value!!.userUid) {
+                        passenger.status = UserStatus.IN_VEHICLE
+                    }
+
+                    passenger
+                }
+
+                when (response) {
+                    Constants.FIREBASE_REQUEST_SUCCESS -> {
+                        Toast.makeText(context, "Passenger picked up!", Toast.LENGTH_SHORT).show()
+                    }
+
+                    else -> {
+                        Toast.makeText(context, "Failed to pick up passenger!", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+            }
+        }
+
+        dropOffPassengerBtn.setOnClickListener {
+            lifecycleScope.launch {
+                val response = activeRideViewModel.dropOffPassenger()
+                activeRide.passengers = activeRide.passengers.map { passenger ->
+                    if(passenger.userUid == activeRideViewModel.activeDriverRideSelectedPassenger.value!!.userUid) {
+                        passenger.status = UserStatus.COMPLETED
+                    }
+
+                    passenger
+                }
+
+                when (response) {
+                    Constants.FIREBASE_REQUEST_SUCCESS -> {
+                        Toast.makeText(context, "Passenger dropped up!", Toast.LENGTH_SHORT).show()
+                    }
+
+                    else -> {
+                        Toast.makeText(context, "Failed to drop up passenger!", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+            }
+        }
+
+
+
         val selectedPassenger = activeRideViewModel.activeDriverRideSelectedPassenger.value
         for (passenger in activeRide.passengers) {
             if(passenger.userUid == selectedPassenger?.userUid) {
@@ -462,56 +514,10 @@ class ActiveDriverRideFragment : Fragment() {
                     dropOffPassengerBtn.visibility = View.VISIBLE
                     pickUpPassengerBtn.visibility = View.INVISIBLE
 
-                    dropOffPassengerBtn.setOnClickListener {
-                        lifecycleScope.launch {
-                            val response = activeRideViewModel.dropOffPassenger()
-                            activeRide.passengers = activeRide.passengers.map { passenger ->
-                                if(passenger.userUid == activeRideViewModel.activeDriverRideSelectedPassenger.value!!.userUid) {
-                                    passenger.status = UserStatus.COMPLETED
-                                }
-
-                                passenger
-                            }
-
-                            when (response) {
-                                Constants.FIREBASE_REQUEST_SUCCESS -> {
-                                    Toast.makeText(context, "Passenger dropped up!", Toast.LENGTH_SHORT).show()
-                                }
-
-                                else -> {
-                                    Toast.makeText(context, "Failed to drop up passenger!", Toast.LENGTH_SHORT)
-                                        .show()
-                                }
-                            }
-                        }
-                    }
                 } else if(passenger.status != UserStatus.COMPLETED && passenger.status != UserStatus.CANCELED) {
                     pickUpPassengerBtn.visibility = View.VISIBLE
                     dropOffPassengerBtn.visibility = View.INVISIBLE
 
-                    pickUpPassengerBtn.setOnClickListener {
-                        lifecycleScope.launch {
-                            val response = activeRideViewModel.pickUpPassenger()
-                            activeRide.passengers = activeRide.passengers.map { passenger ->
-                                if(passenger.userUid == activeRideViewModel.activeDriverRideSelectedPassenger.value!!.userUid) {
-                                    passenger.status = UserStatus.IN_VEHICLE
-                                }
-
-                                passenger
-                            }
-
-                            when (response) {
-                                Constants.FIREBASE_REQUEST_SUCCESS -> {
-                                    Toast.makeText(context, "Passenger picked up!", Toast.LENGTH_SHORT).show()
-                                }
-
-                                else -> {
-                                    Toast.makeText(context, "Failed to pick up passenger!", Toast.LENGTH_SHORT)
-                                        .show()
-                                }
-                            }
-                        }
-                    }
                 } else {
                     dropOffPassengerBtn.visibility = View.INVISIBLE
                     pickUpPassengerBtn.visibility = View.INVISIBLE
@@ -566,64 +572,64 @@ class ActiveDriverRideFragment : Fragment() {
             }
         }
 
-        val activeRide = activeRideViewModel.activeRide.value!!
+
         if(passenger.status == UserStatus.IN_VEHICLE) {
             dropOffPassengerBtn.visibility = View.VISIBLE
             pickUpPassengerBtn.visibility = View.INVISIBLE
 
-            dropOffPassengerBtn.setOnClickListener {
-                lifecycleScope.launch {
-                    val response = activeRideViewModel.dropOffPassenger()
-                    activeRide.passengers = activeRide.passengers.map { passenger ->
-                        if(passenger.userUid == activeRideViewModel.activeDriverRideSelectedPassenger.value!!.userUid) {
-                            passenger.status = UserStatus.COMPLETED
-                        }
-
-                        passenger
-                    }
-
-                    when (response) {
-                        Constants.FIREBASE_REQUEST_SUCCESS -> {
-                            Toast.makeText(context, "Passenger dropped off!", Toast.LENGTH_SHORT).show()
-                        }
-
-                        else -> {
-                            Toast.makeText(context, "Failed to drop off passenger!", Toast.LENGTH_SHORT)
-                                .show()
-                        }
-                    }
-                }
-            }
+//            dropOffPassengerBtn.setOnClickListener {
+//                lifecycleScope.launch {
+//                    val response = activeRideViewModel.dropOffPassenger()
+//                    activeRide.passengers = activeRide.passengers.map { passenger ->
+//                        if(passenger.userUid == activeRideViewModel.activeDriverRideSelectedPassenger.value!!.userUid) {
+//                            passenger.status = UserStatus.COMPLETED
+//                        }
+//
+//                        passenger
+//                    }
+//
+//                    when (response) {
+//                        Constants.FIREBASE_REQUEST_SUCCESS -> {
+//                            Toast.makeText(context, "Passenger dropped off!", Toast.LENGTH_SHORT).show()
+//                        }
+//
+//                        else -> {
+//                            Toast.makeText(context, "Failed to drop off passenger!", Toast.LENGTH_SHORT)
+//                                .show()
+//                        }
+//                    }
+//                }
+//            }
         } else if(passenger.status != UserStatus.COMPLETED && passenger.status != UserStatus.CANCELED) {
             pickUpPassengerBtn.visibility = View.VISIBLE
             dropOffPassengerBtn.visibility = View.INVISIBLE
 
-            pickUpPassengerBtn.setOnClickListener {
-                lifecycleScope.launch {
-                    val response = activeRideViewModel.pickUpPassenger()
-                    activeRide.passengers = activeRide.passengers.map { passenger ->
-                        if(passenger.userUid == activeRideViewModel.activeDriverRideSelectedPassenger.value!!.userUid) {
-                            passenger.status = UserStatus.IN_VEHICLE
-                        }
-
-                        passenger
-                    }
-
-                    when (response) {
-                        Constants.FIREBASE_REQUEST_SUCCESS -> {
-                            Toast.makeText(context, "Passenger picked up!", Toast.LENGTH_SHORT).show()
-                        }
-
-                        else -> {
-                            Toast.makeText(context, "Failed to pick up passenger!", Toast.LENGTH_SHORT)
-                                .show()
-                        }
-                    }
-                }
-            }
+//            pickUpPassengerBtn.setOnClickListener {
+//                lifecycleScope.launch {
+//                    val response = activeRideViewModel.pickUpPassenger()
+//                    activeRide.passengers = activeRide.passengers.map { passenger ->
+//                        if(passenger.userUid == activeRideViewModel.activeDriverRideSelectedPassenger.value!!.userUid) {
+//                            passenger.status = UserStatus.IN_VEHICLE
+//                        }
+//
+//                        passenger
+//                    }
+//
+//                    when (response) {
+//                        Constants.FIREBASE_REQUEST_SUCCESS -> {
+//                            Toast.makeText(context, "Passenger picked up!", Toast.LENGTH_SHORT).show()
+//                        }
+//
+//                        else -> {
+//                            Toast.makeText(context, "Failed to pick up passenger!", Toast.LENGTH_SHORT)
+//                                .show()
+//                        }
+//                    }
+//                }
+//            }
         } else {
-            dropOffPassengerBtn.visibility = View.INVISIBLE
-            pickUpPassengerBtn.visibility = View.INVISIBLE
+            dropOffPassengerBtn.visibility = View.GONE
+            pickUpPassengerBtn.visibility = View.GONE
         }
     }
 
@@ -720,10 +726,10 @@ class ActiveDriverRideFragment : Fragment() {
                             if (location.location != null) {
                                 googleMap.clear()
 
-                                if (location.user?.photoUri != null) {
+                                if (location.user?.photoUrl != null) {
                                     Glide.with(requireContext())
                                         .asBitmap()
-                                        .load(location.user!!.photoUri.toString()) // Replace profilePictureUrl with the actual URL
+                                        .load(location.user!!.photoUrl.toString()) // Replace profilePictureUrl with the actual URL
                                         .transform(RoundedCornersTransformation(8, 2))
                                         .into(object : CustomTarget<Bitmap>() {
                                             override fun onResourceReady(
@@ -765,25 +771,15 @@ class ActiveDriverRideFragment : Fragment() {
         super.onResume()
 
         startUserLocationsRunnable()
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-
-        stopLocationUpdates()
+        activeRideViewModel.activeRide.observe(viewLifecycleOwner, activeRideObserver!!)
     }
 
     override fun onPause() {
         super.onPause()
-
-        stopLocationUpdates()
+        activeRideViewModel.activeRide.removeObserver(activeRideObserver!!)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
 
-        stopLocationUpdates()
-    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,

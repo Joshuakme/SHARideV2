@@ -21,37 +21,12 @@
 
     <DatePicker
         android:id="@+id/date_picker_bottom_dialog_date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:calendarViewShown="false"
-        android:datePickerMode="spinner"
-        android:endYear="2024" />
-
-    <LinearLayout
-        android:id="@+id/ll_timing_date_time_picker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        tools:visibility="gone">
+        android:layout_gravity="center"
+        android:datePickerMode="calendar"
+        android:endYear="2024" />
 
-        <NumberPicker
-            android:id="@+id/numPickerMonthDay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <NumberPicker
-            android:id="@+id/numPickerHour"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <NumberPicker
-            android:id="@+id/numPickerMinute"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-    </LinearLayout>
 
     <!-- Row: CTA Buttons -->
     <LinearLayout

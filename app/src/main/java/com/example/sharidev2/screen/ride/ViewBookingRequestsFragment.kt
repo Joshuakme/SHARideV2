@@ -43,9 +43,7 @@ class ViewBookingRequestsFragment : Fragment() {
             rideId = arguments?.get("rideId") as String
             val passengers = (arguments?.get("passengers") as Array<Passenger>).toList()
 
-            if(passengers != null) {
-                viewBookingRequestsViewModel.setPassengerList(passengers)
-            }
+            viewBookingRequestsViewModel.setRideId(rideId)
         } catch (e: Exception) {
             Log.e("View Booking Requests Fragment", e.message.toString())
         }
@@ -56,14 +54,11 @@ class ViewBookingRequestsFragment : Fragment() {
         val recyclerView = binding.recyclerViewBookingRequests
 
 
-        viewBookingRequestsViewModel.passengerList.observe(viewLifecycleOwner) {passengerList ->
-            val passengerRequests = passengerList.filter { it.status == UserStatus.REQUESTED }
-
-            if(passengerRequests.isNotEmpty()) {
+        viewBookingRequestsViewModel.requestedPassengerList.observe(viewLifecycleOwner) { passengerList ->
+            if(passengerList.isNotEmpty()) {
                 recyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
 
-
-                recyclerView.adapter = PassengerRequestAdapter(requireContext(), passengerRequests.toMutableList(),
+                recyclerView.adapter = PassengerRequestAdapter(requireContext(), passengerList.toMutableList(),
                     object:PassengerRequestAdapter.OnRequestClickListener {
                         override fun onRequestAcceptClick(
                             passenger: Passenger,
@@ -84,7 +79,6 @@ class ViewBookingRequestsFragment : Fragment() {
                                     }
                                 }
                             }
-
 
                             Toast.makeText(requireContext(), "Accepted", Toast.LENGTH_SHORT).show()
                         }

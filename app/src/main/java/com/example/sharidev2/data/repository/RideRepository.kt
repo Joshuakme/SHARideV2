@@ -16,7 +16,6 @@ import com.example.sharidev2.utility.FareUtils
 import com.example.sharidev2.utility.FirebaseClient
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.Timestamp
-import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.Dispatchers
@@ -48,7 +47,7 @@ class RideRepository() {
 
                     val rideId = rideCollectionRef.document().id
 
-                    val newChat = createEmptyChat(rideId, "Ride to ${ride.destination.name}", adminUser?.photoUri)
+                    val newChat = createEmptyChat(rideId, "Ride to ${ride.destination.name}", adminUser?.photoUrl)
 
                     val newRide = converters.toRideHashMap(ride, rideId, newChat.chatId)
 
@@ -135,14 +134,22 @@ class RideRepository() {
                 val rideDoc = rideRef.get().await()
                 val passengers = converters.toPassengerListFromFirebase(
                     rideDoc.get("passengers") as? List<Map<String, Any>>?: mutableListOf()
-                ).toMutableList()
+                )
 
-                passengers.add(newPassenger)
+                val passengerList = mutableListOf<Passenger>()
+
+                passengers.forEach { passenger ->
+                    passenger.ridePrice = newPassenger.ridePrice
+                    passengerList.add(passenger)
+                }
+
+
+                passengerList.add(newPassenger)
 
                 val passengerIds = (rideDoc.get("passengerIds") as List<String>).toMutableList()
                 passengerIds.add(newPassenger.userUid)
 
-                rideRef.update("passengers", passengers)
+                rideRef.update("passengers", passengerList)
                 rideRef.update("passengerIds", passengerIds)
 
 
@@ -194,7 +201,7 @@ class RideRepository() {
                         val chatMemberList = (chatData["members"] as List<String>).toMutableList()
                         val chatMemberFcmTokenList = (chatData["memberFcmTokens"] as List<String>).toMutableList()
 
-                        chatMemberList.add(currentUser!!.uid)
+                        chatMemberList.add(acceptedPassenger.userUid!!)
                         chatMemberFcmTokenList.add(acceptedPassenger.user!!.fcmToken!!)
 
                         chatRef.document(chatId).update("members", chatMemberList)
@@ -256,16 +263,19 @@ class RideRepository() {
         }
     }
 
-    suspend fun startRide(rideId: String): Int {
+    suspend fun startRide(ride: Ride): Int {
         return withContext(Dispatchers.IO) {
             try {
-                rideCollectionRef.document(rideId)
-                    .update("rideStatus", RideStatus.IN_PROGRESS)
+                ride.rideStatus = RideStatus.IN_PROGRESS
+                ride.startTime = Timestamp.now()
+
+                rideCollectionRef.document(ride.id!!)
+                    .update(Converters().toRideHashMap(ride))
                     .await()
 
                 Constants.FIREBASE_REQUEST_SUCCESS
             } catch(e: Exception) {
-                Log.e("Add Route Path", e.message.toString())
+                Log.e("Start Ride", e.message.toString())
                 Constants.FIREBASE_REQUEST_EXCEPTION
             }
         }
@@ -304,6 +314,48 @@ class RideRepository() {
                 Log.e("Get All Rides", e.message.toString())
                 emptyList()
             }
+        }
+    }
+
+    fun listenForAllRidesChanges(listener: (HashMap<String, Ride>) -> Unit) {
+
+        val allRideHashMap = HashMap<String, Ride>()
+
+        if (currentUser?.uid != null) {
+            val driverListener = rideCollectionRef
+                .whereEqualTo("driver.userUid", currentUser.uid)
+                .addSnapshotListener { driverSnapshot, e ->
+                    if (e != null) {
+                        // Handle error
+                        return@addSnapshotListener
+                    }
+
+
+                    driverSnapshot?.documents?.mapNotNull { documentSnapshot ->
+                        val ride = converters.toRide(documentSnapshot)
+                        allRideHashMap[ride.id!!] = ride
+                    }
+
+                    // Call the listener after processing data
+                    listener(allRideHashMap)
+                }
+
+            val passengersListener = rideCollectionRef
+                .whereArrayContains("passengerIds", currentUser.uid)
+                .addSnapshotListener { passengersSnapshot, e ->
+                    if (e != null) {
+                        // Handle error
+                        return@addSnapshotListener
+                    }
+
+                    passengersSnapshot?.documents?.mapNotNull { documentSnapshot ->
+                        val ride = converters.toRide(documentSnapshot)
+                        allRideHashMap[ride.id!!] = ride
+                    }
+
+                    // Call the listener after processing data
+                    listener(allRideHashMap)
+                }
         }
     }
 
@@ -382,14 +434,30 @@ class RideRepository() {
         return nearbyRides.subList(0, 3)
     }
 
+    fun listenForBookingRequests(rideId: String, listener: (List<Passenger>) -> Unit) {
+        rideCollectionRef
+            .document(rideId)
+            .addSnapshotListener {snapshot, e ->
+                if (e != null) {
+                    // Handle error
+                    return@addSnapshotListener
+                }
+
+                val passengerMapList = snapshot?.get("passengers") as List<Map<String, Any>>?
+
+                if(passengerMapList != null) {
+                    val passengerList = converters.toPassengerList(passengerMapList)
+                    listener(passengerList)
+                }
+            }
+    }
+
 
     // UPDATE FUNCTIONS
     suspend fun updatePassenger(oldPassengerUid: String, newPassenger: Passenger) {
 
     }
 
-
-    // DELETE FUNCTIONS
     suspend fun rejectPassengerToRide(rejectedPassenger: Passenger, rideId: String): Int {
         return withContext(Dispatchers.IO) {
             try {
@@ -416,6 +484,8 @@ class RideRepository() {
             }
         }
     }
+
+    // DELETE FUNCTIONS
 
 
     // HELPER METHODS

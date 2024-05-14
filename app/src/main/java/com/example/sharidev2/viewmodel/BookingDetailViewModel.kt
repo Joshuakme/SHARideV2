@@ -3,6 +3,7 @@ package com.example.sharidev2.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.example.sharidev2.data.model.Ride
 import com.example.sharidev2.data.repository.RideRepository
 import com.google.android.gms.maps.model.LatLng
 
@@ -25,8 +26,8 @@ class BookingDetailViewModel(
         return rideRepository.getRideRoute(originName, destName)
     }
 
-    suspend fun startRide(rideId: String): Int {
-        return rideRepository.startRide(rideId)
+    suspend fun startRide(ride: Ride): Int {
+        return rideRepository.startRide(ride)
     }
 
 

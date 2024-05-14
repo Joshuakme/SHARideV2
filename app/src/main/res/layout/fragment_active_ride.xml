@@ -345,8 +345,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:adjustViewBounds="true"
-                            android:scaleType="centerCrop"
-                            app:srcCompat="@drawable/baa5488_front" />
+                            android:scaleType="centerCrop" />
                     </com.google.android.material.card.MaterialCardView>
 
                     <com.google.android.material.card.MaterialCardView
@@ -367,8 +366,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:adjustViewBounds="true"
-                            android:scaleType="centerCrop"
-                            app:srcCompat="@drawable/baa5488_rear" />
+                            android:scaleType="centerCrop" />
                     </com.google.android.material.card.MaterialCardView>
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -1,15 +1,13 @@
 package com.example.sharidev2.screen.ride
 
+import android.net.Uri
 import android.os.Bundle
-import android.os.Parcel
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -21,18 +19,15 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.sharidev2.MainActivity
 import com.example.sharidev2.R
 import com.example.sharidev2.adapter.BookingTimeLineAdapter
+import com.example.sharidev2.adapter.RideDetailPassengerImageAdapter
 import com.example.sharidev2.data.model.Ride
-import com.example.sharidev2.data.model.Ride.Companion.write
 import com.example.sharidev2.data.model.RideStatus
-import com.example.sharidev2.data.repository.RideRepository
 import com.example.sharidev2.databinding.FragmentBookingDetailPassengerBinding
 import com.example.sharidev2.utility.CommonUtils
 import com.example.sharidev2.utility.FirebaseClient
 import com.example.sharidev2.utility.GoogleMapUtils
 import com.example.sharidev2.viewmodel.BookingDetailViewModel
-import com.example.sharidev2.viewmodel.SharedSearchRideViewModel
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.PolygonOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import kotlinx.coroutines.launch
 
@@ -92,6 +87,8 @@ class BookingDetailPassengerFragment : Fragment() {
         val rideTimelineRecyclerView = binding.recyclerViewBookingPassengerDetailTimeline
         val cancelRideText = binding.textBookingDetailPassengerCancelRide
         val viewRideBtn = binding.cardBookingDetailPassengerCtaStartBtn
+        val passengersSeatsBookedText = binding.textBookingDetailPassengerSeatBooked
+        val passengersImageRecyclerView = binding.recyclerBookingDetailPassengersImage
         val ratingText = binding.textBookingDetailRating
 
 
@@ -102,7 +99,7 @@ class BookingDetailPassengerFragment : Fragment() {
         // Driver
         ride.driver.user?.let {
             Glide.with(requireContext())
-                .load(it.photoUri.toString())
+                .load(it.photoUrl.toString())
                 .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Disable disk caching
                 .into(driverImg)
             driverImg.clearColorFilter()
@@ -187,8 +184,8 @@ class BookingDetailPassengerFragment : Fragment() {
 
         val locationList = mutableListOf(ride.origin.name, ride.destination.name)
 
-        val adapter = BookingTimeLineAdapter(locationList)
-        rideTimelineRecyclerView.adapter = adapter
+        val timelineAdapter = BookingTimeLineAdapter(locationList)
+        rideTimelineRecyclerView.adapter = timelineAdapter
         rideTimelineRecyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
 
 
@@ -209,6 +206,57 @@ class BookingDetailPassengerFragment : Fragment() {
             }
         }
 
+
+        // Passengers
+        if (ride.driver.vehicle != null) {
+            passengersSeatsBookedText.text = getString(
+                R.string.ride_detail_fragment_passengers_seat_booked,
+                (ride.driver.vehicle!!.capacity - ride.availableSeats),
+                ride.driver.vehicle!!.capacity
+            )
+            val defaultUserImage = binding.imgRideDetailPassenger2
+            defaultUserImage.tag = "baseline_account_circle_24"
+
+
+            // Passenger Number Booked Text
+            passengersSeatsBookedText.text = getString(
+                R.string.ride_detail_fragment_passengers_seat_booked,
+                ride.passengers.size,
+                ride.passengers.size + ride.availableSeats
+            )
+
+            // Passenger Images List
+            val imageList = mutableListOf<Uri>()
+
+            if (ride.passengers.isNotEmpty()) {
+                // Populate with passengers' photos
+                ride.passengers.forEach { passenger ->
+                    val photoUri = passenger.user?.photoUrl
+                        ?: CommonUtils().getUriFromVectorDrawable(defaultUserImage)
+                    imageList.add(photoUri)
+                }
+
+                // Populate remaining seats with default user image
+                repeat(ride.availableSeats) {
+                    imageList.add(
+                        CommonUtils().getUriFromVectorDrawable(
+                            defaultUserImage
+                        )
+                    )
+                }
+            } else {
+                // PassengerList is empty / No passenger
+
+                for (i in 1..ride.availableSeats) {
+                    imageList.add(CommonUtils().getUriFromVectorDrawable(defaultUserImage))
+                }
+            }
+
+            val imageAdapter = RideDetailPassengerImageAdapter(requireContext(), imageList)
+            passengersImageRecyclerView.adapter = imageAdapter
+            passengersImageRecyclerView.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+        }
 
 
         // Rating

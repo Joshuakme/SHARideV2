@@ -1,5 +1,6 @@
 package com.example.sharidev2.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -37,23 +38,36 @@ class RideViewModel(
 
     init {
         viewModelScope.launch(Dispatchers.Main) {
-            setRideList(rideRepository.getAllRides())
             setFilterRideList(rideRepository.getAvailableRideList())
-            setActiveRideList(getRides(FilterType.ACTIVE).sortedBy { it.datetime }.reversed())
-            setPastRideList(getRides(FilterType.PAST))
+
+
+            startListeningForRideListUpdates { updatedRideHashMap ->
+                Log.e("RideViewModel: init", "ride size: " + updatedRideHashMap.size)
+                val rideList = mutableListOf<Ride>()
+
+                updatedRideHashMap.forEach { mapEntry ->
+                    rideList.add(mapEntry.value)
+                }
+                setRideList(rideList)
+            }
         }
     }
 
     // SETTER in SavedStateHandle
-    fun setRideList(newRideList: List<Ride>) {
-        savedStateHandle[RIDE_LIST_KEY] = newRideList
+    private fun setRideList(newRideList: List<Ride>) {
+        val sortedNewRideList = newRideList.sortedBy { it.datetime }.reversed()
+
+        savedStateHandle[RIDE_LIST_KEY] = sortedNewRideList
+
+        setActiveRideList(filterRideList(sortedNewRideList, FilterType.ACTIVE))
+        setPastRideList(filterRideList(sortedNewRideList, FilterType.PAST))
     }
 
     fun setFilterRideList(newFilterRideList: List<Ride>) {
         savedStateHandle[FILTER_RIDE_LIST_KEY] = newFilterRideList
     }
 
-    fun setActiveRideList(newRideList: List<Ride>) {
+    private fun setActiveRideList(newRideList: List<Ride>) {
         savedStateHandle[ACTIVE_RIDE_LIST_KEY] = newRideList
     }
 
@@ -65,18 +79,31 @@ class RideViewModel(
         return rideRepository.addPassengerToRide(passenger, rideId)
     }
 
-    private fun getRides(filterType: FilterType): List<Ride> {
+//    private fun getRides(filterType: FilterType): List<Ride> {
+//        val currentTimestamp = Timestamp.now()
+//
+//        return rideList.value?.filter { ride ->
+//            when (filterType) {
+//                FilterType.ACTIVE -> ride.datetime > currentTimestamp
+//                FilterType.PAST -> ride.datetime < currentTimestamp
+//            }
+//        } ?: emptyList()
+//    }
+
+    private fun startListeningForRideListUpdates(onRideListUpdate: (HashMap<String,Ride>) -> Unit) {
+        rideRepository.listenForAllRidesChanges(onRideListUpdate)
+    }
+
+    private fun filterRideList(rideList: List<Ride>, filterType: FilterType): List<Ride> {
         val currentTimestamp = Timestamp.now()
 
-        return rideList.value?.filter { ride ->
+        return rideList.filter { ride ->
             when (filterType) {
                 FilterType.ACTIVE -> ride.datetime > currentTimestamp
                 FilterType.PAST -> ride.datetime < currentTimestamp
             }
-        } ?: emptyList()
+        }
     }
-
-
 
     enum class FilterType {
         ACTIVE,

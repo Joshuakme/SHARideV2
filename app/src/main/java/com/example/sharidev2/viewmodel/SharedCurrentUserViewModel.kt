@@ -90,7 +90,7 @@ class SharedCurrentUserViewModel(
                 user.displayName?.let { setDisplayName(it) }
                 user.email?.let { setEmail(it) }
                 user.phoneNumber?.let { setPhoneNumber(it) }
-                user.photoUri?.let { setImageUri(it) }
+                user.photoUrl?.let { setImageUri(it) }
                 user.rideOption?.let { setRideOption(it) }
                 user.gender?.let { setGender(it) }
                 user.fcmToken?.let { setFcmToken(it) }
