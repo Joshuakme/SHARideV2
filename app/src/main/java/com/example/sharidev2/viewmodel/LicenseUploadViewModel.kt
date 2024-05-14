@@ -27,23 +27,27 @@ class LicenseUploadViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.Main) {
             val licenseMap = repository.getDrivingLicense()
 
-            setFrontImageUri(licenseMap["frontImgUri"]?: Uri.EMPTY)
-            setBackImageUri(licenseMap["backImgUri"]?: Uri.EMPTY)
+            setFrontImageUri(licenseMap["frontImgUri"] ?: Uri.EMPTY)
+            setBackImageUri(licenseMap["backImgUri"] ?: Uri.EMPTY)
         }
     }
 
 
     // Function to set the front image URI
     fun setFrontImageUri(uri: Uri?) {
-        _frontImageUri.value = uri
+        if (uri != null) {
+            _frontImageUri.value = uri
+        }
     }
 
     // Function to set the back image URI
     fun setBackImageUri(uri: Uri?) {
-        _backImageUri.value = uri
+        if (uri != null) {
+            _backImageUri.value = uri
+        }
+    }
+        suspend fun addImagesToDB(): Int {
+            return repository.addDriverLicense(frontImageUri.value, backImageUri.value)
+        }
     }
 
-    suspend fun addImagesToDB(): Int {
-        return repository.addDriverLicense(frontImageUri.value, backImageUri.value)
-    }
-}

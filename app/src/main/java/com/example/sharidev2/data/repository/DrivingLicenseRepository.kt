@@ -29,23 +29,21 @@ class DrivingLicenseRepository() {
             return withContext(Dispatchers.IO) {
                 try {
 
-                    val imgRandomName = UUID.randomUUID()
+                    // Generate unique names for the images
+                    val frontImgRandomName = UUID.randomUUID()
+                    val backImgRandomName = UUID.randomUUID()
 
-                    val frontFileRef = firebaseStorage.reference.child("${storagePath}/$imgRandomName")
-
-                    val fileSnapshot = frontFileRef.putFile(frontImageUri).await()
-
-                    val frontUri = fileSnapshot.storage.downloadUrl.await()
-
+                    // Upload front image
+                    val frontFileRef = firebaseStorage.reference.child("${storagePath}/$frontImgRandomName")
+                    val frontFileSnapshot = frontFileRef.putFile(frontImageUri).await()
+                    val frontUri = frontFileSnapshot.storage.downloadUrl.await()
                     val frontFileUrl = frontUri.toString()
 
-                    val backFileRef = firebaseStorage.reference.child("${storagePath}/$imgRandomName")
-
-                    val backTaskSnapshot = backFileRef.putFile(backImageUri).await()
-
-                    val backDownloadUri = backTaskSnapshot.storage.downloadUrl.await()
-
-                    val backFileUrl = backDownloadUri.toString()
+                    // Upload back image
+                    val backFileRef = firebaseStorage.reference.child("${storagePath}/$backImgRandomName")
+                    val backFileSnapshot = backFileRef.putFile(backImageUri).await()
+                    val backUri = backFileSnapshot.storage.downloadUrl.await()
+                    val backFileUrl = backUri.toString()
 
                     val licenseData = hashMapOf(
                         "frontFileUrl" to frontFileUrl,
@@ -94,7 +92,7 @@ class DrivingLicenseRepository() {
 
                     Constants.FIREBASE_REQUEST_SUCCESS
                 } catch (e: Exception) {
-                    Log.e("DrivingLicenseRepository - Add Driver License", e.message.toString())
+                    Log.e("DrivingLicenseRepository - Add Driver License", "Error: ${e.message}", e)
                     Constants.FIREBASE_REQUEST_EXCEPTION
                 }
             }
