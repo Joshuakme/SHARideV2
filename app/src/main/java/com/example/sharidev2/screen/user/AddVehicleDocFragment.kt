@@ -175,7 +175,7 @@ class AddVehicleDocFragment: Fragment() {
         })
 
         viewModel.manufactureDate.observe(viewLifecycleOwner) {manufactureDate ->
-            binding.dateManufacture.text = CommonUtils.formatDate(manufactureDate, "yyyy-MM-dd")
+            binding.dateManufacture.text = "Manufacture Date: " + CommonUtils.formatDate(manufactureDate, "yyyy-MM-dd") + " \u2193"
         }
     }
 
