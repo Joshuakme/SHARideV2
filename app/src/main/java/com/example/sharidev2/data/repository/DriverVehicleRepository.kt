@@ -56,9 +56,11 @@ class DriverVehicleRepository() {
             val color: String = document.getString("color") ?: ""
             val photos: MutableList<Uri> = converters.toUriList(document.get("photos") as MutableList<String>).toMutableList()
             val capacity: Int = (document.get("capacity") as Long).toInt()
+            val documentId = document.getString("documentId")
+            val userUid = document.getString("userUid")
 
 
-            val vehicle = Vehicle(vehicleID, brand, model, type, plateNumber, color, photos, capacity)
+            val vehicle = Vehicle(vehicleID, brand, model, type, plateNumber, color, photos, capacity, document = null, documentId = documentId, userUid = userUid)
             vehicleList.add(vehicle)
         }
 

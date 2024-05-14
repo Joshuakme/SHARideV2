@@ -116,16 +116,23 @@ class HomeFragment : Fragment() {
 
 
         // Set User Profile Pic
-        currentUserViewModel.imageUri.observe(viewLifecycleOwner) {profilePic ->
-            if(profilePic != null) {
-                Glide.with(this)
-                    .load(profilePic.toString())
+//        currentUserViewModel.imageUri.observe(viewLifecycleOwner) {profilePic ->
+//            if(profilePic != null) {
+//                Glide.with(this)
+//                    .load(profilePic.toString())
+//                    .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Disable disk caching
+//                    .into(profilePicImg)
+//            } else {
+//                profilePicImg.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.baseline_account_circle_24))
+//            }
+//        }
+        if(FirebaseClient.firebaseAuth.currentUser?.photoUrl != null) {
+            Glide.with(this)
+                    .load(FirebaseClient.firebaseAuth.currentUser!!.photoUrl)
                     .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Disable disk caching
                     .into(profilePicImg)
-            } else {
-                profilePicImg.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.baseline_account_circle_24))
-            }
-        }
+        } else {profilePicImg.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.baseline_account_circle_24))}
+
 
         // Set Nearby Rides
         nearbyRideViewModel.nearbyRides.observe(viewLifecycleOwner) { nearbyRides ->

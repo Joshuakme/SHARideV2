@@ -466,7 +466,7 @@ class Converters() {
         }
 
         val capacity = (map["capacity"] as Long).toInt()
-        val documentId = map["documentId"] as String
+//        val documentId = map["documentId"] as String
         val userUid = map["userUid"] as String
 
         return Vehicle(
@@ -479,7 +479,7 @@ class Converters() {
             photos = photos,
             capacity = capacity,
             document = null,
-            documentId = documentId,
+            documentId = "documentId",
             userUid = userUid
         )
     }

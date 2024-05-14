@@ -32,7 +32,7 @@ class TimingBottomDialogFragment(
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_bottom_dialog_date, container, false)
+        return inflater.inflate(R.layout.fragment_bottom_dialog_date_time, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
