@@ -61,7 +61,7 @@ class VehicleDocRepository {
 
                     if (vehicleDoc.vehicleId != null) {
                         vehicleRef.document(vehicleDoc.vehicleId)
-                            .update("document", vehicleDocId)
+                            .update("documentId", vehicleDocId)
                             .await()
 
                         addVehicleDocImg(
@@ -106,7 +106,8 @@ class VehicleDocRepository {
                         "capacity" to vehicleDetails.capacity,
                         "photos" to vehicleDetails.photos,
                         "plateNumber" to vehicleDetails.plateNumber,
-                        "document" to vehicleDetails.documentId
+                        "document" to vehicleDetails.document,
+                        "documentId" to vehicleDetails.documentId
                     )
 
                     vehicleRef
@@ -194,7 +195,8 @@ class VehicleDocRepository {
 
     // Retrieve Vehicle
     fun listenForVehicleChanges(callback: (List<Vehicle>?, Exception?) -> Unit) {
-        vehicleRef.addSnapshotListener { snapshot, exception ->
+        vehicleRef.whereEqualTo("userUid", currentUser?.uid)
+            .addSnapshotListener { snapshot, exception ->
             if (exception != null) {
                 // Handle error
                 callback(null, exception)
@@ -202,9 +204,7 @@ class VehicleDocRepository {
             }
 
             // Parse and handle changes in the snapshot
-            val vehicleList = snapshot?.documents?.filter { document ->
-                (document?.data?.get("userUid") as String) == currentUser?.uid
-            }?.mapNotNull { document ->
+            val vehicleList = snapshot?.documents?.mapNotNull { document ->
                 document.data?.let { Converters().toVehicle(it) }
             }
 
@@ -326,15 +326,19 @@ class VehicleDocRepository {
 
 
                     if (userId == userUid.uid) {
-                        if (vehicleSnapshot.getString("document") != null) {
+                        if (vehicleSnapshot.getString("documentId") != null) {
                             val vehicleDocRef = firestore.collection("vehicleDoc")
-                                .document(vehicleSnapshot.getString("document")!!)
+                                .document(vehicleSnapshot.getString("documentId")!!)
 
-                        // Delete the vehicle
-                        vehicleRef.delete().await()
-                        vehicleDocRef.delete().await()
-                    }
-                        Constants.FIREBASE_REQUEST_SUCCESS // Delete successful
+                            // Delete the vehicle
+                            vehicleRef.delete().await()
+                            vehicleDocRef.delete().await()
+
+
+                            Constants.FIREBASE_REQUEST_SUCCESS // Delete successful
+                        } else {
+                            Constants.FIREBASE_REQUEST_FAILED // Delete failed
+                        }
                     } else {
                         Constants.FIREBASE_REQUEST_NOT_BELONG_USER // Vehicle doesn't belong to the current user
                     }

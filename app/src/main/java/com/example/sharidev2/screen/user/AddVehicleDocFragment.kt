@@ -175,7 +175,7 @@ class AddVehicleDocFragment: Fragment() {
         })
 
         viewModel.manufactureDate.observe(viewLifecycleOwner) {manufactureDate ->
-            binding.dateManufacture.text = "Manufacture Date: " + CommonUtils.formatDate(manufactureDate, "yyyy-MM-dd") + " \u2193"
+            binding.dateManufacture.text = CommonUtils.formatDate(manufactureDate, "yyyy-MM-dd")
         }
     }
 
@@ -314,7 +314,7 @@ class AddVehicleDocFragment: Fragment() {
             Toast.makeText(context, "Please select manufacture date", Toast.LENGTH_SHORT).show()
             return false
         } else {
-            val selectedDate = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).parse(manufactureDate)
+            val selectedDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(manufactureDate)
             val calendar = Calendar.getInstance()
             calendar.time = selectedDate
             if (calendar.get(Calendar.YEAR) < 2011) {
@@ -368,11 +368,6 @@ class AddVehicleDocFragment: Fragment() {
         datePickerDialog.show()
     }
 }
-
-
-
-
-
 
 //    fun onDateSet(view: DateTimePicker?, year: Int, month: Int, dayOfMonth: Int) {
 //        val calendar = Calendar.getInstance()
