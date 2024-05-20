@@ -58,21 +58,17 @@ class SharedCurrentUserViewModel(
 
 
     init {
-        if(!user.isInitialized && currentUser != null) {
-            setDisplayName(currentUser.displayName!!)
-            setImageUri(currentUser.photoUrl!!)
+        if (!user.isInitialized && currentUser != null) {
+            currentUser.displayName?.let { setDisplayName(it) }
+            currentUser.photoUrl?.let { setImageUri(it) }
 
             viewModelScope.launch {
                 val user = repository.getCurrentUser()
-
-                if(user != null) {
-                    setUser(user)
-                }
+                user?.let { setUser(it) }
             }
-
-//            startListeningForUserUpdate()
         }
     }
+
 
 
     // SETTER in SavedStateHandle
