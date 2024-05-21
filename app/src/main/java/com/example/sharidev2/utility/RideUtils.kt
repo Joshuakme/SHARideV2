@@ -9,8 +9,12 @@ import com.example.sharidev2.data.model.SearchRide
 import com.example.sharidev2.data.model.User
 import com.google.firebase.Timestamp
 import com.google.android.gms.maps.model.LatLng
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
+import kotlin.math.absoluteValue
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.pow
@@ -21,52 +25,56 @@ class RideUtils {
     val ORIGIN_DETOUR_DISTANCE_IN_KM = 5.0
     val DESTINATION_DETOUR_DISTANCE_IN_KM = 2.0
 
-    fun findMatchingRides(user: User, searchRide: SearchRide, rides: List<Ride>): List<MatchedRide> {
-        val matchedRides = mutableListOf<MatchedRide>()
-
-        for (ride in rides) {
-            val similarityScore = calculateSimilarityScore(user, searchRide, ride)
-            matchedRides.add(MatchedRide(ride, similarityScore))
-        }
-
-        // Sort rides by descending similarity score
-        matchedRides.sortByDescending { it.similarityScore }
-
-        return matchedRides
-    }
 
     // TODO: modify the algorithm to calculate similarity score
-    private fun calculateSimilarityScore(user: User, searchRide: SearchRide, ride: Ride): Double {
-        // Implement your logic to calculate the similarity score based on criteria
-        // You can assign weights to different criteria and calculate an overall score
-        // For simplicity, let's assume a linear combination of criteria for this example
-        val originScore = if (searchRide.origin == ride.origin) 1.0 else 0.0
-        val destinationScore = if (searchRide.destination == ride.destination) 1.0 else 0.0
-        val dateScore = if (searchRide.datetime == ride.datetime) 1.0 else 0.0
+    private fun calculateSimilarityScore(searchRide: SearchRide, ride: Ride): Double {
+        // Assign weights to different criteria
+        val exactLocationWeight = 5.0
+        val partialLocationWeight = 3.0
+        val datetimeWeight = 5.0
+        val driverGenderWeight = 0.9
+        val vehicleTypeWeight = 0.7
+        val petFriendlyWeight = 0.7
+
+        // Calculate individual scores for each criterion
+        val locationScore =
+            if (searchRide.origin.placeId == ride.origin.placeId && ride.destination.placeId == searchRide.destination.placeId) {
+                exactLocationWeight
+            } else if (isWithinRoute(
+                    ride.origin.geolocation!!,
+                    ride.destination.geolocation!!,
+                    searchRide.origin.geolocation!!,
+                    searchRide.destination.geolocation!!
+                )
+            ) {
+                partialLocationWeight
+            } else 0.0
+
+//        val searchRideDate = searchRide.datetime.toDate()
+
+        val searchRideDate = searchRide.datetime.toLocalDateTime().toLocalDate()
+        val rideDate = ride.datetime.toLocalDateTime().toLocalDate()
+        val dateScore = if (searchRideDate == rideDate) {
+            datetimeWeight
+        } else {
+            return 0.0 // If the dates are not the same, the ride is not considered
+        }
+
+        val driverGenderScore =
+            if (searchRide.rideOption.driverGender == ride.driver.user?.gender) driverGenderWeight else 0.0
+        val vehicleTypeScore =
+            if (searchRide.rideOption.vehicleType == ride.driver.vehicle?.type) vehicleTypeWeight else 0.0
+        val petFriendlyScore =
+            if (searchRide.rideOption.petFriendly == ride.driver.user?.rideOption?.petFriendly) petFriendlyWeight else 0.0
 
         // You can adjust weights based on the importance of each criterion
-        val totalWeight = 4.0
-        val similarityScore = (originScore + destinationScore + dateScore) / totalWeight
+        val totalScore =
+            locationScore + dateScore + driverGenderScore + vehicleTypeScore + petFriendlyScore
+        val totalWeight =
+            exactLocationWeight + partialLocationWeight + datetimeWeight + driverGenderWeight + vehicleTypeWeight + petFriendlyWeight
+        val similarityScore = totalScore / totalWeight
 
         return similarityScore
-    }
-
-
-    fun filterDrivers(
-        searchRide: SearchRide,
-        availableRides: List<Ride>
-    ): List<Ride> {
-        return availableRides.filter { ride ->
-
-            // Check if origin and destination match
-            ride.origin.overlaps(searchRide.origin) &&
-            ride.destination.overlaps(searchRide.destination) &&
-
-            ride.datetime.toDate() == searchRide.datetime.toDate() &&
-            isTimeCompatible(searchRide.datetime, ride.datetime) &&
-
-            ride.availableSeats >= 1
-        }
     }
 
 
@@ -75,25 +83,35 @@ class RideUtils {
         // Matching Factors
         val maxDetourDistanceInMeter = 5000.0
 
-        if(ride.origin.geolocation == null ||
+        if (ride.origin.geolocation == null ||
             ride.destination.geolocation == null ||
             searchRide.origin.geolocation == null ||
-            searchRide.destination.geolocation == null) {
+            searchRide.destination.geolocation == null
+        ) {
             return null
         }
 
         // TODO: Check datetime && rideOption
 
         // 1. Check for perfect origin and destination match
-        if((ride.origin.placeId == searchRide.origin.placeId) &&
+        if ((ride.origin.placeId == searchRide.origin.placeId) &&
             (ride.destination.placeId == searchRide.destination.placeId)
         ) {
             Log.e("RideUtils: Match Ride Passenger", "Perfect Ride Location Match")
             return directlyMatchRidePassenger(ride, passenger)
         } else {
             // 2. Check for partial match with pick-up detour
-            if(isWithinRoute(ride.origin.geolocation!!, ride.destination.geolocation!!, searchRide.origin.geolocation!!, searchRide.destination.geolocation!!)) {
-                Log.e("RideUtils: Match Ride Passenger", "Partial Ride Location Match With Pickup detour")
+            if (isWithinRoute(
+                    ride.origin.geolocation!!,
+                    ride.destination.geolocation!!,
+                    searchRide.origin.geolocation!!,
+                    searchRide.destination.geolocation!!
+                )
+            ) {
+                Log.e(
+                    "RideUtils: Match Ride Passenger",
+                    "Partial Ride Location Match With Pickup detour"
+                )
                 return partiallyMatchRidePassenger(ride, passenger)
             }
 
@@ -102,9 +120,25 @@ class RideUtils {
         return null
     }
 
+    fun filterRideByPassenger(rideList: List<Ride>, searchRide: SearchRide): List<Ride> {
+        if (rideList.isNotEmpty() || searchRide.origin.geolocation == null || searchRide.destination.geolocation == null) {
+            return emptyList()
+        }
+
+        // Calculate the similarity score for each ride and sort by the highest score
+        val scoredRides = rideList.map { ride ->
+            val score = calculateSimilarityScore(searchRide, ride)
+            ride to score
+        }.sortedByDescending { it.second }
+
+        // Return the top ten rides based on similarity scores
+        return scoredRides.take(10).map { it.first }
+    }
+
     private fun directlyMatchRidePassenger(ride: Ride, passenger: Passenger): Passenger {
 
-        val distanceInKm = calculateDistanceInKm(ride.origin.geolocation!!, ride.destination.geolocation!!)
+        val distanceInKm =
+            calculateDistanceInKm(ride.origin.geolocation!!, ride.destination.geolocation!!)
         //val fare = ride.baseFare + distance * ride.pricePerKm
         val fare = distanceInKm
 
@@ -127,7 +161,10 @@ class RideUtils {
         val pricePerKm = 1.0
 
         // 2. Update fare and display it to passenger for confirmation
-        val totalFare = baseFare + calculateDistanceInKm(ride.origin.geolocation!!, ride.destination.geolocation!!) * pricePerKm + detourFare
+        val totalFare = baseFare + calculateDistanceInKm(
+            ride.origin.geolocation!!,
+            ride.destination.geolocation!!
+        ) * pricePerKm + detourFare
 
 
         passenger.ridePrice = totalFare
@@ -136,8 +173,13 @@ class RideUtils {
     }
 
 
-    private fun isTimeCompatible(searchTime: Timestamp, rideTime: Timestamp, timeWindowInHours: Int = 1): Boolean {
-        val differenceInHours = abs(TimeUnit.HOURS.convert(searchTime.seconds - rideTime.seconds, TimeUnit.SECONDS))
+    private fun isTimeCompatible(
+        searchTime: Timestamp,
+        rideTime: Timestamp,
+        timeWindowInHours: Int = 1
+    ): Boolean {
+        val differenceInHours =
+            abs(TimeUnit.HOURS.convert(searchTime.seconds - rideTime.seconds, TimeUnit.SECONDS))
         return differenceInHours <= timeWindowInHours
     }
 
@@ -189,7 +231,6 @@ class RideUtils {
     }
 
 
-
     // Function to calculate the bearing between two LatLng points
     private fun calculateBearing(origin: LatLng, destination: LatLng): Double {
         val lat1 = Math.toRadians(origin.latitude)
@@ -211,7 +252,12 @@ class RideUtils {
     // Function to check if the requested origin is within the route
 
 
-    private fun isWithinRoute(rideOrigin: LatLng, rideDestination: LatLng, passengerOrigin: LatLng, passengerDestination: LatLng): Boolean {
+    private fun isWithinRoute(
+        rideOrigin: LatLng,
+        rideDestination: LatLng,
+        passengerOrigin: LatLng,
+        passengerDestination: LatLng
+    ): Boolean {
         val bearingToDestination = calculateBearing(rideOrigin, rideDestination)
         val bearingToPassengerOrigin = calculateBearing(rideOrigin, passengerOrigin)
         var differenceInBearing = abs(bearingToDestination - bearingToPassengerOrigin)
@@ -222,26 +268,36 @@ class RideUtils {
         }
 
         val originDistanceDifferenceInKm = calculateDistanceInKm(rideOrigin, passengerOrigin)
-        val destinationDistanceDifferenceInKm = calculateDistanceInKm(rideDestination, passengerDestination)
+        val destinationDistanceDifferenceInKm =
+            calculateDistanceInKm(rideDestination, passengerDestination)
 
 
         // Check if the difference in bearing falls within the desired range
         val threshold = 75 // 75-degree range on either side
 
         // If nearby within 0.5 KM range
-        if(originDistanceDifferenceInKm < 0.5 &&
+        return if (originDistanceDifferenceInKm < 0.5 &&
             destinationDistanceDifferenceInKm < DESTINATION_DETOUR_DISTANCE_IN_KM
-            ) {
-            return true
-        } else if(originDistanceDifferenceInKm < ORIGIN_DETOUR_DISTANCE_IN_KM &&
-            destinationDistanceDifferenceInKm < 0.5) {
-            return true
+        ) {
+            true
+        } else if (originDistanceDifferenceInKm < ORIGIN_DETOUR_DISTANCE_IN_KM &&
+            destinationDistanceDifferenceInKm < 0.5
+        ) {
+            true
         } else {
-            return differenceInBearing <= threshold &&
+            differenceInBearing <= threshold &&
                     originDistanceDifferenceInKm < ORIGIN_DETOUR_DISTANCE_IN_KM &&
                     destinationDistanceDifferenceInKm < DESTINATION_DETOUR_DISTANCE_IN_KM
         }
+    }
 
+    // Convert Firebase Timestamp to LocalDateTime
+    private fun Timestamp.toLocalDateTime(): LocalDateTime {
+        return this.toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
+    }
 
+    // Calculate the difference in minutes between two LocalDateTime objects
+    private fun calculateTimeDifferenceInMinutes(dateTime1: LocalDateTime, dateTime2: LocalDateTime): Long {
+        return ChronoUnit.MINUTES.between(dateTime1, dateTime2).absoluteValue
     }
 }

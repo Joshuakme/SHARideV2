@@ -143,9 +143,11 @@ class SharedSearchRideViewModel(
                 )
 
                 val availableRideList = rideRepository.getAvailableRideList()
-                val matchedRideList = availableRideList.filter { ride ->
-                    RideUtils().matchRidePassenger(ride, searchRide.value!!, passenger) != null
-                }
+
+                val matchedRideList = RideUtils().filterRideByPassenger(availableRideList, searchRide.value!!)
+//                val matchedRideList = availableRideList.filter { ride ->
+//                    RideUtils().matchRidePassenger(ride, searchRide.value!!, passenger) != null
+//                }
 
                 emit(matchedRideList)
             }
