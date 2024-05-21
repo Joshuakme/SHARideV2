@@ -254,6 +254,12 @@
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <TextView
+                            android:id="@+id/textView20"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Manufacture Date" />
+
+                        <TextView
                             android:id="@+id/date_manufacture"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

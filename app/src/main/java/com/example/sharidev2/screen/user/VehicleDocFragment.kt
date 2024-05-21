@@ -66,7 +66,7 @@ class VehicleDocFragment : Fragment() {
                         vehicleDocProgressBar.visibility = View.GONE
                         vehicleDocRecyclerView.visibility = View.VISIBLE
                         reminderAddVehicleDocCard.visibility = View.GONE
-                       Toast.makeText(context,"Got List", Toast.LENGTH_SHORT).show()
+//                       Toast.makeText(context,"Got List", Toast.LENGTH_SHORT).show()
                     } else {
                         // If the list is empty, hide the RecyclerView and show the reminder card
                         vehicleDocProgressBar.visibility = View.GONE

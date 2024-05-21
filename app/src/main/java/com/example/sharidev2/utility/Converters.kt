@@ -504,7 +504,15 @@ class Converters() {
         }
 
         val capacity = (map["capacity"] as Long).toInt()
-        val documentId = map["documentId"] as String
+
+        val documentMap = map["document"] as Map<String, Any>?
+        val document = if(!documentMap.isNullOrEmpty()){
+            Converters().toVehicleDoc(documentMap)
+        } else {
+            null
+        }
+
+        val documentId = map["documentId"] as String?
         val userUid = map["userUid"] as String
 
         return Vehicle(
@@ -516,7 +524,7 @@ class Converters() {
             color = color,
             photos = photos,
             capacity = capacity,
-            document = null,
+            document = document,
             documentId = documentId,
             userUid = userUid
         )
