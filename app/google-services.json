@@ -8,6 +8,38 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:178112270595:android:3b81d265b560b0a5ea9936",
+        "android_client_info": {
+          "package_name": "com.example.sharide"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "178112270595-mbkueg137033n1edkrmd2ocepfk6b2ig.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwN9cTOj4gNNBcVKyviEzj-FIuldfeptE"
+        },
+        {
+          "current_key": "AIzaSyCfsP1xX9W9IMQ7JJdusjltI9G6X3ODLA0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "178112270595-mbkueg137033n1edkrmd2ocepfk6b2ig.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:178112270595:android:c1f434007d0a93cdea9936",
         "android_client_info": {
           "package_name": "com.example.sharidev2"
@@ -15,7 +47,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "178112270595-65p5u2rivk185975v9bc6n36mgnl26fe.apps.googleusercontent.com",
+          "client_id": "178112270595-5i5sikkfn3i2kgn791tht3uv41mlfgvk.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.sharidev2",
@@ -31,11 +63,22 @@
           }
         },
         {
+          "client_id": "178112270595-p7ij6fj2pqo8skq7spl9477th3ldav13.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.sharidev2",
+            "certificate_hash": "c59705bb59912fc6f1717a0b696fd167d8d40429"
+          }
+        },
+        {
           "client_id": "178112270595-mbkueg137033n1edkrmd2ocepfk6b2ig.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
+        {
+          "current_key": "AIzaSyAwN9cTOj4gNNBcVKyviEzj-FIuldfeptE"
+        },
         {
           "current_key": "AIzaSyCfsP1xX9W9IMQ7JJdusjltI9G6X3ODLA0"
         }

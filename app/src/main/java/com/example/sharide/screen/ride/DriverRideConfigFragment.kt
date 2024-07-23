@@ -1,0 +1,238 @@
+package com.example.sharide.screen.ride
+
+import android.content.Context
+import android.graphics.PorterDuff
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import com.example.sharide.databinding.FragmentDriverRideConfigBinding
+import com.example.sharide.MainActivity
+import com.example.sharide.R
+import com.example.sharide.utility.CommonUtils
+import com.example.sharide.utility.Constants
+import com.example.sharide.viewmodel.CurrentLocationViewModel
+import com.example.sharide.viewmodel.SharedCreateRideViewModel
+import com.google.firebase.Timestamp
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
+
+
+class DriverRideConfigFragment : Fragment() {
+    private lateinit var binding: FragmentDriverRideConfigBinding
+    private val createRideViewModel: SharedCreateRideViewModel by activityViewModels()
+    private val currentLocationViewModel: CurrentLocationViewModel by activityViewModels()
+
+    private lateinit var context: Context
+    private val dateFormatter = SimpleDateFormat("yyyy MMM dd", Locale.ENGLISH)
+    private val timeFormatter = SimpleDateFormat("hh : mm a", Locale.ENGLISH)
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+       binding = DataBindingUtil.inflate(inflater, R.layout.fragment_driver_ride_config, container, false)
+
+
+        context = if(getContext() != null) {
+            requireContext()
+        } else {
+            requireActivity().applicationContext
+        }
+
+        // LAYOUT SETTINGS
+        val activity = activity as MainActivity
+        activity.setStatusBarColor(CommonUtils().getThemeColor(context, android.R.attr.colorBackground))
+        activity.setBottomNavVisible(false)
+
+
+        // ELEMENT VARIABLES
+        val backBtn = binding.imgBtnDriverRideConfigNavBack
+
+
+        setupViewModelObserver()
+
+        setupOnClickListeners()
+
+        // EVENT LISTENERS
+        backBtn.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
+
+        return binding.root
+    }
+
+
+    private fun setupViewModelObserver() {
+        val originText = binding.textDriverRideConfigOrigin
+        val destinationText = binding.textDriverRideConfigDestination
+        val vehicleSpinnerText = binding.textDriverRideConfigSpinnerVehicle
+        val passengerCapacitySpinner = binding.spinnerDriverRideConfigRideCapacity
+        val passengerCapacitySpinnerText = binding.textDriverRideConfigSpinnerRideCapacity
+        val rideDateSpinnerText = binding.textDriverRideConfigSpinnerScheduleDate
+        val rideTimeSpinnerText = binding.textDriverRideConfigSpinnerScheduleTime
+
+
+
+        createRideViewModel.origin.observe(viewLifecycleOwner) {origin ->
+            if(origin != null) {
+                originText.text = origin.name
+            }
+        }
+
+        createRideViewModel.destination.observe(viewLifecycleOwner) {destination ->
+            if(destination != null) {
+                destinationText.text = destination.name
+            }
+        }
+
+
+        if(!createRideViewModel.vehicle.isInitialized) {
+            vehicleSpinnerText.text = " - "
+            passengerCapacitySpinnerText.text = " - "
+
+            passengerCapacitySpinner.isEnabled = false
+            passengerCapacitySpinner.isClickable = false
+
+            // Set disabled color
+            disableCapacitySpinner(true)
+        }
+
+        createRideViewModel.vehicle.observe(viewLifecycleOwner) {vehicle ->
+            vehicleSpinnerText.text = vehicle.plateNumber
+
+            passengerCapacitySpinner.isEnabled = true
+            passengerCapacitySpinner.isClickable = true
+
+            disableCapacitySpinner(false)
+        }
+
+        createRideViewModel.capacity.observe(viewLifecycleOwner) {capacity ->
+            passengerCapacitySpinnerText.text = getString(R.string.driver_ride_config_fragment_passenger_capacity_value, capacity)
+        }
+
+        createRideViewModel.rideDateTime.observe(viewLifecycleOwner) {rideDate ->
+            rideDateSpinnerText.text = CommonUtils.formatDate(rideDate)
+            rideTimeSpinnerText.text = CommonUtils.formatTime(rideDate)
+        }
+    }
+
+    private fun setupOnClickListeners() {
+        val vehicleSpinner = binding.spinnerDriverRideConfigVehicle
+        val passengerCapacitySpinner = binding.spinnerDriverRideConfigRideCapacity
+        val rideDateSpinner = binding.spinnerDriverRideConfigScheduleDate
+        val rideTimeSpinner = binding.spinnerDriverRideConfigScheduleTime
+        val createRideBtn = binding.btnDriverRideConfigCtaCreateRide
+        val createRideBtnCtaText = binding.textDriverRideConfigCtaCreateRide
+        val createRideBtnLoadingProgressBar = binding.progressBarDriverRideCtaCreateRide
+
+        vehicleSpinner.setOnClickListener {
+            showVehicleDialog()
+        }
+
+        passengerCapacitySpinner.setOnClickListener {
+            showPassengerCapacityDialog()
+        }
+
+        rideDateSpinner.setOnClickListener {
+            showTimingDialog()
+        }
+
+        rideTimeSpinner.setOnClickListener {
+            showTimingDialog()
+        }
+
+
+        createRideBtn.setOnClickListener {
+            currentLocationViewModel.currentLocation.observe(viewLifecycleOwner) {currentLocation ->
+                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                    createRideViewModel.createRide(currentLocation)
+                }
+            }
+
+            createRideViewModel.createRideStatus.observe(viewLifecycleOwner) {response ->
+
+                when(response) {
+                    Constants.UI_DATA_LOADING -> {
+                        createRideBtnCtaText.visibility = View.INVISIBLE
+                        createRideBtnLoadingProgressBar.visibility = View.VISIBLE
+                    }
+                    Constants.UI_DATA_SUCCESS -> {
+                        createRideBtnCtaText.visibility = View.VISIBLE
+                        createRideBtnLoadingProgressBar.visibility = View.GONE
+
+                        createRideViewModel.resetData()
+
+                        findNavController().popBackStack(R.id.homeFragment, false)
+                        Toast.makeText(requireContext(), "Ride created successfully!", Toast.LENGTH_SHORT).show()
+                    }
+                    Constants.UI_DATA_FAILED -> {
+                        createRideBtnCtaText.visibility = View.INVISIBLE
+                        createRideBtnLoadingProgressBar.visibility = View.VISIBLE
+                        Toast.makeText(requireContext(), "Ride created failed!", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+    }
+
+
+    // BOTTOM DIALOG
+    private fun showVehicleDialog() {
+        val dialogFragment = VehicleBottomDialogFragment()
+        dialogFragment.show(childFragmentManager, dialogFragment.tag)
+    }
+
+    private fun showPassengerCapacityDialog() {
+        val dialogFragment = PassengerCapacityBottomDialogFragment()
+        dialogFragment.show(childFragmentManager, dialogFragment.tag)
+    }
+
+    private fun showTimingDialog() {
+        val dialogFragment = TimingBottomDialogFragment(object: TimingBottomDialogFragment.DialogClickListener {
+            override fun onCancelClick() {
+                // Do nothing
+            }
+
+            override fun onConfirmClick(datetime: Timestamp) {
+                createRideViewModel.setRideDateTime(datetime)
+            }
+
+        })
+        dialogFragment.show(childFragmentManager, dialogFragment.tag)
+        dialogFragment.isCancelable = false
+    }
+
+    private fun disableCapacitySpinner(disable: Boolean) {
+        val passengerCapacitySpinnerText = binding.textDriverRideConfigSpinnerRideCapacity
+        val chooseCapacityImageButton = binding.imgBtnDriverRideConfigSpinnerChooseRideCapacity
+
+        if(disable) {
+            passengerCapacitySpinnerText.setTextColor(CommonUtils().getAndroidThemeColor(requireContext(), android.R.attr.textColorHint))
+            chooseCapacityImageButton.setColorFilter(
+                CommonUtils().getAndroidThemeColor(requireContext(),
+                    com.google.android.material.R.attr.colorSurfaceVariant),
+                PorterDuff.Mode.SRC_IN
+            )
+        } else {
+            passengerCapacitySpinnerText.setTextColor(CommonUtils().getAndroidThemeColor(requireContext(),
+                com.google.android.material.R.attr.colorOnSurface))
+
+            chooseCapacityImageButton.setColorFilter(
+                CommonUtils().getAndroidThemeColor(requireContext(),
+                    com.google.android.material.R.attr.colorOnSurface),
+                PorterDuff.Mode.SRC_IN
+            )
+        }
+    }
+}

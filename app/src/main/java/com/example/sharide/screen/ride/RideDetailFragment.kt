@@ -1,0 +1,324 @@
+package com.example.sharide.screen.ride
+
+import android.content.Context
+import android.net.Uri
+import android.os.Bundle
+import android.util.Log
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
+import com.example.sharide.R
+import com.example.sharide.adapter.RideDetailPassengerImageAdapter
+import com.example.sharide.adapter.BookingTimeLineAdapter
+import com.example.sharide.data.model.Passenger
+import com.example.sharide.data.model.Ride
+import com.example.sharide.databinding.FragmentRideDetailBinding
+import com.example.sharide.utility.CommonUtils
+import com.example.sharide.utility.Constants
+import com.example.sharide.utility.FareUtils
+import com.example.sharide.utility.FirebaseClient
+import com.example.sharide.viewmodel.CurrentLocationViewModel
+import com.example.sharide.viewmodel.RideDetailViewModel
+import com.example.sharide.viewmodel.RideViewModel
+import com.example.sharide.viewmodel.SharedSearchRideViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
+
+class RideDetailFragment : Fragment() {
+    private lateinit var binding: FragmentRideDetailBinding
+    private val rideDetailViewModel: RideDetailViewModel by viewModels()
+    private val rideViewModel: RideViewModel by viewModels()
+    private val currentLocationViewModel: CurrentLocationViewModel by activityViewModels()
+    private val searchRideViewModel: SharedSearchRideViewModel by activityViewModels()
+
+    private lateinit var context: Context
+    private val currentUser = FirebaseClient.firebaseAuth.currentUser
+
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        // Inflate the layout for this fragment
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_ride_detail, container, false)
+
+
+        // DATA
+        val rideId = arguments?.getString("rideId")
+        Log.e("", "RideId: $rideId")
+
+        lifecycleScope.launch(Dispatchers.Main) {
+            if (rideId != null) {
+                val reqRide = getRide(rideId)
+
+                if (reqRide != null) {
+                    rideDetailViewModel.setRide(reqRide)
+                }
+            }
+        }
+
+        context = if (getContext() != null) {
+            requireContext()
+        } else {
+            requireActivity().applicationContext
+        }
+
+
+        var estimatedPrice: Double = 0.0
+
+        val currentPassenger = Passenger(
+            userUid = currentUser!!.uid,
+            location = currentLocationViewModel.currentLocation.value,
+            origin = searchRideViewModel.origin.value,
+            destination = searchRideViewModel.destination.value,
+            ridePrice = estimatedPrice,
+            requestedDateTime = searchRideViewModel.rideDateTime.value
+        )
+
+
+        // ELEMENT VARIABLES
+        val backBtn = binding.imgBtnRideDetailNavBack
+        val requestBtn = binding.btnRideDetailRequestRide
+        val navController =
+            Navigation.findNavController(requireActivity(), R.id.fragment_container_main)
+        val driverImg = binding.imgRideDetailDriver
+        val driverNameText = binding.textRideDetailDriverName
+        val driverPhoneNumberText = binding.textRideDetailPhoneNumber
+        val driverRatingText = binding.textRideDetailDriverRating
+        val driverRatingReviewText = binding.textRideDetailDriverRatingReview
+        val passengersSeatsBookedText = binding.textRideDetailPassengersSeatsBooked
+        val passengersImageRecyclerView = binding.recyclerRideDetailPassengersImage
+        val rideDetailsTimelineRecyclerView = binding.recyclerRideDetailTimeline
+        val rideDetailRideDateText = binding.textRideDetailRideDate
+        val rideDetailStartingTimeText = binding.textRideDetailStartingTime
+        val rideDetailVehicleText = binding.textRideDetailVehicle
+        val rideDetailPriceInfo = binding.textRideDetailPriceInfo
+        val estimatedPriceText = binding.textRideDetailEstimatedPrice
+
+
+        rideDetailViewModel.ride.observe(viewLifecycleOwner) { ride ->
+            if (ride != null) {
+                // Driver
+                if (ride.driver.user != null) {
+                    if (ride.driver.user!!.photoUrl != null || ride.driver.user!!.photoUrl.toString() != "") {
+                        val photoUri = ride.driver.user!!.photoUrl
+
+                        Log.e("RideDetailFragment", "PhotoUri: " + photoUri.toString())
+                        if (CommonUtils().isUrl(photoUri.toString())) {
+                            Glide.with(requireContext())
+                                .load(photoUri.toString())
+                                .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Disable disk caching
+                                .into(driverImg)
+                        }
+                    } else {
+                        val colorOutline = CommonUtils().getThemeColor(
+                            requireContext(),
+                            com.google.android.material.R.attr.colorOutline
+                        )
+                        driverImg.setColorFilter(colorOutline)
+                    }
+
+                    driverNameText.text = ride.driver.user?.displayName
+                    driverPhoneNumberText.text =
+                        CommonUtils.formatHiddenPhoneNumber(ride.driver.user?.phoneNumber ?: "")
+                    driverRatingText.text = getString(
+                        R.string.ride_detail_fragment_driver_rating,
+                        ride.driver.user?.rating?.toDouble() ?: 0.0
+                    )
+                    driverRatingReviewText.text =
+                        getString(R.string.ride_detail_fragment_driver_rating_review, 0)
+                }
+
+                // Passengers
+                if (ride.driver.vehicle != null) {
+                    passengersSeatsBookedText.text = getString(
+                        R.string.ride_detail_fragment_passengers_seat_booked,
+                        (ride.driver.vehicle.capacity - ride.availableSeats),
+                        ride.driver.vehicle.capacity
+                    )
+                    val defaultUserImage = binding.imgRideDetailPassenger1
+                    defaultUserImage.tag = "baseline_account_circle_24"
+
+
+                    // Passenger Number Booked Text
+                    passengersSeatsBookedText.text = getString(
+                        R.string.ride_detail_fragment_passengers_seat_booked,
+                        ride.passengers.size,
+                        ride.driver.vehicle.capacity
+                    )
+
+                    // Passenger Images List
+                    val imageList = mutableListOf<Uri>()
+
+                    if (ride.passengers.isNotEmpty()) {
+                        // Populate with passengers' photos
+                        ride.passengers.forEach { passenger ->
+                            val photoUri = passenger.user?.photoUrl
+                                ?: CommonUtils().getUriFromVectorDrawable(defaultUserImage)
+                            imageList.add(photoUri)
+                        }
+
+                        // Populate remaining seats with default user image
+                        repeat(ride.availableSeats) {
+                            imageList.add(
+                                CommonUtils().getUriFromVectorDrawable(
+                                    defaultUserImage
+                                )
+                            )
+                        }
+                    } else {
+                        // PassengerList is empty / No passenger
+
+                        for (i in 1..ride.driver.vehicle.capacity) {
+                            imageList.add(CommonUtils().getUriFromVectorDrawable(defaultUserImage))
+                        }
+                    }
+
+                    val adapter = RideDetailPassengerImageAdapter(requireContext(), imageList)
+                    passengersImageRecyclerView.adapter = adapter
+                    passengersImageRecyclerView.layoutManager =
+                        LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+                }
+
+                // Ride Details
+                val rideList = mutableListOf(ride.origin.name, ride.destination.name)
+
+                val rideAdapter = BookingTimeLineAdapter(rideList)
+                rideDetailsTimelineRecyclerView.adapter = rideAdapter
+                rideDetailsTimelineRecyclerView.layoutManager =
+                    LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+
+
+                rideDetailRideDateText.text =
+                    ride.datetime.let { CommonUtils.formatDate(it) + if (CommonUtils().isToday(it)) "(Today)" else "" }
+                rideDetailStartingTimeText.text = CommonUtils.formatTime(ride.datetime)
+
+                if (ride.driver.vehicle != null) {
+                    val vehicle = ride.driver.vehicle
+                    rideDetailVehicleText.text = "${vehicle.model} (${vehicle.color})"
+                }
+
+
+                // Price Info
+                if (ride.passengers.isEmpty()) {
+                    rideDetailPriceInfo.text = getString(
+                        R.string.ride_detail_fragment_price_info_one_passenger,
+                        ride.passengers.size + 1
+                    )
+                    rideDetailPriceInfo.visibility = View.VISIBLE
+                } else {
+                    rideDetailPriceInfo.visibility = View.INVISIBLE
+                }
+
+
+                // Get Passenger List
+                val passengerList = ride.passengers.toMutableList()
+                passengerList.add(currentPassenger)
+
+                val sortedPassenger =
+                    FareUtils.getSortedPassengerList(ride.origin.geolocation!!, passengerList)
+
+                // Price Estimation
+                lifecycleScope.launch {
+                    FareUtils.calculatePassengerFare(
+                        context,
+                        ride,
+                        currentPassenger,
+                        sortedPassenger,
+                        object : FareUtils.Companion.OnDistanceResponseListener {
+                            override fun onPriceCalculated(fare: Double) {
+                                currentPassenger.ridePrice = fare
+
+                                estimatedPriceText.text = getString(
+                                    R.string.ride_detail_fragment_passengers_estimated_price,
+                                    fare
+                                )
+                            }
+                        }
+                    )
+                }
+
+                loadingData(false)
+            } else {
+                loadingData(true)
+            }
+        }
+
+
+        requestBtn.setOnClickListener {
+            lifecycleScope.launch(Dispatchers.Main) {
+
+                if (rideId != null) {
+                    val responseStatus = rideViewModel.addPassengerToRide(currentPassenger, rideId)
+
+                    when (responseStatus) {
+                        Constants.FIREBASE_REQUEST_SUCCESS -> {
+                            Toast.makeText(
+                                requireContext(),
+                                "Ride requested successfully!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            navController.navigate(R.id.action_rideDetailFragment_to_bookingFragment)
+                        }
+
+                        Constants.FIREBASE_REQUEST_EXCEPTION -> {
+                            Toast.makeText(
+                                requireContext(),
+                                "Ride requested failed!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
+            }
+        }
+
+        backBtn.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
+
+        return binding.root
+    }
+
+
+    private fun loadingData(loading: Boolean) {
+        val loadingProgressBar = binding.progressBarRideDetailLoading
+        val loadingBackgroundModal = binding.clRideDetailLoadingModalBackground
+
+        if (loading) {
+            loadingProgressBar.visibility = View.VISIBLE
+            loadingBackgroundModal.visibility = View.VISIBLE
+        } else {
+            loadingProgressBar.visibility = View.GONE
+            loadingBackgroundModal.visibility = View.GONE
+        }
+    }
+
+    private suspend fun getRide(rideId: String): Ride? {
+        return withContext(Dispatchers.IO) {
+            try {
+                FirebaseClient.getRideFromRideId(rideId)
+            } catch (e: Exception) {
+                Log.e("Ride Detail Fragment: getRide()", e.message.toString())
+                null
+            }
+        }
+    }
+}

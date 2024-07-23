@@ -8,8 +8,8 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="com.example.sharidev2" />
-                  <option name="mobileSdkAppId" value="1:178112270595:android:c1f434007d0a93cdea9936" />
+                  <option name="appId" value="com.example.sharide" />
+                  <option name="mobileSdkAppId" value="1:178112270595:android:3b81d265b560b0a5ea9936" />
                   <option name="projectId" value="sharide-777b0" />
                   <option name="projectNumber" value="178112270595" />
                 </ConnectionSetting>

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.sharidev2.screen.navigation.HomeFragment"
+        android:name="com.example.sharide.screen.navigation.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
         <action
@@ -30,7 +30,7 @@
     </fragment>
     <fragment
         android:id="@+id/messagesFragment"
-        android:name="com.example.sharidev2.screen.navigation.MessagesFragment"
+        android:name="com.example.sharide.screen.navigation.MessagesFragment"
         android:label="fragment_messages"
         tools:layout="@layout/fragment_messages" >
         <action
@@ -38,12 +38,12 @@
             app:destination="@id/chatFragment">
             <argument
                 android:name="chat"
-                app:argType="com.example.sharidev2.data.model.Chat" />
+                app:argType="com.example.sharide.data.model.Chat" />
         </action>
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.example.sharidev2.screen.navigation.ProfileFragment"
+        android:name="com.example.sharide.screen.navigation.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" >
         <action
@@ -66,7 +66,7 @@
     </fragment>
     <fragment
         android:id="@+id/bookingFragment"
-        android:name="com.example.sharidev2.screen.navigation.BookingFragment"
+        android:name="com.example.sharide.screen.navigation.BookingFragment"
         android:label="fragment_booking"
         tools:layout="@layout/fragment_booking" >
         <action
@@ -75,7 +75,7 @@
             app:popUpTo="@id/bookingFragment">
             <argument
                 android:name="ride"
-                app:argType="com.example.sharidev2.data.model.Ride" />
+                app:argType="com.example.sharide.data.model.Ride" />
         </action>
         <action
             android:id="@+id/action_bookingFragment_to_homeFragment2"
@@ -85,12 +85,12 @@
             app:destination="@id/bookingDetailPassengerFragment" >
             <argument
                 android:name="ride"
-                app:argType="com.example.sharidev2.data.model.Ride" />
+                app:argType="com.example.sharide.data.model.Ride" />
         </action>
     </fragment>
     <fragment
         android:id="@+id/chatFragment"
-        android:name="com.example.sharidev2.screen.chatroom.ChatFragment"
+        android:name="com.example.sharide.screen.chatroom.ChatFragment"
         android:label="fragment_chat"
         tools:layout="@layout/fragment_chat" >
         <action
@@ -100,7 +100,7 @@
     </fragment>
     <fragment
         android:id="@+id/searchRideFragment"
-        android:name="com.example.sharidev2.screen.ride.SearchRideFragment"
+        android:name="com.example.sharide.screen.ride.SearchRideFragment"
         android:label="SearchRideFragment">
         <action
             android:id="@+id/action_searchRideFragment_to_homeFragment"
@@ -128,7 +128,7 @@
     </fragment>
     <fragment
         android:id="@+id/personalInformationFragment"
-        android:name="com.example.sharidev2.screen.profile.PersonalInformationFragment"
+        android:name="com.example.sharide.screen.profile.PersonalInformationFragment"
         android:label="PersonalInformationFragment" >
         <action
             android:id="@+id/action_personalInformationFragment_to_profileFragment"
@@ -152,7 +152,7 @@
     </fragment>
     <fragment
         android:id="@+id/paymentMethodFragment"
-        android:name="com.example.sharidev2.screen.profile.PaymentMethodFragment"
+        android:name="com.example.sharide.screen.profile.PaymentMethodFragment"
         android:label="PaymentMethodFragment" >
         <action
             android:id="@+id/action_paymentMethodFragment_to_profileFragment"
@@ -160,7 +160,7 @@
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.sharidev2.screen.user.LoginFragment"
+        android:name="com.example.sharide.screen.user.LoginFragment"
         android:label="LoginFragment" >
         <action
             android:id="@+id/action_loginFragment_to_profileFragment"
@@ -171,7 +171,7 @@
     </fragment>
     <fragment
         android:id="@+id/searchSelectOriginFragment"
-        android:name="com.example.sharidev2.screen.ride.SearchSelectOriginFragment"
+        android:name="com.example.sharide.screen.ride.SearchSelectOriginFragment"
         android:label="SearchSelectOriginFragment" >
         <action
             android:id="@+id/action_searchSelectOriginFragment_to_searchRideFragment"
@@ -182,7 +182,7 @@
     </fragment>
     <fragment
         android:id="@+id/rideDetailConfigurationFragment"
-        android:name="com.example.sharidev2.screen.ride.SearchRideDetailConfigurationFragment"
+        android:name="com.example.sharide.screen.ride.SearchRideDetailConfigurationFragment"
         android:label="fragment_ride_detail_configuration"
         tools:layout="@layout/fragment_search_ride_detail_configuration" >
         <action
@@ -195,7 +195,7 @@
     </fragment>
     <fragment
         android:id="@+id/matchedRideFragment"
-        android:name="com.example.sharidev2.screen.ride.MatchedRideFragment"
+        android:name="com.example.sharide.screen.ride.MatchedRideFragment"
         android:label="fragment_matched_ride"
         tools:layout="@layout/fragment_matched_ride" >
         <action
@@ -216,7 +216,7 @@
     </fragment>
     <fragment
         android:id="@+id/driverCreateRideFragment"
-        android:name="com.example.sharidev2.screen.ride.DriverCreateRideFragment"
+        android:name="com.example.sharide.screen.ride.DriverCreateRideFragment"
         android:label="DriverCreateRideFragment" >
         <action
             android:id="@+id/action_driverCreateRideFragment_to_driverRideConfigFragment"
@@ -224,7 +224,7 @@
     </fragment>
     <fragment
         android:id="@+id/driverRideConfigFragment"
-        android:name="com.example.sharidev2.screen.ride.DriverRideConfigFragment"
+        android:name="com.example.sharide.screen.ride.DriverRideConfigFragment"
         android:label="DriverRideConfigFragment" >
         <action
             android:id="@+id/action_driverRideConfigFragment_to_driverCreateRideFragment"
@@ -239,7 +239,7 @@
 
     <fragment
         android:id="@+id/rideDetailFragment"
-        android:name="com.example.sharidev2.screen.ride.RideDetailFragment"
+        android:name="com.example.sharide.screen.ride.RideDetailFragment"
         android:label="fragment_ride_detail"
         tools:layout="@layout/fragment_ride_detail" >
         <action
@@ -251,7 +251,7 @@
     </fragment>
     <fragment
         android:id="@+id/bookingDetailFragment"
-        android:name="com.example.sharidev2.screen.ride.BookingDetailDriverFragment"
+        android:name="com.example.sharide.screen.ride.BookingDetailDriverFragment"
         android:label="BookingDetailFragment" >
         <action
             android:id="@+id/action_bookingDetailFragment_to_viewBookingRequestsFragment"
@@ -262,7 +262,7 @@
                 app:argType="string" />
             <argument
                 android:name="passengers"
-                app:argType="com.example.sharidev2.data.model.Passenger[]" />
+                app:argType="com.example.sharide.data.model.Passenger[]" />
         </action>
 
         <action
@@ -270,23 +270,23 @@
             app:destination="@id/activeDriverRideFragment" >
             <argument
                 android:name="ride"
-                app:argType="com.example.sharidev2.data.model.Ride" />
+                app:argType="com.example.sharide.data.model.Ride" />
         </action>
     </fragment>
     <fragment
         android:id="@+id/viewBookingRequestsFragment"
-        android:name="com.example.sharidev2.screen.ride.ViewBookingRequestsFragment"
+        android:name="com.example.sharide.screen.ride.ViewBookingRequestsFragment"
         android:label="fragment_view_booking_requests"
         tools:layout="@layout/fragment_view_booking_requests" />
     <fragment
         android:id="@+id/activeRideFragment"
-        android:name="com.example.sharidev2.screen.ride.ActiveRideFragment"
+        android:name="com.example.sharide.screen.ride.ActiveRideFragment"
         android:label="ActiveRideFragment" >
         <action
             android:id="@+id/action_activeRideFragment_to_chatFragment"
             app:destination="@id/chatFragment">
             <argument android:name="chat"
-                app:argType="com.example.sharidev2.data.model.Chat" />
+                app:argType="com.example.sharide.data.model.Chat" />
         </action>
         <action
             android:id="@+id/action_activeRideFragment_to_bookingFragment"
@@ -295,7 +295,7 @@
 
     <fragment
         android:id="@+id/emergencyContactFragment"
-        android:name="com.example.sharidev2.screen.emergency.EmergencyContactFragment"
+        android:name="com.example.sharide.screen.emergency.EmergencyContactFragment"
         android:label="EmergencyContactFragment" >
         <action
             android:id="@+id/action_emergencyContactFragment_to_profileFragment"
@@ -309,7 +309,7 @@
     </fragment>
     <fragment
         android:id="@+id/addContactFragment"
-        android:name="com.example.sharidev2.screen.emergency.AddContactFragment"
+        android:name="com.example.sharide.screen.emergency.AddContactFragment"
         android:label="AddContactFragment" >
         <action
             android:id="@+id/action_addContactFragment_to_emergencyContactFragment"
@@ -317,7 +317,7 @@
     </fragment>
     <fragment
         android:id="@+id/editContactFragment"
-        android:name="com.example.sharidev2.screen.emergency.EditContactFragment"
+        android:name="com.example.sharide.screen.emergency.EditContactFragment"
         android:label="EditContactFragment" >
         <action
             android:id="@+id/action_editContactFragment_to_emergencyContactFragment"
@@ -333,7 +333,7 @@
     </fragment>
     <fragment
         android:id="@+id/editDisplayNameFragment"
-        android:name="com.example.sharidev2.screen.user.EditDisplayNameFragment"
+        android:name="com.example.sharide.screen.user.EditDisplayNameFragment"
         android:label="EditDisplayNameFragment" >
         <action
             android:id="@+id/action_editDisplayNameFragment_to_personalInformationFragment"
@@ -341,7 +341,7 @@
     </fragment>
     <fragment
         android:id="@+id/editMobileFragment3"
-        android:name="com.example.sharidev2.screen.user.EditMobileFragment"
+        android:name="com.example.sharide.screen.user.EditMobileFragment"
         android:label="EditMobileFragment" >
         <action
             android:id="@+id/action_editMobileFragment3_to_personalInformationFragment"
@@ -349,7 +349,7 @@
     </fragment>
     <fragment
         android:id="@+id/editGenderFragment"
-        android:name="com.example.sharidev2.screen.user.EditGenderFragment"
+        android:name="com.example.sharide.screen.user.EditGenderFragment"
         android:label="EditGenderFragment" >
         <action
             android:id="@+id/action_editGenderFragment_to_personalInformationFragment"
@@ -357,19 +357,19 @@
     </fragment>
     <fragment
         android:id="@+id/bookingDetailPassengerFragment"
-        android:name="com.example.sharidev2.screen.ride.BookingDetailPassengerFragment"
+        android:name="com.example.sharide.screen.ride.BookingDetailPassengerFragment"
         android:label="BookingDetailPassengerFragment" >
         <action
             android:id="@+id/action_bookingDetailPassengerFragment_to_activeRideFragment"
             app:destination="@id/activeRideFragment">
             <argument
                 android:name="ride"
-                app:argType="com.example.sharidev2.data.model.Ride" />
+                app:argType="com.example.sharide.data.model.Ride" />
         </action>
     </fragment>
     <fragment
         android:id="@+id/vehicleDocFragment"
-        android:name="com.example.sharidev2.screen.user.VehicleDocFragment"
+        android:name="com.example.sharide.screen.user.VehicleDocFragment"
         android:label="VehicleDocFragment" >
         <action
             android:id="@+id/action_vehicleDocFragment_to_personalInformationFragment"
@@ -381,7 +381,7 @@
             android:id="@+id/action_vehicleDocFragment_to_viewVehicleFragment"
             app:destination="@id/viewVehicleFragment">
             <argument android:name="vehicle"
-                app:argType="com.example.sharidev2.data.model.Vehicle"/>
+                app:argType="com.example.sharide.data.model.Vehicle"/>
         </action>
 
 
@@ -391,7 +391,7 @@
     </fragment>
     <fragment
         android:id="@+id/addVehicleDocFragment"
-        android:name="com.example.sharidev2.screen.user.AddVehicleDocFragment"
+        android:name="com.example.sharide.screen.user.AddVehicleDocFragment"
         android:label="AddVehicleDocFragment" >
         <action
             android:id="@+id/action_addVehicleDocFragment_to_vehicleDocFragment"
@@ -406,7 +406,7 @@
     </fragment>
     <fragment
         android:id="@+id/editVehicleDocFragment"
-        android:name="com.example.sharidev2.screen.user.EditVehicleDocFragment"
+        android:name="com.example.sharide.screen.user.EditVehicleDocFragment"
         android:label="EditVehicleDocFragment" >
         <action
             android:id="@+id/action_editVehicleDocFragment_to_addVehicleDocFragment"
@@ -414,7 +414,7 @@
     </fragment>
     <fragment
         android:id="@+id/addVehicleDocImgFragment"
-        android:name="com.example.sharidev2.screen.user.AddVehicleDocImgFragment"
+        android:name="com.example.sharide.screen.user.AddVehicleDocImgFragment"
         android:label="AddVehicleDocImgFragment" >
         <action
             android:id="@+id/action_addVehicleDocImgFragment_to_addVehicleDocFragment"
@@ -425,7 +425,7 @@
     </fragment>
     <fragment
         android:id="@+id/addVehicleImgFragment"
-        android:name="com.example.sharidev2.screen.user.AddVehicleImgFragment"
+        android:name="com.example.sharide.screen.user.AddVehicleImgFragment"
         android:label="AddVehicleImgFragment" >
         <action
             android:id="@+id/action_addVehicleImgFragment_to_addVehicleDocImgFragment"
@@ -436,7 +436,7 @@
     </fragment>
     <fragment
         android:id="@+id/viewVehicleFragment"
-        android:name="com.example.sharidev2.screen.user.ViewVehicleFragment"
+        android:name="com.example.sharide.screen.user.ViewVehicleFragment"
         android:label="ViewVehicleFragment" >
         <action
             android:id="@+id/action_viewVehicleFragment_to_vehicleDocFragment"
@@ -444,7 +444,7 @@
     </fragment>
     <fragment
         android:id="@+id/activeDriverRideFragment"
-        android:name="com.example.sharidev2.screen.ride.ActiveDriverRideFragment"
+        android:name="com.example.sharide.screen.ride.ActiveDriverRideFragment"
         android:label="fragment_active_driver_ride"
         tools:layout="@layout/fragment_active_driver_ride" >
         <action

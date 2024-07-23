@@ -20,7 +20,7 @@
         android:text="@string/search_fragment_choose_timing_title" />
 
 
-    <com.example.sharidev2.utility.DateTimePicker
+    <com.example.sharide.utility.DateTimePicker
         android:id="@+id/date_picker_bottom_dialog_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
